@@ -2,6 +2,22 @@
 
 Jolene's local HTTP service supports durable task context and reviewable long-term memory. It binds to `127.0.0.1`; this is a local-pilot interface, not a production authentication boundary.
 
+## Memory Review screen
+
+With the HTTP service running, open `http://127.0.0.1:8421/memory`. The local
+screen supports the governed lifecycle without requiring direct API calls:
+
+- review and approve or reject pending proposals;
+- inspect active, expired, corrected, and forgotten records;
+- propose a correction while leaving the original active until approval;
+- confirm explicit forgetting before content is scrubbed;
+- preview the exact authorized records and ranking evidence for a request;
+- opt sensitive memory into only the current private preview.
+
+The selected person/workspace scope is stored only in that browser's local
+storage. This makes local use convenient; it does not replace authentication or
+authorization for any remotely exposed deployment.
+
 ## Memory contract
 
 - Chat history remains isolated by actor, workspace, channel, and thread.
@@ -140,8 +156,8 @@ This explicit destructive operation removes the retained content from both the d
 
 ## Current limitations
 
-- There is no graphical review interface yet.
 - There is no bulk retention manager or automatic compaction workflow yet.
+- The graphical review interface is a local-pilot surface without production authentication.
 - Ranking is deterministic lexical matching, not embedding or model-based semantic similarity; meaningfully related records that use entirely different vocabulary may be missed.
 - Only the bounded authorized candidate window is ranked; an older relevant record outside that window may be missed until a future index-backed retriever is added.
 - Slack does not yet expose task creation or memory-review controls.

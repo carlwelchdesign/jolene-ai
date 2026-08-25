@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light">
+    <title>Jolene Memory Review</title>
+    <link rel="stylesheet" href="/memory-review.css">
+    <script type="module" src="/memory-review.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to memory review</a>
+
+    <header class="topbar">
+      <a class="brand" href="/memory" aria-label="Jolene Memory Review home">
+        <span class="brand-mark" aria-hidden="true">J</span>
+        <span>
+          <strong>Jolene</strong>
+          <small>Memory Review</small>
+        </span>
+      </a>
+      <button class="scope-button" id="scope-button" type="button">
+        <span>Memory scope</span>
+        <strong id="scope-label">carl · personal</strong>
+      </button>
+    </header>
+
+    <main id="main">
+      <section class="hero" aria-labelledby="page-title">
+        <p class="eyebrow">Private, local, and reviewable</p>
+        <h1 id="page-title">Choose what Jolene remembers.</h1>
+        <p class="hero-copy">
+          Nothing becomes long-term memory until you approve it. Review pending
+          proposals, correct the record, or see what Jolene would recall for a request.
+        </p>
+        <div class="hero-actions">
+          <button class="button button-primary" id="new-memory-button" type="button">
+            Propose a memory
+          </button>
+          <span class="local-note"><span aria-hidden="true">●</span> Local pilot</span>
+        </div>
+      </section>
+
+      <div class="notice" id="page-notice" role="status" aria-live="polite" hidden></div>
+
+      <nav class="tabs" aria-label="Memory review sections">
+        <button class="tab" id="tab-review" type="button" role="tab" aria-selected="true" aria-controls="panel-review">
+          Review queue <span class="count" id="review-count">0</span>
+        </button>
+        <button class="tab" id="tab-memory" type="button" role="tab" aria-selected="false" aria-controls="panel-memory" tabindex="-1">
+          Remembered
+        </button>
+        <button class="tab" id="tab-preview" type="button" role="tab" aria-selected="false" aria-controls="panel-preview" tabindex="-1">
+          Recall preview
+        </button>
+      </nav>
+
+      <section class="panel" id="panel-review" role="tabpanel" aria-labelledby="tab-review">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Human approval</p>
+            <h2>Waiting for your review</h2>
+          </div>
+          <button class="button button-secondary refresh-button" type="button" data-refresh>Refresh</button>
+        </div>
+        <div class="card-grid" id="proposal-list" aria-live="polite"></div>
+      </section>
+
+      <section class="panel" id="panel-memory" role="tabpanel" aria-labelledby="tab-memory" hidden>
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Durable memory</p>
+            <h2>What Jolene retains</h2>
+          </div>
+          <button class="button button-secondary refresh-button" type="button" data-refresh>Refresh</button>
+        </div>
+        <div class="filter-row" role="group" aria-label="Filter retained memories">
+          <button class="filter is-active" type="button" data-memory-filter="active" aria-pressed="true">Active</button>
+          <button class="filter" type="button" data-memory-filter="all" aria-pressed="false">All states</button>
+          <button class="filter" type="button" data-memory-filter="expired" aria-pressed="false">Expired</button>
+          <button class="filter" type="button" data-memory-filter="superseded" aria-pressed="false">Corrected</button>
+          <button class="filter" type="button" data-memory-filter="forgotten" aria-pressed="false">Forgotten</button>
+        </div>
+        <div class="card-grid" id="memory-list" aria-live="polite"></div>
+      </section>
+
+      <section class="panel" id="panel-preview" role="tabpanel" aria-labelledby="tab-preview" hidden>
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Explainable context</p>
+            <h2>What would Jolene recall?</h2>
+          </div>
+        </div>
+        <form class="preview-form" id="preview-form">
+          <label class="field field-wide">
+            <span>Try a request</span>
+            <textarea id="preview-query" name="query" rows="3" required maxlength="4000" placeholder="What remains for the audio plugin release?"></textarea>
+          </label>
+          <label class="field">
+            <span>Task context</span>
+            <select id="preview-task" name="taskId">
+              <option value="">No selected task</option>
+            </select>
+          </label>
+          <label class="check-field">
+            <input id="preview-sensitive" name="includeSensitiveMemory" type="checkbox">
+            <span>
+              <strong>Include sensitive memory once</strong>
+              <small>Applies only to this private preview.</small>
+            </span>
+          </label>
+          <button class="button button-primary" type="submit">Preview recall</button>
+        </form>
+        <div id="preview-results" class="preview-results" aria-live="polite"></div>
+      </section>
+    </main>
+
+    <dialog id="scope-dialog" aria-labelledby="scope-title">
+      <form class="dialog-card" id="scope-form" method="dialog">
+        <div class="dialog-heading">
+          <div>
+            <p class="eyebrow">Local identity</p>
+            <h2 id="scope-title">Choose a memory scope</h2>
+          </div>
+          <button class="icon-button" type="button" data-close-dialog aria-label="Close scope settings">×</button>
+        </div>
+        <p class="supporting-copy">The scope keeps one person and workspace from seeing another scope’s tasks or memories.</p>
+        <label class="field">
+          <span>Person</span>
+          <input id="scope-actor" name="actorId" required maxlength="120" autocomplete="off">
+        </label>
+        <label class="field">
+          <span>Workspace</span>
+          <input id="scope-workspace" name="workspaceId" required maxlength="120" autocomplete="off">
+        </label>
+        <div class="dialog-actions">
+          <button class="button button-secondary" type="button" data-close-dialog>Cancel</button>
+          <button class="button button-primary" type="submit">Use this scope</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="proposal-dialog" aria-labelledby="proposal-dialog-title">
+      <form class="dialog-card dialog-card-wide" id="proposal-form">
+        <div class="dialog-heading">
+          <div>
+            <p class="eyebrow" id="proposal-dialog-eyebrow">Memory proposal</p>
+            <h2 id="proposal-dialog-title">Propose a memory</h2>
+          </div>
+          <button class="icon-button" type="button" data-close-dialog aria-label="Close memory proposal">×</button>
+        </div>
+        <p class="supporting-copy" id="proposal-dialog-copy">The proposal will wait in the review queue. It will not become memory yet.</p>
+        <input id="proposal-replaces" name="replacesMemoryId" type="hidden">
+        <div class="form-grid">
+          <label class="field field-wide">
+            <span>What should Jolene remember?</span>
+            <textarea id="proposal-content" name="content" rows="4" required maxlength="4000"></textarea>
+          </label>
+          <label class="field">
+            <span>Memory type</span>
+            <select id="proposal-kind" name="kind">
+              <option value="preference">Preference</option>
+              <option value="project_decision">Project decision</option>
+              <option value="standing_rule">Standing rule</option>
+              <option value="corrected_fact">Corrected fact</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Task</span>
+            <select id="proposal-task" name="taskId">
+              <option value="">Global private memory</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Sensitivity</span>
+            <select id="proposal-sensitivity" name="sensitivity">
+              <option value="private">Private</option>
+              <option value="restricted">Restricted to task</option>
+              <option value="sensitive">Sensitive · explicit recall only</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Expires</span>
+            <input id="proposal-expiry" name="expiresAt" type="datetime-local">
+          </label>
+          <label class="field field-wide">
+            <span>Why is this trustworthy?</span>
+            <input id="proposal-source" name="source" required maxlength="1000" placeholder="Direct decision from Carl">
+          </label>
+        </div>
+        <div class="inline-error" id="proposal-error" role="alert" hidden></div>
+        <div class="dialog-actions">
+          <button class="button button-secondary" type="button" data-close-dialog>Cancel</button>
+          <button class="button button-primary" id="proposal-submit" type="submit">Add to review queue</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="forget-dialog" aria-labelledby="forget-title">
+      <form class="dialog-card" id="forget-form">
+        <div class="dialog-heading">
+          <div>
+            <p class="eyebrow eyebrow-danger">Destructive action</p>
+            <h2 id="forget-title">Forget this memory?</h2>
+          </div>
+          <button class="icon-button" type="button" data-close-dialog aria-label="Close forget confirmation">×</button>
+        </div>
+        <p class="supporting-copy">Jolene will remove the retained content from the memory and its proposal. Only a non-content audit tombstone remains.</p>
+        <blockquote id="forget-content"></blockquote>
+        <input id="forget-id" type="hidden">
+        <div class="inline-error" id="forget-error" role="alert" hidden></div>
+        <div class="dialog-actions">
+          <button class="button button-secondary" type="button" data-close-dialog>Keep memory</button>
+          <button class="button button-danger" id="forget-submit" type="submit">Forget permanently</button>
+        </div>
+      </form>
+    </dialog>
+
+    <div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true" hidden></div>
+  </body>
+</html>

@@ -12,11 +12,17 @@ import {
   MemoryProposalNotFoundError,
   WorkTaskNotFoundError,
 } from "./domain/work-context.js";
+import {
+  loadMemoryReviewAssets,
+  memoryReviewHeaders,
+  type MemoryReviewAsset,
+} from "./ui/memory-review-assets.js";
 
 const MAX_REQUEST_BYTES = 1_000_000;
 
 const config = loadConfig();
 const application = await createApplication(config);
+const memoryReviewAssets = loadMemoryReviewAssets();
 
 const server = createServer(async (request, response) => {
   try {
@@ -46,6 +52,30 @@ async function handleRequest(
   response: ServerResponse,
 ): Promise<void> {
   const url = new URL(request.url ?? "/", "http://127.0.0.1");
+
+  if (request.method === "GET" && url.pathname === "/") {
+    response.writeHead(302, {
+      location: "/memory",
+      "cache-control": "no-store",
+    });
+    response.end();
+    return;
+  }
+
+  if (request.method === "GET" && url.pathname === "/memory") {
+    sendAsset(response, memoryReviewAssets.html);
+    return;
+  }
+
+  if (request.method === "GET" && url.pathname === "/memory-review.css") {
+    sendAsset(response, memoryReviewAssets.css);
+    return;
+  }
+
+  if (request.method === "GET" && url.pathname === "/memory-review.js") {
+    sendAsset(response, memoryReviewAssets.javascript);
+    return;
+  }
 
   if (request.method === "GET" && url.pathname === "/health") {
     sendJson(response, 200, application.health());
@@ -220,6 +250,14 @@ function sendJson(
     "cache-control": "no-store",
   });
   response.end(JSON.stringify(body));
+}
+
+function sendAsset(response: ServerResponse, asset: MemoryReviewAsset): void {
+  response.writeHead(
+    200,
+    memoryReviewHeaders(asset.contentType, asset.body.byteLength),
+  );
+  response.end(asset.body);
 }
 
 class RequestTooLargeError extends Error {}

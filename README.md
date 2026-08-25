@@ -19,6 +19,7 @@ The first runnable slice provides:
 - private task context containing only approved, actor-scoped durable memories;
 - memory sensitivity gates, expiration, reviewed correction, and explicit forgetting;
 - deterministic request-aware memory ranking with inspectable selection evidence;
+- a local Memory Review screen for explicit approval, correction, recall preview, and forgetting;
 - contract tests that do not call OpenAI.
 
 The Slack adapter is active for a local pilot, with live mention-and-reply behavior verified. Scheduled work, specialist agents, client-AI workflows, always-on hosting, and voice remain later gates.
@@ -60,6 +61,11 @@ Prerequisite: Node.js 22 or newer.
 
    After a production build, use `npm start` instead.
 
+   Open [http://127.0.0.1:8421/memory](http://127.0.0.1:8421/memory) to review
+   Jolene's pending proposals and retained memory. The page uses the same local
+   actor/workspace boundary as the API and is not an authenticated production
+   administration surface.
+
    `POST /v1/chat` accepts:
 
    ```json
@@ -98,6 +104,8 @@ Carl's configured Slack member ID is the only DM identity permitted to use priva
 - Slack DMs from anyone except the configured owner are ignored.
 - Completed Slack deliveries survive restarts and suppress duplicate replies.
 - Pending and rejected memory proposals are never supplied to the model.
+- The Memory Review screen changes durable context only through the existing
+  proposal, decision, correction, and explicit-forget contracts.
 - Durable task and personal memory context is unavailable in shared channels.
 - Restricted memory requires its selected task; sensitive memory also requires an explicit per-request flag.
 - Expired, superseded, and forgotten memories are excluded from model context.

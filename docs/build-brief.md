@@ -19,7 +19,7 @@ Input is a message plus stable actor, workspace, channel, thread, and inbound ev
 - State: SQLite conversations, inbound events, completed turns, failures, outbound Slack delivery attempts, work tasks, governed memory proposals, and request-ranked durable memories with sensitivity, expiry, correction, and forgetting state.
 - Model: one OpenAI Agents SDK agent; no specialists yet.
 - Approval: deterministic policy types are implemented, but no side-effecting tool is exposed.
-- Deployment: local HTTP/CLI plus a credential-gated Slack Socket Mode adapter; always-on hosting comes later.
+- Deployment: local HTTP/CLI, a local governed-memory review screen, and a credential-gated Slack Socket Mode adapter; always-on hosting comes later.
 
 ## Non-goals
 

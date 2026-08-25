@@ -487,7 +487,7 @@ Contextual-ranking checkpoint:
 | Verification | Node 22 typecheck, 42 contract tests, production build, live context-preview selection, staged secret scan, and dependency audit passed |
 | Selection evidence | Older relevant memory outranks newer unrelated memory; current-request, task-term, task-scope, standing-rule, and preference reasons are inspectable |
 | Privacy evidence | Candidate retrieval applies actor, workspace, task, sensitivity, expiry, correction, and forgetting gates before ranking |
-| Remaining boundary | Lexical vocabulary gaps, the bounded candidate window, compaction, bulk retention, graphical review, task-event history, and authenticated production exposure remain pending |
+| Remaining boundary | Lexical vocabulary gaps, the bounded candidate window, compaction, bulk retention, task-event history, graphical bulk administration, and authenticated production exposure remain pending |
 
 ## Architecture tickets
 
@@ -512,7 +512,7 @@ Current ticket evidence:
 |---|---|---|
 | JOL-ARCH-001 | Partial | Initial policy taxonomy and trust boundary exist; the full capability registry is pending. |
 | JOL-ARCH-002 | Implemented for first slice | Core service runs through CLI or HTTP and does not depend on Slack. |
-| JOL-ARCH-003 | Partial | Durable isolated conversations, tasks, governed and request-ranked memory, status updates, retries, and restart recovery are tested; task-event history, automatic compaction, embedding-backed similarity, bulk retention controls, and graphical review remain pending. |
+| JOL-ARCH-003 | Partial | Durable isolated conversations, tasks, governed and request-ranked memory, a local graphical review workflow, status updates, retries, and restart recovery are tested; task-event history, automatic compaction, embedding-backed similarity, bulk retention controls, and authenticated production administration remain pending. |
 | JOL-ARCH-004 | Implemented for local pilot | Socket Mode adapter, manifest, owner gate, thread mapping, live mention/reply evidence, durable generation deduplication, and durable delivery retries exist. Live owner-DM evidence and crash-window reconciliation remain operational gates. |
 | JOL-ARCH-005 | Implemented for local slice | Read-only allowlisted Markdown retrieval is tested with exact note and heading citations. |
 | JOL-ARCH-006 | Partial | Retrieved excerpts retain provenance; a durable disclosure ledger is pending. |
