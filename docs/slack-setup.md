@@ -37,7 +37,7 @@ npm run slack
 Then:
 
 - DM Jolene from Carl's configured Slack account; or
-- invite Jolene to a channel and explicitly mention `@Jolene.AI`.
+- invite Jolene to a channel and explicitly mention `@Jolene`.
 
 Jolene replies in the originating thread. Replayed Slack events do not produce another model call or reply.
 

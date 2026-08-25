@@ -2,12 +2,12 @@ _metadata:
   major_version: 1
   minor_version: 1
 display_information:
-  name: Jolene.AI
+  name: Jolene
   description: A private, policy-gated chief-of-staff agent for Carl
   background_color: "#5c2751"
 features:
   bot_user:
-    display_name: Jolene.AI
+    display_name: Jolene
     always_online: false
 oauth_config:
   scopes:

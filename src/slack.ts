@@ -33,7 +33,7 @@ const listener = async ({
   context: { botUserId?: string };
   say: (message: { text: string; thread_ts: string }) => Promise<unknown>;
 }) => {
-  await handleSlackEvent(
+  const result = await handleSlackEvent(
     application.service,
     body,
     context.botUserId,
@@ -42,7 +42,23 @@ const listener = async ({
       await say({ text, thread_ts: threadTs });
     },
   );
+  process.stdout.write(`Slack event handled: ${result.outcome}\n`);
 };
+
+slack.use(async ({ body, next }) => {
+  const eventType =
+    typeof body === "object" &&
+    body !== null &&
+    "event" in body &&
+    typeof body.event === "object" &&
+    body.event !== null &&
+    "type" in body.event &&
+    typeof body.event.type === "string"
+      ? body.event.type
+      : "non-event";
+  process.stdout.write(`Slack event received: ${eventType}\n`);
+  await next();
+});
 
 slack.event("app_mention", listener);
 slack.event("message", listener);
