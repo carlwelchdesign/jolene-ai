@@ -426,6 +426,8 @@ The memory-governance slice adds three sensitivity levels, UTC-normalized expiry
 
 The contextual-ranking slice applies a deterministic lexical scorer after authorization and before the memory limit. It uses request terms, task terms, selected-task scope, and explicit standing-rule/preference baselines. Selection evidence is available through a read-only preview endpoint. The candidate window is capped, privacy gates precede ranking, and no embedding provider or new external dependency is introduced.
 
+The knowledge-access-ledger slice records each private Obsidian search with actor, workspace, channel, thread, and inbound-event scope plus exact note and heading citations. It stores only a process-keyed query fingerprint and never the raw query or retrieved excerpt. Successful retrieval fails closed when the audit transaction cannot commit. This is access provenance only; external disclosure authorization and delivery receipts remain pending.
+
 Delivery checkpoint:
 
 | Field | Value |
@@ -527,7 +529,7 @@ Current ticket evidence:
 | JOL-ARCH-003 | Partial | Durable isolated conversations, tasks, governed and request-ranked memory, a local graphical review workflow, status updates, retries, and restart recovery are tested; task-event history, automatic compaction, embedding-backed similarity, bulk retention controls, and authenticated production administration remain pending. |
 | JOL-ARCH-004 | Implemented for local pilot | Socket Mode adapter, manifest, owner gate, thread mapping, live mention/reply evidence, durable generation deduplication, and durable delivery retries exist. Live owner-DM evidence and crash-window reconciliation remain operational gates. |
 | JOL-ARCH-005 | Implemented for local slice | Read-only allowlisted Markdown retrieval is tested with exact note and heading citations. |
-| JOL-ARCH-006 | Partial | Retrieved excerpts retain provenance; a durable disclosure ledger is pending. |
+| JOL-ARCH-006 | Partial | Retrieved excerpts retain provenance and private knowledge searches now have a durable, content-minimizing access ledger; external disclosure authorization and delivery receipts remain pending. |
 | JOL-ARCH-007 | Partial | Deterministic risk decisions exist; no side-effecting tool or exact approval workflow is exposed. |
 | JOL-ARCH-009 | Partial | Initial runtime behavior prompt and non-impersonation rules exist; the formal personality renderer and evaluation suite are pending. |
 

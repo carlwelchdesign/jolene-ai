@@ -149,6 +149,20 @@ async function handleRequest(
     return;
   }
 
+  if (request.method === "GET" && url.pathname === "/v1/knowledge-accesses") {
+    sendJson(
+      response,
+      200,
+      application.knowledgeAudit.listAccesses({
+        actorId: url.searchParams.get("actorId"),
+        workspaceId: url.searchParams.get("workspaceId"),
+        eventId: url.searchParams.get("eventId") ?? undefined,
+        limit: url.searchParams.get("limit") ?? undefined,
+      }),
+    );
+    return;
+  }
+
   if (request.method === "POST" && url.pathname === "/v1/context-preview") {
     sendJson(
       response,

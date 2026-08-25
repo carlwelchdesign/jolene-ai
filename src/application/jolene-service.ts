@@ -72,8 +72,12 @@ export class JoleneService {
           })
         : EMPTY_WORK_CONTEXT;
       const response = await this.options.runner.respond({
+        eventId: request.eventId,
         actorId: request.actorId,
+        workspaceId: request.workspaceId,
         channelKind: request.channelKind,
+        channelId: request.channelId,
+        threadId: request.threadId,
         message: request.message,
         history,
         workContext,

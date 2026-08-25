@@ -12,6 +12,7 @@ The first runnable slice provides:
 - atomic user/assistant exchange persistence;
 - deterministic capability and disclosure policy decisions;
 - read-only, allowlisted Obsidian Markdown search with citations;
+- a durable, content-minimizing ledger for private knowledge searches and citations;
 - a CLI and an HTTP API with `/health` and `/v1/chat`;
 - a Slack Socket Mode adapter for owner-only DMs and explicit channel mentions;
 - a durable Slack delivery ledger that retries failed posts without another model call;
@@ -100,6 +101,7 @@ Carl's configured Slack member ID is the only DM identity permitted to use priva
 
 - `.env.local`, the SQLite database, and generated evaluation results are ignored.
 - Obsidian access is read-only and limited to configured relative path prefixes.
+- Knowledge-search audit records retain scope, outcome, query fingerprints, and citations—but never raw queries or note excerpts.
 - Shared channels receive no Obsidian search tool.
 - Slack DMs from anyone except the configured owner are ignored.
 - Completed Slack deliveries survive restarts and suppress duplicate replies.

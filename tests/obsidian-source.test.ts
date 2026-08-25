@@ -26,7 +26,7 @@ describe("ObsidianKnowledgeSource", () => {
 
     const results = await source.search(
       "Jolene personal chief of staff",
-      { actorId: "carl", channelIsPrivate: true },
+      searchContext(),
       5,
     );
 
@@ -46,10 +46,7 @@ describe("ObsidianKnowledgeSource", () => {
     });
 
     await expect(
-      source.search("Jolene", {
-        actorId: "carl",
-        channelIsPrivate: false,
-      }),
+      source.search("Jolene", searchContext({ channelIsPrivate: false })),
     ).resolves.toEqual([]);
   });
 
@@ -62,7 +59,7 @@ describe("ObsidianKnowledgeSource", () => {
 
     const results = await source.search(
       "secret graph settings",
-      { actorId: "carl", channelIsPrivate: true },
+      searchContext(),
       5,
     );
 
@@ -89,4 +86,17 @@ async function createVault(): Promise<string> {
     "# Secret graph settings\n",
   );
   return root;
+}
+
+function searchContext(overrides = {}) {
+  return {
+    eventId: "test-event",
+    actorId: "carl",
+    workspaceId: "personal",
+    channelIsPrivate: true,
+    channelKind: "private_chat" as const,
+    channelId: "local",
+    threadId: "main",
+    ...overrides,
+  };
 }

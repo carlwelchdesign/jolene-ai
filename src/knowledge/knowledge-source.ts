@@ -1,6 +1,13 @@
+import type { ChannelKind } from "../domain/conversation.js";
+
 export interface KnowledgeSearchContext {
   readonly actorId: string;
+  readonly workspaceId: string;
   readonly channelIsPrivate: boolean;
+  readonly channelKind: ChannelKind;
+  readonly channelId: string;
+  readonly threadId: string;
+  readonly eventId: string;
 }
 
 export interface KnowledgeResult {

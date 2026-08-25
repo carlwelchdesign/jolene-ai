@@ -8,8 +8,12 @@ import type { AuthorizedWorkContext } from "../domain/work-context.js";
 import type { KnowledgeSource } from "../knowledge/knowledge-source.js";
 
 export interface AgentRequest {
+  readonly eventId: string;
   readonly actorId: string;
+  readonly workspaceId: string;
   readonly channelKind: ChannelKind;
+  readonly channelId: string;
+  readonly threadId: string;
   readonly message: string;
   readonly history: readonly ConversationTurn[];
   readonly workContext: AuthorizedWorkContext;
@@ -68,8 +72,13 @@ export class OpenAIJoleneRunner implements JoleneAgentRunner {
         const results = await this.options.knowledge.search(
           query,
           {
+            eventId: request.eventId,
             actorId: request.actorId,
+            workspaceId: request.workspaceId,
             channelIsPrivate: true,
+            channelKind: request.channelKind,
+            channelId: request.channelId,
+            threadId: request.threadId,
           },
           limit,
         );
