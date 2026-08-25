@@ -418,6 +418,15 @@ The first local vertical slice is implemented and verified. It establishes the p
 
 This is not the complete MVP described above. Slack ingress, persistent task workflows, exact approval UI and execution receipts, scheduled work, specialists, client-AI packets, evaluations, always-on deployment, and voice remain pending.
 
+Delivery checkpoint:
+
+| Field | Value |
+|---|---|
+| Branch | `codex/jolene-core-mvp` |
+| Implementation commit | `7fe9cea` (`JOL-ARCH-002 build Jolene core MVP`) |
+| Pull request | None; this local repository has no remote configured |
+| Verification | Typecheck, 15 contract tests, production build, local health route, live model turn, private Obsidian retrieval, replay deduplication, and dependency audit passed |
+
 ## Architecture tickets
 
 | ID | Ticket | Acceptance criteria |
