@@ -416,7 +416,7 @@ The first local vertical slice is implemented and verified. It establishes the p
 - local CLI and HTTP interfaces with health reporting;
 - contract tests for policy, persistence, retrieval, failure recovery, and duplicate events.
 
-This is not the complete MVP described above. Slack workspace activation, persistent task workflows, exact approval UI and execution receipts, scheduled work, specialists, client-AI packets, evaluations, always-on deployment, and voice remain pending.
+This is not the complete MVP described above. Persistent task workflows, exact approval UI and execution receipts, scheduled work, specialists, client-AI packets, evaluations, always-on deployment, and voice remain pending.
 
 The Slack Socket Mode slice provides owner-only DMs and explicit channel mentions. It uses the same portable core and durable thread identity. Channel mentions are conservatively classified as shared, and non-owner DMs are ignored. Slack credentials are configured, and a live `app_mention` ingress and reply were verified. A durable outbound-delivery ledger now retries explicit Slack failures from the stored answer without another model call and suppresses completed replays across restarts.
 
@@ -437,7 +437,17 @@ Slack adapter checkpoint:
 | Implementation commit | `eb44752` (`JOL-ARCH-004 add guarded Slack adapter`) |
 | Pull request | None; this local repository has no remote configured |
 | Verification | Typecheck, 21 contract tests, production build, manifest parse, missing-credential startup gate, original HTTP health route, and dependency audit passed |
-| Live gate | Slack app token, bot token, Carl's Slack member ID, workspace installation, and live DM/mention evidence |
+| Live gate | Live mention-and-reply behavior is verified; owner-DM evidence remains pending |
+
+Slack delivery-ledger checkpoint:
+
+| Field | Value |
+|---|---|
+| Branch | `codex/jolene-slack-delivery-ledger` |
+| Implementation commit | `2ab541f` (`JOL-ARCH-004 add durable Slack delivery ledger`) |
+| Pull request | None; this local repository has no remote configured |
+| Verification | Node 22 typecheck, 23 contract tests, production build, existing-database migration, production Socket Mode connection, live mention/reply, staged secret scan, and dependency audit passed |
+| Remaining boundary | A crash while delivery is `processing` requires operator reconciliation; stale replay is not automated because Slack may already have accepted the message |
 
 ## Architecture tickets
 
