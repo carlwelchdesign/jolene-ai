@@ -208,6 +208,60 @@ describe("JoleneService", () => {
     }
   });
 
+  it("requires an explicit private request to load sensitive task memory", async () => {
+    const store = new SqliteConversationStore(":memory:");
+    const workContext = new SqliteWorkContextStore(":memory:");
+    const runner = new RecordingRunner();
+    const service = new JoleneService({
+      store,
+      runner,
+      workContext,
+      maxHistoryTurns: 16,
+      maxMemoryItems: 24,
+    });
+
+    try {
+      const task = workContext.createTask({
+        actorId: "carl",
+        workspaceId: "personal",
+        title: "Sensitive task",
+        objective: "Load sensitive context only when requested.",
+      });
+      const proposal = workContext.proposeMemory({
+        actorId: "carl",
+        workspaceId: "personal",
+        taskId: task.id,
+        kind: "corrected_fact",
+        content: "Sensitive approved context",
+        source: "Direct test authorization.",
+        sensitivity: "sensitive",
+      });
+      workContext.decideMemory({
+        id: proposal.id,
+        actorId: "carl",
+        workspaceId: "personal",
+        decision: "approved",
+      });
+
+      await service.chat(request({ eventId: "sensitive-off", taskId: task.id }));
+      await service.chat(
+        request({
+          eventId: "sensitive-on",
+          taskId: task.id,
+          includeSensitiveMemory: true,
+        }),
+      );
+
+      expect(runner.requests[0]?.workContext.memories).toEqual([]);
+      expect(runner.requests[1]?.workContext.memories).toMatchObject([
+        { content: "Sensitive approved context", sensitivity: "sensitive" },
+      ]);
+    } finally {
+      store.close();
+      workContext.close();
+    }
+  });
+
   it("makes an event retryable when authorized context cannot be loaded", async () => {
     const store = new SqliteConversationStore(":memory:");
     const runner = new RecordingRunner();

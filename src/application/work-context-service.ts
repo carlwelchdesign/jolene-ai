@@ -3,8 +3,10 @@ import { z } from "zod";
 import {
   memoryDecisionSchema,
   memoryKindSchema,
+  memorySensitivitySchema,
   taskStatusSchema,
   type MemoryProposal,
+  type DurableMemory,
   type WorkContextStore,
   type WorkTask,
 } from "../domain/work-context.js";
@@ -37,6 +39,17 @@ export const proposeMemorySchema = z.object({
   kind: memoryKindSchema,
   content: z.string().trim().min(1).max(4_000),
   source: z.string().trim().min(1).max(1_000),
+  sensitivity: memorySensitivitySchema.default("private"),
+  expiresAt: z.string().datetime({ offset: true }).nullable().default(null),
+  replacesMemoryId: z.string().uuid().nullable().default(null),
+}).superRefine((proposal, context) => {
+  if (proposal.sensitivity !== "private" && !proposal.taskId) {
+    context.addIssue({
+      code: "custom",
+      path: ["taskId"],
+      message: "Restricted and sensitive memory must be linked to a task.",
+    });
+  }
 });
 
 export const decideMemorySchema = z.object({
@@ -48,6 +61,13 @@ export const decideMemorySchema = z.object({
 export const listMemoryProposalsSchema = z.object({
   ...identityFields,
   status: z.enum(["pending", "approved", "rejected"]).optional(),
+});
+
+export const listMemoriesSchema = z.object(identityFields);
+
+export const forgetMemorySchema = z.object({
+  ...identityFields,
+  id: z.string().uuid(),
 });
 
 export class WorkContextService {
@@ -85,5 +105,14 @@ export class WorkContextService {
       request.workspaceId,
       request.status,
     );
+  }
+
+  listMemories(input: unknown): readonly DurableMemory[] {
+    const request = listMemoriesSchema.parse(input);
+    return this.store.listMemories(request.actorId, request.workspaceId);
+  }
+
+  forgetMemory(input: unknown): DurableMemory {
+    return this.store.forgetMemory(forgetMemorySchema.parse(input));
   }
 }

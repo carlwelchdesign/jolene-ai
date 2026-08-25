@@ -3,6 +3,7 @@ import os from "node:os";
 import path from "node:path";
 
 import { afterEach, describe, expect, it } from "vitest";
+import Database from "better-sqlite3";
 
 import { MemoryProposalConflictError } from "../src/domain/work-context.js";
 import { SqliteWorkContextStore } from "../src/persistence/sqlite-work-context-store.js";
@@ -53,12 +54,13 @@ describe("SqliteWorkContextStore", () => {
 
     const restartedStore = new SqliteWorkContextStore(databasePath);
     try {
-      const context = restartedStore.loadAuthorizedContext(
-        "carl",
-        "personal",
-        task.id,
-        24,
-      );
+      const context = restartedStore.loadAuthorizedContext({
+        actorId: "carl",
+        workspaceId: "personal",
+        taskId: task.id,
+        memoryLimit: 24,
+        includeSensitiveMemory: false,
+      });
       expect(context.task?.status).toBe("running");
       expect(context.memories.map((memory) => memory.content)).toEqual([
         "Never silently create durable memory.",
@@ -95,8 +97,13 @@ describe("SqliteWorkContextStore", () => {
       });
 
       expect(
-        store.loadAuthorizedContext("carl", "personal", undefined, 24)
-          .memories,
+        store.loadAuthorizedContext({
+          actorId: "carl",
+          workspaceId: "personal",
+          taskId: undefined,
+          memoryLimit: 24,
+          includeSensitiveMemory: false,
+        }).memories,
       ).toEqual([]);
       expect(
         store.listMemoryProposals("carl", "personal", "pending"),
@@ -130,11 +137,247 @@ describe("SqliteWorkContextStore", () => {
         store.decideMemory({ ...decision, decision: "rejected" }),
       ).toThrow(MemoryProposalConflictError);
       expect(
-        store.loadAuthorizedContext("carl", "personal", undefined, 24)
-          .memories,
+        store.loadAuthorizedContext({
+          actorId: "carl",
+          workspaceId: "personal",
+          taskId: undefined,
+          memoryLimit: 24,
+          includeSensitiveMemory: false,
+        }).memories,
       ).toHaveLength(1);
     } finally {
       store.close();
     }
   });
+
+  it("applies task and explicit-request gates to restricted and sensitive memory", () => {
+    const store = new SqliteWorkContextStore(":memory:");
+    try {
+      const task = store.createTask({
+        actorId: "carl",
+        workspaceId: "personal",
+        title: "Sensitive planning",
+        objective: "Use private context deliberately.",
+      });
+      approveMemory(store, {
+        taskId: null,
+        content: "Global private memory",
+        sensitivity: "private",
+      });
+      approveMemory(store, {
+        taskId: task.id,
+        content: "Task-restricted memory",
+        sensitivity: "restricted",
+      });
+      approveMemory(store, {
+        taskId: task.id,
+        content: "Explicit sensitive memory",
+        sensitivity: "sensitive",
+      });
+
+      expect(contextContents(store, undefined, false)).toEqual([
+        "Global private memory",
+      ]);
+      expect(contextContents(store, task.id, false)).toEqual([
+        "Global private memory",
+        "Task-restricted memory",
+      ]);
+      expect(contextContents(store, task.id, true)).toEqual([
+        "Explicit sensitive memory",
+        "Global private memory",
+        "Task-restricted memory",
+      ]);
+    } finally {
+      store.close();
+    }
+  });
+
+  it("excludes expired memory using an injected clock", () => {
+    let now = new Date("2026-08-25T12:00:00.000Z");
+    const store = new SqliteWorkContextStore(":memory:", () => now);
+    try {
+      approveMemory(store, {
+        taskId: null,
+        content: "Temporary context",
+        sensitivity: "private",
+        expiresAt: "2026-08-26T12:00:00.000Z",
+      });
+      expect(contextContents(store, undefined, false)).toEqual([
+        "Temporary context",
+      ]);
+
+      now = new Date("2026-08-27T12:00:00.000Z");
+      expect(contextContents(store, undefined, false)).toEqual([]);
+      expect(store.listMemories("carl", "personal")[0]?.state).toBe(
+        "expired",
+      );
+    } finally {
+      store.close();
+    }
+  });
+
+  it("replaces memory only after a correction proposal is approved", () => {
+    const store = new SqliteWorkContextStore(":memory:");
+    try {
+      const original = approveMemory(store, {
+        taskId: null,
+        content: "The old fact",
+        sensitivity: "private",
+      });
+      const correction = store.proposeMemory({
+        actorId: "carl",
+        workspaceId: "personal",
+        taskId: null,
+        kind: "corrected_fact",
+        content: "The corrected fact",
+        source: "Carl corrected the record.",
+        sensitivity: "private",
+        replacesMemoryId: original.id,
+      });
+
+      expect(contextContents(store, undefined, false)).toEqual([
+        "The old fact",
+      ]);
+      store.decideMemory({
+        id: correction.id,
+        actorId: "carl",
+        workspaceId: "personal",
+        decision: "approved",
+      });
+
+      expect(contextContents(store, undefined, false)).toEqual([
+        "The corrected fact",
+      ]);
+      expect(
+        store
+          .listMemories("carl", "personal")
+          .find((item) => item.id === original.id)?.state,
+      ).toBe("superseded");
+    } finally {
+      store.close();
+    }
+  });
+
+  it("forgets retained content and leaves a non-content tombstone", () => {
+    const store = new SqliteWorkContextStore(":memory:");
+    try {
+      const memory = approveMemory(store, {
+        taskId: null,
+        content: "Content to erase",
+        sensitivity: "private",
+      });
+
+      expect(
+        store.forgetMemory({
+          id: memory.id,
+          actorId: "carl",
+          workspaceId: "personal",
+        }),
+      ).toMatchObject({ content: "[forgotten]", state: "forgotten" });
+      expect(contextContents(store, undefined, false)).toEqual([]);
+      expect(
+        store.listMemoryProposals("carl", "personal", "approved"),
+      ).toMatchObject([
+        {
+          content: "[forgotten]",
+          source: "[redacted by forget request]",
+        },
+      ]);
+    } finally {
+      store.close();
+    }
+  });
+
+  it("migrates pre-governance memory tables with private defaults", async () => {
+    const directory = await fs.mkdtemp(path.join(os.tmpdir(), "jolene-legacy-"));
+    tempDirectories.push(directory);
+    const databasePath = path.join(directory, "jolene.sqlite");
+    const legacy = new Database(databasePath);
+    legacy.exec(`
+      CREATE TABLE work_tasks (
+        id TEXT PRIMARY KEY, actor_id TEXT NOT NULL, workspace_id TEXT NOT NULL,
+        title TEXT NOT NULL, objective TEXT NOT NULL, status TEXT NOT NULL,
+        created_at TEXT NOT NULL, updated_at TEXT NOT NULL
+      );
+      CREATE TABLE memory_proposals (
+        id TEXT PRIMARY KEY, actor_id TEXT NOT NULL, workspace_id TEXT NOT NULL,
+        task_id TEXT, kind TEXT NOT NULL, content TEXT NOT NULL, source TEXT NOT NULL,
+        status TEXT NOT NULL, created_at TEXT NOT NULL, decided_at TEXT
+      );
+      CREATE TABLE durable_memories (
+        id TEXT PRIMARY KEY, actor_id TEXT NOT NULL, workspace_id TEXT NOT NULL,
+        task_id TEXT, kind TEXT NOT NULL, content TEXT NOT NULL,
+        source_proposal_id TEXT NOT NULL UNIQUE, created_at TEXT NOT NULL
+      );
+      INSERT INTO memory_proposals VALUES (
+        '00000000-0000-4000-8000-000000000001', 'carl', 'personal', NULL,
+        'preference', 'Legacy memory', 'Legacy source', 'approved',
+        '2026-08-25T00:00:00.000Z', '2026-08-25T00:00:00.000Z'
+      );
+      INSERT INTO durable_memories VALUES (
+        '00000000-0000-4000-8000-000000000002', 'carl', 'personal', NULL,
+        'preference', 'Legacy memory',
+        '00000000-0000-4000-8000-000000000001', '2026-08-25T00:00:00.000Z'
+      );
+    `);
+    legacy.close();
+
+    const migrated = new SqliteWorkContextStore(databasePath);
+    try {
+      expect(migrated.listMemories("carl", "personal")).toMatchObject([
+        { content: "Legacy memory", sensitivity: "private", state: "active" },
+      ]);
+    } finally {
+      migrated.close();
+    }
+  });
 });
+
+function approveMemory(
+  store: SqliteWorkContextStore,
+  input: {
+    taskId: string | null;
+    content: string;
+    sensitivity: "private" | "restricted" | "sensitive";
+    expiresAt?: string;
+  },
+) {
+  const proposal = store.proposeMemory({
+    actorId: "carl",
+    workspaceId: "personal",
+    taskId: input.taskId,
+    kind: "preference",
+    content: input.content,
+    source: "Test fixture.",
+    sensitivity: input.sensitivity,
+    expiresAt: input.expiresAt ?? null,
+  });
+  store.decideMemory({
+    id: proposal.id,
+    actorId: "carl",
+    workspaceId: "personal",
+    decision: "approved",
+  });
+  const memory = store
+    .listMemories("carl", "personal")
+    .find((candidate) => candidate.sourceProposalId === proposal.id);
+  if (!memory) throw new Error("Expected approved memory");
+  return memory;
+}
+
+function contextContents(
+  store: SqliteWorkContextStore,
+  taskId: string | undefined,
+  includeSensitiveMemory: boolean,
+): string[] {
+  return store
+    .loadAuthorizedContext({
+      actorId: "carl",
+      workspaceId: "personal",
+      taskId,
+      memoryLimit: 24,
+      includeSensitiveMemory,
+    })
+    .memories.map((memory) => memory.content)
+    .sort();
+}

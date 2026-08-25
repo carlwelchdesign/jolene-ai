@@ -17,6 +17,17 @@ describe("WorkContextService", () => {
           objective: "Missing title",
         }),
       ).toThrow();
+      expect(() =>
+        service.proposeMemory({
+          actorId: "carl",
+          workspaceId: "personal",
+          taskId: null,
+          kind: "preference",
+          content: "Sensitive without a task",
+          source: "Invalid fixture.",
+          sensitivity: "sensitive",
+        }),
+      ).toThrow();
 
       const task = service.createTask({
         actorId: "carl",

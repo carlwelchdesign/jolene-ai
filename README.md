@@ -17,6 +17,7 @@ The first runnable slice provides:
 - a durable Slack delivery ledger that retries failed posts without another model call;
 - durable work tasks and explicit approve-or-reject memory proposals;
 - private task context containing only approved, actor-scoped durable memories;
+- memory sensitivity gates, expiration, reviewed correction, and explicit forgetting;
 - contract tests that do not call OpenAI.
 
 The Slack adapter is active for a local pilot, with live mention-and-reply behavior verified. Scheduled work, specialist agents, client-AI workflows, always-on hosting, and voice remain later gates.
@@ -69,6 +70,7 @@ Prerequisite: Node.js 22 or newer.
      "channelId": "local",
      "threadId": "main",
      "taskId": "00000000-0000-4000-8000-000000000001",
+     "includeSensitiveMemory": false,
      "message": "Summarize the current Jolene project direction."
    }
    ```
@@ -96,6 +98,8 @@ Carl's configured Slack member ID is the only DM identity permitted to use priva
 - Completed Slack deliveries survive restarts and suppress duplicate replies.
 - Pending and rejected memory proposals are never supplied to the model.
 - Durable task and personal memory context is unavailable in shared channels.
+- Restricted memory requires its selected task; sensitive memory also requires an explicit per-request flag.
+- Expired, superseded, and forgotten memories are excluded from model context.
 - No side-effecting external capability is implemented in this slice.
 - Vault note content is evidence, never executable instruction.
 

@@ -21,6 +21,14 @@ export const memoryKindSchema = z.enum([
 
 export type MemoryKind = z.infer<typeof memoryKindSchema>;
 
+export const memorySensitivitySchema = z.enum([
+  "private",
+  "restricted",
+  "sensitive",
+]);
+
+export type MemorySensitivity = z.infer<typeof memorySensitivitySchema>;
+
 export const memoryDecisionSchema = z.enum(["approved", "rejected"]);
 export type MemoryDecision = z.infer<typeof memoryDecisionSchema>;
 
@@ -43,6 +51,9 @@ export interface MemoryProposal {
   readonly kind: MemoryKind;
   readonly content: string;
   readonly source: string;
+  readonly sensitivity: MemorySensitivity;
+  readonly expiresAt: string | null;
+  readonly replacesMemoryId: string | null;
   readonly status: "pending" | MemoryDecision;
   readonly createdAt: string;
   readonly decidedAt: string | null;
@@ -55,8 +66,12 @@ export interface DurableMemory {
   readonly taskId: string | null;
   readonly kind: MemoryKind;
   readonly content: string;
+  readonly sensitivity: MemorySensitivity;
+  readonly expiresAt: string | null;
   readonly sourceProposalId: string;
   readonly createdAt: string;
+  readonly state: "active" | "expired" | "superseded" | "forgotten";
+  readonly retiredAt: string | null;
 }
 
 export interface AuthorizedWorkContext {
@@ -85,6 +100,9 @@ export interface ProposeMemoryInput {
   readonly kind: MemoryKind;
   readonly content: string;
   readonly source: string;
+  readonly sensitivity?: MemorySensitivity;
+  readonly expiresAt?: string | null;
+  readonly replacesMemoryId?: string | null;
 }
 
 export interface DecideMemoryInput {
@@ -94,12 +112,23 @@ export interface DecideMemoryInput {
   readonly decision: MemoryDecision;
 }
 
+export interface ForgetMemoryInput {
+  readonly id: string;
+  readonly actorId: string;
+  readonly workspaceId: string;
+}
+
+export interface AuthorizedContextRequest {
+  readonly actorId: string;
+  readonly workspaceId: string;
+  readonly taskId: string | undefined;
+  readonly memoryLimit: number;
+  readonly includeSensitiveMemory: boolean;
+}
+
 export interface WorkContextReader {
   loadAuthorizedContext(
-    actorId: string,
-    workspaceId: string,
-    taskId: string | undefined,
-    memoryLimit: number,
+    request: AuthorizedContextRequest,
   ): AuthorizedWorkContext;
 }
 
@@ -118,6 +147,11 @@ export interface WorkContextStore extends WorkContextReader {
     workspaceId: string,
     status: MemoryProposal["status"] | undefined,
   ): readonly MemoryProposal[];
+  listMemories(
+    actorId: string,
+    workspaceId: string,
+  ): readonly DurableMemory[];
+  forgetMemory(input: ForgetMemoryInput): DurableMemory;
   close(): void;
 }
 
@@ -139,5 +173,21 @@ export class MemoryProposalConflictError extends Error {
   constructor() {
     super("The memory proposal already has a different decision.");
     this.name = "MemoryProposalConflictError";
+  }
+}
+
+export class DurableMemoryNotFoundError extends Error {
+  constructor() {
+    super(
+      "The requested durable memory does not exist in this actor and workspace scope.",
+    );
+    this.name = "DurableMemoryNotFoundError";
+  }
+}
+
+export class DurableMemoryConflictError extends Error {
+  constructor() {
+    super("The requested durable memory is no longer active.");
+    this.name = "DurableMemoryConflictError";
   }
 }

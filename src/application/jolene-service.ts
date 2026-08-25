@@ -16,6 +16,7 @@ import type {
 export const chatRequestSchema = conversationAddressSchema.extend({
   eventId: z.string().trim().min(1).max(240),
   taskId: z.string().uuid().optional(),
+  includeSensitiveMemory: z.boolean().optional(),
   message: z.string().trim().min(1).max(40_000),
 });
 
@@ -61,12 +62,13 @@ export class JoleneService {
         this.options.maxHistoryTurns,
       );
       const workContext = isPrivateChannel(request.channelKind)
-        ? this.options.workContext.loadAuthorizedContext(
-            request.actorId,
-            request.workspaceId,
-            request.taskId,
-            this.options.maxMemoryItems,
-          )
+        ? this.options.workContext.loadAuthorizedContext({
+            actorId: request.actorId,
+            workspaceId: request.workspaceId,
+            taskId: request.taskId,
+            memoryLimit: this.options.maxMemoryItems,
+            includeSensitiveMemory: request.includeSensitiveMemory ?? false,
+          })
         : EMPTY_WORK_CONTEXT;
       const response = await this.options.runner.respond({
         actorId: request.actorId,

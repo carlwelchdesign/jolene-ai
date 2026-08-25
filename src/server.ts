@@ -6,6 +6,8 @@ import { createApplication } from "./app.js";
 import { chatRequestSchema } from "./application/jolene-service.js";
 import { loadConfig } from "./config.js";
 import {
+  DurableMemoryConflictError,
+  DurableMemoryNotFoundError,
   MemoryProposalConflictError,
   MemoryProposalNotFoundError,
   WorkTaskNotFoundError,
@@ -105,6 +107,30 @@ async function handleRequest(
     return;
   }
 
+  if (request.method === "GET" && url.pathname === "/v1/memories") {
+    sendJson(
+      response,
+      200,
+      application.work.listMemories({
+        actorId: url.searchParams.get("actorId"),
+        workspaceId: url.searchParams.get("workspaceId"),
+      }),
+    );
+    return;
+  }
+
+  const forgetMatch = url.pathname.match(/^\/v1\/memories\/([^/]+)\/forget$/);
+  if (request.method === "POST" && forgetMatch?.[1]) {
+    sendJson(
+      response,
+      200,
+      application.work.forgetMemory(
+        withIdentifier(await readJson(request), forgetMatch[1]),
+      ),
+    );
+    return;
+  }
+
   const decisionMatch = url.pathname.match(
     /^\/v1\/memory-proposals\/([^/]+)\/decision$/,
   );
@@ -152,7 +178,8 @@ function handleError(error: unknown, response: ServerResponse): void {
 
   if (
     error instanceof WorkTaskNotFoundError ||
-    error instanceof MemoryProposalNotFoundError
+    error instanceof MemoryProposalNotFoundError ||
+    error instanceof DurableMemoryNotFoundError
   ) {
     sendJson(response, 404, { error: "not_found" });
     return;
@@ -160,6 +187,11 @@ function handleError(error: unknown, response: ServerResponse): void {
 
   if (error instanceof MemoryProposalConflictError) {
     sendJson(response, 409, { error: "decision_conflict" });
+    return;
+  }
+
+  if (error instanceof DurableMemoryConflictError) {
+    sendJson(response, 409, { error: "memory_conflict" });
     return;
   }
 

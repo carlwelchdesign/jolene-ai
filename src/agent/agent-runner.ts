@@ -116,6 +116,8 @@ function formatWorkContext(context: AuthorizedWorkContext): string {
       approvedMemories: context.memories.map((memory) => ({
         kind: memory.kind,
         content: memory.content,
+        sensitivity: memory.sensitivity,
+        expiresAt: memory.expiresAt,
         sourceProposalId: memory.sourceProposalId,
       })),
     }),
