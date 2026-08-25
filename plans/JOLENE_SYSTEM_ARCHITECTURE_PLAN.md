@@ -517,6 +517,18 @@ Knowledge-access-ledger checkpoint:
 | Privacy evidence | Raw queries and excerpts are absent from the schema and API; query fingerprints use a process-local HMAC key; actor/workspace cross-scope reads return no records; audit failure blocks successful retrieval output |
 | Remaining boundary | This records private knowledge access only; external disclosure authorization, recipient scope, approval expiry, and delivery receipts remain pending |
 
+Exact-action-approval checkpoint:
+
+| Field | Value |
+|---|---|
+| Branch | `codex/jolene-exact-action-approvals` |
+| Implementation commit | `57017c3` (`JOL-ARCH-007 add exact action approvals`) |
+| Pull request | None; this local repository has no remote configured |
+| Verification | Node 22 typecheck, 60 contract tests, production build, existing-database migration, staged secret scan, dependency audit, and live isolated API lifecycle passed |
+| Approval evidence | Actor, workspace, optional task, capability, exact destination, complete content, data class, purpose, and maximum 24-hour expiry are bound before approval; altered arguments fail and one-time claims are retry-idempotent |
+| Safety evidence | Shared-channel proposals are denied; registered external messaging remains `proposal_only`; the internal claim operation has no HTTP or model-tool route; approval is never reported as delivery |
+| Remaining boundary | A graphical approval-review surface, destination allowlists, trusted delivery adapters, execution attempt state, and external delivery receipts remain pending |
+
 ## Architecture tickets
 
 | ID | Ticket | Acceptance criteria |
