@@ -464,6 +464,17 @@ Task-memory checkpoint:
 | Privacy evidence | Pending and rejected proposals are excluded; private context is actor/workspace/task scoped; shared channels receive no task or durable personal memory |
 | Remaining boundary | Memory edit/forget/expiry, sensitivity labels, semantic ranking, task-event history, graphical review, and authenticated production exposure remain pending |
 
+Memory-governance checkpoint:
+
+| Field | Value |
+|---|---|
+| Branch | `codex/jolene-memory-governance` |
+| Implementation commit | `96e70cf` (`JOL-ARCH-003 govern durable memory lifecycle`) |
+| Pull request | None; this local repository has no remote configured |
+| Verification | Node 22 typecheck, 36 contract tests, production build, pre-governance database migration, live correction/forget API lifecycle, staged secret scan, and dependency audit passed |
+| Privacy evidence | Restricted memory requires its task; sensitive memory requires per-request private opt-in; expired, superseded, and forgotten memory is excluded; forgetting scrubs proposal and memory content |
+| Remaining boundary | Semantic ranking, compaction, bulk retention controls, graphical review, task-event history, and authenticated production exposure remain pending |
+
 ## Architecture tickets
 
 | ID | Ticket | Acceptance criteria |
