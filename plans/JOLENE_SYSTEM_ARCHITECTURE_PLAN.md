@@ -477,6 +477,18 @@ Memory-governance checkpoint:
 | Privacy evidence | Restricted memory requires its task; sensitive memory requires per-request private opt-in; expired, superseded, and forgotten memory is excluded; forgetting scrubs proposal and memory content |
 | Remaining boundary | Semantic ranking, compaction, bulk retention controls, graphical review, task-event history, and authenticated production exposure remain pending |
 
+Contextual-ranking checkpoint:
+
+| Field | Value |
+|---|---|
+| Branch | `codex/jolene-memory-ranking` |
+| Implementation commit | `90974d7` (`JOL-ARCH-003 rank contextual memory deterministically`) |
+| Pull request | None; this local repository has no remote configured |
+| Verification | Node 22 typecheck, 42 contract tests, production build, live context-preview selection, staged secret scan, and dependency audit passed |
+| Selection evidence | Older relevant memory outranks newer unrelated memory; current-request, task-term, task-scope, standing-rule, and preference reasons are inspectable |
+| Privacy evidence | Candidate retrieval applies actor, workspace, task, sensitivity, expiry, correction, and forgetting gates before ranking |
+| Remaining boundary | Lexical vocabulary gaps, the bounded candidate window, compaction, bulk retention, graphical review, task-event history, and authenticated production exposure remain pending |
+
 ## Architecture tickets
 
 | ID | Ticket | Acceptance criteria |
