@@ -489,6 +489,18 @@ Contextual-ranking checkpoint:
 | Privacy evidence | Candidate retrieval applies actor, workspace, task, sensitivity, expiry, correction, and forgetting gates before ranking |
 | Remaining boundary | Lexical vocabulary gaps, the bounded candidate window, compaction, bulk retention, task-event history, graphical bulk administration, and authenticated production exposure remain pending |
 
+Memory Review interface checkpoint:
+
+| Field | Value |
+|---|---|
+| Branch | `codex/jolene-memory-review-ui` |
+| Implementation commit | `667de4a` (`JOL-ARCH-003 add local memory review interface`) |
+| Pull request | None; this local repository has no remote configured |
+| Verification | Node 22 typecheck, 46 contract tests, production build, dependency audit, restrictive static-asset headers, and live desktop/mobile browser flows passed |
+| Interaction evidence | Pending approval, reviewed correction, contextual recall preview, keyboard tab navigation, explicit forget confirmation, and forgotten tombstone rendering passed against an isolated disposable database |
+| Safety evidence | Dynamic record content uses text-only DOM insertion; restrictive CSP and browser headers are applied; sensitive recall is a per-preview opt-in; no record is silently approved, corrected, or forgotten |
+| Remaining boundary | The screen is local-only and is not an authenticated remote administration surface; bulk retention, automatic compaction, and Slack review controls remain pending |
+
 ## Architecture tickets
 
 | ID | Ticket | Acceptance criteria |
