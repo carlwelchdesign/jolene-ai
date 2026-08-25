@@ -451,6 +451,17 @@ Slack delivery-ledger checkpoint:
 | Verification | Node 22 typecheck, 23 contract tests, production build, existing-database migration, production Socket Mode connection, live mention/reply, staged secret scan, and dependency audit passed |
 | Remaining boundary | A crash while delivery is `processing` requires operator reconciliation; stale replay is not automated because Slack may already have accepted the message |
 
+Task-memory checkpoint:
+
+| Field | Value |
+|---|---|
+| Branch | `codex/jolene-task-memory` |
+| Implementation commit | `f87bab1` (`JOL-ARCH-003 add durable task memory context`) |
+| Pull request | None; this local repository has no remote configured |
+| Verification | Node 22 typecheck, 30 contract tests, production build, restart persistence, context-load retry recovery, live local task/memory API lifecycle, staged secret scan, and dependency audit passed |
+| Privacy evidence | Pending and rejected proposals are excluded; private context is actor/workspace/task scoped; shared channels receive no task or durable personal memory |
+| Remaining boundary | Memory edit/forget/expiry, sensitivity labels, semantic ranking, task-event history, graphical review, and authenticated production exposure remain pending |
+
 ## Architecture tickets
 
 | ID | Ticket | Acceptance criteria |
