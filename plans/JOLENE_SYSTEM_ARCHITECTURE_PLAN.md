@@ -429,6 +429,16 @@ Delivery checkpoint:
 | Pull request | None; this local repository has no remote configured |
 | Verification | Typecheck, 15 contract tests, production build, local health route, live model turn, private Obsidian retrieval, replay deduplication, and dependency audit passed |
 
+Slack adapter checkpoint:
+
+| Field | Value |
+|---|---|
+| Branch | `codex/jolene-slack-adapter` |
+| Implementation commit | `eb44752` (`JOL-ARCH-004 add guarded Slack adapter`) |
+| Pull request | None; this local repository has no remote configured |
+| Verification | Typecheck, 21 contract tests, production build, manifest parse, missing-credential startup gate, original HTTP health route, and dependency audit passed |
+| Live gate | Slack app token, bot token, Carl's Slack member ID, workspace installation, and live DM/mention evidence |
+
 ## Architecture tickets
 
 | ID | Ticket | Acceptance criteria |
