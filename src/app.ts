@@ -2,6 +2,7 @@ import { promises as fs } from "node:fs";
 import path from "node:path";
 
 import { OpenAIJoleneRunner } from "./agent/agent-runner.js";
+import { ActionApprovalService } from "./application/action-approval-service.js";
 import { JoleneService } from "./application/jolene-service.js";
 import { KnowledgeAuditService } from "./application/knowledge-audit-service.js";
 import { WorkContextService } from "./application/work-context-service.js";
@@ -14,6 +15,7 @@ import {
 import { ObsidianKnowledgeSource } from "./knowledge/obsidian-source.js";
 import { AuditedKnowledgeSource } from "./knowledge/audited-knowledge-source.js";
 import { SqliteConversationStore } from "./persistence/sqlite-conversation-store.js";
+import { SqliteActionApprovalStore } from "./persistence/sqlite-action-approval-store.js";
 import { SqliteKnowledgeAccessStore } from "./persistence/sqlite-knowledge-access-store.js";
 import { SqliteWorkContextStore } from "./persistence/sqlite-work-context-store.js";
 
@@ -22,6 +24,7 @@ export interface JoleneApplication {
   readonly deliveries: DeliveryStore;
   readonly work: WorkContextService;
   readonly knowledgeAudit: KnowledgeAuditService;
+  readonly actionApprovals: ActionApprovalService;
   readonly health: () => {
     readonly status: "ok";
     readonly knowledge: "configured" | "unavailable";
@@ -36,6 +39,7 @@ export async function createApplication(
   const store = new SqliteConversationStore(config.databasePath);
   const workStore = new SqliteWorkContextStore(config.databasePath);
   const knowledgeAuditStore = new SqliteKnowledgeAccessStore(config.databasePath);
+  const actionApprovalStore = new SqliteActionApprovalStore(config.databasePath);
   const knowledge = new AuditedKnowledgeSource(
     createKnowledgeSource(config),
     knowledgeAuditStore,
@@ -62,6 +66,7 @@ export async function createApplication(
     deliveries: store,
     work: new WorkContextService(workStore),
     knowledgeAudit: new KnowledgeAuditService(knowledgeAuditStore),
+    actionApprovals: new ActionApprovalService(actionApprovalStore, workStore),
     health: () => ({
       status: "ok",
       knowledge: config.vaultRoot ? "configured" : "unavailable",
@@ -71,6 +76,7 @@ export async function createApplication(
       store.close();
       workStore.close();
       knowledgeAuditStore.close();
+      actionApprovalStore.close();
     },
   };
 }

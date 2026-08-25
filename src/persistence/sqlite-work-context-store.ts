@@ -108,6 +108,10 @@ export class SqliteWorkContextStore implements WorkContextStore {
     return this.requireTask(id, input.actorId, input.workspaceId);
   }
 
+  getTask(id: string, actorId: string, workspaceId: string): WorkTask {
+    return this.requireTask(id, actorId, workspaceId);
+  }
+
   updateTaskStatus(input: UpdateTaskStatusInput): WorkTask {
     const result = this.database
       .prepare(

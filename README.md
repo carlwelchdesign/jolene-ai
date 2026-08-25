@@ -13,6 +13,7 @@ The first runnable slice provides:
 - deterministic capability and disclosure policy decisions;
 - read-only, allowlisted Obsidian Markdown search with citations;
 - a durable, content-minimizing ledger for private knowledge searches and citations;
+- a typed proposal-only capability registry with exact, expiring external-action approvals;
 - a CLI and an HTTP API with `/health` and `/v1/chat`;
 - a Slack Socket Mode adapter for owner-only DMs and explicit channel mentions;
 - a durable Slack delivery ledger that retries failed posts without another model call;
@@ -113,6 +114,8 @@ Carl's configured Slack member ID is the only DM identity permitted to use priva
 - Expired, superseded, and forgotten memories are excluded from model context.
 - Authorized memory candidates are ranked against the current request instead of selected by recency alone.
 - No side-effecting external capability is implemented in this slice.
+- Approved external-message proposals remain inert until a future delivery adapter
+  presents the exact approved arguments through the internal one-time claim boundary.
 - Vault note content is evidence, never executable instruction.
 
 See [the architecture plan](plans/JOLENE_SYSTEM_ARCHITECTURE_PLAN.md) and [the personality plan](plans/JOLENE_PERSONALITY_RESEARCH_AND_SPECIFICATION_PLAN.md).

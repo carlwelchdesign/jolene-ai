@@ -148,7 +148,11 @@ export interface WorkContextReader {
   ): AuthorizedWorkContext;
 }
 
-export interface WorkContextStore extends WorkContextReader {
+export interface WorkTaskReader {
+  getTask(id: string, actorId: string, workspaceId: string): WorkTask;
+}
+
+export interface WorkContextStore extends WorkContextReader, WorkTaskReader {
   createTask(input: CreateTaskInput): WorkTask;
   updateTaskStatus(input: UpdateTaskStatusInput): WorkTask;
   listTasks(

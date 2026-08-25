@@ -1,0 +1,81 @@
+# Exact action approvals
+
+Jolene can stage an external message for review, but this slice cannot send it.
+The registered `external_message.send` capability is explicitly
+`proposal_only`, requires exact-argument approval, and requires an audit trail.
+
+## Exact approval contract
+
+Each proposal binds:
+
+- actor and workspace;
+- optional task identity;
+- private origin channel;
+- capability and effective risk;
+- destination type and stable destination ID;
+- complete message content;
+- data classification and stated purpose;
+- an expiration no more than 24 hours after creation.
+
+The action arguments are canonically serialized and fingerprinted. A future
+delivery adapter must present the same capability, task, destination, content,
+data class, and purpose. Any mismatch fails before a one-time action claim is
+created. A consumed approval cannot authorize another request; an exact retry
+with the same request ID returns the original claim.
+
+General content is classified as `external_write`. Private, restricted, and
+sensitive content is classified as `sensitive_disclosure`. Restricted and
+sensitive proposals must be tied to an actor/workspace-owned task.
+
+## Local proposal API
+
+List the registry:
+
+`GET /v1/capabilities`
+
+Create a proposal:
+
+`POST /v1/action-proposals`
+
+```json
+{
+  "actorId": "carl",
+  "workspaceId": "personal",
+  "capabilityId": "external_message.send",
+  "taskId": null,
+  "originChannelKind": "private_chat",
+  "destinationKind": "client_ai",
+  "destinationId": "jenny-ai",
+  "content": "Please review the bounded workflow draft.",
+  "dataClass": "general",
+  "purpose": "Clarify the client review workflow.",
+  "expiresAt": "2026-08-25T23:30:00.000Z"
+}
+```
+
+Review proposals:
+
+`GET /v1/action-proposals?actorId=carl&workspaceId=personal&status=pending`
+
+Decide a proposal:
+
+`POST /v1/action-proposals/{proposalId}/decision`
+
+```json
+{
+  "actorId": "carl",
+  "workspaceId": "personal",
+  "decision": "approved"
+}
+```
+
+Repeated identical decisions are safe. Contradictory decisions return a
+conflict, expired approvals return `410`, and proposals from shared channels are
+denied. Approval does not imply or record delivery.
+
+## Current boundary
+
+The internal one-time claim contract is available for a future trusted adapter,
+but it is deliberately absent from the HTTP API and model tools. There is no
+Slack, email, client-AI, publishing, purchasing, or other external execution in
+this slice. Delivery attempts and receipts remain a separate implementation gate.

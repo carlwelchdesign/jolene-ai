@@ -5,6 +5,14 @@ import { ZodError } from "zod";
 import { createApplication } from "./app.js";
 import { chatRequestSchema } from "./application/jolene-service.js";
 import { loadConfig } from "./config.js";
+import { ActionProposalPolicyError } from "./application/action-approval-service.js";
+import {
+  ActionApprovalExpiredError,
+  ActionPayloadMismatchError,
+  ActionProposalConflictError,
+  ActionProposalNotFoundError,
+} from "./domain/action-approval.js";
+import { listCapabilities } from "./domain/capability-registry.js";
 import {
   DurableMemoryConflictError,
   DurableMemoryNotFoundError,
@@ -79,6 +87,11 @@ async function handleRequest(
 
   if (request.method === "GET" && url.pathname === "/health") {
     sendJson(response, 200, application.health());
+    return;
+  }
+
+  if (request.method === "GET" && url.pathname === "/v1/capabilities") {
+    sendJson(response, 200, listCapabilities());
     return;
   }
 
@@ -163,6 +176,43 @@ async function handleRequest(
     return;
   }
 
+  if (request.method === "POST" && url.pathname === "/v1/action-proposals") {
+    sendJson(
+      response,
+      201,
+      application.actionApprovals.createProposal(await readJson(request)),
+    );
+    return;
+  }
+
+  if (request.method === "GET" && url.pathname === "/v1/action-proposals") {
+    sendJson(
+      response,
+      200,
+      application.actionApprovals.listProposals({
+        actorId: url.searchParams.get("actorId"),
+        workspaceId: url.searchParams.get("workspaceId"),
+        status: url.searchParams.get("status") ?? undefined,
+        limit: url.searchParams.get("limit") ?? undefined,
+      }),
+    );
+    return;
+  }
+
+  const actionDecisionMatch = url.pathname.match(
+    /^\/v1\/action-proposals\/([^/]+)\/decision$/,
+  );
+  if (request.method === "POST" && actionDecisionMatch?.[1]) {
+    sendJson(
+      response,
+      200,
+      application.actionApprovals.decideProposal(
+        withIdentifier(await readJson(request), actionDecisionMatch[1]),
+      ),
+    );
+    return;
+  }
+
   if (request.method === "POST" && url.pathname === "/v1/context-preview") {
     sendJson(
       response,
@@ -232,7 +282,8 @@ function handleError(error: unknown, response: ServerResponse): void {
   if (
     error instanceof WorkTaskNotFoundError ||
     error instanceof MemoryProposalNotFoundError ||
-    error instanceof DurableMemoryNotFoundError
+    error instanceof DurableMemoryNotFoundError ||
+    error instanceof ActionProposalNotFoundError
   ) {
     sendJson(response, 404, { error: "not_found" });
     return;
@@ -245,6 +296,24 @@ function handleError(error: unknown, response: ServerResponse): void {
 
   if (error instanceof DurableMemoryConflictError) {
     sendJson(response, 409, { error: "memory_conflict" });
+    return;
+  }
+
+  if (
+    error instanceof ActionProposalConflictError ||
+    error instanceof ActionPayloadMismatchError
+  ) {
+    sendJson(response, 409, { error: "action_conflict" });
+    return;
+  }
+
+  if (error instanceof ActionApprovalExpiredError) {
+    sendJson(response, 410, { error: "approval_expired" });
+    return;
+  }
+
+  if (error instanceof ActionProposalPolicyError) {
+    sendJson(response, 403, { error: "action_not_permitted" });
     return;
   }
 
