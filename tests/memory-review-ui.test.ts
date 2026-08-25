@@ -19,7 +19,7 @@ describe("memory review interface", () => {
     expect(html).toContain('<main id="main">');
     expect(html.match(/role="tab"/g)).toHaveLength(3);
     expect(html.match(/role="tabpanel"/g)).toHaveLength(3);
-    expect(html).toContain('<dialog id="proposal-dialog"');
+    expect(html).toContain('<dialog class="dialog-wide" id="proposal-dialog"');
     expect(html).toContain('<dialog id="forget-dialog"');
     expect(html).toContain('href="/memory-review.css"');
     expect(html).toContain('src="/memory-review.js"');

@@ -22,8 +22,8 @@ describe("action approval interface", () => {
   it("provides accessible review, staging, scope, and status regions", () => {
     expect(html).toContain('<a class="skip-link" href="#main">');
     expect(html).toContain('<main id="main">');
-    expect(html).toContain('<dialog id="approve-dialog"');
-    expect(html).toContain('<dialog id="stage-dialog"');
+    expect(html).toContain('<dialog class="dialog-wide" id="approve-dialog"');
+    expect(html).toContain('<dialog class="dialog-wide" id="stage-dialog"');
     expect(html).toContain('aria-live="polite"');
     expect(html).toContain('aria-label="Filter action proposals"');
     expect(html).not.toMatch(/<style[\s>]/i);

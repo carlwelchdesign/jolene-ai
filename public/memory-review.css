@@ -233,9 +233,11 @@ main { width: min(1180px, calc(100% - 40px)); margin: 0 auto; padding-bottom: 80
 .score { min-width: 54px; text-align: right; color: var(--gold-dark); font: 700 20px/1 var(--serif); }
 
 dialog { width: min(620px, calc(100% - 28px)); max-height: calc(100vh - 40px); padding: 0; color: var(--ink); background: transparent; border: 0; }
+dialog.dialog-wide { width: min(760px, calc(100vw - 28px)); }
 dialog::backdrop { background: rgba(28, 24, 21, 0.62); backdrop-filter: blur(3px); }
 .dialog-card { display: grid; gap: 18px; overflow: auto; max-height: calc(100vh - 40px); padding: 26px; background: var(--surface); border: 1px solid var(--line); border-radius: 18px; box-shadow: 0 30px 80px rgba(0, 0, 0, 0.26); }
-.dialog-card-wide { width: min(760px, calc(100vw - 28px)); }
+.dialog-card-wide { width: 100%; }
+.form-grid > * { min-width: 0; }
 .dialog-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; }
 .icon-button { display: grid; flex: 0 0 auto; width: 38px; height: 38px; place-items: center; color: var(--muted); background: transparent; border: 1px solid var(--line); border-radius: 50%; font-size: 23px; line-height: 1; }
 .supporting-copy { margin: 0; color: var(--muted); line-height: 1.6; }
