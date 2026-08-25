@@ -1,0 +1,10 @@
+.DS_Store
+.env
+.env.*
+!.env.example
+.jolene/
+coverage/
+dist/
+node_modules/
+evals/results/*.json
+!evals/results/.gitignore
