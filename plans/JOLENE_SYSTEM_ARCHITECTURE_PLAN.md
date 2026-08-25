@@ -1,6 +1,6 @@
 # Jolene Whole-Agent System Architecture Plan
 
-**Status:** Core and local Slack adapter implemented; workspace activation and always-on deployment remain pending
+**Status:** Core, local Slack adapter, and first personal-workflow slice implemented; workspace activation and always-on deployment remain pending
 
 **Owner:** Carl Welch
 
@@ -416,7 +416,7 @@ The first local vertical slice is implemented and verified. It establishes the p
 - local CLI and HTTP interfaces with health reporting;
 - contract tests for policy, persistence, retrieval, failure recovery, and duplicate events.
 
-This is not the complete MVP described above. Persistent task workflows, exact approval UI and execution receipts, scheduled work, specialists, client-AI packets, evaluations, always-on deployment, and voice remain pending.
+This is not the complete MVP described above. Model-driven workflow execution, execution receipts, scheduled work, specialists, client-AI packets, evaluations, always-on deployment, and voice remain pending.
 
 The Slack Socket Mode slice provides owner-only DMs and explicit channel mentions. It uses the same portable core and durable thread identity. Channel mentions are conservatively classified as shared, and non-owner DMs are ignored. Slack credentials are configured, and a live `app_mention` ingress and reply were verified. A durable outbound-delivery ledger now retries explicit Slack failures from the stored answer without another model call and suppresses completed replays across restarts.
 
@@ -431,6 +431,8 @@ The knowledge-access-ledger slice records each private Obsidian search with acto
 The exact-action-approval slice registers external messaging as proposal-only and binds approval to actor, workspace, optional task, private origin, exact destination, complete content, data classification, purpose, and a maximum 24-hour expiry. A future adapter can claim an approval once only by presenting the exact fingerprinted arguments; exact request retries are idempotent. No claim route or external sending tool is exposed, so approval cannot be mistaken for delivery.
 
 The action-approval-interface slice adds a local graphical control point for staging and reviewing exact external-message proposals. It keeps recipient and complete content prominent, warns on sensitive disclosure, shows expiry and task scope, requires a second exact-review step before approval, and labels approved records as not sent. The UI exposes neither the internal claim operation nor any delivery control.
+
+The personal-workflow slice adds six durable, task-bound workflow templates for research, project planning, drafting, repository work, briefings, and follow-up preparation. Exact current-step evidence is required, transitions are actor/workspace scoped, revision requests return to a named step, and the final step always pauses for human review instead of completing autonomously. It adds no model tool, scheduler, or external side effect.
 
 Delivery checkpoint:
 
@@ -543,6 +545,18 @@ Action-approval-interface checkpoint:
 | Safety evidence | Persistent no-delivery explanation, exact recipient and complete content preview, approved-not-sent state, text-only dynamic rendering, restrictive asset headers, and zero send or execution controls verified |
 | Remaining boundary | Destination allowlists, trusted delivery adapters, execution-attempt reconciliation, external delivery receipts, and authenticated production administration remain pending |
 
+Personal-workflow checkpoint:
+
+| Field | Value |
+|---|---|
+| Branch | `codex/jolene-personal-workflows` |
+| Implementation commit | Pending |
+| Pull request | None; this local repository has no remote configured |
+| Verification | Node 22 typecheck, 68 contract tests, production build, existing-database-compatible table creation, and live isolated API lifecycle passed |
+| Workflow evidence | Research, project planning, drafting, repository work, briefing, and follow-up preparation all require exact step evidence and reach `awaiting_review` before approval |
+| Safety evidence | Actor/workspace/task scope, no step skipping, bounded revision return, durable event history, and no model, schedule, send, publish, or execution tool |
+| Remaining boundary | Model-facing workflow tools, graphical workflow review, task-status synchronization, richer artifacts, scheduling, and authenticated production administration remain pending |
+
 ## Architecture tickets
 
 | ID | Ticket | Acceptance criteria |
@@ -571,6 +585,7 @@ Current ticket evidence:
 | JOL-ARCH-005 | Implemented for local slice | Read-only allowlisted Markdown retrieval is tested with exact note and heading citations. |
 | JOL-ARCH-006 | Partial | Retrieved excerpts retain provenance and private knowledge searches now have a durable, content-minimizing access ledger; external disclosure authorization and delivery receipts remain pending. |
 | JOL-ARCH-007 | Partial | Deterministic risk decisions, a typed proposal-only registry, exact expiring approvals, an internal one-time claim boundary, and a local graphical approval-review workflow exist; trusted delivery adapters and execution receipts remain pending. |
+| JOL-ARCH-008 | Implemented for first slice | Six task-bound workflow templates, exact step evidence, durable history, bounded revision, and explicit final review are tested; model-facing tools, richer artifacts, graphical review, and scheduling remain pending. |
 | JOL-ARCH-009 | Partial | Initial runtime behavior prompt and non-impersonation rules exist; the formal personality renderer and evaluation suite are pending. |
 
 ## Architecture risks
@@ -596,3 +611,4 @@ Current ticket evidence:
 | 2026-08-25 | Start as a modular monolith | Approved direction; first slice built |
 | 2026-08-25 | Keep external actions propose-first | Existing approved safety direction |
 | 2026-08-25 | Proceed with MVP development | Authorized by Carl; first local slice complete |
+| 2026-08-25 | Adapt structured-work patterns without weakening Jolene's approval boundary | Implemented for the first personal-workflow slice |

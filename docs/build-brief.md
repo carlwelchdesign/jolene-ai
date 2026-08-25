@@ -16,7 +16,7 @@ Input is a message plus stable actor, workspace, channel, thread, and inbound ev
 ## Tools and state
 
 - Tool: deterministic read-only Obsidian search.
-- State: SQLite conversations, inbound events, completed turns, failures, outbound Slack delivery attempts, work tasks, governed memory proposals, request-ranked durable memories, and content-minimizing private-knowledge access records with exact citations.
+- State: SQLite conversations, inbound events, completed turns, failures, outbound Slack delivery attempts, work tasks, governed memory proposals, request-ranked durable memories, content-minimizing private-knowledge access records with exact citations, and review-gated personal-work runs with durable step evidence.
 - Model: one OpenAI Agents SDK agent; no specialists yet.
 - Approval: `external_message.send` is registered as proposal-only; exact actor, workspace, task, recipient, content, data class, purpose, and expiry are reviewed before an internal one-time execution claim can exist. No side-effecting delivery adapter is exposed.
 - Deployment: local HTTP/CLI, local governed memory and exact-action approval screens, and a credential-gated Slack Socket Mode adapter; always-on hosting comes later.

@@ -14,6 +14,10 @@ import {
 } from "./domain/action-approval.js";
 import { listCapabilities } from "./domain/capability-registry.js";
 import {
+  PersonalWorkflowConflictError,
+  PersonalWorkflowNotFoundError,
+} from "./domain/personal-workflow.js";
+import {
   DurableMemoryConflictError,
   DurableMemoryNotFoundError,
   MemoryProposalConflictError,
@@ -107,6 +111,78 @@ async function handleRequest(
 
   if (request.method === "GET" && url.pathname === "/v1/capabilities") {
     sendJson(response, 200, listCapabilities());
+    return;
+  }
+
+  if (request.method === "GET" && url.pathname === "/v1/workflow-templates") {
+    sendJson(response, 200, application.workflows.listTemplates());
+    return;
+  }
+
+  if (request.method === "POST" && url.pathname === "/v1/workflows") {
+    sendJson(response, 201, application.workflows.start(await readJson(request)));
+    return;
+  }
+
+  if (request.method === "GET" && url.pathname === "/v1/workflows") {
+    sendJson(
+      response,
+      200,
+      application.workflows.list({
+        actorId: url.searchParams.get("actorId"),
+        workspaceId: url.searchParams.get("workspaceId"),
+        taskId: url.searchParams.get("taskId") ?? undefined,
+        status: url.searchParams.get("status") ?? undefined,
+      }),
+    );
+    return;
+  }
+
+  const workflowMatch = url.pathname.match(/^\/v1\/workflows\/([^/]+)$/);
+  if (request.method === "GET" && workflowMatch?.[1]) {
+    sendJson(
+      response,
+      200,
+      application.workflows.get({
+        id: workflowMatch[1],
+        actorId: url.searchParams.get("actorId"),
+        workspaceId: url.searchParams.get("workspaceId"),
+      }),
+    );
+    return;
+  }
+
+  const workflowStepMatch = url.pathname.match(
+    /^\/v1\/workflows\/([^/]+)\/steps\/([^/]+)\/complete$/,
+  );
+  if (
+    request.method === "POST" &&
+    workflowStepMatch?.[1] &&
+    workflowStepMatch[2]
+  ) {
+    sendJson(
+      response,
+      200,
+      application.workflows.completeStep({
+        ...asObject(await readJson(request)),
+        id: workflowStepMatch[1],
+        stepId: workflowStepMatch[2],
+      }),
+    );
+    return;
+  }
+
+  const workflowReviewMatch = url.pathname.match(
+    /^\/v1\/workflows\/([^/]+)\/review$/,
+  );
+  if (request.method === "POST" && workflowReviewMatch?.[1]) {
+    sendJson(
+      response,
+      200,
+      application.workflows.review(
+        withIdentifier(await readJson(request), workflowReviewMatch[1]),
+      ),
+    );
     return;
   }
 
@@ -298,7 +374,8 @@ function handleError(error: unknown, response: ServerResponse): void {
     error instanceof WorkTaskNotFoundError ||
     error instanceof MemoryProposalNotFoundError ||
     error instanceof DurableMemoryNotFoundError ||
-    error instanceof ActionProposalNotFoundError
+    error instanceof ActionProposalNotFoundError ||
+    error instanceof PersonalWorkflowNotFoundError
   ) {
     sendJson(response, 404, { error: "not_found" });
     return;
@@ -316,7 +393,8 @@ function handleError(error: unknown, response: ServerResponse): void {
 
   if (
     error instanceof ActionProposalConflictError ||
-    error instanceof ActionPayloadMismatchError
+    error instanceof ActionPayloadMismatchError ||
+    error instanceof PersonalWorkflowConflictError
   ) {
     sendJson(response, 409, { error: "action_conflict" });
     return;
@@ -361,9 +439,12 @@ function sendAsset(response: ServerResponse, asset: MemoryReviewAsset): void {
 class RequestTooLargeError extends Error {}
 
 function withIdentifier(body: unknown, id: string): Record<string, unknown> {
+  return { ...asObject(body), id };
+}
+
+function asObject(body: unknown): Record<string, unknown> {
   if (!body || typeof body !== "object" || Array.isArray(body)) {
     throw new SyntaxError("Expected a JSON object.");
   }
-
-  return { ...(body as Record<string, unknown>), id };
+  return body as Record<string, unknown>;
 }

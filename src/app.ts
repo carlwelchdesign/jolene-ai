@@ -5,6 +5,7 @@ import { OpenAIJoleneRunner } from "./agent/agent-runner.js";
 import { ActionApprovalService } from "./application/action-approval-service.js";
 import { JoleneService } from "./application/jolene-service.js";
 import { KnowledgeAuditService } from "./application/knowledge-audit-service.js";
+import { PersonalWorkflowService } from "./application/personal-workflow-service.js";
 import { WorkContextService } from "./application/work-context-service.js";
 import type { AppConfig } from "./config.js";
 import type { DeliveryStore } from "./domain/delivery.js";
@@ -17,6 +18,7 @@ import { AuditedKnowledgeSource } from "./knowledge/audited-knowledge-source.js"
 import { SqliteConversationStore } from "./persistence/sqlite-conversation-store.js";
 import { SqliteActionApprovalStore } from "./persistence/sqlite-action-approval-store.js";
 import { SqliteKnowledgeAccessStore } from "./persistence/sqlite-knowledge-access-store.js";
+import { SqlitePersonalWorkflowStore } from "./persistence/sqlite-personal-workflow-store.js";
 import { SqliteWorkContextStore } from "./persistence/sqlite-work-context-store.js";
 
 export interface JoleneApplication {
@@ -25,6 +27,7 @@ export interface JoleneApplication {
   readonly work: WorkContextService;
   readonly knowledgeAudit: KnowledgeAuditService;
   readonly actionApprovals: ActionApprovalService;
+  readonly workflows: PersonalWorkflowService;
   readonly health: () => {
     readonly status: "ok";
     readonly knowledge: "configured" | "unavailable";
@@ -40,6 +43,7 @@ export async function createApplication(
   const workStore = new SqliteWorkContextStore(config.databasePath);
   const knowledgeAuditStore = new SqliteKnowledgeAccessStore(config.databasePath);
   const actionApprovalStore = new SqliteActionApprovalStore(config.databasePath);
+  const personalWorkflowStore = new SqlitePersonalWorkflowStore(config.databasePath);
   const knowledge = new AuditedKnowledgeSource(
     createKnowledgeSource(config),
     knowledgeAuditStore,
@@ -67,6 +71,7 @@ export async function createApplication(
     work: new WorkContextService(workStore),
     knowledgeAudit: new KnowledgeAuditService(knowledgeAuditStore),
     actionApprovals: new ActionApprovalService(actionApprovalStore, workStore),
+    workflows: new PersonalWorkflowService(personalWorkflowStore, workStore),
     health: () => ({
       status: "ok",
       knowledge: config.vaultRoot ? "configured" : "unavailable",
@@ -77,6 +82,7 @@ export async function createApplication(
       workStore.close();
       knowledgeAuditStore.close();
       actionApprovalStore.close();
+      personalWorkflowStore.close();
     },
   };
 }

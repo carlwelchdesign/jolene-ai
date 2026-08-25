@@ -18,6 +18,7 @@ The first runnable slice provides:
 - a Slack Socket Mode adapter for owner-only DMs and explicit channel mentions;
 - a durable Slack delivery ledger that retries failed posts without another model call;
 - durable work tasks and explicit approve-or-reject memory proposals;
+- durable personal-work workflows with exact steps, evidence, and human review;
 - private task context containing only approved, actor-scoped durable memories;
 - memory sensitivity gates, expiration, reviewed correction, and explicit forgetting;
 - deterministic request-aware memory ranking with inspectable selection evidence;
@@ -89,6 +90,8 @@ Prerequisite: Node.js 22 or newer.
    ```
 
    Task and memory-management endpoints are documented in [Task and memory API](docs/task-memory-api.md).
+   The six reviewable work types and their lifecycle are documented in
+   [Personal work workflows](docs/personal-workflows.md).
 
 ## Slack pilot
 
@@ -113,6 +116,7 @@ Carl's configured Slack member ID is the only DM identity permitted to use priva
 - Pending and rejected memory proposals are never supplied to the model.
 - The Memory Review screen changes durable context only through the existing
   proposal, decision, correction, and explicit-forget contracts.
+- Personal workflows cannot skip steps or complete without explicit human review.
 - Durable task and personal memory context is unavailable in shared channels.
 - Restricted memory requires its selected task; sensitive memory also requires an explicit per-request flag.
 - Expired, superseded, and forgotten memories are excluded from model context.
