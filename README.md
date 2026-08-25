@@ -13,9 +13,10 @@ The first runnable slice provides:
 - deterministic capability and disclosure policy decisions;
 - read-only, allowlisted Obsidian Markdown search with citations;
 - a CLI and an HTTP API with `/health` and `/v1/chat`;
+- a Slack Socket Mode adapter for owner-only DMs and explicit channel mentions;
 - contract tests that do not call OpenAI.
 
-Live Slack, external writes, scheduled work, specialist agents, and voice remain later gates.
+The Slack adapter is ready for credentials but has not been activated in the workspace. External writes, scheduled work, specialist agents, and voice remain later gates.
 
 ## Setup
 
@@ -68,11 +69,24 @@ Prerequisite: Node.js 22 or newer.
    }
    ```
 
+## Slack pilot
+
+Jolene can connect through a dedicated Slack app using Socket Mode. The checked-in manifest grants only the scopes needed for owner DMs, explicit mentions, and replies.
+
+See [Slack setup](docs/slack-setup.md) for the credential and workspace activation steps. Once configured, run:
+
+```bash
+npm run slack
+```
+
+Carl's configured Slack member ID is the only DM identity permitted to use private context. All channel mentions are treated as shared and receive no Obsidian tool.
+
 ## Security boundary
 
 - `.env.local`, the SQLite database, and generated evaluation results are ignored.
 - Obsidian access is read-only and limited to configured relative path prefixes.
 - Shared channels receive no Obsidian search tool.
+- Slack DMs from anyone except the configured owner are ignored.
 - No side-effecting external capability is implemented in this slice.
 - Vault note content is evidence, never executable instruction.
 

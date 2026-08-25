@@ -19,11 +19,11 @@ Input is a message plus stable actor, workspace, channel, thread, and inbound ev
 - State: SQLite conversations, inbound events, completed turns, and failures.
 - Model: one OpenAI Agents SDK agent; no specialists yet.
 - Approval: deterministic policy types are implemented, but no side-effecting tool is exposed.
-- Deployment: local HTTP/CLI in this slice; Slack and always-on hosting come later.
+- Deployment: local HTTP/CLI plus a credential-gated Slack Socket Mode adapter; always-on hosting comes later.
 
 ## Non-goals
 
-- Live Slack events
+- Live Slack activation and workspace credential verification
 - External writes
 - Scheduled jobs
 - Client-AI conversations

@@ -1,0 +1,55 @@
+# Jolene Slack Setup
+
+The standalone Jolene service uses Slack Socket Mode for its first local pilot. Socket Mode connects outward from Carl's Mac, so this phase does not require a public webhook URL.
+
+The ChatGPT Slack connection and this standalone Slack app are separate integrations. The existing ChatGPT connection does not provide the bot and app tokens required by Jolene's runtime.
+
+## Create or configure the Slack app
+
+1. Open Slack's app-management page and create an app **from a manifest**.
+2. Select the Jolene workspace and paste [`slack/manifest.yaml`](../slack/manifest.yaml).
+3. Install the app to the workspace.
+4. Under **OAuth & Permissions**, copy the Bot User OAuth Token beginning with `xoxb-`.
+5. Under **Basic Information → App-Level Tokens**, generate a token with the `connections:write` scope and copy the token beginning with `xapp-`.
+6. Copy Carl's Slack member ID from his Slack profile using **Copy member ID**.
+7. Add these values to `.env.local` without committing the file:
+
+   ```dotenv
+   SLACK_BOT_TOKEN=xoxb-...
+   SLACK_APP_TOKEN=xapp-...
+   SLACK_OWNER_USER_ID=U...
+   ```
+
+The manifest requests only:
+
+- `chat:write` to reply as Jolene;
+- `app_mentions:read` to receive explicit channel mentions;
+- `im:history` to receive direct messages.
+
+It subscribes only to `app_mention` and `message.im`.
+
+## Run the local pilot
+
+```bash
+npm run slack
+```
+
+Then:
+
+- DM Jolene from Carl's configured Slack account; or
+- invite Jolene to a channel and explicitly mention `@Jolene.AI`.
+
+Jolene replies in the originating thread. Replayed Slack events do not produce another model call or reply.
+
+## Privacy behavior
+
+- Only direct messages from `SLACK_OWNER_USER_ID` are considered private and may use allowlisted Obsidian knowledge.
+- Direct messages from other Slack members are ignored.
+- Every channel mention is treated as shared context, including mentions inside Slack private channels. Shared context receives no Obsidian search tool.
+- Ambient channel messages, bot messages, and edited-message events are ignored.
+
+## Current pilot limitations
+
+- The process must remain running on Carl's Mac.
+- Slack delivery is not yet recorded separately from response generation. If Slack rejects a reply after Jolene finishes generating it, the event remains completed and must be retried through an operator workflow rather than automatic replay.
+- There is no approval-card interface, scheduled work, client-AI task packet, or always-on deployment yet.

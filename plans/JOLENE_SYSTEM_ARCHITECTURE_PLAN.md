@@ -1,6 +1,6 @@
 # Jolene Whole-Agent System Architecture Plan
 
-**Status:** First local vertical slice implemented; Slack and always-on deployment have not started
+**Status:** Core and local Slack adapter implemented; workspace activation and always-on deployment remain pending
 
 **Owner:** Carl Welch
 
@@ -416,7 +416,9 @@ The first local vertical slice is implemented and verified. It establishes the p
 - local CLI and HTTP interfaces with health reporting;
 - contract tests for policy, persistence, retrieval, failure recovery, and duplicate events.
 
-This is not the complete MVP described above. Slack ingress, persistent task workflows, exact approval UI and execution receipts, scheduled work, specialists, client-AI packets, evaluations, always-on deployment, and voice remain pending.
+This is not the complete MVP described above. Slack workspace activation, persistent task workflows, exact approval UI and execution receipts, scheduled work, specialists, client-AI packets, evaluations, always-on deployment, and voice remain pending.
+
+The next local slice adds Slack Socket Mode ingress for owner-only DMs and explicit channel mentions. It uses the same portable core and durable thread identity. Channel mentions are conservatively classified as shared, and non-owner DMs are ignored. Workspace activation still requires Slack-issued app and bot tokens plus Carl's Slack member ID; live Slack behavior is therefore not yet verified.
 
 Delivery checkpoint:
 
@@ -451,7 +453,7 @@ Current ticket evidence:
 | JOL-ARCH-001 | Partial | Initial policy taxonomy and trust boundary exist; the full capability registry is pending. |
 | JOL-ARCH-002 | Implemented for first slice | Core service runs through CLI or HTTP and does not depend on Slack. |
 | JOL-ARCH-003 | Partial | Durable isolated conversations, retries, and restart-safe deduplication are tested; durable task entities are pending. |
-| JOL-ARCH-004 | Not started | No Slack event adapter is connected. |
+| JOL-ARCH-004 | Partial | Socket Mode adapter, manifest, owner gate, thread mapping, and replay tests exist; workspace credentials, live Slack evidence, and a delivery ledger are pending. |
 | JOL-ARCH-005 | Implemented for local slice | Read-only allowlisted Markdown retrieval is tested with exact note and heading citations. |
 | JOL-ARCH-006 | Partial | Retrieved excerpts retain provenance; a durable disclosure ledger is pending. |
 | JOL-ARCH-007 | Partial | Deterministic risk decisions exist; no side-effecting tool or exact approval workflow is exposed. |

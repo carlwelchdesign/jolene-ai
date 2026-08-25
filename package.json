@@ -13,13 +13,16 @@
     "chat": "tsx src/cli.ts",
     "clean": "node --eval \"require('node:fs').rmSync('dist', { recursive: true, force: true })\"",
     "dev": "tsx watch src/server.ts",
+    "slack": "tsx src/slack.ts",
     "start": "node dist/server.js",
+    "start:slack": "node dist/slack.js",
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
     "@openai/agents": "^0.17.0",
+    "@slack/bolt": "^5.0.0",
     "better-sqlite3": "^13.0.3",
     "dotenv": "^17.2.3",
     "zod": "^4.4.3"
