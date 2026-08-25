@@ -4,6 +4,13 @@ import type { JoleneAgentRunner } from "../src/agent/agent-runner.js";
 import { JoleneService } from "../src/application/jolene-service.js";
 import { SqliteConversationStore } from "../src/persistence/sqlite-conversation-store.js";
 import { handleSlackEvent, type SlackPost } from "../src/slack/event-handler.js";
+import type { WorkContextReader } from "../src/domain/work-context.js";
+
+const workContext: WorkContextReader = {
+  loadAuthorizedContext() {
+    return { task: null, memories: [] };
+  },
+};
 
 const runner: JoleneAgentRunner = {
   async respond() {
@@ -14,7 +21,13 @@ const runner: JoleneAgentRunner = {
 describe("handleSlackEvent", () => {
   it("posts a generated response once and suppresses a replay", async () => {
     const store = new SqliteConversationStore(":memory:");
-    const service = new JoleneService({ store, runner, maxHistoryTurns: 16 });
+    const service = new JoleneService({
+      store,
+      runner,
+      workContext,
+      maxHistoryTurns: 16,
+      maxMemoryItems: 24,
+    });
     const posts: SlackPost[] = [];
 
     try {
@@ -64,7 +77,9 @@ describe("handleSlackEvent", () => {
           return "Stored response";
         },
       },
+      workContext,
       maxHistoryTurns: 16,
+      maxMemoryItems: 24,
     });
     const posts: SlackPost[] = [];
 

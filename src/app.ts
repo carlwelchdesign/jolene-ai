@@ -3,6 +3,7 @@ import path from "node:path";
 
 import { OpenAIJoleneRunner } from "./agent/agent-runner.js";
 import { JoleneService } from "./application/jolene-service.js";
+import { WorkContextService } from "./application/work-context-service.js";
 import type { AppConfig } from "./config.js";
 import type { DeliveryStore } from "./domain/delivery.js";
 import {
@@ -11,10 +12,12 @@ import {
 } from "./knowledge/knowledge-source.js";
 import { ObsidianKnowledgeSource } from "./knowledge/obsidian-source.js";
 import { SqliteConversationStore } from "./persistence/sqlite-conversation-store.js";
+import { SqliteWorkContextStore } from "./persistence/sqlite-work-context-store.js";
 
 export interface JoleneApplication {
   readonly service: JoleneService;
   readonly deliveries: DeliveryStore;
+  readonly work: WorkContextService;
   readonly health: () => {
     readonly status: "ok";
     readonly knowledge: "configured" | "unavailable";
@@ -27,6 +30,7 @@ export async function createApplication(
   config: AppConfig,
 ): Promise<JoleneApplication> {
   const store = new SqliteConversationStore(config.databasePath);
+  const workStore = new SqliteWorkContextStore(config.databasePath);
   const knowledge = createKnowledgeSource(config);
   const instructions = await fs.readFile(
     path.resolve(process.cwd(), "docs/prompt.md"),
@@ -40,18 +44,24 @@ export async function createApplication(
   const service = new JoleneService({
     store,
     runner,
+    workContext: workStore,
     maxHistoryTurns: config.maxHistoryTurns,
+    maxMemoryItems: config.maxMemoryItems,
   });
 
   return {
     service,
     deliveries: store,
+    work: new WorkContextService(workStore),
     health: () => ({
       status: "ok",
       knowledge: config.vaultRoot ? "configured" : "unavailable",
       model: config.model,
     }),
-    close: () => store.close(),
+    close: () => {
+      store.close();
+      workStore.close();
+    },
   };
 }
 

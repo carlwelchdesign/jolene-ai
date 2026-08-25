@@ -5,6 +5,11 @@ import { ZodError } from "zod";
 import { createApplication } from "./app.js";
 import { chatRequestSchema } from "./application/jolene-service.js";
 import { loadConfig } from "./config.js";
+import {
+  MemoryProposalConflictError,
+  MemoryProposalNotFoundError,
+  WorkTaskNotFoundError,
+} from "./domain/work-context.js";
 
 const MAX_REQUEST_BYTES = 1_000_000;
 
@@ -52,6 +57,68 @@ async function handleRequest(
     return;
   }
 
+  if (request.method === "POST" && url.pathname === "/v1/tasks") {
+    sendJson(response, 201, application.work.createTask(await readJson(request)));
+    return;
+  }
+
+  if (request.method === "GET" && url.pathname === "/v1/tasks") {
+    sendJson(
+      response,
+      200,
+      application.work.listTasks({
+        actorId: url.searchParams.get("actorId"),
+        workspaceId: url.searchParams.get("workspaceId"),
+        status: url.searchParams.get("status") ?? undefined,
+      }),
+    );
+    return;
+  }
+
+  const taskStatusMatch = url.pathname.match(/^\/v1\/tasks\/([^/]+)\/status$/);
+  if (request.method === "PATCH" && taskStatusMatch?.[1]) {
+    sendJson(
+      response,
+      200,
+      application.work.updateTaskStatus(
+        withIdentifier(await readJson(request), taskStatusMatch[1]),
+      ),
+    );
+    return;
+  }
+
+  if (request.method === "POST" && url.pathname === "/v1/memory-proposals") {
+    sendJson(
+      response,
+      201,
+      application.work.proposeMemory(await readJson(request)),
+    );
+    return;
+  }
+
+  if (request.method === "GET" && url.pathname === "/v1/memory-proposals") {
+    sendJson(response, 200, application.work.listMemoryProposals({
+      actorId: url.searchParams.get("actorId"),
+      workspaceId: url.searchParams.get("workspaceId"),
+      status: url.searchParams.get("status") ?? undefined,
+    }));
+    return;
+  }
+
+  const decisionMatch = url.pathname.match(
+    /^\/v1\/memory-proposals\/([^/]+)\/decision$/,
+  );
+  if (request.method === "POST" && decisionMatch?.[1]) {
+    sendJson(
+      response,
+      200,
+      application.work.decideMemory(
+        withIdentifier(await readJson(request), decisionMatch[1]),
+      ),
+    );
+    return;
+  }
+
   sendJson(response, 404, { error: "not_found" });
 }
 
@@ -83,6 +150,19 @@ function handleError(error: unknown, response: ServerResponse): void {
     return;
   }
 
+  if (
+    error instanceof WorkTaskNotFoundError ||
+    error instanceof MemoryProposalNotFoundError
+  ) {
+    sendJson(response, 404, { error: "not_found" });
+    return;
+  }
+
+  if (error instanceof MemoryProposalConflictError) {
+    sendJson(response, 409, { error: "decision_conflict" });
+    return;
+  }
+
   process.stderr.write(
     `Jolene request failed: ${error instanceof Error ? error.name : "UnknownError"}\n`,
   );
@@ -102,3 +182,11 @@ function sendJson(
 }
 
 class RequestTooLargeError extends Error {}
+
+function withIdentifier(body: unknown, id: string): Record<string, unknown> {
+  if (!body || typeof body !== "object" || Array.isArray(body)) {
+    throw new SyntaxError("Expected a JSON object.");
+  }
+
+  return { ...(body as Record<string, unknown>), id };
+}

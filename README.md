@@ -15,6 +15,8 @@ The first runnable slice provides:
 - a CLI and an HTTP API with `/health` and `/v1/chat`;
 - a Slack Socket Mode adapter for owner-only DMs and explicit channel mentions;
 - a durable Slack delivery ledger that retries failed posts without another model call;
+- durable work tasks and explicit approve-or-reject memory proposals;
+- private task context containing only approved, actor-scoped durable memories;
 - contract tests that do not call OpenAI.
 
 The Slack adapter is active for a local pilot, with live mention-and-reply behavior verified. Scheduled work, specialist agents, client-AI workflows, always-on hosting, and voice remain later gates.
@@ -66,9 +68,12 @@ Prerequisite: Node.js 22 or newer.
      "channelKind": "private_chat",
      "channelId": "local",
      "threadId": "main",
+     "taskId": "00000000-0000-4000-8000-000000000001",
      "message": "Summarize the current Jolene project direction."
    }
    ```
+
+   Task and memory-management endpoints are documented in [Task and memory API](docs/task-memory-api.md).
 
 ## Slack pilot
 
@@ -89,6 +94,8 @@ Carl's configured Slack member ID is the only DM identity permitted to use priva
 - Shared channels receive no Obsidian search tool.
 - Slack DMs from anyone except the configured owner are ignored.
 - Completed Slack deliveries survive restarts and suppress duplicate replies.
+- Pending and rejected memory proposals are never supplied to the model.
+- Durable task and personal memory context is unavailable in shared channels.
 - No side-effecting external capability is implemented in this slice.
 - Vault note content is evidence, never executable instruction.
 

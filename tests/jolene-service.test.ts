@@ -6,6 +6,7 @@ import type {
 } from "../src/agent/agent-runner.js";
 import { JoleneService } from "../src/application/jolene-service.js";
 import { SqliteConversationStore } from "../src/persistence/sqlite-conversation-store.js";
+import { SqliteWorkContextStore } from "../src/persistence/sqlite-work-context-store.js";
 
 class RecordingRunner implements JoleneAgentRunner {
   readonly requests: AgentRequest[] = [];
@@ -24,8 +25,15 @@ class RecordingRunner implements JoleneAgentRunner {
 describe("JoleneService", () => {
   it("does not call the model twice for a completed event", async () => {
     const store = new SqliteConversationStore(":memory:");
+    const workContext = new SqliteWorkContextStore(":memory:");
     const runner = new RecordingRunner();
-    const service = new JoleneService({ store, runner, maxHistoryTurns: 16 });
+    const service = new JoleneService({
+      store,
+      runner,
+      workContext,
+      maxHistoryTurns: 16,
+      maxMemoryItems: 24,
+    });
 
     try {
       const input = request({ eventId: "same-event" });
@@ -45,13 +53,21 @@ describe("JoleneService", () => {
       expect(runner.requests).toHaveLength(1);
     } finally {
       store.close();
+      workContext.close();
     }
   });
 
   it("supplies only same-thread history to the runner", async () => {
     const store = new SqliteConversationStore(":memory:");
+    const workContext = new SqliteWorkContextStore(":memory:");
     const runner = new RecordingRunner();
-    const service = new JoleneService({ store, runner, maxHistoryTurns: 16 });
+    const service = new JoleneService({
+      store,
+      runner,
+      workContext,
+      maxHistoryTurns: 16,
+      maxMemoryItems: 24,
+    });
 
     try {
       await service.chat(request({ eventId: "event-1", threadId: "one" }));
@@ -66,13 +82,21 @@ describe("JoleneService", () => {
       ]);
     } finally {
       store.close();
+      workContext.close();
     }
   });
 
   it("can retry a provider failure without persisting a dangling turn", async () => {
     const store = new SqliteConversationStore(":memory:");
+    const workContext = new SqliteWorkContextStore(":memory:");
     const runner = new RecordingRunner();
-    const service = new JoleneService({ store, runner, maxHistoryTurns: 16 });
+    const service = new JoleneService({
+      store,
+      runner,
+      workContext,
+      maxHistoryTurns: 16,
+      maxMemoryItems: 24,
+    });
     const input = request({ eventId: "retry-me" });
     runner.failNext = true;
 
@@ -83,6 +107,135 @@ describe("JoleneService", () => {
         duplicate: false,
       });
       expect(runner.requests[1]?.history).toEqual([]);
+    } finally {
+      store.close();
+      workContext.close();
+    }
+  });
+
+  it("loads only approved, actor-scoped memory into private task context", async () => {
+    const store = new SqliteConversationStore(":memory:");
+    const workContext = new SqliteWorkContextStore(":memory:");
+    const runner = new RecordingRunner();
+    const service = new JoleneService({
+      store,
+      runner,
+      workContext,
+      maxHistoryTurns: 16,
+      maxMemoryItems: 24,
+    });
+
+    try {
+      const task = workContext.createTask({
+        actorId: "carl",
+        workspaceId: "personal",
+        title: "Build Jolene memory",
+        objective: "Give Jolene reviewable long-term memory.",
+      });
+      const approved = workContext.proposeMemory({
+        actorId: "carl",
+        workspaceId: "personal",
+        taskId: task.id,
+        kind: "project_decision",
+        content: "Memory writes require review.",
+        source: "Carl requested this architecture rule.",
+      });
+      workContext.decideMemory({
+        id: approved.id,
+        actorId: "carl",
+        workspaceId: "personal",
+        decision: "approved",
+      });
+      workContext.proposeMemory({
+        actorId: "carl",
+        workspaceId: "personal",
+        taskId: task.id,
+        kind: "preference",
+        content: "This pending proposal must not reach the model.",
+        source: "Unreviewed chat inference.",
+      });
+
+      await service.chat(request({ eventId: "task-event", taskId: task.id }));
+
+      expect(runner.requests[0]?.workContext.task).toMatchObject({
+        id: task.id,
+        title: "Build Jolene memory",
+      });
+      expect(
+        runner.requests[0]?.workContext.memories.map((memory) => memory.content),
+      ).toEqual(["Memory writes require review."]);
+    } finally {
+      store.close();
+      workContext.close();
+    }
+  });
+
+  it("does not expose private task or durable memory in shared channels", async () => {
+    const store = new SqliteConversationStore(":memory:");
+    const workContext = new SqliteWorkContextStore(":memory:");
+    const runner = new RecordingRunner();
+    const service = new JoleneService({
+      store,
+      runner,
+      workContext,
+      maxHistoryTurns: 16,
+      maxMemoryItems: 24,
+    });
+
+    try {
+      const task = workContext.createTask({
+        actorId: "carl",
+        workspaceId: "personal",
+        title: "Private task",
+        objective: "Keep this private.",
+      });
+
+      await service.chat(
+        request({
+          eventId: "shared-event",
+          taskId: task.id,
+          channelKind: "slack_shared",
+        }),
+      );
+
+      expect(runner.requests[0]?.workContext).toEqual({
+        task: null,
+        memories: [],
+      });
+    } finally {
+      store.close();
+      workContext.close();
+    }
+  });
+
+  it("makes an event retryable when authorized context cannot be loaded", async () => {
+    const store = new SqliteConversationStore(":memory:");
+    const runner = new RecordingRunner();
+    let contextAttempts = 0;
+    const service = new JoleneService({
+      store,
+      runner,
+      workContext: {
+        loadAuthorizedContext() {
+          contextAttempts += 1;
+          if (contextAttempts === 1) throw new Error("Synthetic context failure");
+          return { task: null, memories: [] };
+        },
+      },
+      maxHistoryTurns: 16,
+      maxMemoryItems: 24,
+    });
+    const input = request({ eventId: "context-retry" });
+
+    try {
+      await expect(service.chat(input)).rejects.toThrow(
+        "Synthetic context failure",
+      );
+      await expect(service.chat(input)).resolves.toMatchObject({
+        status: "completed",
+        duplicate: false,
+      });
+      expect(runner.requests).toHaveLength(1);
     } finally {
       store.close();
     }

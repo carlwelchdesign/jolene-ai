@@ -7,9 +7,15 @@ import {
   type ConversationAddress,
   type ConversationStore,
 } from "../domain/conversation.js";
+import { isPrivateChannel } from "../domain/policy.js";
+import type {
+  AuthorizedWorkContext,
+  WorkContextReader,
+} from "../domain/work-context.js";
 
 export const chatRequestSchema = conversationAddressSchema.extend({
   eventId: z.string().trim().min(1).max(240),
+  taskId: z.string().uuid().optional(),
   message: z.string().trim().min(1).max(40_000),
 });
 
@@ -24,7 +30,9 @@ export interface ChatResult {
 export interface JoleneServiceOptions {
   readonly store: ConversationStore;
   readonly runner: JoleneAgentRunner;
+  readonly workContext: WorkContextReader;
   readonly maxHistoryTurns: number;
+  readonly maxMemoryItems: number;
 }
 
 export class JoleneService {
@@ -47,17 +55,25 @@ export class JoleneService {
       };
     }
 
-    const history = this.options.store.recentTurns(
-      address,
-      this.options.maxHistoryTurns,
-    );
-
     try {
+      const history = this.options.store.recentTurns(
+        address,
+        this.options.maxHistoryTurns,
+      );
+      const workContext = isPrivateChannel(request.channelKind)
+        ? this.options.workContext.loadAuthorizedContext(
+            request.actorId,
+            request.workspaceId,
+            request.taskId,
+            this.options.maxMemoryItems,
+          )
+        : EMPTY_WORK_CONTEXT;
       const response = await this.options.runner.respond({
         actorId: request.actorId,
         channelKind: request.channelKind,
         message: request.message,
         history,
+        workContext,
       });
 
       this.options.store.completeEvent(claim.eventKey, {
@@ -72,6 +88,11 @@ export class JoleneService {
     }
   }
 }
+
+const EMPTY_WORK_CONTEXT: AuthorizedWorkContext = {
+  task: null,
+  memories: [],
+};
 
 function toAddress(request: ChatRequest): ConversationAddress {
   return {

@@ -15,6 +15,7 @@ const envSchema = z.object({
   JOLENE_OBSIDIAN_VAULT_ROOT: z.string().trim().optional(),
   JOLENE_OBSIDIAN_ALLOWLIST: z.string().default(""),
   JOLENE_MAX_HISTORY_TURNS: z.coerce.number().int().min(2).max(100).default(16),
+  JOLENE_MAX_MEMORY_ITEMS: z.coerce.number().int().min(1).max(100).default(24),
   SLACK_BOT_TOKEN: z.string().trim().optional(),
   SLACK_APP_TOKEN: z.string().trim().optional(),
   SLACK_OWNER_USER_ID: z.string().trim().optional(),
@@ -27,6 +28,7 @@ export interface AppConfig {
   readonly vaultRoot: string | undefined;
   readonly vaultAllowlist: readonly string[];
   readonly maxHistoryTurns: number;
+  readonly maxMemoryItems: number;
   readonly slackBotToken: string | undefined;
   readonly slackAppToken: string | undefined;
   readonly slackOwnerUserId: string | undefined;
@@ -49,6 +51,7 @@ export function loadConfig(): AppConfig {
       .map((value) => value.trim())
       .filter(Boolean),
     maxHistoryTurns: env.JOLENE_MAX_HISTORY_TURNS,
+    maxMemoryItems: env.JOLENE_MAX_MEMORY_ITEMS,
     slackBotToken: emptyToUndefined(env.SLACK_BOT_TOKEN),
     slackAppToken: emptyToUndefined(env.SLACK_APP_TOKEN),
     slackOwnerUserId: emptyToUndefined(env.SLACK_OWNER_USER_ID),
