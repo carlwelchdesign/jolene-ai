@@ -531,6 +531,18 @@ Exact-action-approval checkpoint:
 | Safety evidence | Shared-channel proposals are denied; registered external messaging remains `proposal_only`; the internal claim operation has no HTTP or model-tool route; approval is never reported as delivery |
 | Remaining boundary | A graphical approval-review surface, destination allowlists, trusted delivery adapters, execution attempt state, and external delivery receipts remain pending |
 
+Action-approval-interface checkpoint:
+
+| Field | Value |
+|---|---|
+| Branch | `codex/jolene-action-approval-ui` |
+| Implementation commit | `7fb5222` (`JOL-ARCH-007 add graphical approval review`) |
+| Pull request | None; this local repository has no remote configured |
+| Verification | Node 22 typecheck, 65 contract tests, production build, staged secret scan, dependency audit, and live desktop/mobile browser flows passed |
+| Interaction evidence | Message staging, sensitive-task guidance, exact-field confirmation, approval, rejection, empty queue, expired history, cross-navigation, responsive layout, and clean browser console passed against an isolated disposable database |
+| Safety evidence | Persistent no-delivery explanation, exact recipient and complete content preview, approved-not-sent state, text-only dynamic rendering, restrictive asset headers, and zero send or execution controls verified |
+| Remaining boundary | Destination allowlists, trusted delivery adapters, execution-attempt reconciliation, external delivery receipts, and authenticated production administration remain pending |
+
 ## Architecture tickets
 
 | ID | Ticket | Acceptance criteria |
