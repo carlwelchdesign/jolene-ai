@@ -503,6 +503,18 @@ Memory Review interface checkpoint:
 | Safety evidence | Dynamic record content uses text-only DOM insertion; restrictive CSP and browser headers are applied; sensitive recall is a per-preview opt-in; no record is silently approved, corrected, or forgotten |
 | Remaining boundary | The screen is local-only and is not an authenticated remote administration surface; bulk retention, automatic compaction, and Slack review controls remain pending |
 
+Knowledge-access-ledger checkpoint:
+
+| Field | Value |
+|---|---|
+| Branch | `codex/jolene-knowledge-access-ledger` |
+| Implementation commit | `8d7a1bd` (`JOL-ARCH-006 audit private knowledge access`) |
+| Pull request | None; this local repository has no remote configured |
+| Verification | Node 22 typecheck, 52 contract tests, production build, existing-database migration, staged secret scan, dependency audit, and live isolated API checks passed |
+| Provenance evidence | Each private tool search is tied to actor, workspace, channel, thread, and inbound event with ordered note-path and heading citations |
+| Privacy evidence | Raw queries and excerpts are absent from the schema and API; query fingerprints use a process-local HMAC key; actor/workspace cross-scope reads return no records; audit failure blocks successful retrieval output |
+| Remaining boundary | This records private knowledge access only; external disclosure authorization, recipient scope, approval expiry, and delivery receipts remain pending |
+
 ## Architecture tickets
 
 | ID | Ticket | Acceptance criteria |
