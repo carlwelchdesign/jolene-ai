@@ -5,6 +5,7 @@ import {
   memoryKindSchema,
   memorySensitivitySchema,
   taskStatusSchema,
+  type AuthorizedWorkContext,
   type MemoryProposal,
   type DurableMemory,
   type WorkContextStore,
@@ -70,6 +71,19 @@ export const forgetMemorySchema = z.object({
   id: z.string().uuid(),
 });
 
+export const previewContextSchema = z.object({
+  ...identityFields,
+  taskId: z
+    .string()
+    .uuid()
+    .nullable()
+    .optional()
+    .transform((value) => value ?? undefined),
+  query: z.string().trim().min(1).max(4_000),
+  includeSensitiveMemory: z.boolean().default(false),
+  memoryLimit: z.number().int().min(1).max(100).default(24),
+});
+
 export class WorkContextService {
   constructor(private readonly store: WorkContextStore) {}
 
@@ -114,5 +128,9 @@ export class WorkContextService {
 
   forgetMemory(input: unknown): DurableMemory {
     return this.store.forgetMemory(forgetMemorySchema.parse(input));
+  }
+
+  previewContext(input: unknown): AuthorizedWorkContext {
+    return this.store.loadAuthorizedContext(previewContextSchema.parse(input));
   }
 }

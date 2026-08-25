@@ -68,6 +68,7 @@ export class JoleneService {
             taskId: request.taskId,
             memoryLimit: this.options.maxMemoryItems,
             includeSensitiveMemory: request.includeSensitiveMemory ?? false,
+            query: request.message,
           })
         : EMPTY_WORK_CONTEXT;
       const response = await this.options.runner.respond({

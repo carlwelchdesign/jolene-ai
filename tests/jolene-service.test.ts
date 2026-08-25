@@ -170,6 +170,56 @@ describe("JoleneService", () => {
     }
   });
 
+  it("selects global durable memory against the current message", async () => {
+    const store = new SqliteConversationStore(":memory:");
+    const workContext = new SqliteWorkContextStore(":memory:");
+    const runner = new RecordingRunner();
+    const service = new JoleneService({
+      store,
+      runner,
+      workContext,
+      maxHistoryTurns: 16,
+      maxMemoryItems: 1,
+    });
+
+    try {
+      for (const content of [
+        "The flight tracker uses a blue map system.",
+        "The audio plugin release requires Logic host validation.",
+      ]) {
+        const proposal = workContext.proposeMemory({
+          actorId: "carl",
+          workspaceId: "personal",
+          taskId: null,
+          kind: "project_decision",
+          content,
+          source: "Approved project record.",
+        });
+        workContext.decideMemory({
+          id: proposal.id,
+          actorId: "carl",
+          workspaceId: "personal",
+          decision: "approved",
+        });
+      }
+
+      await service.chat(
+        request({
+          eventId: "ranked-memory",
+          message: "What remains for the audio plugin release?",
+        }),
+      );
+
+      expect(runner.requests[0]?.workContext.memories).toMatchObject([
+        { content: "The audio plugin release requires Logic host validation." },
+      ]);
+      expect(runner.requests[0]?.workContext.selection?.candidateCount).toBe(2);
+    } finally {
+      store.close();
+      workContext.close();
+    }
+  });
+
   it("does not expose private task or durable memory in shared channels", async () => {
     const store = new SqliteConversationStore(":memory:");
     const workContext = new SqliteWorkContextStore(":memory:");

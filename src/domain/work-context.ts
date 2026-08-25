@@ -77,6 +77,21 @@ export interface DurableMemory {
 export interface AuthorizedWorkContext {
   readonly task: WorkTask | null;
   readonly memories: readonly DurableMemory[];
+  readonly selection?: MemorySelectionSummary;
+}
+
+export interface MemorySelectionEvidence {
+  readonly memoryId: string;
+  readonly score: number;
+  readonly matchedTerms: readonly string[];
+  readonly reasons: readonly string[];
+}
+
+export interface MemorySelectionSummary {
+  readonly strategy: "deterministic_lexical_v1";
+  readonly candidateCount: number;
+  readonly queryTerms: readonly string[];
+  readonly evidence: readonly MemorySelectionEvidence[];
 }
 
 export interface CreateTaskInput {
@@ -121,9 +136,10 @@ export interface ForgetMemoryInput {
 export interface AuthorizedContextRequest {
   readonly actorId: string;
   readonly workspaceId: string;
-  readonly taskId: string | undefined;
+  readonly taskId?: string | undefined;
   readonly memoryLimit: number;
   readonly includeSensitiveMemory: boolean;
+  readonly query?: string;
 }
 
 export interface WorkContextReader {

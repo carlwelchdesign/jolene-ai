@@ -11,6 +11,7 @@ Jolene's local HTTP service supports durable task context and reviewable long-te
 - Restricted memory must be linked to the selected task.
 - Sensitive memory must be linked to the selected task and requires `includeSensitiveMemory: true` on that individual chat request.
 - Expired, superseded, and forgotten records never enter model context.
+- Authorized candidates are ranked against the current request, selected task, and memory kind before the configured limit is applied.
 - Creating a proposal does not create durable memory. Only an explicit `approved` decision does that.
 - Repeating the same decision is safe. A contradictory second decision returns a conflict.
 
@@ -97,6 +98,27 @@ Use `rejected` to retain the review record without making the proposal available
 
 Each record reports `active`, `expired`, `superseded`, or `forgotten` state. Non-active records are retained only for review and audit; they are excluded from model context.
 
+## Preview contextual selection
+
+`POST /v1/context-preview`
+
+```json
+{
+  "actorId": "carl",
+  "workspaceId": "personal",
+  "taskId": null,
+  "query": "What remains for the audio plugin release?",
+  "includeSensitiveMemory": false,
+  "memoryLimit": 24
+}
+```
+
+This read-only endpoint returns the exact task and memories Jolene would authorize, plus deterministic selection evidence: candidate count, normalized query terms, score, matched terms, and selection reasons.
+
+The `deterministic_lexical_v1` strategy scores current-request matches most strongly, then task-term matches and selected-task scope. Standing rules and preferences retain small baseline scores because they may apply across requests. Global project decisions and corrected facts with no request or task relevance are excluded. Ties use newest-first ordering and then stable memory ID ordering.
+
+Selection first retrieves a privacy-filtered candidate set capped at 500 records and normally at eight times the requested output limit, with a minimum candidate window of 64. Privacy, task, sensitivity, expiry, correction, and forgetting gates run before ranking.
+
 ## Correct memory
 
 Create another memory proposal and set `replacesMemoryId` to the active memory being corrected. The original remains active until the correction proposal is approved. Approval atomically activates the correction and marks the original as superseded.
@@ -119,6 +141,7 @@ This explicit destructive operation removes the retained content from both the d
 ## Current limitations
 
 - There is no graphical review interface yet.
-- There is no bulk retention manager, semantic ranking, or automatic compaction workflow yet.
-- Global approved memories are selected by recency, up to `JOLENE_MAX_MEMORY_ITEMS`; task-linked approved memories are added only for the selected task.
+- There is no bulk retention manager or automatic compaction workflow yet.
+- Ranking is deterministic lexical matching, not embedding or model-based semantic similarity; meaningfully related records that use entirely different vocabulary may be missed.
+- Only the bounded authorized candidate window is ranked; an older relevant record outside that window may be missed until a future index-backed retriever is added.
 - Slack does not yet expose task creation or memory-review controls.

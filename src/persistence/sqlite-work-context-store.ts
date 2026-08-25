@@ -4,6 +4,7 @@ import path from "node:path";
 
 import Database from "better-sqlite3";
 
+import { rankMemories } from "../domain/memory-ranking.js";
 import {
   DurableMemoryConflictError,
   DurableMemoryNotFoundError,
@@ -342,6 +343,8 @@ export class SqliteWorkContextStore implements WorkContextStore {
       : null;
     const nowDate = this.now();
     const now = nowDate.toISOString();
+    const memoryLimit = Math.max(1, request.memoryLimit);
+    const candidateLimit = Math.min(500, Math.max(memoryLimit * 8, 64));
     const rows = request.taskId
       ? (this.database
           .prepare(
@@ -366,7 +369,7 @@ export class SqliteWorkContextStore implements WorkContextStore {
             request.taskId,
             request.includeSensitiveMemory ? 1 : 0,
             request.taskId,
-            Math.max(1, request.memoryLimit),
+            candidateLimit,
           ) as MemoryRow[])
       : (this.database
           .prepare(
@@ -381,12 +384,25 @@ export class SqliteWorkContextStore implements WorkContextStore {
             request.actorId,
             request.workspaceId,
             now,
-            Math.max(1, request.memoryLimit),
+            candidateLimit,
           ) as MemoryRow[]);
+
+    const ranked = rankMemories({
+      candidates: rows.map((row) => mapMemory(row, nowDate)),
+      query: request.query,
+      task,
+      limit: memoryLimit,
+    });
 
     return {
       task,
-      memories: rows.reverse().map((row) => mapMemory(row, nowDate)),
+      memories: ranked.memories,
+      selection: {
+        strategy: "deterministic_lexical_v1",
+        candidateCount: ranked.candidateCount,
+        queryTerms: ranked.queryTerms,
+        evidence: ranked.evidence,
+      },
     };
   }
 

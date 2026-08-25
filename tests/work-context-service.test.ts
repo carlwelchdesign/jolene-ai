@@ -58,6 +58,27 @@ describe("WorkContextService", () => {
           status: "pending",
         }),
       ).toMatchObject([{ id: proposal.id, status: "pending" }]);
+      service.decideMemory({
+        id: proposal.id,
+        actorId: "carl",
+        workspaceId: "personal",
+        decision: "approved",
+      });
+      expect(
+        service.previewContext({
+          actorId: "carl",
+          workspaceId: "personal",
+          taskId: task.id,
+          query: "How should memory proposals work?",
+          memoryLimit: 10,
+        }),
+      ).toMatchObject({
+        memories: [{ content: "Use explicit memory proposals." }],
+        selection: {
+          strategy: "deterministic_lexical_v1",
+          candidateCount: 1,
+        },
+      });
     } finally {
       store.close();
     }

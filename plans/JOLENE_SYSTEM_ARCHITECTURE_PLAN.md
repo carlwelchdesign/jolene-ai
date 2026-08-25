@@ -424,6 +424,8 @@ The task-memory slice adds durable work tasks and an explicit memory-proposal li
 
 The memory-governance slice adds three sensitivity levels, UTC-normalized expiry, correction through a reviewed replacement proposal, and explicit content-forgetting with a non-content tombstone. Restricted records require the selected task; sensitive records additionally require an explicit flag on that individual private request. Expired, superseded, forgotten, pending, and rejected records are excluded from model context.
 
+The contextual-ranking slice applies a deterministic lexical scorer after authorization and before the memory limit. It uses request terms, task terms, selected-task scope, and explicit standing-rule/preference baselines. Selection evidence is available through a read-only preview endpoint. The candidate window is capped, privacy gates precede ranking, and no embedding provider or new external dependency is introduced.
+
 Delivery checkpoint:
 
 | Field | Value |
@@ -498,7 +500,7 @@ Current ticket evidence:
 |---|---|---|
 | JOL-ARCH-001 | Partial | Initial policy taxonomy and trust boundary exist; the full capability registry is pending. |
 | JOL-ARCH-002 | Implemented for first slice | Core service runs through CLI or HTTP and does not depend on Slack. |
-| JOL-ARCH-003 | Partial | Durable isolated conversations, tasks, governed memory, status updates, retries, and restart recovery are tested; task-event history, automatic compaction, semantic ranking, bulk retention controls, and graphical review remain pending. |
+| JOL-ARCH-003 | Partial | Durable isolated conversations, tasks, governed and request-ranked memory, status updates, retries, and restart recovery are tested; task-event history, automatic compaction, embedding-backed similarity, bulk retention controls, and graphical review remain pending. |
 | JOL-ARCH-004 | Implemented for local pilot | Socket Mode adapter, manifest, owner gate, thread mapping, live mention/reply evidence, durable generation deduplication, and durable delivery retries exist. Live owner-DM evidence and crash-window reconciliation remain operational gates. |
 | JOL-ARCH-005 | Implemented for local slice | Read-only allowlisted Markdown retrieval is tested with exact note and heading citations. |
 | JOL-ARCH-006 | Partial | Retrieved excerpts retain provenance; a durable disclosure ledger is pending. |

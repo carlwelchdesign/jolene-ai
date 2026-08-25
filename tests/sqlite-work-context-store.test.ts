@@ -192,6 +192,44 @@ describe("SqliteWorkContextStore", () => {
     }
   });
 
+  it("ranks an authorized candidate set against the current request", () => {
+    const store = new SqliteWorkContextStore(":memory:");
+    try {
+      approveMemory(store, {
+        taskId: null,
+        kind: "project_decision",
+        content: "The flight tracker map uses a blue visual system.",
+        sensitivity: "private",
+      });
+      const relevant = approveMemory(store, {
+        taskId: null,
+        kind: "project_decision",
+        content: "The audio plugin release requires Logic host validation.",
+        sensitivity: "private",
+      });
+
+      const context = store.loadAuthorizedContext({
+        actorId: "carl",
+        workspaceId: "personal",
+        taskId: undefined,
+        memoryLimit: 1,
+        includeSensitiveMemory: false,
+        query: "What remains for the audio plugin release?",
+      });
+
+      expect(context.memories.map((memory) => memory.id)).toEqual([
+        relevant.id,
+      ]);
+      expect(context.selection).toMatchObject({
+        strategy: "deterministic_lexical_v1",
+        candidateCount: 2,
+        evidence: [{ memoryId: relevant.id }],
+      });
+    } finally {
+      store.close();
+    }
+  });
+
   it("excludes expired memory using an injected clock", () => {
     let now = new Date("2026-08-25T12:00:00.000Z");
     const store = new SqliteWorkContextStore(":memory:", () => now);
@@ -337,6 +375,11 @@ function approveMemory(
   store: SqliteWorkContextStore,
   input: {
     taskId: string | null;
+    kind?:
+      | "preference"
+      | "project_decision"
+      | "standing_rule"
+      | "corrected_fact";
     content: string;
     sensitivity: "private" | "restricted" | "sensitive";
     expiresAt?: string;
@@ -346,7 +389,7 @@ function approveMemory(
     actorId: "carl",
     workspaceId: "personal",
     taskId: input.taskId,
-    kind: "preference",
+    kind: input.kind ?? "preference",
     content: input.content,
     source: "Test fixture.",
     sensitivity: input.sensitivity,

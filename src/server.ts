@@ -119,6 +119,15 @@ async function handleRequest(
     return;
   }
 
+  if (request.method === "POST" && url.pathname === "/v1/context-preview") {
+    sendJson(
+      response,
+      200,
+      application.work.previewContext(await readJson(request)),
+    );
+    return;
+  }
+
   const forgetMatch = url.pathname.match(/^\/v1\/memories\/([^/]+)\/forget$/);
   if (request.method === "POST" && forgetMatch?.[1]) {
     sendJson(

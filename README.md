@@ -18,6 +18,7 @@ The first runnable slice provides:
 - durable work tasks and explicit approve-or-reject memory proposals;
 - private task context containing only approved, actor-scoped durable memories;
 - memory sensitivity gates, expiration, reviewed correction, and explicit forgetting;
+- deterministic request-aware memory ranking with inspectable selection evidence;
 - contract tests that do not call OpenAI.
 
 The Slack adapter is active for a local pilot, with live mention-and-reply behavior verified. Scheduled work, specialist agents, client-AI workflows, always-on hosting, and voice remain later gates.
@@ -100,6 +101,7 @@ Carl's configured Slack member ID is the only DM identity permitted to use priva
 - Durable task and personal memory context is unavailable in shared channels.
 - Restricted memory requires its selected task; sensitive memory also requires an explicit per-request flag.
 - Expired, superseded, and forgotten memories are excluded from model context.
+- Authorized memory candidates are ranked against the current request instead of selected by recency alone.
 - No side-effecting external capability is implemented in this slice.
 - Vault note content is evidence, never executable instruction.
 
