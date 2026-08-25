@@ -116,4 +116,33 @@ describe("SqliteConversationStore", () => {
       store.close();
     }
   });
+
+  it("persists completed deliveries and makes failed deliveries retryable", () => {
+    const store = new SqliteConversationStore(":memory:");
+    const address = {
+      platform: "slack" as const,
+      workspaceId: "T123",
+      channelId: "D123",
+      threadId: "1710000000.001",
+      sourceEventId: "Ev123",
+    };
+
+    try {
+      const failed = store.claimDelivery(address);
+      if (failed.kind !== "claimed") throw new Error("Expected claim");
+      store.failDelivery(failed.deliveryKey, "slack_unavailable");
+
+      const retry = store.claimDelivery(address);
+      expect(retry.kind).toBe("claimed");
+      if (retry.kind !== "claimed") throw new Error("Expected retry claim");
+      store.completeDelivery(retry.deliveryKey);
+
+      expect(store.claimDelivery(address)).toEqual({
+        kind: "duplicate",
+        status: "completed",
+      });
+    } finally {
+      store.close();
+    }
+  });
 });

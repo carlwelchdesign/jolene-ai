@@ -14,9 +14,10 @@ The first runnable slice provides:
 - read-only, allowlisted Obsidian Markdown search with citations;
 - a CLI and an HTTP API with `/health` and `/v1/chat`;
 - a Slack Socket Mode adapter for owner-only DMs and explicit channel mentions;
+- a durable Slack delivery ledger that retries failed posts without another model call;
 - contract tests that do not call OpenAI.
 
-The Slack adapter is ready for credentials but has not been activated in the workspace. External writes, scheduled work, specialist agents, and voice remain later gates.
+The Slack adapter is active for a local pilot, with live mention-and-reply behavior verified. Scheduled work, specialist agents, client-AI workflows, always-on hosting, and voice remain later gates.
 
 ## Setup
 
@@ -87,6 +88,7 @@ Carl's configured Slack member ID is the only DM identity permitted to use priva
 - Obsidian access is read-only and limited to configured relative path prefixes.
 - Shared channels receive no Obsidian search tool.
 - Slack DMs from anyone except the configured owner are ignored.
+- Completed Slack deliveries survive restarts and suppress duplicate replies.
 - No side-effecting external capability is implemented in this slice.
 - Vault note content is evidence, never executable instruction.
 

@@ -35,6 +35,7 @@ const listener = async ({
 }) => {
   const result = await handleSlackEvent(
     application.service,
+    application.deliveries,
     body,
     context.botUserId,
     ownerUserId,

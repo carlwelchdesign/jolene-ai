@@ -4,6 +4,7 @@ import path from "node:path";
 import { OpenAIJoleneRunner } from "./agent/agent-runner.js";
 import { JoleneService } from "./application/jolene-service.js";
 import type { AppConfig } from "./config.js";
+import type { DeliveryStore } from "./domain/delivery.js";
 import {
   type KnowledgeSource,
   UnavailableKnowledgeSource,
@@ -13,6 +14,7 @@ import { SqliteConversationStore } from "./persistence/sqlite-conversation-store
 
 export interface JoleneApplication {
   readonly service: JoleneService;
+  readonly deliveries: DeliveryStore;
   readonly health: () => {
     readonly status: "ok";
     readonly knowledge: "configured" | "unavailable";
@@ -43,6 +45,7 @@ export async function createApplication(
 
   return {
     service,
+    deliveries: store,
     health: () => ({
       status: "ok",
       knowledge: config.vaultRoot ? "configured" : "unavailable",

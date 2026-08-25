@@ -39,7 +39,7 @@ Then:
 - DM Jolene from Carl's configured Slack account; or
 - invite Jolene to a channel and explicitly mention `@Jolene`.
 
-Jolene replies in the originating thread. Replayed Slack events do not produce another model call or reply.
+Jolene replies in the originating thread. A durable delivery ledger suppresses completed replays. If Slack explicitly rejects a post, a replay reuses the stored answer and retries delivery without another model call.
 
 ## Privacy behavior
 
@@ -51,5 +51,5 @@ Jolene replies in the originating thread. Replayed Slack events do not produce a
 ## Current pilot limitations
 
 - The process must remain running on Carl's Mac.
-- Slack delivery is not yet recorded separately from response generation. If Slack rejects a reply after Jolene finishes generating it, the event remains completed and must be retried through an operator workflow rather than automatic replay.
+- A process crash while a delivery is marked `processing` requires operator reconciliation. Automatic stale-claim recovery is intentionally deferred because blindly replaying after Slack accepted a message could create a duplicate.
 - There is no approval-card interface, scheduled work, client-AI task packet, or always-on deployment yet.

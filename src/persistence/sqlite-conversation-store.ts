@@ -12,6 +12,11 @@ import type {
   EventClaim,
   TurnRole,
 } from "../domain/conversation.js";
+import type {
+  DeliveryAddress,
+  DeliveryClaim,
+  DeliveryStore,
+} from "../domain/delivery.js";
 
 interface ConversationRow {
   readonly id: string;
@@ -22,6 +27,10 @@ interface EventRow {
   readonly response: string | null;
 }
 
+interface DeliveryRow {
+  readonly status: "processing" | "completed" | "retryable";
+}
+
 interface TurnRow {
   readonly public_id: string;
   readonly role: TurnRole;
@@ -29,7 +38,9 @@ interface TurnRow {
   readonly created_at: string;
 }
 
-export class SqliteConversationStore implements ConversationStore {
+export class SqliteConversationStore
+  implements ConversationStore, DeliveryStore
+{
   private readonly database: Database.Database;
 
   constructor(databasePath: string) {
@@ -147,6 +158,81 @@ export class SqliteConversationStore implements ConversationStore {
       .run(errorCode.slice(0, 120), new Date().toISOString(), eventKey);
   }
 
+  claimDelivery(address: DeliveryAddress): DeliveryClaim {
+    const claim = this.database.transaction((): DeliveryClaim => {
+      const deliveryKey = scopedDeliveryKey(address);
+      const existing = this.database
+        .prepare("SELECT status FROM outbound_deliveries WHERE delivery_key = ?")
+        .get(deliveryKey) as DeliveryRow | undefined;
+
+      if (existing?.status === "completed") {
+        return { kind: "duplicate", status: "completed" };
+      }
+
+      if (existing?.status === "processing") {
+        return { kind: "duplicate", status: "processing" };
+      }
+
+      const now = new Date().toISOString();
+      if (existing?.status === "retryable") {
+        this.database
+          .prepare(
+            `UPDATE outbound_deliveries
+             SET status = 'processing', attempt_count = attempt_count + 1,
+                 error_code = NULL, updated_at = ?
+             WHERE delivery_key = ?`,
+          )
+          .run(now, deliveryKey);
+      } else {
+        this.database
+          .prepare(
+            `INSERT INTO outbound_deliveries
+              (delivery_key, platform, workspace_id, channel_id, thread_id,
+               source_event_id, status, attempt_count, created_at, updated_at)
+             VALUES (?, ?, ?, ?, ?, ?, 'processing', 1, ?, ?)`,
+          )
+          .run(
+            deliveryKey,
+            address.platform,
+            address.workspaceId,
+            address.channelId,
+            address.threadId,
+            address.sourceEventId,
+            now,
+            now,
+          );
+      }
+
+      return { kind: "claimed", deliveryKey };
+    });
+
+    return claim();
+  }
+
+  completeDelivery(deliveryKey: string): void {
+    const result = this.database
+      .prepare(
+        `UPDATE outbound_deliveries
+         SET status = 'completed', updated_at = ?
+         WHERE delivery_key = ? AND status = 'processing'`,
+      )
+      .run(new Date().toISOString(), deliveryKey);
+
+    if (result.changes !== 1) {
+      throw new Error("The outbound delivery is not in processing state.");
+    }
+  }
+
+  failDelivery(deliveryKey: string, errorCode: string): void {
+    this.database
+      .prepare(
+        `UPDATE outbound_deliveries
+         SET status = 'retryable', error_code = ?, updated_at = ?
+         WHERE delivery_key = ? AND status = 'processing'`,
+      )
+      .run(errorCode.slice(0, 120), new Date().toISOString(), deliveryKey);
+  }
+
   recentTurns(
     address: ConversationAddress,
     limit: number,
@@ -259,8 +345,35 @@ export class SqliteConversationStore implements ConversationStore {
 
       CREATE INDEX IF NOT EXISTS turns_conversation_sequence
         ON turns(conversation_id, sequence_id DESC);
+
+      CREATE TABLE IF NOT EXISTS outbound_deliveries (
+        delivery_key TEXT PRIMARY KEY,
+        platform TEXT NOT NULL,
+        workspace_id TEXT NOT NULL,
+        channel_id TEXT NOT NULL,
+        thread_id TEXT NOT NULL,
+        source_event_id TEXT NOT NULL,
+        status TEXT NOT NULL CHECK(status IN ('processing', 'completed', 'retryable')),
+        attempt_count INTEGER NOT NULL CHECK(attempt_count >= 1),
+        error_code TEXT,
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL
+      );
+
+      CREATE INDEX IF NOT EXISTS deliveries_status_updated
+        ON outbound_deliveries(status, updated_at DESC);
     `);
   }
+}
+
+function scopedDeliveryKey(address: DeliveryAddress): string {
+  return JSON.stringify([
+    address.platform,
+    address.workspaceId,
+    address.channelId,
+    address.threadId,
+    address.sourceEventId,
+  ]);
 }
 
 function scopedEventKey(

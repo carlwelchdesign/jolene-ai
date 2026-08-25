@@ -20,6 +20,7 @@ describe("handleSlackEvent", () => {
     try {
       const first = await handleSlackEvent(
         service,
+        store,
         envelope(),
         "UJOLENE",
         "UCARL",
@@ -29,6 +30,7 @@ describe("handleSlackEvent", () => {
       );
       const replay = await handleSlackEvent(
         service,
+        store,
         envelope(),
         "UJOLENE",
         "UCARL",
@@ -51,14 +53,26 @@ describe("handleSlackEvent", () => {
     }
   });
 
-  it("surfaces a Slack delivery failure and suppresses unsafe automatic replay", async () => {
+  it("retries a failed Slack delivery without another model call", async () => {
     const store = new SqliteConversationStore(":memory:");
-    const service = new JoleneService({ store, runner, maxHistoryTurns: 16 });
+    let modelCalls = 0;
+    const service = new JoleneService({
+      store,
+      runner: {
+        async respond() {
+          modelCalls += 1;
+          return "Stored response";
+        },
+      },
+      maxHistoryTurns: 16,
+    });
+    const posts: SlackPost[] = [];
 
     try {
       await expect(
         handleSlackEvent(
           service,
+          store,
           envelope(),
           "UJOLENE",
           "UCARL",
@@ -71,14 +85,23 @@ describe("handleSlackEvent", () => {
       await expect(
         handleSlackEvent(
           service,
+          store,
           envelope(),
           "UJOLENE",
           "UCARL",
-          async () => {
-            throw new Error("Must not post a duplicate");
+          async (post) => {
+            posts.push(post);
           },
         ),
-      ).resolves.toEqual({ outcome: "duplicate" });
+      ).resolves.toEqual({ outcome: "posted" });
+      expect(modelCalls).toBe(1);
+      expect(posts).toEqual([
+        {
+          channel: "D123",
+          threadTs: "1710000000.000100",
+          text: "Stored response",
+        },
+      ]);
     } finally {
       store.close();
     }
