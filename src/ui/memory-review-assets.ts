@@ -10,6 +10,9 @@ export interface MemoryReviewAssets {
   readonly html: MemoryReviewAsset;
   readonly css: MemoryReviewAsset;
   readonly javascript: MemoryReviewAsset;
+  readonly actionHtml: MemoryReviewAsset;
+  readonly actionCss: MemoryReviewAsset;
+  readonly actionJavascript: MemoryReviewAsset;
 }
 
 const SECURITY_HEADERS = {
@@ -40,6 +43,21 @@ export function loadMemoryReviewAssets(
     javascript: loadAsset(
       publicDirectory,
       "memory-review.js",
+      "text/javascript; charset=utf-8",
+    ),
+    actionHtml: loadAsset(
+      publicDirectory,
+      "action-review.html",
+      "text/html; charset=utf-8",
+    ),
+    actionCss: loadAsset(
+      publicDirectory,
+      "action-review.css",
+      "text/css; charset=utf-8",
+    ),
+    actionJavascript: loadAsset(
+      publicDirectory,
+      "action-review.js",
       "text/javascript; charset=utf-8",
     ),
   };

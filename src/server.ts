@@ -85,6 +85,21 @@ async function handleRequest(
     return;
   }
 
+  if (request.method === "GET" && url.pathname === "/approvals") {
+    sendAsset(response, memoryReviewAssets.actionHtml);
+    return;
+  }
+
+  if (request.method === "GET" && url.pathname === "/action-review.css") {
+    sendAsset(response, memoryReviewAssets.actionCss);
+    return;
+  }
+
+  if (request.method === "GET" && url.pathname === "/action-review.js") {
+    sendAsset(response, memoryReviewAssets.actionJavascript);
+    return;
+  }
+
   if (request.method === "GET" && url.pathname === "/health") {
     sendJson(response, 200, application.health());
     return;

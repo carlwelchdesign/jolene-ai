@@ -29,6 +29,24 @@ sensitive proposals must be tied to an actor/workspace-owned task.
 
 ## Local proposal API
 
+### Graphical review
+
+With Jolene's HTTP service running, open
+`http://127.0.0.1:8421/approvals`. The local review screen supports:
+
+- exact recipient and complete-message review;
+- sensitivity, task, purpose, risk, fingerprint, and expiry inspection;
+- explicit approval or rejection;
+- staging a local proposal without sending it;
+- waiting, approved, rejected, expired, and consumed history;
+- visible reminders that approval is not delivery.
+
+The screen deliberately contains no send or execution control. It uses the same
+browser-local actor/workspace scope as Memory Review and remains a local-pilot
+surface rather than an authenticated remote administration boundary.
+
+### HTTP routes
+
 List the registry:
 
 `GET /v1/capabilities`

@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light">
+    <title>Jolene Action Approvals</title>
+    <link rel="stylesheet" href="/memory-review.css">
+    <link rel="stylesheet" href="/action-review.css">
+    <script type="module" src="/action-review.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to action approvals</a>
+
+    <header class="topbar">
+      <a class="brand" href="/approvals" aria-label="Jolene Action Approvals home">
+        <span class="brand-mark" aria-hidden="true">J</span>
+        <span><strong>Jolene</strong><small>Control Center</small></span>
+      </a>
+      <div class="header-tools">
+        <nav class="product-nav" aria-label="Jolene control center">
+          <a href="/memory">Memory</a>
+          <a href="/approvals" aria-current="page">Approvals</a>
+        </nav>
+        <button class="scope-button" id="scope-button" type="button">
+          <span>Approval scope</span>
+          <strong id="scope-label">carl · personal</strong>
+        </button>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="hero hero-approval" aria-labelledby="page-title">
+        <p class="eyebrow">Exact permission, held locally</p>
+        <h1 id="page-title">Review what Jolene may send.</h1>
+        <p class="hero-copy">Inspect the recipient and complete message before granting short-lived permission. Approval never means the message was delivered.</p>
+        <div class="hero-actions">
+          <button class="button button-primary" id="stage-action-button" type="button">Stage a message</button>
+          <span class="local-note"><span aria-hidden="true">●</span> Proposal-only runtime</span>
+        </div>
+      </section>
+
+      <aside class="boundary-banner" aria-label="Delivery boundary">
+        <span class="boundary-icon" aria-hidden="true">✓</span>
+        <div><strong>Approval is permission—not proof of delivery.</strong><p>Jolene has no external sending tool in this build. Approved messages remain inert.</p></div>
+      </aside>
+
+      <div class="notice" id="page-notice" role="status" aria-live="polite" hidden></div>
+
+      <section class="summary-grid" aria-label="Approval summary">
+        <article><span>Waiting</span><strong id="count-pending">0</strong></article>
+        <article><span>Approved, not sent</span><strong id="count-approved">0</strong></article>
+        <article><span>Closed</span><strong id="count-closed">0</strong></article>
+      </section>
+
+      <section class="panel" aria-labelledby="approval-list-title">
+        <div class="section-heading">
+          <div><p class="eyebrow">Human control point</p><h2 id="approval-list-title">Action proposals</h2></div>
+          <button class="button button-secondary" id="refresh-button" type="button">Refresh</button>
+        </div>
+        <div class="filter-row" role="group" aria-label="Filter action proposals">
+          <button class="filter is-active" type="button" data-action-filter="pending" aria-pressed="true">Waiting</button>
+          <button class="filter" type="button" data-action-filter="approved" aria-pressed="false">Approved</button>
+          <button class="filter" type="button" data-action-filter="all" aria-pressed="false">All history</button>
+          <button class="filter" type="button" data-action-filter="expired" aria-pressed="false">Expired</button>
+          <button class="filter" type="button" data-action-filter="rejected" aria-pressed="false">Rejected</button>
+        </div>
+        <div class="card-grid" id="action-list" aria-live="polite"></div>
+      </section>
+    </main>
+
+    <dialog id="scope-dialog" aria-labelledby="scope-title">
+      <form class="dialog-card" id="scope-form" method="dialog">
+        <div class="dialog-heading"><div><p class="eyebrow">Local identity</p><h2 id="scope-title">Choose an approval scope</h2></div><button class="icon-button" type="button" data-close-dialog aria-label="Close scope settings">×</button></div>
+        <p class="supporting-copy">Only proposals for this person and workspace will appear.</p>
+        <label class="field"><span>Person</span><input id="scope-actor" required maxlength="120" autocomplete="off"></label>
+        <label class="field"><span>Workspace</span><input id="scope-workspace" required maxlength="120" autocomplete="off"></label>
+        <div class="dialog-actions"><button class="button button-secondary" type="button" data-close-dialog>Cancel</button><button class="button button-primary" type="submit">Use this scope</button></div>
+      </form>
+    </dialog>
+
+    <dialog id="stage-dialog" aria-labelledby="stage-title">
+      <form class="dialog-card dialog-card-wide" id="stage-form">
+        <div class="dialog-heading"><div><p class="eyebrow">Proposal only</p><h2 id="stage-title">Stage an external message</h2></div><button class="icon-button" type="button" data-close-dialog aria-label="Close message staging">×</button></div>
+        <p class="supporting-copy">This creates a review item. It cannot send the message.</p>
+        <div class="form-grid">
+          <label class="field"><span>Destination type</span><select id="stage-destination-kind"><option value="client_ai">Client AI</option><option value="slack_user">Slack person</option><option value="slack_channel">Slack channel</option></select></label>
+          <label class="field"><span>Exact destination ID</span><input id="stage-destination-id" required maxlength="240" placeholder="jenny-ai"></label>
+          <label class="field"><span>Data classification</span><select id="stage-data-class"><option value="general">General</option><option value="private">Private</option><option value="restricted">Restricted</option><option value="sensitive">Sensitive</option></select></label>
+          <label class="field"><span>Task context</span><select id="stage-task"><option value="">No selected task</option></select></label>
+          <label class="field field-wide"><span>Complete message</span><textarea id="stage-content" rows="6" required maxlength="40000"></textarea></label>
+          <label class="field field-wide"><span>Purpose</span><input id="stage-purpose" required maxlength="1000" placeholder="Clarify the client review workflow"></label>
+          <label class="field"><span>Permission expires</span><input id="stage-expiry" type="datetime-local" required></label>
+        </div>
+        <div class="inline-error" id="stage-error" role="alert" hidden></div>
+        <div class="dialog-actions"><button class="button button-secondary" type="button" data-close-dialog>Cancel</button><button class="button button-primary" id="stage-submit" type="submit">Add to review</button></div>
+      </form>
+    </dialog>
+
+    <dialog id="approve-dialog" aria-labelledby="approve-title">
+      <form class="dialog-card dialog-card-wide" id="approve-form">
+        <div class="dialog-heading"><div><p class="eyebrow">Exact action review</p><h2 id="approve-title">Approve this exact message?</h2></div><button class="icon-button" type="button" data-close-dialog aria-label="Close approval review">×</button></div>
+        <p class="supporting-copy">Review every field. Approval cannot be reused for edited content or another recipient, and nothing is sent now.</p>
+        <input id="approve-id" type="hidden">
+        <dl class="exact-review" id="approve-details"></dl>
+        <div class="inline-error" id="approve-error" role="alert" hidden></div>
+        <div class="dialog-actions"><button class="button button-secondary" type="button" data-close-dialog>Keep waiting</button><button class="button button-primary" id="approve-submit" type="submit">Approve exact action</button></div>
+      </form>
+    </dialog>
+
+    <div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true" hidden></div>
+  </body>
+</html>

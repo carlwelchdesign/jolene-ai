@@ -68,6 +68,10 @@ Prerequisite: Node.js 22 or newer.
    actor/workspace boundary as the API and is not an authenticated production
    administration surface.
 
+   Open [http://127.0.0.1:8421/approvals](http://127.0.0.1:8421/approvals)
+   to stage and review exact external-message proposals. Approval remains local
+   and inert; the screen exposes no send or execution control.
+
    `POST /v1/chat` accepts:
 
    ```json
