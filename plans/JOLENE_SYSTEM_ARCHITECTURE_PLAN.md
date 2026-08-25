@@ -550,7 +550,7 @@ Personal-workflow checkpoint:
 | Field | Value |
 |---|---|
 | Branch | `codex/jolene-personal-workflows` |
-| Implementation commit | Pending |
+| Implementation commit | `f3b6cc7` (`JOL-ARCH-008 add personal work workflows`) |
 | Pull request | None; this local repository has no remote configured |
 | Verification | Node 22 typecheck, 68 contract tests, production build, existing-database-compatible table creation, and live isolated API lifecycle passed |
 | Workflow evidence | Research, project planning, drafting, repository work, briefing, and follow-up preparation all require exact step evidence and reach `awaiting_review` before approval |
