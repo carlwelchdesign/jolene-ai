@@ -198,6 +198,7 @@ project maturity, limitations, and suggested follow-up questions.
 Implementation evidence:
 
 - branch: `codex/jol-career-001-evidence-schema`;
+- implementation commit: `3f57a31` (`JOL-CAREER-001 add governed career evidence`);
 - SQLite migration is additive and retains existing Jolene tables;
 - the canonical portfolio imported 26 sources, 41 active claims, and 57
   relationships;

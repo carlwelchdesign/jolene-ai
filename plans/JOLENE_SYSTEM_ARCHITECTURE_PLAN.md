@@ -680,6 +680,7 @@ Career evidence checkpoint:
 |---|---|
 | Ticket | `JOL-CAREER-001` |
 | Branch | `codex/jol-career-001-evidence-schema` |
+| Implementation commit | `3f57a31` (`JOL-CAREER-001 add governed career evidence`) |
 | Domain boundary | Typed sources, claims, maturity, visibility, relationships, review state, revocation, and supersession |
 | Approval gate | Import creates `public_candidate` / `needs_review`; only explicit current source and claim approval can yield an internally queryable public claim |
 | Portfolio migration | 26 sources, 41 active claims, 57 relationships, 67 expected review-required findings, 0 public-approved claims |
