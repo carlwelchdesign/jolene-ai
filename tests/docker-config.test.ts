@@ -38,5 +38,8 @@ describe("Docker runtime boundary", () => {
     expect(compose).toContain("jolene-slack:");
     expect(compose).toContain('["node", "dist/server.js"]');
     expect(compose).toContain('["node", "dist/slack.js"]');
+    expect(compose).toMatch(
+      /jolene-slack:\n(?:.*\n)*?\s+healthcheck:\n\s+disable: true/,
+    );
   });
 });
