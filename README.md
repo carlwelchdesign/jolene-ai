@@ -57,8 +57,8 @@ The first runnable slice provides:
   to the deterministic response on provider or validation failure;
 - a versioned offline public-delegate evaluation harness with precommitted
   blocker thresholds, deterministic/fake-provider fixtures, real
-  evidence-lifecycle/export scenarios, privacy-safe machine reports, and
-  nonzero hard-gate failure exits;
+  evidence-lifecycle/export and contact-staging scenarios, red-team egress
+  checks, privacy-safe machine reports, and nonzero hard-gate failure exits;
 - a private owner-scoped Contacts screen that can review or delete staged
   requests and save inert local reply drafts without sending anything;
 - contract tests that make no live OpenAI requests.
