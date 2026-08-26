@@ -676,7 +676,7 @@ Conversational Project-Watch checkpoint:
 | Asana | [JOL-ARCH-010C](https://app.asana.com/1/9789386902387/project/1216473233375594/task/1217873279009085) |
 | Branch | `codex/jol-arch-010c-private-project-watch` |
 | Implementation commit | `e779527` (`JOL-ARCH-010C add private project watch tool`) |
-| Pull request | Pending |
+| Pull request | [#11](https://github.com/carlwelchdesign/jolene-ai/pull/11), stacked on #10 |
 | Verification | Node 24 typecheck, 32 test files / 150 tests, production build, Compose configuration validation, staged secret scan, and production dependency audit passed |
 | Runtime evidence | A disposable private API turn inspected the real `carl-welch-portfolio` checkout and accurately reported its current branch, revision, clean worktree, same-day plan, unconfigured build verification, and no alerts; a simulated configured-owner Slack DM returned the same state without posting to Slack |
 | Safety evidence | Exact canonical-owner scope is checked again at the project-source boundary; summaries omit root paths; snapshots contain no plan contents or diffs; other scopes receive no tool; no edit, build, commit, push, deploy, publish, repair, scheduling, or notification path was added |
