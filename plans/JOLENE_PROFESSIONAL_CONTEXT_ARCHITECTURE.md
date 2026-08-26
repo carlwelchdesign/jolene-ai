@@ -218,6 +218,7 @@ Implementation evidence:
 Implementation evidence:
 
 - branch: `codex/jol-career-002-obsidian-ingestion`;
+- implementation commit: `dd4b984` (`JOL-CAREER-002 ingest Obsidian career evidence`);
 - the bounded canonical-vault import discovered and imported 11 notes from
   `01 Career & Job Search`;
 - the import produced 81 active private review-required claims and 106 explicit

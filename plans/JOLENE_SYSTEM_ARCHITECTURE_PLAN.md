@@ -694,9 +694,11 @@ Obsidian career-ingestion checkpoint:
 |---|---|
 | Ticket | `JOL-CAREER-002` |
 | Branch | `codex/jol-career-002-obsidian-ingestion` |
+| Implementation commit | `dd4b984` (`JOL-CAREER-002 ingest Obsidian career evidence`) |
 | Allowlist | Dedicated `JOLENE_CAREER_OBSIDIAN_ALLOWLIST`; canonical first scope is `01 Career & Job Search` |
 | Canonical import | 11 sources, 81 active private claims, 106 tag/wiki-link relationships, 0 public-approved claims |
 | Metadata | Current hash, relative path, frontmatter keys, headings, tags, aliases, wiki links, Markdown links, and document date |
 | Lifecycle | Removed sections supersede prior claims; deleted or opted-out notes become missing; reappearance resets review; revoked sources remain revoked |
 | Storage boundary | Current Markdown snapshot only; no Git history, Obsidian history, dot-directory content, symlink target, or oversized file import |
+| Verification | Typecheck, 101 tests, production build, Compose validation, Docker image build, real canonical-vault import, idempotent rerun, foreign-key check, zero production dependency vulnerabilities |
 | Remaining boundary | Claims still require human review and are not supplied to RAG; hybrid retrieval remains `JOL-CAREER-003` |
