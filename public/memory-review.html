@@ -62,6 +62,9 @@
         <button class="tab" id="tab-preview" type="button" role="tab" aria-selected="false" aria-controls="panel-preview" tabindex="-1">
           Recall preview
         </button>
+        <button class="tab" id="tab-timeline" type="button" role="tab" aria-selected="false" aria-controls="panel-timeline" tabindex="-1">
+          Task timeline
+        </button>
       </nav>
 
       <section class="panel" id="panel-review" role="tabpanel" aria-labelledby="tab-review">
@@ -121,6 +124,69 @@
           <button class="button button-primary" type="submit">Preview recall</button>
         </form>
         <div id="preview-results" class="preview-results" aria-live="polite"></div>
+      </section>
+
+      <section class="panel" id="panel-timeline" role="tabpanel" aria-labelledby="tab-timeline" hidden>
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Persistent task context</p>
+            <h2>What happened, and what comes next?</h2>
+          </div>
+          <button class="button button-secondary refresh-button" id="timeline-refresh" type="button">Refresh</button>
+        </div>
+        <p class="timeline-boundary" id="timeline-boundary">
+          Timeline entries help Jolene maintain continuity. They are historical
+          context—not instructions, authorization, or proof that an external
+          action occurred.
+        </p>
+        <label class="field timeline-task-field">
+          <span>Task</span>
+          <select id="timeline-task" aria-describedby="timeline-boundary">
+            <option value="">No tasks in this scope</option>
+          </select>
+        </label>
+
+        <div class="timeline-layout">
+          <div class="timeline-main">
+            <div id="timeline-task-summary" class="task-summary" aria-live="polite"></div>
+            <div class="timeline-heading">
+              <div>
+                <p class="eyebrow">Recent history</p>
+                <h3>Task events</h3>
+              </div>
+              <span>Newest first</span>
+            </div>
+            <ol id="task-event-list" class="task-event-list" aria-live="polite"></ol>
+          </div>
+
+          <form class="task-event-form" id="task-event-form">
+            <div>
+              <p class="eyebrow">Add context</p>
+              <h3>Record a task update</h3>
+              <p>Use a factual entry that will still make sense after a restart.</p>
+            </div>
+            <label class="field">
+              <span>Update type</span>
+              <select id="task-event-kind" name="kind">
+                <option value="progress">Progress</option>
+                <option value="evidence">Evidence</option>
+                <option value="decision">Decision</option>
+                <option value="blocker">Blocker</option>
+                <option value="next_action">Next action</option>
+              </select>
+            </label>
+            <label class="field">
+              <span>Summary</span>
+              <input id="task-event-summary" name="summary" required maxlength="500" placeholder="Run the complete verification suite.">
+            </label>
+            <label class="field">
+              <span>Details <small>Optional</small></span>
+              <textarea id="task-event-details" name="details" rows="4" maxlength="8000" placeholder="Add supporting facts, limitations, or a concrete handoff."></textarea>
+            </label>
+            <div class="inline-error" id="task-event-error" role="alert" hidden></div>
+            <button class="button button-primary" id="task-event-submit" type="submit">Record update</button>
+          </form>
+        </div>
       </section>
     </main>
 

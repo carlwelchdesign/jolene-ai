@@ -17,8 +17,10 @@ describe("memory review interface", () => {
   it("provides an accessible, externally sourced application shell", () => {
     expect(html).toContain('<a class="skip-link" href="#main">');
     expect(html).toContain('<main id="main">');
-    expect(html.match(/role="tab"/g)).toHaveLength(3);
-    expect(html.match(/role="tabpanel"/g)).toHaveLength(3);
+    expect(html.match(/role="tab"/g)).toHaveLength(4);
+    expect(html.match(/role="tabpanel"/g)).toHaveLength(4);
+    expect(html).toContain('id="panel-timeline"');
+    expect(html).toContain('id="task-event-form"');
     expect(html).toContain('<dialog class="dialog-wide" id="proposal-dialog"');
     expect(html).toContain('<dialog id="forget-dialog"');
     expect(html).toContain('href="/memory-review.css"');
@@ -34,12 +36,17 @@ describe("memory review interface", () => {
     expect(javascript).toContain('"approved"');
     expect(javascript).toContain('"rejected"');
     expect(javascript).toContain('"/forget"');
+    expect(javascript).toContain('"/events"');
+    expect(javascript).toContain("textContent");
+    expect(html).toContain("not instructions, authorization, or proof");
   });
 
   it("includes keyboard focus, narrow-screen, and reduced-motion states", () => {
     expect(css).toContain(":focus-visible");
     expect(css).toContain("@media (max-width: 720px)");
     expect(css).toContain("@media (prefers-reduced-motion: reduce)");
+    expect(css).toContain(".timeline-layout");
+    expect(css).toContain(".task-event-form");
   });
 
   it("loads immutable startup assets with a restrictive local policy", () => {
