@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light">
+    <title>Jolene Workflows</title>
+    <link rel="stylesheet" href="/memory-review.css">
+    <link rel="stylesheet" href="/workflow-review.css">
+    <script type="module" src="/workflow-review.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to workflows</a>
+
+    <header class="topbar">
+      <a class="brand" href="/workflows" aria-label="Jolene Workflows home">
+        <span class="brand-mark" aria-hidden="true">J</span>
+        <span><strong>Jolene</strong><small>Control Center</small></span>
+      </a>
+      <div class="header-tools">
+        <nav class="product-nav" aria-label="Jolene control center">
+          <a href="/workflows" aria-current="page">Work</a>
+          <a href="/memory">Memory</a>
+          <a href="/approvals">Approvals</a>
+        </nav>
+        <button class="scope-button" id="scope-button" type="button">
+          <span>Work scope</span>
+          <strong id="scope-label">carl · personal</strong>
+        </button>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="hero hero-workflow" aria-labelledby="page-title">
+        <p class="eyebrow">Structured work, visible progress</p>
+        <h1 id="page-title">Keep Jolene’s work on the rails.</h1>
+        <p class="hero-copy">Start a bounded workflow, inspect the evidence for every step, and decide when the result is actually finished.</p>
+        <div class="hero-actions">
+          <button class="button button-primary" id="start-workflow-button" type="button">Start new work</button>
+          <span class="local-note"><span aria-hidden="true">●</span> Human-reviewed completion</span>
+        </div>
+      </section>
+
+      <aside class="boundary-banner workflow-boundary" aria-label="Workflow boundary">
+        <span class="boundary-icon" aria-hidden="true">✓</span>
+        <div><strong>Finishing a workflow does not authorize an external action.</strong><p>Messages, publishing, repository changes, and other side effects still require their own permission and execution boundary.</p></div>
+      </aside>
+
+      <div class="notice" id="page-notice" role="status" aria-live="polite" hidden></div>
+
+      <section class="summary-grid workflow-summary" aria-label="Workflow summary">
+        <article><span>In progress</span><strong id="count-active">0</strong></article>
+        <article><span>Needs review</span><strong id="count-review">0</strong></article>
+        <article><span>Completed</span><strong id="count-completed">0</strong></article>
+      </section>
+
+      <section class="panel" aria-labelledby="workflow-list-title">
+        <div class="section-heading">
+          <div><p class="eyebrow">Personal work queue</p><h2 id="workflow-list-title">Workflow runs</h2></div>
+          <button class="button button-secondary" id="refresh-button" type="button">Refresh</button>
+        </div>
+        <div class="filter-row" role="group" aria-label="Filter workflow runs">
+          <button class="filter is-active" type="button" data-workflow-filter="open" aria-pressed="true">Open work</button>
+          <button class="filter" type="button" data-workflow-filter="awaiting_review" aria-pressed="false">Needs review</button>
+          <button class="filter" type="button" data-workflow-filter="completed" aria-pressed="false">Completed</button>
+          <button class="filter" type="button" data-workflow-filter="all" aria-pressed="false">All history</button>
+          <button class="filter" type="button" data-workflow-filter="cancelled" aria-pressed="false">Cancelled</button>
+        </div>
+        <div class="card-grid" id="workflow-list" aria-live="polite"></div>
+      </section>
+    </main>
+
+    <dialog id="scope-dialog" aria-labelledby="scope-title">
+      <form class="dialog-card" id="scope-form">
+        <div class="dialog-heading"><div><p class="eyebrow">Local identity</p><h2 id="scope-title">Choose a work scope</h2></div><button class="icon-button" type="button" data-close-dialog aria-label="Close scope settings">×</button></div>
+        <p class="supporting-copy">Only tasks and workflows owned by this person and workspace will appear.</p>
+        <label class="field"><span>Person</span><input id="scope-actor" required maxlength="120" autocomplete="off"></label>
+        <label class="field"><span>Workspace</span><input id="scope-workspace" required maxlength="120" autocomplete="off"></label>
+        <div class="dialog-actions"><button class="button button-secondary" type="button" data-close-dialog>Cancel</button><button class="button button-primary" type="submit">Use this scope</button></div>
+      </form>
+    </dialog>
+
+    <dialog class="dialog-wide" id="start-dialog" aria-labelledby="start-title">
+      <form class="dialog-card dialog-card-wide" id="start-form">
+        <div class="dialog-heading"><div><p class="eyebrow">Bounded personal work</p><h2 id="start-title">Start a workflow</h2></div><button class="icon-button" type="button" data-close-dialog aria-label="Close workflow setup">×</button></div>
+        <p class="supporting-copy">Choose an existing task or create one here. The workflow will begin at its first required step.</p>
+        <fieldset class="choice-group">
+          <legend>Task setup</legend>
+          <label><input type="radio" name="task-mode" value="existing" checked> Use an existing task</label>
+          <label><input type="radio" name="task-mode" value="new"> Create a new task</label>
+        </fieldset>
+        <div id="existing-task-fields">
+          <label class="field"><span>Existing task</span><select id="start-task" required><option value="">Choose a task</option></select></label>
+        </div>
+        <div class="form-grid" id="new-task-fields" hidden>
+          <label class="field"><span>Task title</span><input id="new-task-title" maxlength="240" placeholder="Research the launch market"></label>
+          <label class="field field-wide"><span>Objective</span><textarea id="new-task-objective" rows="3" maxlength="8000" placeholder="Define the decision this work should support."></textarea></label>
+        </div>
+        <label class="field"><span>Workflow type</span><select id="start-kind" required></select></label>
+        <div class="template-preview" id="template-preview" aria-live="polite"></div>
+        <div class="inline-error" id="start-error" role="alert" hidden></div>
+        <div class="dialog-actions"><button class="button button-secondary" type="button" data-close-dialog>Cancel</button><button class="button button-primary" id="start-submit" type="submit">Start workflow</button></div>
+      </form>
+    </dialog>
+
+    <dialog class="dialog-wide" id="step-dialog" aria-labelledby="step-title">
+      <form class="dialog-card dialog-card-wide" id="step-form">
+        <div class="dialog-heading"><div><p class="eyebrow">Current required step</p><h2 id="step-title">Record step evidence</h2></div><button class="icon-button" type="button" data-close-dialog aria-label="Close step evidence">×</button></div>
+        <input id="step-workflow-id" type="hidden">
+        <input id="step-id" type="hidden">
+        <div class="step-callout"><strong id="step-label"></strong><p id="step-requirement"></p></div>
+        <label class="field"><span>Completion evidence</span><textarea id="step-summary" rows="6" required maxlength="8000" placeholder="Record what was completed, where the evidence lives, and any uncertainty that remains."></textarea></label>
+        <div class="inline-error" id="step-error" role="alert" hidden></div>
+        <div class="dialog-actions"><button class="button button-secondary" type="button" data-close-dialog>Keep working</button><button class="button button-primary" id="step-submit" type="submit">Complete this step</button></div>
+      </form>
+    </dialog>
+
+    <dialog class="dialog-wide" id="review-dialog" aria-labelledby="review-title">
+      <form class="dialog-card dialog-card-wide" id="review-form">
+        <div class="dialog-heading"><div><p class="eyebrow">Human completion gate</p><h2 id="review-title">Review the work packet</h2></div><button class="icon-button" type="button" data-close-dialog aria-label="Close workflow review">×</button></div>
+        <p class="supporting-copy">Approval completes this local workflow record only. It does not send, publish, or execute anything.</p>
+        <input id="review-workflow-id" type="hidden">
+        <div class="review-evidence" id="review-evidence"></div>
+        <label class="field"><span>Decision</span><select id="review-decision"><option value="approved">Approve as complete</option><option value="changes_requested">Request changes</option></select></label>
+        <div class="form-grid" id="revision-fields" hidden>
+          <label class="field"><span>Return to step</span><select id="review-return-step"></select></label>
+          <label class="field field-wide"><span>Required changes</span><textarea id="review-feedback" rows="4" maxlength="8000"></textarea></label>
+        </div>
+        <div class="inline-error" id="review-error" role="alert" hidden></div>
+        <div class="dialog-actions"><button class="button button-secondary" type="button" data-close-dialog>Keep waiting</button><button class="button button-primary" id="review-submit" type="submit">Record decision</button></div>
+      </form>
+    </dialog>
+
+    <dialog id="cancel-dialog" aria-labelledby="cancel-title">
+      <form class="dialog-card" id="cancel-form">
+        <div class="dialog-heading"><div><p class="eyebrow eyebrow-danger">Close without completion</p><h2 id="cancel-title">Cancel this workflow?</h2></div><button class="icon-button" type="button" data-close-dialog aria-label="Close workflow cancellation">×</button></div>
+        <p class="supporting-copy">The evidence history will remain, but this workflow cannot be resumed after cancellation.</p>
+        <input id="cancel-workflow-id" type="hidden">
+        <label class="field"><span>Reason (optional)</span><textarea id="cancel-feedback" rows="3" maxlength="8000"></textarea></label>
+        <div class="inline-error" id="cancel-error" role="alert" hidden></div>
+        <div class="dialog-actions"><button class="button button-secondary" type="button" data-close-dialog>Keep workflow</button><button class="button button-danger" id="cancel-submit" type="submit">Cancel workflow</button></div>
+      </form>
+    </dialog>
+
+    <div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true" hidden></div>
+  </body>
+</html>

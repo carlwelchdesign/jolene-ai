@@ -13,6 +13,9 @@ export interface MemoryReviewAssets {
   readonly actionHtml: MemoryReviewAsset;
   readonly actionCss: MemoryReviewAsset;
   readonly actionJavascript: MemoryReviewAsset;
+  readonly workflowHtml: MemoryReviewAsset;
+  readonly workflowCss: MemoryReviewAsset;
+  readonly workflowJavascript: MemoryReviewAsset;
 }
 
 const SECURITY_HEADERS = {
@@ -58,6 +61,21 @@ export function loadMemoryReviewAssets(
     actionJavascript: loadAsset(
       publicDirectory,
       "action-review.js",
+      "text/javascript; charset=utf-8",
+    ),
+    workflowHtml: loadAsset(
+      publicDirectory,
+      "workflow-review.html",
+      "text/html; charset=utf-8",
+    ),
+    workflowCss: loadAsset(
+      publicDirectory,
+      "workflow-review.css",
+      "text/css; charset=utf-8",
+    ),
+    workflowJavascript: loadAsset(
+      publicDirectory,
+      "workflow-review.js",
       "text/javascript; charset=utf-8",
     ),
   };

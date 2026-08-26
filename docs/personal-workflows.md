@@ -31,6 +31,25 @@ exist for a task at a time.
 
 ## Local API
 
+### Graphical workflow console
+
+With Jolene's HTTP service running, open
+`http://127.0.0.1:8421/workflows`. The local console supports:
+
+- starting a workflow from an existing task or a newly created task;
+- current-step guidance and evidence capture;
+- visible progress and durable event history;
+- explicit completion review;
+- changes requested back to an exact step; and
+- cancellation with retained read-only history.
+
+The interface persistently distinguishes workflow completion from permission to
+send, publish, modify a repository, or perform another side effect. It uses the
+same browser-local actor/workspace scope as Memory and Approvals and is not an
+authenticated production administration surface.
+
+### HTTP routes
+
 List the templates:
 
 `GET /v1/workflow-templates`
@@ -89,7 +108,7 @@ writes, or another external side effect.
 ## Current boundary
 
 This slice provides the deterministic templates, persistence, event history,
-revision loop, and API. It does not yet let the model create or advance runs,
-does not render a graphical workflow console, and does not schedule work. Any
-future tool binding must preserve exact actor/workspace/task scope and the
-existing capability-approval boundary for external actions.
+revision loop, API, and local graphical workflow console. It does not yet let
+the model create or advance runs and does not schedule work. Any future tool
+binding must preserve exact actor/workspace/task scope and the existing
+capability-approval boundary for external actions.

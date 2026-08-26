@@ -73,6 +73,11 @@ Prerequisite: Node.js 22 or newer.
    to stage and review exact external-message proposals. Approval remains local
    and inert; the screen exposes no send or execution control.
 
+   Open [http://127.0.0.1:8421/workflows](http://127.0.0.1:8421/workflows)
+   to start task-bound work, record exact step evidence, request revisions,
+   approve completion, or cancel while retaining the history. Completing work
+   does not authorize any external action.
+
    `POST /v1/chat` accepts:
 
    ```json

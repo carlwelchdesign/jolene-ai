@@ -94,6 +94,21 @@ async function handleRequest(
     return;
   }
 
+  if (request.method === "GET" && url.pathname === "/workflows") {
+    sendAsset(response, memoryReviewAssets.workflowHtml);
+    return;
+  }
+
+  if (request.method === "GET" && url.pathname === "/workflow-review.css") {
+    sendAsset(response, memoryReviewAssets.workflowCss);
+    return;
+  }
+
+  if (request.method === "GET" && url.pathname === "/workflow-review.js") {
+    sendAsset(response, memoryReviewAssets.workflowJavascript);
+    return;
+  }
+
   if (request.method === "GET" && url.pathname === "/action-review.css") {
     sendAsset(response, memoryReviewAssets.actionCss);
     return;

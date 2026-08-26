@@ -434,6 +434,8 @@ The action-approval-interface slice adds a local graphical control point for sta
 
 The personal-workflow slice adds six durable, task-bound workflow templates for research, project planning, drafting, repository work, briefings, and follow-up preparation. Exact current-step evidence is required, transitions are actor/workspace scoped, revision requests return to a named step, and the final step always pauses for human review instead of completing autonomously. It adds no model tool, scheduler, or external side effect.
 
+The workflow-interface slice adds a local graphical control point for starting work from an existing or new task, recording exact current-step evidence, inspecting progress and history, requesting changes to a named step, approving completion, and cancelling with history retained. Persistent copy separates local workflow completion from external-action authorization. Dynamic content is text-only, modal and error recovery states are explicit, and the console shares the existing local actor/workspace scope.
+
 Delivery checkpoint:
 
 | Field | Value |
@@ -557,6 +559,18 @@ Personal-workflow checkpoint:
 | Safety evidence | Actor/workspace/task scope, no step skipping, bounded revision return, durable event history, and no model, schedule, send, publish, or execution tool |
 | Remaining boundary | Model-facing workflow tools, graphical workflow review, task-status synchronization, richer artifacts, scheduling, and authenticated production administration remain pending |
 
+Workflow-interface checkpoint:
+
+| Field | Value |
+|---|---|
+| Branch | `codex/jolene-workflow-ui` |
+| Implementation commit | Pending |
+| Pull request | None; this local repository has no remote configured |
+| Verification | Node 22 typecheck, 73 contract tests, production build, staged secret scan, dependency audit, and live desktop browser lifecycle passed |
+| Interaction evidence | New-task workflow creation, five ordered repository-work steps, completion review, changes requested to verification, resubmission, approval, cancellation confirmation, filters, empty states, and cross-navigation passed |
+| Safety evidence | Persistent no-external-action explanation, exact current-step capture, explicit review and revision, destructive cancellation confirmation, text-only dynamic rendering, restrictive asset headers, and no external execution control |
+| Remaining boundary | Model-facing workflow tools, richer artifact handling, task-status synchronization, scheduling, authenticated production administration, and physical narrow-screen exploratory evidence remain pending |
+
 ## Architecture tickets
 
 | ID | Ticket | Acceptance criteria |
@@ -585,7 +599,7 @@ Current ticket evidence:
 | JOL-ARCH-005 | Implemented for local slice | Read-only allowlisted Markdown retrieval is tested with exact note and heading citations. |
 | JOL-ARCH-006 | Partial | Retrieved excerpts retain provenance and private knowledge searches now have a durable, content-minimizing access ledger; external disclosure authorization and delivery receipts remain pending. |
 | JOL-ARCH-007 | Partial | Deterministic risk decisions, a typed proposal-only registry, exact expiring approvals, an internal one-time claim boundary, and a local graphical approval-review workflow exist; trusted delivery adapters and execution receipts remain pending. |
-| JOL-ARCH-008 | Implemented for first slice | Six task-bound workflow templates, exact step evidence, durable history, bounded revision, and explicit final review are tested; model-facing tools, richer artifacts, graphical review, and scheduling remain pending. |
+| JOL-ARCH-008 | Implemented for local slice | Six task-bound workflow templates, exact step evidence, durable history, bounded revision, explicit final review, and a local graphical control point are tested; model-facing tools, richer artifacts, scheduling, and authenticated administration remain pending. |
 | JOL-ARCH-009 | Partial | Initial runtime behavior prompt and non-impersonation rules exist; the formal personality renderer and evaluation suite are pending. |
 
 ## Architecture risks
