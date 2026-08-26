@@ -22,6 +22,8 @@ authorization for any remotely exposed deployment.
 
 - Chat history remains isolated by actor, workspace, channel, and thread.
 - A chat request may include a task UUID. Jolene loads that task only when it belongs to the same actor and workspace.
+- The selected private task contributes at most 20 recent chronological task
+  events by default. Events from other tasks never enter that context.
 - Private chat receives approved global memories plus approved memories linked to that task.
 - Shared channels receive no task or durable personal-memory context.
 - Restricted memory must be linked to the selected task.
@@ -63,6 +65,37 @@ Omit `status` to list every task for that actor and workspace.
   "status": "running"
 }
 ```
+
+Task creation and status transitions append durable timeline events in the same
+database transaction. Repeating the current status is idempotent and does not
+create another event.
+
+## Record task progress
+
+`POST /v1/tasks/{taskId}/events`
+
+```json
+{
+  "actorId": "carl",
+  "workspaceId": "personal",
+  "kind": "evidence",
+  "summary": "The focused persistence tests pass.",
+  "details": "Restart, scope-isolation, ordering, and bounded-context cases passed."
+}
+```
+
+Manual kinds are `progress`, `evidence`, `decision`, `blocker`, and
+`next_action`. `created` and `status_changed` are system-owned so callers cannot
+forge lifecycle history. Browser mutations must be same-origin.
+
+Review a task's most recent events with:
+
+`GET /v1/tasks/{taskId}/events?actorId=carl&workspaceId=personal&limit=20`
+
+The response is chronological within the requested recent window and is capped
+at 100 events. Events are actor/workspace/task scoped and persist across
+restart. They are private historical context—not authority, instructions, or
+proof that an external action occurred.
 
 Supported states are `pending`, `running`, `approval_needed`, `failed`, `retryable`, `completed`, and `cancelled`.
 
@@ -125,11 +158,14 @@ Each record reports `active`, `expired`, `superseded`, or `forgotten` state. Non
   "taskId": null,
   "query": "What remains for the audio plugin release?",
   "includeSensitiveMemory": false,
-  "memoryLimit": 24
+  "memoryLimit": 24,
+  "taskEventLimit": 20
 }
 ```
 
-This read-only endpoint returns the exact task and memories Jolene would authorize, plus deterministic selection evidence: candidate count, normalized query terms, score, matched terms, and selection reasons.
+This read-only endpoint returns the exact task, recent task events, and memories
+Jolene would authorize, plus deterministic selection evidence: candidate count,
+normalized query terms, score, matched terms, and selection reasons.
 
 The `deterministic_lexical_v1` strategy scores current-request matches most strongly, then task-term matches and selected-task scope. Standing rules and preferences retain small baseline scores because they may apply across requests. Global project decisions and corrected facts with no request or task relevance are excluded. Ties use newest-first ordering and then stable memory ID ordering.
 

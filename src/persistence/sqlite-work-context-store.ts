@@ -12,6 +12,7 @@ import {
   MemoryProposalNotFoundError,
   WorkTaskNotFoundError,
   type AuthorizedWorkContext,
+  type AppendTaskEventInput,
   type CreateTaskInput,
   type DecideMemoryInput,
   type DurableMemory,
@@ -21,6 +22,8 @@ import {
   type MemorySensitivity,
   type ProposeMemoryInput,
   type TaskStatus,
+  type TaskEvent,
+  type TaskEventKind,
   type UpdateTaskStatusInput,
   type WorkContextStore,
   type WorkTask,
@@ -36,6 +39,19 @@ interface TaskRow {
   readonly status: TaskStatus;
   readonly created_at: string;
   readonly updated_at: string;
+}
+
+interface TaskEventRow {
+  readonly id: string;
+  readonly task_id: string;
+  readonly actor_id: string;
+  readonly workspace_id: string;
+  readonly kind: TaskEventKind;
+  readonly summary: string;
+  readonly details: string | null;
+  readonly from_status: TaskStatus | null;
+  readonly to_status: TaskStatus | null;
+  readonly created_at: string;
 }
 
 interface ProposalRow {
@@ -87,25 +103,40 @@ export class SqliteWorkContextStore implements WorkContextStore {
   }
 
   createTask(input: CreateTaskInput): WorkTask {
-    const id = randomUUID();
-    const now = this.now().toISOString();
-    this.database
-      .prepare(
-        `INSERT INTO work_tasks
-          (id, actor_id, workspace_id, title, objective, status, created_at, updated_at)
-         VALUES (?, ?, ?, ?, ?, 'pending', ?, ?)`,
-      )
-      .run(
-        id,
-        input.actorId,
-        input.workspaceId,
-        input.title,
-        input.objective,
-        now,
-        now,
-      );
+    const create = this.database.transaction((): WorkTask => {
+      const id = randomUUID();
+      const now = this.now().toISOString();
+      this.database
+        .prepare(
+          `INSERT INTO work_tasks
+            (id, actor_id, workspace_id, title, objective, status, created_at, updated_at)
+           VALUES (?, ?, ?, ?, ?, 'pending', ?, ?)`,
+        )
+        .run(
+          id,
+          input.actorId,
+          input.workspaceId,
+          input.title,
+          input.objective,
+          now,
+          now,
+        );
+      this.insertTaskEvent({
+        taskId: id,
+        actorId: input.actorId,
+        workspaceId: input.workspaceId,
+        kind: "created",
+        summary: "Task created.",
+        details: null,
+        fromStatus: null,
+        toStatus: "pending",
+        createdAt: now,
+      });
 
-    return this.requireTask(id, input.actorId, input.workspaceId);
+      return this.requireTask(id, input.actorId, input.workspaceId);
+    });
+
+    return create();
   }
 
   getTask(id: string, actorId: string, workspaceId: string): WorkTask {
@@ -113,22 +144,44 @@ export class SqliteWorkContextStore implements WorkContextStore {
   }
 
   updateTaskStatus(input: UpdateTaskStatusInput): WorkTask {
-    const result = this.database
-      .prepare(
-        `UPDATE work_tasks
-         SET status = ?, updated_at = ?
-         WHERE id = ? AND actor_id = ? AND workspace_id = ?`,
-      )
-      .run(
-        input.status,
-        this.now().toISOString(),
+    const update = this.database.transaction((): WorkTask => {
+      const current = this.requireTask(
         input.id,
         input.actorId,
         input.workspaceId,
       );
+      if (current.status === input.status) return current;
 
-    if (result.changes !== 1) throw new WorkTaskNotFoundError();
-    return this.requireTask(input.id, input.actorId, input.workspaceId);
+      const now = this.now().toISOString();
+      this.database
+        .prepare(
+          `UPDATE work_tasks
+           SET status = ?, updated_at = ?
+           WHERE id = ? AND actor_id = ? AND workspace_id = ?`,
+        )
+        .run(
+          input.status,
+          now,
+          input.id,
+          input.actorId,
+          input.workspaceId,
+        );
+      this.insertTaskEvent({
+        taskId: input.id,
+        actorId: input.actorId,
+        workspaceId: input.workspaceId,
+        kind: "status_changed",
+        summary: `Task status changed from ${current.status} to ${input.status}.`,
+        details: null,
+        fromStatus: current.status,
+        toStatus: input.status,
+        createdAt: now,
+      });
+
+      return this.requireTask(input.id, input.actorId, input.workspaceId);
+    });
+
+    return update();
   }
 
   listTasks(
@@ -153,6 +206,41 @@ export class SqliteWorkContextStore implements WorkContextStore {
           .all(actorId, workspaceId) as TaskRow[]);
 
     return rows.map(mapTask);
+  }
+
+  appendTaskEvent(input: AppendTaskEventInput): TaskEvent {
+    this.requireTask(input.taskId, input.actorId, input.workspaceId);
+    return this.insertTaskEvent({
+      ...input,
+      details: input.details ?? null,
+      fromStatus: null,
+      toStatus: null,
+      createdAt: this.now().toISOString(),
+    });
+  }
+
+  listTaskEvents(
+    taskId: string,
+    actorId: string,
+    workspaceId: string,
+    limit: number,
+  ): readonly TaskEvent[] {
+    this.requireTask(taskId, actorId, workspaceId);
+    const rows = this.database
+      .prepare(
+        `SELECT * FROM task_events
+         WHERE task_id = ? AND actor_id = ? AND workspace_id = ?
+         ORDER BY sequence_id DESC
+         LIMIT ?`,
+      )
+      .all(
+        taskId,
+        actorId,
+        workspaceId,
+        Math.max(1, Math.min(limit, 100)),
+      ) as TaskEventRow[];
+
+    return rows.reverse().map(mapTaskEvent);
   }
 
   proposeMemory(input: ProposeMemoryInput): MemoryProposal {
@@ -400,6 +488,14 @@ export class SqliteWorkContextStore implements WorkContextStore {
 
     return {
       task,
+      taskEvents: task
+        ? this.listTaskEvents(
+            task.id,
+            request.actorId,
+            request.workspaceId,
+            request.taskEventLimit ?? 20,
+          )
+        : [],
       memories: ranked.memories,
       selection: {
         strategy: "deterministic_lexical_v1",
@@ -472,6 +568,43 @@ export class SqliteWorkContextStore implements WorkContextStore {
     return memory;
   }
 
+  private insertTaskEvent(input: {
+    readonly taskId: string;
+    readonly actorId: string;
+    readonly workspaceId: string;
+    readonly kind: TaskEventKind;
+    readonly summary: string;
+    readonly details: string | null;
+    readonly fromStatus: TaskStatus | null;
+    readonly toStatus: TaskStatus | null;
+    readonly createdAt: string;
+  }): TaskEvent {
+    const id = randomUUID();
+    this.database
+      .prepare(
+        `INSERT INTO task_events
+          (id, task_id, actor_id, workspace_id, kind, summary, details,
+           from_status, to_status, created_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      )
+      .run(
+        id,
+        input.taskId,
+        input.actorId,
+        input.workspaceId,
+        input.kind,
+        input.summary,
+        input.details,
+        input.fromStatus,
+        input.toStatus,
+        input.createdAt,
+      );
+
+    return mapTaskEvent(this.database
+      .prepare("SELECT * FROM task_events WHERE id = ?")
+      .get(id) as TaskEventRow);
+  }
+
   private migrate(): void {
     this.database.exec(`
       CREATE TABLE IF NOT EXISTS work_tasks (
@@ -490,6 +623,32 @@ export class SqliteWorkContextStore implements WorkContextStore {
 
       CREATE INDEX IF NOT EXISTS work_tasks_scope_status
         ON work_tasks(actor_id, workspace_id, status, updated_at DESC);
+
+      CREATE TABLE IF NOT EXISTS task_events (
+        sequence_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        id TEXT NOT NULL UNIQUE,
+        task_id TEXT NOT NULL REFERENCES work_tasks(id) ON DELETE CASCADE,
+        actor_id TEXT NOT NULL,
+        workspace_id TEXT NOT NULL,
+        kind TEXT NOT NULL CHECK(kind IN (
+          'created', 'status_changed', 'progress', 'evidence', 'decision',
+          'blocker', 'next_action'
+        )),
+        summary TEXT NOT NULL,
+        details TEXT,
+        from_status TEXT CHECK(from_status IS NULL OR from_status IN (
+          'pending', 'running', 'approval_needed', 'failed', 'retryable',
+          'completed', 'cancelled'
+        )),
+        to_status TEXT CHECK(to_status IS NULL OR to_status IN (
+          'pending', 'running', 'approval_needed', 'failed', 'retryable',
+          'completed', 'cancelled'
+        )),
+        created_at TEXT NOT NULL
+      );
+
+      CREATE INDEX IF NOT EXISTS task_events_scope_task_sequence
+        ON task_events(actor_id, workspace_id, task_id, sequence_id DESC);
 
       CREATE TABLE IF NOT EXISTS memory_proposals (
         id TEXT PRIMARY KEY,
@@ -583,6 +742,21 @@ function mapTask(row: TaskRow): WorkTask {
     status: row.status,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
+  };
+}
+
+function mapTaskEvent(row: TaskEventRow): TaskEvent {
+  return {
+    id: row.id,
+    taskId: row.task_id,
+    actorId: row.actor_id,
+    workspaceId: row.workspace_id,
+    kind: row.kind,
+    summary: row.summary,
+    details: row.details,
+    fromStatus: row.from_status,
+    toStatus: row.to_status,
+    createdAt: row.created_at,
   };
 }
 

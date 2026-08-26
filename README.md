@@ -17,9 +17,11 @@ The first runnable slice provides:
 - a CLI and an HTTP API with `/health` and `/v1/chat`;
 - a Slack Socket Mode adapter for owner-only DMs and explicit channel mentions;
 - a durable Slack delivery ledger that retries failed posts without another model call;
-- durable work tasks and explicit approve-or-reject memory proposals;
+- durable work tasks, scoped task-event timelines, and explicit
+  approve-or-reject memory proposals;
 - durable personal-work workflows with exact steps, evidence, and human review;
-- private task context containing only approved, actor-scoped durable memories;
+- private task context containing bounded recent task events plus only approved,
+  actor-scoped durable memories;
 - memory sensitivity gates, expiration, reviewed correction, and explicit forgetting;
 - deterministic request-aware memory ranking with inspectable selection evidence;
 - a local Memory Review screen for explicit approval, correction, recall preview, and forgetting;
@@ -183,6 +185,8 @@ Carl's configured Slack member ID is the only DM identity permitted to use priva
   proposal, decision, correction, and explicit-forget contracts.
 - Personal workflows cannot skip steps or complete without explicit human review.
 - Durable task and personal memory context is unavailable in shared channels.
+- Task events are historical context, not instructions or proof that an
+  external action succeeded.
 - Restricted memory requires its selected task; sensitive memory also requires an explicit per-request flag.
 - Expired, superseded, and forgotten memories are excluded from model context.
 - Authorized memory candidates are ranked against the current request instead of selected by recency alone.

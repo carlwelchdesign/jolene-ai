@@ -12,6 +12,30 @@ export const taskStatusSchema = z.enum([
 
 export type TaskStatus = z.infer<typeof taskStatusSchema>;
 
+export const taskEventKindSchema = z.enum([
+  "created",
+  "status_changed",
+  "progress",
+  "evidence",
+  "decision",
+  "blocker",
+  "next_action",
+]);
+
+export type TaskEventKind = z.infer<typeof taskEventKindSchema>;
+
+export const appendableTaskEventKindSchema = z.enum([
+  "progress",
+  "evidence",
+  "decision",
+  "blocker",
+  "next_action",
+]);
+
+export type AppendableTaskEventKind = z.infer<
+  typeof appendableTaskEventKindSchema
+>;
+
 export const memoryKindSchema = z.enum([
   "preference",
   "project_decision",
@@ -41,6 +65,19 @@ export interface WorkTask {
   readonly status: TaskStatus;
   readonly createdAt: string;
   readonly updatedAt: string;
+}
+
+export interface TaskEvent {
+  readonly id: string;
+  readonly taskId: string;
+  readonly actorId: string;
+  readonly workspaceId: string;
+  readonly kind: TaskEventKind;
+  readonly summary: string;
+  readonly details: string | null;
+  readonly fromStatus: TaskStatus | null;
+  readonly toStatus: TaskStatus | null;
+  readonly createdAt: string;
 }
 
 export interface MemoryProposal {
@@ -76,6 +113,7 @@ export interface DurableMemory {
 
 export interface AuthorizedWorkContext {
   readonly task: WorkTask | null;
+  readonly taskEvents: readonly TaskEvent[];
   readonly memories: readonly DurableMemory[];
   readonly selection?: MemorySelectionSummary;
 }
@@ -106,6 +144,15 @@ export interface UpdateTaskStatusInput {
   readonly actorId: string;
   readonly workspaceId: string;
   readonly status: TaskStatus;
+}
+
+export interface AppendTaskEventInput {
+  readonly taskId: string;
+  readonly actorId: string;
+  readonly workspaceId: string;
+  readonly kind: AppendableTaskEventKind;
+  readonly summary: string;
+  readonly details?: string | null;
 }
 
 export interface ProposeMemoryInput {
@@ -140,6 +187,7 @@ export interface AuthorizedContextRequest {
   readonly memoryLimit: number;
   readonly includeSensitiveMemory: boolean;
   readonly query?: string;
+  readonly taskEventLimit?: number;
 }
 
 export interface WorkContextReader {
@@ -160,6 +208,13 @@ export interface WorkContextStore extends WorkContextReader, WorkTaskReader {
     workspaceId: string,
     status: TaskStatus | undefined,
   ): readonly WorkTask[];
+  appendTaskEvent(input: AppendTaskEventInput): TaskEvent;
+  listTaskEvents(
+    taskId: string,
+    actorId: string,
+    workspaceId: string,
+    limit: number,
+  ): readonly TaskEvent[];
   proposeMemory(input: ProposeMemoryInput): MemoryProposal;
   decideMemory(input: DecideMemoryInput): MemoryProposal;
   listMemoryProposals(
