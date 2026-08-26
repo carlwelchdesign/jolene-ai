@@ -190,11 +190,18 @@ async function handleRequest(
     const parsed = portfolioAnswerRequestSchema.safeParse(input);
     if (!parsed.success) throw new PublicRequestError(400, "invalid_request");
     const artifact = await requireArtifact(options.artifacts);
-    const result = options.answers.answer(artifact, parsed.data);
+    const execution = await options.answers.execute(artifact, parsed.data);
+    const result = execution.response;
     await respond(
       200,
       result,
-      result.claims.length > 0 ? "supported" : "no_evidence",
+      result.claims.length === 0
+        ? "no_evidence"
+        : execution.mode === "model"
+          ? "model_supported"
+          : execution.mode === "fallback"
+            ? "model_fallback"
+            : "supported",
       undefined,
       {
         corpusVersion: result.corpusVersion,

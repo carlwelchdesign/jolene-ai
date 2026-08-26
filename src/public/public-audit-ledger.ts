@@ -30,6 +30,8 @@ export const publicAuditEventSchema = z.object({
   outcome: z.enum([
     "ok",
     "supported",
+    "model_supported",
+    "model_fallback",
     "no_evidence",
     "compared",
     "accepted",

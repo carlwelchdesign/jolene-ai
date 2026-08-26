@@ -1,13 +1,26 @@
+import OpenAI from "openai";
+
 import { loadPublicDelegateConfig } from "./public/public-config.js";
 import { FilePublicArtifactSource } from "./public/public-artifact-source.js";
-import { DeterministicPublicAnswerService } from "./public/public-answer-service.js";
+import {
+  DeterministicPublicAnswerService,
+  GroundedPublicAnswerService,
+} from "./public/public-answer-service.js";
 import { createPublicDelegateServer } from "./public/public-delegate-server.js";
 import { DeterministicPublicJobFitService } from "./public/public-job-fit-service.js";
 import { FixedWindowPublicRequestAdmission } from "./public/public-request-admission.js";
 import { FilePublicContactIntentQueue } from "./public/public-contact-intent-queue.js";
 import { FilePublicAuditLedger } from "./public/public-audit-ledger.js";
+import { OpenAIPublicAnswerGenerator } from "./public/openai-public-answer-generator.js";
 
 const config = loadPublicDelegateConfig();
+const answers = config.answerMode === "openai"
+  ? new GroundedPublicAnswerService(new OpenAIPublicAnswerGenerator({
+      client: new OpenAI({ apiKey: requireOpenAIApiKey(config.openaiApiKey) }),
+      model: config.openaiModel,
+      timeoutMilliseconds: config.openaiTimeoutMilliseconds,
+    }))
+  : new DeterministicPublicAnswerService();
 const contactIntents = new FilePublicContactIntentQueue({
   filePath: config.contactQueuePath,
   maxEntries: config.contactQueueMaxEntries,
@@ -27,7 +40,7 @@ await audits.initialize().catch(() => {
 const server = createPublicDelegateServer({
   enabled: config.enabled,
   artifacts: new FilePublicArtifactSource(config.artifactPath),
-  answers: new DeterministicPublicAnswerService(),
+  answers,
   jobFit: new DeterministicPublicJobFitService(),
   contactIntents,
   audits,
@@ -47,4 +60,9 @@ for (const signal of ["SIGINT", "SIGTERM"] as const) {
   process.on(signal, () => {
     server.close(() => process.exit(0));
   });
+}
+
+function requireOpenAIApiKey(value: string | undefined): string {
+  if (!value) throw new Error("Public OpenAI mode requires an API key.");
+  return value;
 }

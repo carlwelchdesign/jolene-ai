@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 import { tokenizeLexicalTerms } from "../domain/lexical-terms.js";
 import {
   PUBLIC_CAREER_EVIDENCE_SCHEMA_VERSION,
@@ -12,15 +14,40 @@ import {
 } from "../domain/public-portfolio-contract.js";
 
 export interface PublicPortfolioAnswerer {
-  answer(
+  execute(
     artifact: PublicCareerEvidenceArtifact,
     request: PortfolioAnswerRequest,
-  ): PortfolioAnswerResponse;
+  ): PublicAnswerExecution | Promise<PublicAnswerExecution>;
+}
+
+export interface PublicAnswerExecution {
+  readonly response: PortfolioAnswerResponse;
+  readonly mode: "deterministic" | "model" | "fallback";
+}
+
+export interface GroundedPublicAnswerInput {
+  readonly question: string;
+  readonly evidence: readonly {
+    readonly claimText: string;
+    readonly limitations: readonly string[];
+    readonly citationTitle: string;
+  }[];
+}
+
+export interface PublicAnswerTextGenerator {
+  generate(input: GroundedPublicAnswerInput): Promise<string>;
 }
 
 export class DeterministicPublicAnswerService
   implements PublicPortfolioAnswerer
 {
+  execute(
+    artifact: PublicCareerEvidenceArtifact,
+    request: PortfolioAnswerRequest,
+  ): PublicAnswerExecution {
+    return { response: this.answer(artifact, request), mode: "deterministic" };
+  }
+
   answer(
     artifact: PublicCareerEvidenceArtifact,
     request: PortfolioAnswerRequest,
@@ -41,6 +68,44 @@ export class DeterministicPublicAnswerService
     return selected.length === 0
       ? noEvidenceResponse(artifact, request)
       : supportedResponse(artifact, request, selected);
+  }
+}
+
+const generatedAnswerSchema = z.string().trim().min(1).max(2_000);
+
+export class GroundedPublicAnswerService implements PublicPortfolioAnswerer {
+  constructor(
+    private readonly generator: PublicAnswerTextGenerator,
+    private readonly baseline = new DeterministicPublicAnswerService(),
+  ) {}
+
+  async execute(
+    artifact: PublicCareerEvidenceArtifact,
+    request: PortfolioAnswerRequest,
+  ): Promise<PublicAnswerExecution> {
+    const baseline = this.baseline.answer(artifact, request);
+    if (baseline.claims.length === 0) {
+      return { response: baseline, mode: "deterministic" };
+    }
+    try {
+      const answer = generatedAnswerSchema.parse(await this.generator.generate({
+        question: request.question,
+        evidence: baseline.claims.map((claim, index) => ({
+          claimText: claim.text,
+          limitations: claim.limitations,
+          citationTitle: baseline.citations[index]?.title ?? "Reviewed evidence",
+        })),
+      }));
+      return {
+        mode: "model",
+        response: portfolioAnswerResponseSchema.parse({
+          ...baseline,
+          answer,
+        }),
+      };
+    } catch {
+      return { response: baseline, mode: "fallback" };
+    }
   }
 }
 
