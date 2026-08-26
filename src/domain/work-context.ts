@@ -114,8 +114,24 @@ export interface DurableMemory {
 export interface AuthorizedWorkContext {
   readonly task: WorkTask | null;
   readonly taskEvents: readonly TaskEvent[];
+  readonly taskEventSelection?: TaskEventSelectionSummary;
   readonly memories: readonly DurableMemory[];
   readonly selection?: MemorySelectionSummary;
+}
+
+export interface TaskEventSelectionEvidence {
+  readonly eventId: string;
+  readonly score: number;
+  readonly matchedTerms: readonly string[];
+  readonly reasons: readonly string[];
+}
+
+export interface TaskEventSelectionSummary {
+  readonly strategy: "deterministic_lexical_v1";
+  readonly candidateCount: number;
+  readonly recentCount: number;
+  readonly queryTerms: readonly string[];
+  readonly evidence: readonly TaskEventSelectionEvidence[];
 }
 
 export interface MemorySelectionEvidence {

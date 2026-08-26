@@ -3,6 +3,7 @@ import type {
   MemorySelectionEvidence,
   WorkTask,
 } from "./work-context.js";
+import { tokenizeLexicalTerms } from "./lexical-terms.js";
 
 export interface RankMemoryInput {
   readonly candidates: readonly DurableMemory[];
@@ -25,42 +26,10 @@ interface ScoredMemory {
   readonly reasons: readonly string[];
 }
 
-const STOP_WORDS = new Set([
-  "a",
-  "an",
-  "and",
-  "are",
-  "as",
-  "at",
-  "be",
-  "but",
-  "by",
-  "for",
-  "from",
-  "how",
-  "i",
-  "in",
-  "is",
-  "it",
-  "me",
-  "my",
-  "of",
-  "on",
-  "or",
-  "that",
-  "the",
-  "this",
-  "to",
-  "we",
-  "what",
-  "with",
-  "you",
-]);
-
 export function rankMemories(input: RankMemoryInput): RankedMemoryResult {
-  const queryTerms = tokenize(input.query ?? "");
+  const queryTerms = tokenizeLexicalTerms(input.query ?? "");
   const taskTerms = input.task
-    ? tokenize(`${input.task.title} ${input.task.objective}`)
+    ? tokenizeLexicalTerms(`${input.task.title} ${input.task.objective}`)
     : [];
   const scored = input.candidates
     .map((memory) => scoreMemory(memory, queryTerms, taskTerms, input.task))
@@ -87,7 +56,7 @@ function scoreMemory(
   taskTerms: readonly string[],
   task: WorkTask | null,
 ): ScoredMemory | null {
-  const memoryTerms = new Set(tokenize(memory.content));
+  const memoryTerms = new Set(tokenizeLexicalTerms(memory.content));
   const matchedQueryTerms = queryTerms.filter((term) => memoryTerms.has(term));
   const matchedTaskTerms = taskTerms.filter((term) => memoryTerms.has(term));
   const taskScoped = Boolean(task && memory.taskId === task.id);
@@ -131,17 +100,4 @@ function compareScoredMemories(left: ScoredMemory, right: ScoredMemory): number 
   if (left.score !== right.score) return right.score - left.score;
   const recency = right.memory.createdAt.localeCompare(left.memory.createdAt);
   return recency !== 0 ? recency : left.memory.id.localeCompare(right.memory.id);
-}
-
-function tokenize(value: string): string[] {
-  return [
-    ...new Set(
-      value
-        .toLocaleLowerCase("en-US")
-        .normalize("NFKC")
-        .split(/[^\p{L}\p{N}]+/u)
-        .filter((term) => term.length >= 2 && !STOP_WORDS.has(term))
-        .slice(0, 80),
-    ),
-  ];
 }
