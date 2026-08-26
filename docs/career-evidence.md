@@ -45,6 +45,11 @@ The review screen:
 - disables public review when no public HTTP(S) or portfolio-relative citation
   exists;
 - requires a second exact-claim confirmation for public eligibility;
+- lets the owner select two through five active claims, review their exact
+  propositions, explicitly declare a conflict, inspect unresolved and resolved
+  history, and resolve a group without choosing a winning claim;
+- excludes claims already held by an unresolved group from new selections and
+  labels their withheld state in the evidence queue;
 - supports rejection and confirmation-gated source or claim revocation; and
 - keeps the 122-claim queue navigable through search, filters, summaries, and
   collapsed source-linked claim groups.
@@ -60,8 +65,7 @@ This is a loopback pilot, not an authenticated remote administration surface.
 Do not bind it to a public interface without adding authentication, production
 CSRF controls, and an explicit deployment threat review.
 
-The private API now supports conflict persistence independently of the pending
-visual control:
+The visual conflict workflow uses the private persistence API:
 
 - `GET /v1/career-evidence/conflicts?actorId=carl&workspaceId=professional`
   lists the configured owner's unresolved and resolved groups;
