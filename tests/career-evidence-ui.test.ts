@@ -40,6 +40,22 @@ describe("career evidence review interface", () => {
     expect(javascript).not.toContain("inferConflict");
   });
 
+  it("paginates the full private registry and exposes bounded source review context", () => {
+    expect(html).toContain('id="evidence-page-status"');
+    expect(html).toContain('id="previous-evidence-page"');
+    expect(html).toContain('id="next-evidence-page"');
+    expect(html).toContain('id="evidence-page-status-footer"');
+    expect(html).toContain('id="next-evidence-page-footer"');
+    expect(javascript).toContain("pageSize: 10");
+    expect(javascript).toContain("visibleSources.slice(start, start + state.pageSize)");
+    expect(javascript).toContain("state.page = 1");
+    expect(javascript).toContain('sourceContextItem("Captured"');
+    expect(javascript).toContain('sourceContextItem("Reviewed"');
+    expect(javascript).toContain('sourceContextItem("Fingerprint"');
+    expect(javascript).toContain("normalized.slice(0, 12)");
+    expect(javascript).not.toContain("source.absolutePath");
+  });
+
   it("provides accessible status, filtering, confirmation, and narrow states", () => {
     expect(html).toContain('<a class="skip-link" href="#main">');
     expect(html).toContain('aria-live="polite"');

@@ -92,8 +92,22 @@
           <button class="filter" type="button" data-filter="public_approved" aria-pressed="false">Public approved</button>
           <button class="filter" type="button" data-filter="closed" aria-pressed="false">Rejected or retired</button>
         </div>
+        <div class="evidence-pagination" aria-label="Career evidence pages">
+          <p id="evidence-page-status" tabindex="-1" aria-live="polite">Loading evidence pages…</p>
+          <div class="pagination-actions">
+            <button class="button button-secondary button-small" id="previous-evidence-page" type="button" disabled>Previous page</button>
+            <button class="button button-secondary button-small" id="next-evidence-page" type="button" disabled>Next page</button>
+          </div>
+        </div>
         <div class="evidence-list" id="evidence-list" aria-live="polite" aria-busy="true">
           <div class="loading-state">Loading career evidence…</div>
+        </div>
+        <div class="evidence-pagination evidence-pagination-footer" aria-label="Career evidence pages">
+          <p id="evidence-page-status-footer" tabindex="-1">Loading evidence pages…</p>
+          <div class="pagination-actions">
+            <button class="button button-secondary button-small" id="previous-evidence-page-footer" type="button" disabled>Previous page</button>
+            <button class="button button-secondary button-small" id="next-evidence-page-footer" type="button" disabled>Next page</button>
+          </div>
         </div>
       </section>
     </main>
