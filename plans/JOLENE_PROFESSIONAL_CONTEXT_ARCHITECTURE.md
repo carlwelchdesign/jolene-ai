@@ -2,7 +2,7 @@
 
 **Date:** 2026-08-26
 
-**Status:** Docker API, governed career ingestion, private hybrid retrieval, public export, loopback manifest/answer/job-fit/contact-staging/admission/audit/egress-disclosure boundaries, disabled-by-default grounded answer synthesis, private contact review, and the first offline evaluation baseline implemented; public integration, full evaluation, and deployment pending
+**Status:** Docker API, governed career ingestion, private hybrid retrieval, public export, loopback manifest/answer/job-fit/contact-staging/admission/audit/egress-disclosure boundaries, disabled-by-default grounded answer synthesis, private contact review, and an offline response/lifecycle evaluation baseline implemented; public integration, full evaluation, and deployment pending
 
 ## Product outcome
 
@@ -451,15 +451,18 @@ deployment path.
   deterministic/fake-provider cases, 11 precommitted 100% blocker metrics,
   privacy-safe machine output, fail-closed fixture validation, and nonzero
   hard-gate exits.
+- `JOL-CAREER-006B` extends that harness through the real SQLite evidence store
+  and public exporter with nine confidentiality and lifecycle cases. The v1.1
+  baseline now has 21 cases and 16 precommitted 100% blocker metrics.
 - Build fixtures for supported, adjacent, missing, stale, confidential, and
   adversarial questions.
 - Require citation correctness, maturity preservation, privacy refusal, and
   factual invariance across personality modes.
 - Manually review representative answers before public launch.
 
-`JOL-CAREER-006A` does not complete this ticket. Stale, revoked, superseded,
-and conflicting lifecycle fixtures; live-model quality/latency/token/cost
-measurement; broader abuse and impersonation coverage; portfolio citation and
+`JOL-CAREER-006A/B` do not complete this ticket. Semantic conflict fixtures;
+live-model quality/latency/token/cost measurement; broader abuse and
+impersonation coverage; portfolio citation and
 accessibility verification; representative human review; production controls;
 and launch approval remain open.
 
@@ -474,6 +477,21 @@ and launch approval remain open.
   privacy-safe-report, reproducible-failure, and nonzero-exit coverage; and
 - no live provider request, public bind, integration, merge, deployment, human
   sign-off, or launch authorization was performed.
+
+`JOL-CAREER-006B` verification checkpoint:
+
+- implementation commit: `2c0f4d5` (`JOL-CAREER-006B evaluate career evidence lifecycle`);
+- canonical v1.1 baseline: 21 of 21 cases and 16 of 16 metrics pass at
+  precommitted 10,000-basis-point blocker thresholds;
+- suite hash:
+  `5cc1c27895da47166dde40a3d3ffbde86678a35c3b85823ddf499dd5269ad35e`;
+- lifecycle execution uses the production SQLite store and public exporter for
+  private/internal/candidate exclusion, stale reviews, claim/source revocation,
+  missing and changed sources, supersession, and revocation continuity;
+- 44 test files and 276 tests pass on Node 24.18.0, alongside build, Compose,
+  dependency-audit, report-privacy, diff, and secret checks; and
+- semantic conflict detection, live model measurement, integration, deployment,
+  human sign-off, and launch authorization remain unperformed.
 
 ### JOL-CAREER-007 — Private MCP adapter
 

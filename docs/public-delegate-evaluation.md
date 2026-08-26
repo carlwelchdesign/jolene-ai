@@ -38,7 +38,12 @@ blocker with a required pass rate of 10,000 basis points (100%):
 - grounding invariance outside answer prose;
 - provider-input minimization;
 - exact deterministic fallback reliability; and
-- response-disclosure safety.
+- response-disclosure safety;
+- public-evidence eligibility;
+- review freshness;
+- former-public revocation continuity;
+- supersession safety; and
+- confidentiality exclusion.
 
 A metric with no fixture coverage fails its gate instead of passing vacuously.
 Thresholds are inputs to the run, not values selected after seeing results.
@@ -47,11 +52,17 @@ requires review.
 
 ## Fixture coverage
 
-The v1 baseline contains 12 cases covering supported React and aviation
+The v1.1 baseline contains 21 cases. Its first 12 cases cover supported React and aviation
 answers, unknown Kubernetes evidence, an adversarial public-only answer,
 direct/adjacent/unknown job-fit behavior, job-description injection refusal,
 safe grounded synthesis, no-evidence provider bypass, provider-error fallback,
 empty and oversized output fallback, and unsafe generated-output detection.
+
+Nine lifecycle cases run through the real SQLite career-evidence store and
+public exporter. They cover private, internal-approved, and public-candidate
+exclusion; stale review expiry; claim and source revocation; missing sources;
+changed-source review reset; supersession; and deterministic revocation
+continuity for every formerly public evidence ID.
 
 The model-path cases use an injected deterministic fake. They prove adapter
 invariants without spending tokens or depending on provider availability. The
@@ -69,16 +80,16 @@ content log.
 
 ## Current baseline
 
-The first committed run passes 12 of 12 cases across 11 of 11 covered metrics.
+The current committed run passes 21 of 21 cases across 16 of 16 covered metrics.
 Its suite hash is
-`56d0c1015c8e8c33da4a1155eee7de5bd01f626be3b307e4f021ced163536573`.
+`5cc1c27895da47166dde40a3d3ffbde86678a35c3b85823ddf499dd5269ad35e`.
 That result proves only this offline backend baseline.
 
 ## Remaining release gates
 
-`JOL-CAREER-006` remains open. Separate evidence is still required for stale,
-revoked, superseded, and conflicting source lifecycle behavior; representative
-live-model quality, latency, token, and cost measurements; broader abuse and
+`JOL-CAREER-006` remains open. Separate evidence is still required for semantic
+conflicts between independently reviewed claims; representative live-model
+quality, latency, token, and cost measurements; broader abuse and
 impersonation cases; portfolio citation navigation and accessible highlighting;
 production admission and observability; and Carl's review of representative
 outputs. Passing this command never authorizes public launch.
