@@ -1,4 +1,3 @@
-import { createHash } from "node:crypto";
 import { isIP } from "node:net";
 
 import type {
@@ -9,6 +8,7 @@ import type {
 } from "../domain/career-evidence.js";
 import {
   PUBLIC_CAREER_EVIDENCE_SCHEMA_VERSION,
+  publicCareerEvidenceDigest,
   publicCareerEvidenceArtifactSchema,
   type PublicCareerEvidenceArtifact,
   type PublicCareerEvidenceRecord,
@@ -75,14 +75,10 @@ export class PublicCareerExportService {
       ]),
     ].sort();
 
-    const hashPayload = {
-      schemaVersion: PUBLIC_CAREER_EVIDENCE_SCHEMA_VERSION,
+    const digest = publicCareerEvidenceDigest({
       evidence,
       revokedEvidenceIds,
-    };
-    const digest = createHash("sha256")
-      .update(JSON.stringify(hashPayload))
-      .digest("hex");
+    });
     const reviewedAt = latestReview(evidence) ?? generatedAt;
 
     return publicCareerEvidenceArtifactSchema.parse({
