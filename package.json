@@ -9,6 +9,7 @@
   },
   "scripts": {
     "build": "npm run clean && tsc -p tsconfig.build.json",
+    "career:import-portfolio": "tsx scripts/import-portfolio-evidence.ts",
     "check": "npm run typecheck && npm test",
     "chat": "tsx src/cli.ts",
     "clean": "node --eval \"require('node:fs').rmSync('dist', { recursive: true, force: true })\"",

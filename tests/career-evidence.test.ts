@@ -1,0 +1,350 @@
+import { createHash } from "node:crypto";
+
+import { describe, expect, it } from "vitest";
+
+import { PortfolioEvidenceImporter } from "../src/application/portfolio-evidence-importer.js";
+import {
+  CareerEvidenceApprovalError,
+  type UpsertCareerSourceInput,
+} from "../src/domain/career-evidence.js";
+import { SqliteCareerEvidenceStore } from "../src/persistence/sqlite-career-evidence-store.js";
+
+const scope = { actorId: "carl", workspaceId: "professional" };
+const fixedNow = new Date("2026-08-25T12:00:00.000Z");
+
+describe("career evidence review lifecycle", () => {
+  it("keeps imported claims private from the public export until source and claim approval", () => {
+    const store = new SqliteCareerEvidenceStore(":memory:", () => fixedNow);
+    try {
+      const source = createSource(store);
+      const claim = createClaim(store, source.id, "Evidence-backed product work.");
+
+      expect(store.listPublicClaims(scope)).toEqual([]);
+      expect(() =>
+        store.decideClaim({
+          ...scope,
+          id: claim.id,
+          decision: "approve_public",
+          reviewerId: "carl",
+        }),
+      ).toThrow(CareerEvidenceApprovalError);
+
+      store.decideSource({
+        ...scope,
+        id: source.id,
+        decision: "approved",
+        reviewerId: "carl",
+      });
+      const approved = store.decideClaim({
+        ...scope,
+        id: claim.id,
+        decision: "approve_public",
+        reviewerId: "carl",
+      });
+
+      expect(approved.visibility).toBe("public_approved");
+      expect(store.listPublicClaims(scope).map((entry) => entry.id)).toEqual([
+        claim.id,
+      ]);
+    } finally {
+      store.close();
+    }
+  });
+
+  it("rejects public approval without a public citation URI", () => {
+    const store = new SqliteCareerEvidenceStore(":memory:", () => fixedNow);
+    try {
+      const source = createSource(store, {
+        provenanceUri: null,
+        provenanceRef: "private/resume.md#role",
+      });
+      const claim = createClaim(store, source.id, "Private-source claim.");
+      store.decideSource({
+        ...scope,
+        id: source.id,
+        decision: "approved",
+        reviewerId: "carl",
+      });
+
+      expect(() =>
+        store.decideClaim({
+          ...scope,
+          id: claim.id,
+          decision: "approve_public",
+          reviewerId: "carl",
+        }),
+      ).toThrowError(
+        expect.objectContaining({
+          issues: [expect.objectContaining({ code: "source_public_provenance_missing" })],
+        }),
+      );
+    } finally {
+      store.close();
+    }
+  });
+
+  it("removes stale, superseded, and revoked evidence from public output", () => {
+    let now = fixedNow;
+    const store = new SqliteCareerEvidenceStore(":memory:", () => now);
+    try {
+      const source = createSource(store);
+      const original = createClaim(store, source.id, "Original proposition.");
+      approvePublic(store, source.id, original.id);
+      expect(store.listPublicClaims(scope)).toHaveLength(1);
+
+      const replacement = createClaim(store, source.id, "Corrected proposition.");
+      expect(replacement.supersedesClaimId).toBe(original.id);
+      expect(store.listClaims(scope).find((claim) => claim.id === original.id)?.state)
+        .toBe("superseded");
+      expect(store.listPublicClaims(scope)).toEqual([]);
+
+      approvePublic(store, source.id, replacement.id);
+      store.revokeClaim(replacement.id, scope);
+      expect(store.listPublicClaims(scope)).toEqual([]);
+
+      const current = createClaim(store, source.id, "Current proposition.");
+      approvePublic(store, source.id, current.id);
+      now = new Date("2027-02-23T12:00:00.000Z");
+      expect(store.listPublicClaims(scope)).toEqual([]);
+      expect(store.validate(scope)).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({ code: "source_review_stale" }),
+          expect.objectContaining({ code: "claim_review_stale", recordId: current.id }),
+        ]),
+      );
+    } finally {
+      store.close();
+    }
+  });
+
+  it("resets source approval when imported source content changes", () => {
+    const store = new SqliteCareerEvidenceStore(":memory:", () => fixedNow);
+    try {
+      const source = createSource(store);
+      store.decideSource({
+        ...scope,
+        id: source.id,
+        decision: "approved",
+        reviewerId: "carl",
+      });
+      const changed = store.upsertSource({
+        ...sourceInput(),
+        sourceHash: digest("changed"),
+      });
+      expect(changed.reviewState).toBe("needs_review");
+      expect(changed.reviewedBy).toBeNull();
+      expect(changed.lastReviewedAt).toBeNull();
+    } finally {
+      store.close();
+    }
+  });
+
+  it("removes every dependent claim when its source is revoked", () => {
+    const store = new SqliteCareerEvidenceStore(":memory:", () => fixedNow);
+    try {
+      const source = createSource(store);
+      const claim = createClaim(store, source.id, "Public proposition.");
+      approvePublic(store, source.id, claim.id);
+      expect(store.listPublicClaims(scope)).toHaveLength(1);
+
+      expect(store.revokeSource(source.id, scope).state).toBe("revoked");
+      expect(store.listPublicClaims(scope)).toEqual([]);
+
+      const changed = store.upsertSource({
+        ...sourceInput(),
+        sourceHash: digest("changed after revocation"),
+      });
+      expect(changed.state).toBe("revoked");
+      expect(store.listPublicClaims(scope)).toEqual([]);
+    } finally {
+      store.close();
+    }
+  });
+
+  it("reports missing provenance and review requirements", () => {
+    const store = new SqliteCareerEvidenceStore(":memory:", () => fixedNow);
+    try {
+      const source = store.upsertSource({
+        ...sourceInput(),
+        provenanceRef: null,
+        provenanceUri: null,
+      });
+      createClaim(store, source.id, "Candidate proposition.");
+      expect(store.validate(scope)).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({ code: "source_missing_provenance" }),
+          expect.objectContaining({ code: "source_public_provenance_missing" }),
+          expect.objectContaining({ code: "source_review_required" }),
+          expect.objectContaining({ code: "claim_review_required" }),
+        ]),
+      );
+    } finally {
+      store.close();
+    }
+  });
+});
+
+describe("PortfolioEvidenceImporter", () => {
+  it("migrates portfolio records idempotently as review-required candidates", () => {
+    const store = new SqliteCareerEvidenceStore(":memory:", () => fixedNow);
+    try {
+      const importer = new PortfolioEvidenceImporter(store);
+      const first = importer.import(portfolioImportInput());
+      const second = importer.import(portfolioImportInput());
+
+      expect(first).toEqual({
+        sourceCount: 4,
+        claimCount: 6,
+        relationshipCount: 4,
+        validationIssueCount: 10,
+        publicClaimCount: 0,
+      });
+      expect(second).toEqual(first);
+      expect(store.listSources(scope).every((source) => source.reviewState === "needs_review"))
+        .toBe(true);
+      expect(store.listClaims(scope).every((claim) =>
+        claim.visibility === "public_candidate" && claim.reviewState === "needs_review"
+      )).toBe(true);
+    } finally {
+      store.close();
+    }
+  });
+
+  it("supersedes a changed portfolio claim instead of mutating reviewed history", () => {
+    const store = new SqliteCareerEvidenceStore(":memory:", () => fixedNow);
+    try {
+      const importer = new PortfolioEvidenceImporter(store);
+      importer.import(portfolioImportInput());
+      const changed = portfolioImportInput();
+      const snapshot = changed.snapshot as ReturnType<typeof portfolioSnapshot>;
+      snapshot.projects[0]!.summary = "Updated project summary.";
+      importer.import(changed);
+
+      const summaryClaims = store.listClaims(scope).filter((claim) =>
+        claim.sourceId === "portfolio:project:sample" && claim.logicalKey === "summary"
+      );
+      expect(summaryClaims).toHaveLength(2);
+      expect(summaryClaims.map((claim) => claim.state).sort()).toEqual([
+        "active",
+        "superseded",
+      ]);
+    } finally {
+      store.close();
+    }
+  });
+});
+
+function createSource(
+  store: SqliteCareerEvidenceStore,
+  overrides: Partial<UpsertCareerSourceInput> = {},
+) {
+  return store.upsertSource({ ...sourceInput(), ...overrides });
+}
+
+function sourceInput() {
+  return {
+    id: "portfolio:project:sample",
+    ...scope,
+    sourceType: "project" as const,
+    title: "Sample project",
+    provenanceRef: "site/app/portfolio-data.ts#sample",
+    provenanceUri: "https://example.com/sample",
+    sourceHash: digest("sample"),
+    capturedAt: fixedNow.toISOString(),
+  };
+}
+
+function createClaim(
+  store: SqliteCareerEvidenceStore,
+  sourceId: string,
+  proposition: string,
+) {
+  return store.upsertDraftClaim({
+    ...scope,
+    sourceId,
+    logicalKey: "summary",
+    title: "Sample claim",
+    proposition,
+    contribution: "Carl's contribution requires review.",
+    maturity: "prototype",
+  });
+}
+
+function approvePublic(
+  store: SqliteCareerEvidenceStore,
+  sourceId: string,
+  claimId: string,
+) {
+  const source = store.listSources(scope).find((entry) => entry.id === sourceId);
+  if (source?.reviewState !== "approved") {
+    store.decideSource({
+      ...scope,
+      id: sourceId,
+      decision: "approved",
+      reviewerId: "carl",
+    });
+  }
+  return store.decideClaim({
+    ...scope,
+    id: claimId,
+    decision: "approve_public",
+    reviewerId: "carl",
+  });
+}
+
+function digest(value: string): string {
+  return createHash("sha256").update(value).digest("hex");
+}
+
+function portfolioImportInput() {
+  return {
+    ...scope,
+    capturedAt: fixedNow.toISOString(),
+    snapshot: portfolioSnapshot(),
+  };
+}
+
+function portfolioSnapshot() {
+  return {
+    projects: [{
+      slug: "sample",
+      name: "Sample project",
+      category: "Applied AI",
+      status: "Deployed read-only portfolio demo",
+      summary: "A bounded evidence product.",
+      stack: ["TypeScript"],
+      architecture: [{ id: "api", label: "API", detail: "Typed boundary" }],
+      evidence: ["Uses reviewed evidence."],
+      boundaries: ["Not an autonomous decision maker."],
+      repositoryUrl: "https://github.com/example/sample",
+    }],
+    experience: [{
+      id: "example-co",
+      company: "Example Co",
+      role: "Senior Engineer",
+      dates: "2020 — 2022",
+      summary: "Built product systems.",
+      stack: ["React"],
+    }],
+    recommendations: [{
+      name: "Reviewer",
+      headline: null,
+      date: "August 25, 2026",
+      relationship: "worked with Carl",
+      quote: "Carl built thoughtful systems.",
+    }],
+    capabilities: [{
+      id: "bounded-ai",
+      name: "Bounded AI",
+      summary: "Evidence remains visible.",
+      practices: ["Provenance"],
+      evidence: [{
+        label: "Sample project",
+        detail: "Evidence-backed workflow.",
+        href: "/work/sample",
+        source: "Case study" as const,
+        reference: { kind: "project" as const, id: "sample" },
+      }],
+    }],
+  };
+}

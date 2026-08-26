@@ -2,7 +2,7 @@
 
 **Date:** 2026-08-25
 
-**Status:** Approved direction; Docker API runtime verified, professional RAG and public portfolio delegate pending
+**Status:** Docker API and career evidence foundation implemented; professional RAG and public portfolio delegate pending
 
 ## Product outcome
 
@@ -31,6 +31,8 @@ chatbot.
 | Durable private memory | Implemented through explicit proposals and approval |
 | Public portfolio evidence boundary | Modeled in the portfolio; public Jolene remains deferred from its first release |
 | Docker | Image and API container verified; Slack operational cutover and production deployment remain pending |
+| Career evidence registry | Implemented with sources, claims, relationships, review freshness, visibility, revocation, and supersession |
+| Portfolio candidate migration | Implemented; 26 sources, 41 active claims, and 57 relationships imported with zero public-approved claims |
 
 ## System boundary
 
@@ -188,10 +190,21 @@ project maturity, limitations, and suggested follow-up questions.
 
 ### JOL-CAREER-001 — Evidence schema and review lifecycle
 
-- Define source, claim, visibility, maturity, relationship, review, and
+- [x] Define source, claim, visibility, maturity, relationship, review, and
   supersession contracts.
-- Migrate existing portfolio evidence into reviewable records.
-- Add validation for missing provenance and stale review dates.
+- [x] Migrate existing portfolio evidence into reviewable records.
+- [x] Add validation for missing provenance and stale review dates.
+
+Implementation evidence:
+
+- branch: `codex/jol-career-001-evidence-schema`;
+- SQLite migration is additive and retains existing Jolene tables;
+- the canonical portfolio imported 26 sources, 41 active claims, and 57
+  relationships;
+- all 67 imported review findings are expected approval gates, with no public
+  claims produced by import; and
+- focused tests cover approval gates, public citation requirements, stale
+  review, source reset, revocation, supersession, and idempotent import.
 
 ### JOL-CAREER-002 — Obsidian career ingestion
 
