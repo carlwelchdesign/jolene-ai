@@ -104,9 +104,12 @@ Disk encryption and physical account security protect this development slice;
 encrypted managed storage and a deletion SLA remain production gates.
 
 Staging never sends email or Slack, schedules a meeting, contacts a recruiter,
-or authorizes Jolene to negotiate or make promises. Reviewing, deleting, or
-sending a reply requires a separate private owner workflow that is not part of
-this public process.
+or authorizes Jolene to negotiate or make promises. The separate private local
+service can list the exact owner-scoped queue, mark an item reviewed, save an
+inert reply draft in the same queue, and permanently delete an item after exact
+confirmation. It does not copy contact fields into the private SQLite database.
+The visitor message remains untrusted data. No send, approval, mail-provider,
+Slack, scheduling, or negotiation operation is exposed.
 
 All other routes return `404`; unsupported methods on known routes return
 `405`. The server bounds header size, header count, request time, keep-alive
@@ -119,9 +122,11 @@ distributed rate limiting, or portfolio BFF controls.
 
 ## Remaining boundary
 
-`JOL-CAREER-005` remains incomplete. Model-backed answer quality and a private
-owner review/deletion/reply workflow still require separate privacy, abuse,
-evaluation, and human-approval gates. The deterministic job-fit baseline also
+`JOL-CAREER-005` remains incomplete. The loopback-only private review,
+deletion, and inert reply-draft workflow is implemented, but authenticated
+production owner access and any outbound reply workflow still require separate
+privacy, abuse, evaluation, and human-approval gates. Model-backed answer
+quality remains open. The deterministic job-fit baseline also
 requires integration and evaluation before any public use. Audit-event design,
 broader redaction policy, cost controls, and production-grade distributed abuse
 controls remain open. Adding a production bind address, container service,
