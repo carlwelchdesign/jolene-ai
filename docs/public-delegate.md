@@ -125,6 +125,26 @@ This is development evidence, not production telemetry. Authenticated access,
 centralized aggregation, availability monitoring, deletion operations, and an
 approved production retention policy remain deployment gates.
 
+## Response disclosure guard
+
+Every response body passes through one deterministic disclosure policy before
+egress. The same policy protects the offline career export, preventing the two
+boundaries from drifting. It recursively inspects response values for private
+filesystem paths and hosts, file or Obsidian URIs, Obsidian wikilinks, likely
+credentials, email addresses, and phone numbers. Values are data only and are
+never treated as instructions.
+
+If a value violates the policy—or policy inspection itself fails—the delegate
+discards the entire candidate response and returns only a generic no-store
+`503 public_response_blocked` body. It does not disclose the matching value,
+field, rule, path, or stack trace. The audit ledger records only the fixed
+`response_blocked` outcome without corpus metadata or result counts. Existing
+valid manifest, answer, job-fit, contact-intent, admission, and error responses
+retain their frozen contracts.
+
+This guard is defense in depth, not a substitute for public-evidence review,
+provider-output validation, portfolio BFF controls, or production monitoring.
+
 Staging never sends email or Slack, schedules a meeting, contacts a recruiter,
 or authorizes Jolene to negotiate or make promises. The separate private local
 service can list the exact owner-scoped queue, mark an item reviewed, save an
@@ -151,7 +171,7 @@ privacy, abuse, evaluation, and human-approval gates. Model-backed answer
 quality remains open. A content-minimizing local audit ledger exists, but the
 deterministic job-fit baseline still requires integration and evaluation before
 any public use. Authenticated audit access, production aggregation and
-monitoring, broader redaction policy, cost controls, and distributed abuse
+monitoring, provider-specific redaction, cost controls, and distributed abuse
 controls remain open. Adding a production bind address, container service,
 public hostname, reverse proxy, CORS policy, or deployment requires explicit
 approval and a reviewed deployment topology.

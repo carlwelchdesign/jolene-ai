@@ -2,7 +2,7 @@
 
 **Date:** 2026-08-26
 
-**Status:** Docker API, governed career ingestion, private hybrid retrieval, public export, loopback manifest/deterministic-answer/job-fit/contact-staging/admission/audit boundaries, and private contact review implemented; model-backed public answers and deployment pending
+**Status:** Docker API, governed career ingestion, private hybrid retrieval, public export, loopback manifest/deterministic-answer/job-fit/contact-staging/admission/audit/egress-disclosure boundaries, and private contact review implemented; model-backed public answers and deployment pending
 
 ## Product outcome
 
@@ -376,12 +376,16 @@ Verification checkpoint:
   `JOL-CAREER-005G`; it records only fixed operational outcomes, bounded timing,
   corpus version, and counts in a separate retention-bounded file with no
   public read route.
+- A deterministic response disclosure guard is implemented in
+  `JOL-CAREER-005H`; offline export and runtime egress share one private-data
+  policy, and unsafe candidate responses become a generic audited `503` with no
+  offending content disclosed.
 - Integrate the isolated Jolene public service through the portfolio adapter.
 - Preserve the public-evidence-only source boundary.
-- Add production cost ceilings, broader redaction, edge admission, and
+- Add production cost ceilings, provider-specific redaction, edge admission, and
   centralized audit monitoring.
 
-`JOL-CAREER-005A/B/C/D/E/F/G` do not complete this ticket: there is no
+`JOL-CAREER-005A/B/C/D/E/F/G/H` do not complete this ticket: there is no
 model-backed answer generation, outbound reply control, authenticated
 production owner surface, CORS, public binding, container service, portfolio
 integration, production-grade abuse controls, production audit pipeline, or
@@ -411,6 +415,17 @@ deployment path.
 - compiled live loopback requests record health, no-evidence answer, job-fit,
   invalid-contact, and unknown-route outcomes while retaining none of the
   submitted marker content.
+
+`JOL-CAREER-005H` verification checkpoint:
+
+- implementation commit: `3ef20f0` (`JOL-CAREER-005H guard public response disclosures`);
+- 41 test files and 257 tests pass on Node 24.18.0, alongside TypeScript
+  validation and the production build;
+- Compose configuration, diff hygiene, secret-pattern scanning, and the
+  production dependency audit pass with zero reported vulnerabilities; and
+- a compiled live server with deliberately unsafe provider output returns only
+  `503 public_response_blocked`, emits the fixed audit outcome, and discloses
+  none of the injected private-path marker.
 
 ### JOL-CAREER-006 — Evaluation and launch gates
 
