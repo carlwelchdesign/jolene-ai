@@ -1,3 +1,5 @@
+import type { PrivateWorkScope } from "./private-work-scope.js";
+
 export interface WatchedProjectDefinition {
   readonly id: string;
   readonly label: string;
@@ -51,9 +53,30 @@ export interface WatchedProjectInspector {
   inspect(project: WatchedProjectDefinition): Promise<WatchedProjectSnapshot>;
 }
 
+export interface WatchedProjectDirectory {
+  list(): readonly WatchedProjectSummary[];
+  snapshot(id: string): Promise<WatchedProjectSnapshot>;
+}
+
+export interface PrivateWatchedProjectSource {
+  canReview(scope: PrivateWorkScope | null): boolean;
+  list(scope: PrivateWorkScope): readonly WatchedProjectSummary[];
+  snapshot(
+    id: string,
+    scope: PrivateWorkScope,
+  ): Promise<WatchedProjectSnapshot>;
+}
+
 export class WatchedProjectNotFoundError extends Error {
   constructor() {
     super("The requested watched project is not configured.");
     this.name = "WatchedProjectNotFoundError";
+  }
+}
+
+export class WatchedProjectAccessDeniedError extends Error {
+  constructor() {
+    super("The private watched-project scope is unavailable.");
+    this.name = "WatchedProjectAccessDeniedError";
   }
 }

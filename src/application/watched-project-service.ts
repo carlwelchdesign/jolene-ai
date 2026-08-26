@@ -1,12 +1,13 @@
 import {
   WatchedProjectNotFoundError,
+  type WatchedProjectDirectory,
   type WatchedProjectDefinition,
   type WatchedProjectInspector,
   type WatchedProjectSnapshot,
   type WatchedProjectSummary,
 } from "../domain/watched-project.js";
 
-export class WatchedProjectService {
+export class WatchedProjectService implements WatchedProjectDirectory {
   private readonly projects: ReadonlyMap<string, WatchedProjectDefinition>;
 
   constructor(
