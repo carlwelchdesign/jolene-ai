@@ -533,7 +533,7 @@ Task-timeline-interface checkpoint:
 |---|---|
 | Branch | `codex/jol-arch-003c-task-timeline-ui` |
 | Implementation commit | `249b49a` (`JOL-ARCH-003C add local task timeline control`) |
-| Pull request | Pending; stacked on [#7](https://github.com/carlwelchdesign/jolene-ai/pull/7) |
+| Pull request | [#8](https://github.com/carlwelchdesign/jolene-ai/pull/8), stacked on [#7](https://github.com/carlwelchdesign/jolene-ai/pull/7) |
 | Verification | 28 test files and 133 tests, Node 24.18.0 JavaScript syntax and typecheck, production build, Compose validation, zero production dependency vulnerabilities, and live isolated desktop and 390px browser flows passed |
 | Interaction evidence | Task selection changes objective and history; factual decision entry persists, clears the form, confirms success, and appears newest-first; an empty actor/workspace scope disables task and entry controls with explicit guidance |
 | Safety evidence | Historical-context boundary remains visible; dynamic content uses text-only DOM insertion; mutations are same-origin and task scoped; no deletion, status mutation, scheduling, sending, publication, or external execution control exists |
