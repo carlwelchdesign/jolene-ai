@@ -7,6 +7,7 @@ import { JoleneService } from "./application/jolene-service.js";
 import { KnowledgeAuditService } from "./application/knowledge-audit-service.js";
 import { PersonalWorkflowService } from "./application/personal-workflow-service.js";
 import { WorkContextService } from "./application/work-context-service.js";
+import { WatchedProjectService } from "./application/watched-project-service.js";
 import type { AppConfig } from "./config.js";
 import type { DeliveryStore } from "./domain/delivery.js";
 import {
@@ -20,6 +21,7 @@ import { SqliteActionApprovalStore } from "./persistence/sqlite-action-approval-
 import { SqliteKnowledgeAccessStore } from "./persistence/sqlite-knowledge-access-store.js";
 import { SqlitePersonalWorkflowStore } from "./persistence/sqlite-personal-workflow-store.js";
 import { SqliteWorkContextStore } from "./persistence/sqlite-work-context-store.js";
+import { LocalWatchedProjectInspector } from "./projects/local-watched-project-inspector.js";
 
 export interface JoleneApplication {
   readonly service: JoleneService;
@@ -28,10 +30,12 @@ export interface JoleneApplication {
   readonly knowledgeAudit: KnowledgeAuditService;
   readonly actionApprovals: ActionApprovalService;
   readonly workflows: PersonalWorkflowService;
+  readonly watchedProjects: WatchedProjectService;
   readonly health: () => {
     readonly status: "ok";
     readonly knowledge: "configured" | "unavailable";
     readonly model: string;
+    readonly watchedProjects: number;
   };
   readonly close: () => void;
 }
@@ -72,10 +76,15 @@ export async function createApplication(
     knowledgeAudit: new KnowledgeAuditService(knowledgeAuditStore),
     actionApprovals: new ActionApprovalService(actionApprovalStore, workStore),
     workflows: new PersonalWorkflowService(personalWorkflowStore, workStore),
+    watchedProjects: new WatchedProjectService(
+      config.watchedProjects,
+      new LocalWatchedProjectInspector(),
+    ),
     health: () => ({
       status: "ok",
       knowledge: config.vaultRoot ? "configured" : "unavailable",
       model: config.model,
+      watchedProjects: config.watchedProjects.length,
     }),
     close: () => {
       store.close();

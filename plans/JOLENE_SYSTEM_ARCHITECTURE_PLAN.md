@@ -571,6 +571,18 @@ Workflow-interface checkpoint:
 | Safety evidence | Persistent no-external-action explanation, exact current-step capture, explicit review and revision, destructive cancellation confirmation, text-only dynamic rendering, restrictive asset headers, and no external execution control |
 | Remaining boundary | Model-facing workflow tools, richer artifact handling, task-status synchronization, scheduling, authenticated production administration, and physical narrow-screen exploratory evidence remain pending |
 
+Watched-project checkpoint:
+
+| Field | Value |
+|---|---|
+| Branch | `codex/jolene-watched-projects` |
+| Implementation commit | Pending |
+| Pull request | None; this local repository has no remote configured |
+| Verification | Node 22 typecheck, 77 contract tests, production build, diff hygiene, and live local API snapshot passed |
+| Project evidence | `carl-welch-portfolio` is registered locally; the live snapshot found its directory, correctly reported the absent Git boundary, and detected that the configured canonical plan filename no longer exists |
+| Safety evidence | Registry listings omit root paths; inspection is read-only and exposes no edit, commit, push, deploy, publish, or scheduling operation |
+| Remaining boundary | Approved monitoring cadence, cost ceiling, notification destination, stop condition, visible history, and bounded build verification remain pending |
+
 ## Architecture tickets
 
 | ID | Ticket | Acceptance criteria |
@@ -602,7 +614,8 @@ Current ticket evidence:
 | JOL-ARCH-007 | Partial | Deterministic risk decisions, a typed proposal-only registry, exact expiring approvals, an internal one-time claim boundary, and a local graphical approval-review workflow exist; trusted delivery adapters and execution receipts remain pending. |
 | JOL-ARCH-008 | Implemented for local slice | Six task-bound workflow templates, exact step evidence, durable history, bounded revision, explicit final review, and a local graphical control point are tested; model-facing tools, richer artifacts, scheduling, and authenticated administration remain pending. |
 | JOL-ARCH-009 | Partial | Initial runtime behavior prompt and non-impersonation rules exist; the formal personality renderer and evaluation suite are pending. |
-| JOL-ARCH-013 | Planned | The new portfolio is owned by `/Users/carl.welch/Documents/Github Projects/carl-welch-portfolio/PORTFOLIO_SITE_PLAN.md`. Its public/private Jolene boundary, versioned evidence contract, adversarial evaluations, correction flow, contact handoff, and production controls remain pending. Fit Console is a pattern source, not the target project. |
+| JOL-ARCH-010 | Partial | An explicit local registry and on-demand read-only snapshots now report project existence, plan freshness, Git branch/revision/dirty state, and clear alerts. Scheduling, durable history, notifications, budgets, stop conditions, and build verification remain disabled. |
+| JOL-ARCH-013 | Planned | The new portfolio is owned by `/Users/carl.welch/Documents/Github Projects/carl-welch-portfolio`. The previously expected `PORTFOLIO_SITE_PLAN.md` is currently absent and a `PORTFOLIO_SITE_PLAN_v1_REJECTED.md` artifact exists instead, so an active approved portfolio plan remains pending. Its public/private Jolene boundary, versioned evidence contract, adversarial evaluations, correction flow, contact handoff, and production controls remain pending. Fit Console is a pattern source, not the target project. |
 
 ## Architecture risks
 
@@ -628,4 +641,4 @@ Current ticket evidence:
 | 2026-08-25 | Keep external actions propose-first | Existing approved safety direction |
 | 2026-08-25 | Proceed with MVP development | Authorized by Carl; first local slice complete |
 | 2026-08-25 | Adapt structured-work patterns without weakening Jolene's approval boundary | Implemented for the first personal-workflow slice |
-| 2026-08-25 | Treat the Carl Welch portfolio assistant as a public Jolene delegate, never a tunnel into private Jolene | Planned in `/Users/carl.welch/Documents/Github Projects/carl-welch-portfolio/PORTFOLIO_SITE_PLAN.md`; the directory currently has no Git boundary |
+| 2026-08-25 | Treat the Carl Welch portfolio assistant as a public Jolene delegate, never a tunnel into private Jolene | The target directory is confirmed and currently has no Git boundary; its first portfolio-plan artifact is marked rejected, so active implementation planning remains pending |

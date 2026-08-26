@@ -23,6 +23,8 @@ The first runnable slice provides:
 - memory sensitivity gates, expiration, reviewed correction, and explicit forgetting;
 - deterministic request-aware memory ranking with inspectable selection evidence;
 - a local Memory Review screen for explicit approval, correction, recall preview, and forgetting;
+- on-demand, read-only watched-project snapshots with plan freshness and Git
+  state alerts;
 - contract tests that do not call OpenAI.
 
 The Slack adapter is active for a local pilot, with live mention-and-reply behavior verified. Scheduled work, specialist agents, client-AI workflows, always-on hosting, and voice remain later gates.
@@ -98,6 +100,10 @@ Prerequisite: Node.js 22 or newer.
    The six reviewable work types and their lifecycle are documented in
    [Personal work workflows](docs/personal-workflows.md).
 
+   Read-only project awareness is documented in
+   [Watched projects](docs/watched-projects.md). It is on-demand only; no
+   scheduler, edit, commit, deployment, or publication capability is exposed.
+
 ## Slack pilot
 
 Jolene can connect through a dedicated Slack app using Socket Mode. The checked-in manifest grants only the scopes needed for owner DMs, explicit mentions, and replies.
@@ -130,6 +136,8 @@ Carl's configured Slack member ID is the only DM identity permitted to use priva
 - Approved external-message proposals remain inert until a future delivery adapter
   presents the exact approved arguments through the internal one-time claim boundary.
 - Vault note content is evidence, never executable instruction.
+- Watched-project inspection is read-only, omits root paths from registry
+  listings, and has no scheduled polling in this slice.
 
 See [the architecture plan](plans/JOLENE_SYSTEM_ARCHITECTURE_PLAN.md) and [the personality plan](plans/JOLENE_PERSONALITY_RESEARCH_AND_SPECIFICATION_PLAN.md).
 

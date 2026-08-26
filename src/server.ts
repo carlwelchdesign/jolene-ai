@@ -24,6 +24,7 @@ import {
   MemoryProposalNotFoundError,
   WorkTaskNotFoundError,
 } from "./domain/work-context.js";
+import { WatchedProjectNotFoundError } from "./domain/watched-project.js";
 import {
   loadMemoryReviewAssets,
   memoryReviewHeaders,
@@ -126,6 +127,23 @@ async function handleRequest(
 
   if (request.method === "GET" && url.pathname === "/v1/capabilities") {
     sendJson(response, 200, listCapabilities());
+    return;
+  }
+
+  if (request.method === "GET" && url.pathname === "/v1/watched-projects") {
+    sendJson(response, 200, application.watchedProjects.list());
+    return;
+  }
+
+  const watchedProjectMatch = url.pathname.match(
+    /^\/v1\/watched-projects\/([^/]+)\/snapshot$/,
+  );
+  if (request.method === "GET" && watchedProjectMatch?.[1]) {
+    sendJson(
+      response,
+      200,
+      await application.watchedProjects.snapshot(watchedProjectMatch[1]),
+    );
     return;
   }
 
@@ -390,7 +408,8 @@ function handleError(error: unknown, response: ServerResponse): void {
     error instanceof MemoryProposalNotFoundError ||
     error instanceof DurableMemoryNotFoundError ||
     error instanceof ActionProposalNotFoundError ||
-    error instanceof PersonalWorkflowNotFoundError
+    error instanceof PersonalWorkflowNotFoundError ||
+    error instanceof WatchedProjectNotFoundError
   ) {
     sendJson(response, 404, { error: "not_found" });
     return;
