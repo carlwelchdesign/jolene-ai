@@ -511,6 +511,7 @@ Task-event-history checkpoint:
 | Field | Value |
 |---|---|
 | Branch | `codex/jol-arch-003b-task-events` |
+| Implementation commit | `c375b9c` (`JOL-ARCH-003B add durable task event context`) |
 | Pull request | Pending stacked review |
 | Verification | 28 test files and 133 tests, Node 24.18.0 typecheck, production build, restart persistence, bounded ordering, actor/workspace/task isolation, and live loopback lifecycle pass |
 | Runtime evidence | Task and event creation return 201; context preview returns only the selected task's `created` and `evidence` events; foreign scope returns 404; cross-origin mutation returns 403 |
