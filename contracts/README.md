@@ -2,8 +2,8 @@
 
 This directory defines the offline handoff between private Jolene and the
 isolated portfolio delegate. A separate loopback-only reference process may
-serve the validated manifest for contract testing; this does not authorize a
-public endpoint or deployment.
+serve the validated manifest and deterministic evidence-answer contract for
+testing; this does not authorize a public endpoint or deployment.
 
 - `public-career-evidence-v1.schema.json` is the machine-readable artifact
   schema.

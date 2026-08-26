@@ -46,7 +46,8 @@ The first runnable slice provides:
 - a deny-by-default offline public-evidence artifact with a versioned manifest,
   reproducible corpus hash, revocation list, and adversarial leak checks;
 - a separate loopback-only public-delegate process boundary that validates that
-  artifact and exposes only health plus the frozen v1 manifest contract;
+  artifact and exposes health, the frozen v1 manifest, and deterministic
+  citation-complete public-evidence answers;
 - contract tests that do not call OpenAI.
 
 The Slack adapter is active for a local pilot, with live mention-and-reply behavior verified. Scheduled work, specialist agents, client-AI workflows, always-on hosting, and voice remain later gates.
@@ -55,7 +56,8 @@ The conversational Obsidian bridge still uses deterministic lexical retrieval.
 The governed career registry now has a separate private hybrid retrieval path,
 but no imported claim is eligible until Carl approves its source and claim for
 internal use. The versioned export remains a local ignored artifact. A separate
-loopback-only reference process can serve its validated manifest, but answer,
+loopback-only reference process can serve its validated manifest and bounded
+deterministic answers from exact exported claims. Model-generated answers,
 job-fit, contact, CORS, public hosting, and portfolio integration are not
 implemented. MCP interoperability is also not implemented. See the
 [professional context architecture](plans/JOLENE_PROFESSIONAL_CONTEXT_ARCHITECTURE.md).
