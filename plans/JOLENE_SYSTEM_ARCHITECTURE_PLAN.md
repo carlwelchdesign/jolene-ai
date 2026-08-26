@@ -824,7 +824,7 @@ Public-delegate deterministic-answer checkpoint:
 | Asana | [JOL-CAREER-005B](https://app.asana.com/1/9789386902387/project/1216473233375594/task/1217874108306309) |
 | Branch | `codex/jol-career-005b-public-answer` |
 | Implementation commit | `710adba` (`JOL-CAREER-005B add public evidence answers`) |
-| Pull request | Pending |
+| Pull request | [#13](https://github.com/carlwelchdesign/jolene-ai/pull/13), stacked on #12 |
 | Contract evidence | Strict frozen v1 `POST /v1/portfolio/answer`; bounded question and optional opaque session token; at most five exact exported claims with resolving citations, preserved strength/maturity/limitations, corpus version, and explicit no-evidence state |
 | Retrieval evidence | Deterministic lexical overlap, Carl/Welch name suppression, stable evidence-ID tie-breaking, and fixed output bounds; no model, browse, private lookup, instruction execution, or unsupported synthesis |
 | Verification | Node 24 typecheck, 34 test files / 176 tests, production build, Compose configuration validation, staged secret scan, production dependency audit, and compiled live loopback checks passed with OpenAI and Slack credentials absent |
