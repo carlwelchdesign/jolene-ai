@@ -859,4 +859,19 @@ Public-delegate admission-control checkpoint:
 | Verification | Node 24 typecheck, 36 test files / 192 tests, production build, Compose configuration validation, staged secret scan, production dependency audit, and compiled live loopback checks passed with OpenAI and Slack credentials absent |
 | Live evidence | An enabled valid-empty-corpus process returned `200`, then `429` with `Retry-After: 60`; a disabled process returned `503 public_delegate_disabled` before attempting to read a deliberately missing artifact |
 | Safety evidence | No payload logging, model, private lookup, contact handling, CORS, public bind, container service, portfolio integration, or deployment; controls are explicitly documented as in-memory loopback safeguards rather than production edge admission |
-| Remaining boundary | `JOL-CAREER-005` and `PORT-DEP-002` remain incomplete; contact intent, audit/redaction policy, cost controls, distributed abuse controls, public topology, integration, evaluation, and production enablement remain pending |
+| Remaining boundary | `JOL-CAREER-005` and `PORT-DEP-002` remain incomplete; private contact review/deletion/reply control, audit/redaction policy, cost controls, distributed abuse controls, public topology, integration, evaluation, and production enablement remain pending |
+
+Public-delegate contact-intent checkpoint:
+
+| Field | Evidence |
+|---|---|
+| Asana | [JOL-CAREER-005E](https://app.asana.com/1/9789386902387/project/1216473233375594/task/1217877018254053) |
+| Branch | `codex/jol-career-005e-contact-intent` |
+| Implementation commit | `7e0dcae` (`JOL-CAREER-005E stage consented contact intents`) |
+| Pull request | [#16](https://github.com/carlwelchdesign/jolene-ai/pull/16), stacked on #15 |
+| Contract evidence | Strict frozen v1 `POST /v1/portfolio/contact-intent`; bounded name, email, optional organization, message, and literal consent; generic `202 pending_review` receipt with no contact-field echo |
+| Queue evidence | Dedicated public-delegate JSON queue; serialized atomic writes; restart validation; owner-only `0700` directory and `0600` file; maximum entry count; configurable retention up to 90 days; startup and submission pruning; likely-secret rejection |
+| Verification | Node 24 typecheck, 37 test files / 206 tests, production build, Compose configuration validation, staged secret scan, production dependency audit, and compiled live loopback checks passed with OpenAI and Slack credentials absent |
+| Live evidence | A valid consented request returned `202` and persisted one bounded record even with the career artifact deliberately missing; false consent returned `400`; the public queue-read route returned `404`; queue permissions and stored field set matched the documented boundary |
+| Safety evidence | No response PII echo, payload logging, public queue read, private database access, model, email, Slack post, scheduling, recruiter outreach, negotiation, promise, CORS, public bind, container service, portfolio integration, or deployment; local queue is explicitly documented as not application-encrypted |
+| Remaining boundary | `JOL-CAREER-005`, `PORT-DEP-002`, and `PORT-JOL-007` remain incomplete; private owner review/deletion/reply control, encrypted production storage, deletion SLA, audit/redaction policy, distributed abuse controls, integration, evaluation, topology, and production enablement remain pending |
