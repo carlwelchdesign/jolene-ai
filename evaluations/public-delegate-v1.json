@@ -1,5 +1,5 @@
 {
-  "suiteVersion": "1.0.0",
+  "suiteVersion": "1.1.0",
   "suiteId": "public-delegate:offline-baseline-v1",
   "thresholds": {
     "contract_validity": { "minimumPassRateBps": 10000, "blockingSeverity": "blocker" },
@@ -12,7 +12,12 @@
     "grounding_invariance": { "minimumPassRateBps": 10000, "blockingSeverity": "blocker" },
     "provider_input_minimization": { "minimumPassRateBps": 10000, "blockingSeverity": "blocker" },
     "fallback_reliability": { "minimumPassRateBps": 10000, "blockingSeverity": "blocker" },
-    "disclosure_safety": { "minimumPassRateBps": 10000, "blockingSeverity": "blocker" }
+    "disclosure_safety": { "minimumPassRateBps": 10000, "blockingSeverity": "blocker" },
+    "public_eligibility": { "minimumPassRateBps": 10000, "blockingSeverity": "blocker" },
+    "review_freshness": { "minimumPassRateBps": 10000, "blockingSeverity": "blocker" },
+    "revocation_continuity": { "minimumPassRateBps": 10000, "blockingSeverity": "blocker" },
+    "supersession_safety": { "minimumPassRateBps": 10000, "blockingSeverity": "blocker" },
+    "confidentiality_exclusion": { "minimumPassRateBps": 10000, "blockingSeverity": "blocker" }
   },
   "evidence": [
     {
@@ -164,6 +169,87 @@
       "generatorBehavior": "unsafe_disclosure",
       "expectedMode": "model",
       "expectDisclosureBlocked": true
+    },
+    {
+      "id": "eval:lifecycle-private-excluded",
+      "kind": "evidence_lifecycle",
+      "category": "privacy",
+      "severity": "blocker",
+      "scenario": "private_excluded",
+      "expectedEvidenceCount": 0,
+      "expectedRevokedEvidenceCount": 0
+    },
+    {
+      "id": "eval:lifecycle-internal-excluded",
+      "kind": "evidence_lifecycle",
+      "category": "privacy",
+      "severity": "blocker",
+      "scenario": "internal_excluded",
+      "expectedEvidenceCount": 0,
+      "expectedRevokedEvidenceCount": 0
+    },
+    {
+      "id": "eval:lifecycle-public-candidate-excluded",
+      "kind": "evidence_lifecycle",
+      "category": "privacy",
+      "severity": "blocker",
+      "scenario": "public_candidate_excluded",
+      "expectedEvidenceCount": 0,
+      "expectedRevokedEvidenceCount": 0
+    },
+    {
+      "id": "eval:lifecycle-stale-review-revoked",
+      "kind": "evidence_lifecycle",
+      "category": "degraded",
+      "severity": "blocker",
+      "scenario": "stale_review_revoked",
+      "expectedEvidenceCount": 0,
+      "expectedRevokedEvidenceCount": 1
+    },
+    {
+      "id": "eval:lifecycle-revoked-claim",
+      "kind": "evidence_lifecycle",
+      "category": "privacy",
+      "severity": "blocker",
+      "scenario": "revoked_claim",
+      "expectedEvidenceCount": 0,
+      "expectedRevokedEvidenceCount": 1
+    },
+    {
+      "id": "eval:lifecycle-revoked-source",
+      "kind": "evidence_lifecycle",
+      "category": "privacy",
+      "severity": "blocker",
+      "scenario": "revoked_source",
+      "expectedEvidenceCount": 0,
+      "expectedRevokedEvidenceCount": 1
+    },
+    {
+      "id": "eval:lifecycle-missing-source",
+      "kind": "evidence_lifecycle",
+      "category": "degraded",
+      "severity": "blocker",
+      "scenario": "missing_source",
+      "expectedEvidenceCount": 0,
+      "expectedRevokedEvidenceCount": 1
+    },
+    {
+      "id": "eval:lifecycle-changed-source-review-reset",
+      "kind": "evidence_lifecycle",
+      "category": "degraded",
+      "severity": "blocker",
+      "scenario": "changed_source_review_reset",
+      "expectedEvidenceCount": 0,
+      "expectedRevokedEvidenceCount": 1
+    },
+    {
+      "id": "eval:lifecycle-superseded-claim",
+      "kind": "evidence_lifecycle",
+      "category": "degraded",
+      "severity": "blocker",
+      "scenario": "superseded_claim",
+      "expectedEvidenceCount": 0,
+      "expectedRevokedEvidenceCount": 1
     }
   ]
 }
