@@ -7,6 +7,7 @@ import { chatRequestSchema } from "./application/jolene-service.js";
 import { loadConfig } from "./config.js";
 import { ActionProposalPolicyError } from "./application/action-approval-service.js";
 import { CareerEvidenceScopeError } from "./application/career-evidence-service.js";
+import { ContactIntentReviewScopeError } from "./application/contact-intent-review-service.js";
 import {
   ActionApprovalExpiredError,
   ActionPayloadMismatchError,
@@ -37,6 +38,10 @@ import {
   type MemoryReviewAsset,
 } from "./ui/memory-review-assets.js";
 import { assertSameOrigin, RequestOriginError } from "./http/request-origin.js";
+import {
+  PublicContactIntentNotFoundError,
+  PublicContactQueueUnavailableError,
+} from "./public/public-contact-intent-queue.js";
 
 const MAX_REQUEST_BYTES = 1_000_000;
 
@@ -124,6 +129,21 @@ async function handleRequest(
 
   if (request.method === "GET" && url.pathname === "/career-evidence.js") {
     sendAsset(response, memoryReviewAssets.careerJavascript);
+    return;
+  }
+
+  if (request.method === "GET" && url.pathname === "/contacts") {
+    sendAsset(response, memoryReviewAssets.contactHtml);
+    return;
+  }
+
+  if (request.method === "GET" && url.pathname === "/contact-review.css") {
+    sendAsset(response, memoryReviewAssets.contactCss);
+    return;
+  }
+
+  if (request.method === "GET" && url.pathname === "/contact-review.js") {
+    sendAsset(response, memoryReviewAssets.contactJavascript);
     return;
   }
 
@@ -401,6 +421,52 @@ async function handleRequest(
     return;
   }
 
+  if (request.method === "GET" && url.pathname === "/v1/contact-intents") {
+    sendJson(response, 200, await application.contactIntents.list({
+      ...scopeFrom(url),
+      status: url.searchParams.get("status") ?? undefined,
+    }));
+    return;
+  }
+
+  if (request.method === "GET" && url.pathname === "/v1/contact-intents/scope") {
+    sendJson(response, 200, application.contactIntents.scope());
+    return;
+  }
+
+  const contactReviewMatch = url.pathname.match(
+    /^\/v1\/contact-intents\/([^/]+)\/review$/,
+  );
+  if (request.method === "POST" && contactReviewMatch?.[1]) {
+    assertSameOrigin(request.headers);
+    sendJson(response, 200, await application.contactIntents.markReviewed(
+      withIdentifier(await readJson(request), contactReviewMatch[1]),
+    ));
+    return;
+  }
+
+  const contactDraftMatch = url.pathname.match(
+    /^\/v1\/contact-intents\/([^/]+)\/reply-draft$/,
+  );
+  if (request.method === "POST" && contactDraftMatch?.[1]) {
+    assertSameOrigin(request.headers);
+    sendJson(response, 200, await application.contactIntents.saveReplyDraft(
+      withIdentifier(await readJson(request), contactDraftMatch[1]),
+    ));
+    return;
+  }
+
+  const contactDeleteMatch = url.pathname.match(
+    /^\/v1\/contact-intents\/([^/]+)\/delete$/,
+  );
+  if (request.method === "POST" && contactDeleteMatch?.[1]) {
+    assertSameOrigin(request.headers);
+    sendJson(response, 200, await application.contactIntents.delete(
+      withIdentifier(await readJson(request), contactDeleteMatch[1]),
+    ));
+    return;
+  }
+
   const sourceDecisionMatch = url.pathname.match(
     /^\/v1\/career-evidence\/sources\/([^/]+)\/decision$/,
   );
@@ -555,7 +621,8 @@ function handleError(error: unknown, response: ServerResponse): void {
     error instanceof ActionProposalNotFoundError ||
     error instanceof PersonalWorkflowNotFoundError ||
     error instanceof WatchedProjectNotFoundError ||
-    error instanceof CareerEvidenceNotFoundError
+    error instanceof CareerEvidenceNotFoundError ||
+    error instanceof PublicContactIntentNotFoundError
   ) {
     sendJson(response, 404, { error: "not_found" });
     return;
@@ -592,6 +659,16 @@ function handleError(error: unknown, response: ServerResponse): void {
 
   if (error instanceof CareerEvidenceScopeError) {
     sendJson(response, 403, { error: "career_scope_not_permitted" });
+    return;
+  }
+
+  if (error instanceof ContactIntentReviewScopeError) {
+    sendJson(response, 403, { error: "contact_scope_not_permitted" });
+    return;
+  }
+
+  if (error instanceof PublicContactQueueUnavailableError) {
+    sendJson(response, 503, { error: "contact_queue_unavailable" });
     return;
   }
 

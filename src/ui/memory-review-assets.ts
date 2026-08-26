@@ -22,6 +22,9 @@ export interface MemoryReviewAssets {
   readonly careerHtml: MemoryReviewAsset;
   readonly careerCss: MemoryReviewAsset;
   readonly careerJavascript: MemoryReviewAsset;
+  readonly contactHtml: MemoryReviewAsset;
+  readonly contactCss: MemoryReviewAsset;
+  readonly contactJavascript: MemoryReviewAsset;
 }
 
 const SECURITY_HEADERS = {
@@ -112,6 +115,21 @@ export function loadMemoryReviewAssets(
     careerJavascript: loadAsset(
       publicDirectory,
       "career-evidence.js",
+      "text/javascript; charset=utf-8",
+    ),
+    contactHtml: loadAsset(
+      publicDirectory,
+      "contact-review.html",
+      "text/html; charset=utf-8",
+    ),
+    contactCss: loadAsset(
+      publicDirectory,
+      "contact-review.css",
+      "text/css; charset=utf-8",
+    ),
+    contactJavascript: loadAsset(
+      publicDirectory,
+      "contact-review.js",
       "text/javascript; charset=utf-8",
     ),
   };

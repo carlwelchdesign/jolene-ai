@@ -215,7 +215,7 @@ export type PortfolioJobFitResponse = z.infer<
 export type ContactIntentRequest = z.infer<typeof contactIntentRequestSchema>;
 export type ContactIntentResponse = z.infer<typeof contactIntentResponseSchema>;
 
-function containsLikelySecret(value: string): boolean {
+export function containsLikelySecret(value: string): boolean {
   return LIKELY_SECRET_PATTERNS.some((pattern) => pattern.test(value));
 }
 
