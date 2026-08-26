@@ -24,7 +24,8 @@ The first runnable slice provides:
   actor-scoped durable memories;
 - memory sensitivity gates, expiration, reviewed correction, and explicit forgetting;
 - deterministic request-aware memory ranking with inspectable selection evidence;
-- a local Memory Review screen for explicit approval, correction, recall preview, and forgetting;
+- a local Memory Review screen for explicit approval, correction, recall preview,
+  forgetting, and scoped task-timeline review;
 - on-demand, read-only watched-project snapshots with plan freshness and Git
   state alerts;
 - a private governed career-evidence registry with source provenance, project
@@ -93,9 +94,12 @@ Prerequisite: Node.js 22 or newer.
    After a production build, use `npm start` instead.
 
    Open [http://127.0.0.1:8421/memory](http://127.0.0.1:8421/memory) to review
-   Jolene's pending proposals and retained memory. The page uses the same local
-   actor/workspace boundary as the API and is not an authenticated production
-   administration surface.
+   Jolene's pending proposals, retained memory, and durable task timeline. The
+   Task timeline tab can switch between scoped tasks and record factual
+   progress, evidence, decisions, blockers, or next actions. Timeline entries
+   remain historical context; recording one does not authorize or prove an
+   external action. The page uses the same local actor/workspace boundary as
+   the API and is not an authenticated production administration surface.
 
    Open [http://127.0.0.1:8421/approvals](http://127.0.0.1:8421/approvals)
    to stage and review exact external-message proposals. Approval remains local

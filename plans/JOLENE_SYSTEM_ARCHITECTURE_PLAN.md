@@ -429,6 +429,15 @@ idempotent. Private model context receives only a bounded chronological window
 from the explicitly selected actor/workspace-owned task. Events are historical
 context, not executable instructions or proof of an external outcome.
 
+The task-timeline-interface slice adds that history to the existing local
+Memory Review information architecture. An owner can switch among scoped tasks,
+inspect objective, status, and newest-first history, and append factual manual
+events. Persistent boundary copy separates task continuity from authorization
+or external-action receipts. The interface covers loading, no-task, empty,
+error, disabled, success, keyboard, reduced-motion, desktop, and narrow-screen
+states without adding deletion, scheduling, status mutation, public exposure,
+or remote administration.
+
 The memory-governance slice adds three sensitivity levels, UTC-normalized expiry, correction through a reviewed replacement proposal, and explicit content-forgetting with a non-content tombstone. Restricted records require the selected task; sensitive records additionally require an explicit flag on that individual private request. Expired, superseded, forgotten, pending, and rejected records are excluded from model context.
 
 The contextual-ranking slice applies a deterministic lexical scorer after authorization and before the memory limit. It uses request terms, task terms, selected-task scope, and explicit standing-rule/preference baselines. Selection evidence is available through a read-only preview endpoint. The candidate window is capped, privacy gates precede ranking, and no embedding provider or new external dependency is introduced.
@@ -517,6 +526,18 @@ Task-event-history checkpoint:
 | Runtime evidence | Task and event creation return 201; context preview returns only the selected task's `created` and `evidence` events; foreign scope returns 404; cross-origin mutation returns 403 |
 | Safety evidence | Shared channels receive no task event context; manual callers cannot forge creation or status-transition events; task history is explicitly labeled non-authoritative |
 | Remaining boundary | Automatic compaction, retention/forget controls, event-search/ranking, graphical task-history administration, and authenticated production exposure remain pending |
+
+Task-timeline-interface checkpoint:
+
+| Field | Value |
+|---|---|
+| Branch | `codex/jol-arch-003c-task-timeline-ui` |
+| Implementation commit | `249b49a` (`JOL-ARCH-003C add local task timeline control`) |
+| Pull request | Pending; stacked on [#7](https://github.com/carlwelchdesign/jolene-ai/pull/7) |
+| Verification | 28 test files and 133 tests, Node 24.18.0 JavaScript syntax and typecheck, production build, Compose validation, zero production dependency vulnerabilities, and live isolated desktop and 390px browser flows passed |
+| Interaction evidence | Task selection changes objective and history; factual decision entry persists, clears the form, confirms success, and appears newest-first; an empty actor/workspace scope disables task and entry controls with explicit guidance |
+| Safety evidence | Historical-context boundary remains visible; dynamic content uses text-only DOM insertion; mutations are same-origin and task scoped; no deletion, status mutation, scheduling, sending, publication, or external execution control exists |
+| Remaining boundary | Event search/ranking, retention/forget controls, automatic compaction, authenticated production administration, and remote/public exposure remain pending |
 
 Memory Review interface checkpoint:
 
@@ -640,7 +661,7 @@ Current ticket evidence:
 |---|---|---|
 | JOL-ARCH-001 | Partial | Initial policy taxonomy and trust boundary exist; the full capability registry is pending. |
 | JOL-ARCH-002 | Implemented for first slice | Core service runs through CLI or HTTP and does not depend on Slack. |
-| JOL-ARCH-003 | Partial | Durable isolated conversations, tasks, scoped task-event timelines, governed and request-ranked memory, a local graphical review workflow, status updates, retries, and restart recovery are tested. Recent selected-task events now enter private context only. Automatic compaction, embedding-backed similarity, retention controls, event search/ranking, and authenticated production administration remain pending. |
+| JOL-ARCH-003 | Partial | Durable isolated conversations, tasks, scoped task-event timelines, governed and request-ranked memory, local graphical memory and task-history review, status updates, retries, and restart recovery are tested. Recent selected-task events enter private context only, and owners can inspect or append factual task history locally. Automatic compaction, embedding-backed similarity, retention controls, event search/ranking, and authenticated production administration remain pending. |
 | JOL-ARCH-004 | Implemented for local pilot | Socket Mode adapter, manifest, owner gate, thread mapping, live mention/reply evidence, durable generation deduplication, and durable delivery retries exist. Live owner-DM evidence and crash-window reconciliation remain operational gates. |
 | JOL-ARCH-005 | Implemented for local slice | Read-only allowlisted Markdown retrieval is tested with exact note and heading citations. |
 | JOL-ARCH-006 | Partial | Retrieved excerpts retain provenance and private knowledge searches now have a durable, content-minimizing access ledger; external disclosure authorization and delivery receipts remain pending. |

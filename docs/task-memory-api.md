@@ -12,7 +12,16 @@ screen supports the governed lifecycle without requiring direct API calls:
 - propose a correction while leaving the original active until approval;
 - confirm explicit forgetting before content is scrubbed;
 - preview the exact authorized records and ranking evidence for a request;
-- opt sensitive memory into only the current private preview.
+- opt sensitive memory into only the current private preview;
+- review a scoped task's durable timeline newest-first and record factual
+  progress, evidence, decisions, blockers, or next actions.
+
+The Task timeline tab displays the selected task's objective, current status,
+and recent history. It supports task switching, refresh, empty and unavailable
+states, and a mobile form-first layout. New entries use the same-origin,
+actor/workspace/task-scoped event contract described below. The interface does
+not expose task deletion, status mutation, scheduling, external delivery, or
+public administration controls.
 
 The selected person/workspace scope is stored only in that browser's local
 storage. This makes local use convenient; it does not replace authentication or
@@ -193,6 +202,8 @@ This explicit destructive operation removes the retained content from both the d
 ## Current limitations
 
 - There is no bulk retention manager or automatic compaction workflow yet.
+- The task timeline is a local review and context-entry surface; it does not
+  search, rank, edit, or delete historical events.
 - The graphical review interface is a local-pilot surface without production authentication.
 - Ranking is deterministic lexical matching, not embedding or model-based semantic similarity; meaningfully related records that use entirely different vocabulary may be missed.
 - Only the bounded authorized candidate window is ranked; an older relevant record outside that window may be missed until a future index-backed retriever is added.
