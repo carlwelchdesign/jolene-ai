@@ -313,6 +313,42 @@ Verification checkpoint:
 - a fresh Docker image build remains unverified in this run because Docker
   Desktop reported that it was unable to start.
 
+### JOL-CAREER-002B — Scaled recovered-evidence review
+
+- [x] Preserve the live SQLite registry before importing the updated allowlist.
+- [x] Import the recovered synthesized career notes as private, review-required
+  evidence without calling an embedding or model provider.
+- [x] Paginate the complete source registry with synchronized header/footer
+  navigation while keeping search and status filters registry-wide.
+- [x] Add bounded capture, update, review, and shortened-fingerprint context
+  without exposing absolute vault paths.
+- [x] Preserve conflict selections and disclosure state across page changes.
+
+Implementation notes:
+
+- branch: `codex/jol-career-002b-scaled-evidence-review`;
+- implementation commit: `88b0f70` (`JOL-CAREER-002B scale evidence review queue`);
+- a pre-import SQLite backup was created under the ignored local `.jolene`
+  data directory;
+- the refreshed private registry contains 38 active sources and 143 active
+  claims, with zero internal-approved and zero public-approved claims;
+- raw Gmail and Roundcube source-note folders remain outside the configured
+  career allowlist; the synthesized career notes have no public citation URI;
+  and
+- the UI renders ten sources per page, resets or clamps the active page after
+  filtering and refresh, and maintains accessible result/page status.
+
+Verification checkpoint:
+
+- 44 test files and 285 tests pass on Node 24.18.0;
+- real-registry browser verification covers four-page navigation, synchronized
+  footer control, global recovered-narrative search, focus handoff, and zero
+  public-approved evidence;
+- desktop and 390-pixel mobile review found no horizontal overflow, and browser
+  console inspection found no warnings or errors; and
+- no evidence decision, embedding/model request, public export, outreach,
+  deployment, merge, or launch occurred.
+
 ### JOL-CAREER-004 — Public evidence export
 
 - [x] Export only active `public_approved` records.

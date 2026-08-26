@@ -51,8 +51,11 @@ The review screen:
 - excludes claims already held by an unresolved group from new selections and
   labels their withheld state in the evidence queue;
 - supports rejection and confirmation-gated source or claim revocation; and
-- keeps the 122-claim queue navigable through search, filters, summaries, and
-  collapsed source-linked claim groups.
+- keeps the current 38-source, 143-active-claim queue navigable through
+  registry-wide search, filters, summaries, ten-source pages, synchronized
+  header/footer navigation, and collapsed source-linked claim groups;
+- shows bounded source capture, update, review, and shortened fingerprint
+  context without exposing absolute vault paths.
 
 The supporting `/v1/career-evidence/*` routes are local administration routes,
 not the future recruiter-facing API. Every read and mutation is checked against
@@ -64,6 +67,12 @@ content, send a message, apply for a role, or expose raw Obsidian documents.
 This is a loopback pilot, not an authenticated remote administration surface.
 Do not bind it to a public interface without adding authentication, production
 CSRF controls, and an explicit deployment threat review.
+
+The 2026-08-26 recovered-career refresh imported 12 allowlisted synthesized
+career notes into the private registry, leaving every imported claim in
+`needs_review`, with private visibility and no public citation URI. Raw mailbox
+source-note folders remain outside the configured allowlist. The refresh made
+no embedding/model request and left the public-approved count at zero.
 
 The visual conflict workflow uses the private persistence API:
 
