@@ -48,7 +48,7 @@ The first runnable slice provides:
 - a separate loopback-only public-delegate process boundary that validates that
   artifact and exposes health, the frozen v1 manifest, and deterministic
   citation-complete public-evidence answers and conservative job-description
-  comparisons;
+  comparisons, with a runtime kill switch and bounded local admission;
 - contract tests that do not call OpenAI.
 
 The Slack adapter is active for a local pilot, with live mention-and-reply behavior verified. Scheduled work, specialist agents, client-AI workflows, always-on hosting, and voice remain later gates.

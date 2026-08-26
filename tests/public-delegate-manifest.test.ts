@@ -9,6 +9,10 @@ import { FilePublicArtifactSource } from "../src/public/public-artifact-source.j
 import { DeterministicPublicAnswerService } from "../src/public/public-answer-service.js";
 import { DeterministicPublicJobFitService } from "../src/public/public-job-fit-service.js";
 import {
+  FixedWindowPublicRequestAdmission,
+  type PublicRequestAdmissionController,
+} from "../src/public/public-request-admission.js";
+import {
   parsePublicDelegateConfig,
 } from "../src/public/public-config.js";
 import {
@@ -40,12 +44,36 @@ describe("public delegate manifest boundary", () => {
     })).toThrow();
 
     expect(config).toEqual({
+      enabled: true,
       host: "127.0.0.1",
       port: 8431,
       artifactPath: path.resolve(
         ".jolene/exports/public-career-evidence.json",
       ),
+      requestsPerMinute: 60,
+      maxConcurrentRequests: 8,
     });
+  });
+
+  it("strictly validates public admission configuration", () => {
+    expect(parsePublicDelegateConfig({
+      JOLENE_PUBLIC_ENABLED: "false",
+      JOLENE_PUBLIC_REQUESTS_PER_MINUTE: "12",
+      JOLENE_PUBLIC_MAX_CONCURRENT_REQUESTS: "3",
+    })).toMatchObject({
+      enabled: false,
+      requestsPerMinute: 12,
+      maxConcurrentRequests: 3,
+    });
+    expect(() => parsePublicDelegateConfig({
+      JOLENE_PUBLIC_ENABLED: "yes",
+    })).toThrow();
+    expect(() => parsePublicDelegateConfig({
+      JOLENE_PUBLIC_REQUESTS_PER_MINUTE: "0",
+    })).toThrow();
+    expect(() => parsePublicDelegateConfig({
+      JOLENE_PUBLIC_MAX_CONCURRENT_REQUESTS: "65",
+    })).toThrow();
   });
 
   it("serves the exact frozen v1 manifest with no-store security headers", async () => {
@@ -87,6 +115,40 @@ describe("public delegate manifest boundary", () => {
       corpusVersion: fixture.manifest.corpusVersion,
       evidenceCount: 0,
     });
+  });
+
+  it("fails closed at the runtime kill switch before reading evidence", async () => {
+    const { baseUrl } = await start(
+      path.join(await temporaryDirectory(), "missing.json"),
+      { enabled: false },
+    );
+
+    const response = await fetch(`${baseUrl}/health`);
+
+    expect(response.status).toBe(503);
+    expect(await response.json()).toEqual({
+      status: "unavailable",
+      error: "public_delegate_disabled",
+    });
+    expect(response.headers.get("cache-control")).toBe("no-store");
+    expect(response.headers.get("access-control-allow-origin")).toBeNull();
+  });
+
+  it("rate limits a client with a non-disclosing bounded response", async () => {
+    const fixture = await loadFixture();
+    const admissions = new FixedWindowPublicRequestAdmission({
+      requestsPerWindow: 1,
+      maxConcurrentRequests: 2,
+    });
+    const { baseUrl } = await start(await writeArtifact(fixture), { admissions });
+
+    expect((await fetch(`${baseUrl}/health`)).status).toBe(200);
+    const response = await fetch(`${baseUrl}/health`);
+
+    expect(response.status).toBe(429);
+    expect(response.headers.get("retry-after")).toBe("60");
+    expect(response.headers.get("cache-control")).toBe("no-store");
+    expect(await response.json()).toEqual({ error: "rate_limited" });
   });
 
   it("serves a frozen-contract answer from matching public evidence", async () => {
@@ -365,6 +427,7 @@ describe("public delegate manifest boundary", () => {
       "src/public/public-artifact-source.ts",
       "src/public/public-answer-service.ts",
       "src/public/public-job-fit-service.ts",
+      "src/public/public-request-admission.ts",
       "src/public/public-delegate-server.ts",
     ];
     const source = (await Promise.all(
@@ -414,11 +477,22 @@ async function temporaryDirectory(): Promise<string> {
   return directory;
 }
 
-async function start(artifactPath: string): Promise<{ readonly baseUrl: string }> {
+async function start(
+  artifactPath: string,
+  overrides: {
+    readonly enabled?: boolean;
+    readonly admissions?: PublicRequestAdmissionController;
+  } = {},
+): Promise<{ readonly baseUrl: string }> {
   const server = createPublicDelegateServer({
+    enabled: overrides.enabled ?? true,
     artifacts: new FilePublicArtifactSource(artifactPath),
     answers: new DeterministicPublicAnswerService(),
     jobFit: new DeterministicPublicJobFitService(),
+    admissions: overrides.admissions ?? new FixedWindowPublicRequestAdmission({
+      requestsPerWindow: 1_000,
+      maxConcurrentRequests: 10,
+    }),
   });
   openServers.push(server);
   server.listen(0, "127.0.0.1");
