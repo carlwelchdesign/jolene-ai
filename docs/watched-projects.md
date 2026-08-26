@@ -32,6 +32,16 @@ and revision when available, the number of uncommitted files, and explicit
 alerts. Build verification is reported as `not_configured` until a bounded,
 project-specific check is approved and implemented.
 
+## Local control center
+
+Open `http://127.0.0.1:8421/projects` for the graphical Project Watch screen.
+It checks every configured project on first load and only checks again when the
+operator uses **Check all projects**, **Check again**, or **Retry check**.
+
+The screen covers loading, empty registry, healthy, attention, partial-failure,
+and service-unavailable states. It displays no local root paths and exposes no
+repair or side-effect control.
+
 The inspector never writes project files and exposes no edit, commit, push,
 deploy, or publish operation. Scheduled monitoring remains disabled until Carl
 approves cadence, cost, notification destination, and a stop condition.

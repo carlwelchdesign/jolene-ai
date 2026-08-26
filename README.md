@@ -104,6 +104,10 @@ Prerequisite: Node.js 22 or newer.
    [Watched projects](docs/watched-projects.md). It is on-demand only; no
    scheduler, edit, commit, deployment, or publication capability is exposed.
 
+   Open [http://127.0.0.1:8421/projects](http://127.0.0.1:8421/projects) to
+   inspect fresh project, plan, and Git status without exposing local paths or
+   any repair controls.
+
 ## Slack pilot
 
 Jolene can connect through a dedicated Slack app using Socket Mode. The checked-in manifest grants only the scopes needed for owner DMs, explicit mentions, and replies.

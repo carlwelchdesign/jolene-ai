@@ -90,7 +90,8 @@ button { cursor: pointer; }
 .brand small { margin-top: 3px; color: var(--muted); font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; }
 
 .header-tools { display: flex; align-items: center; gap: 12px; }
-.product-nav { display: flex; gap: 3px; padding: 4px; background: rgba(255, 253, 248, 0.72); border: 1px solid var(--line); border-radius: 11px; }
+.product-nav { display: flex; gap: 3px; max-width: 100%; overflow-x: auto; padding: 4px; background: rgba(255, 253, 248, 0.72); border: 1px solid var(--line); border-radius: 11px; }
+.product-nav a { white-space: nowrap; }
 .product-nav a { padding: 7px 10px; color: var(--muted); border-radius: 7px; font-size: 12px; font-weight: 800; text-decoration: none; }
 .product-nav a[aria-current="page"] { color: var(--ink); background: white; box-shadow: 0 2px 8px rgba(53, 43, 31, 0.08); }
 
@@ -250,10 +251,11 @@ blockquote { margin: 0; padding: 16px; background: #f3ede4; border-left: 4px sol
 
 @media (max-width: 720px) {
   .topbar, main { width: min(100% - 24px, 1180px); }
-  .topbar { align-items: flex-start; padding-top: 14px; }
-  .header-tools { align-items: flex-end; flex-direction: column-reverse; }
-  .product-nav { max-width: 100%; }
-  .scope-button { min-width: 0; max-width: 48%; }
+  .topbar { align-items: stretch; flex-direction: column; gap: 12px; padding-top: 14px; }
+  .header-tools { align-items: stretch; flex-direction: column; width: 100%; }
+  .product-nav { width: 100%; }
+  .product-nav a { flex: 1 0 auto; text-align: center; }
+  .scope-button { width: 100%; min-width: 0; max-width: none; }
   .hero { min-height: 0; padding: 36px 24px; border-radius: 20px; }
   .hero::after { opacity: 0.5; }
   .hero h1 { font-size: clamp(42px, 14vw, 60px); }

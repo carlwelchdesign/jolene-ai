@@ -100,6 +100,21 @@ async function handleRequest(
     return;
   }
 
+  if (request.method === "GET" && url.pathname === "/projects") {
+    sendAsset(response, memoryReviewAssets.projectHtml);
+    return;
+  }
+
+  if (request.method === "GET" && url.pathname === "/project-watch.css") {
+    sendAsset(response, memoryReviewAssets.projectCss);
+    return;
+  }
+
+  if (request.method === "GET" && url.pathname === "/project-watch.js") {
+    sendAsset(response, memoryReviewAssets.projectJavascript);
+    return;
+  }
+
   if (request.method === "GET" && url.pathname === "/workflow-review.css") {
     sendAsset(response, memoryReviewAssets.workflowCss);
     return;

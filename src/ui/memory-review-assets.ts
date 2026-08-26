@@ -16,6 +16,9 @@ export interface MemoryReviewAssets {
   readonly workflowHtml: MemoryReviewAsset;
   readonly workflowCss: MemoryReviewAsset;
   readonly workflowJavascript: MemoryReviewAsset;
+  readonly projectHtml: MemoryReviewAsset;
+  readonly projectCss: MemoryReviewAsset;
+  readonly projectJavascript: MemoryReviewAsset;
 }
 
 const SECURITY_HEADERS = {
@@ -76,6 +79,21 @@ export function loadMemoryReviewAssets(
     workflowJavascript: loadAsset(
       publicDirectory,
       "workflow-review.js",
+      "text/javascript; charset=utf-8",
+    ),
+    projectHtml: loadAsset(
+      publicDirectory,
+      "project-watch.html",
+      "text/html; charset=utf-8",
+    ),
+    projectCss: loadAsset(
+      publicDirectory,
+      "project-watch.css",
+      "text/css; charset=utf-8",
+    ),
+    projectJavascript: loadAsset(
+      publicDirectory,
+      "project-watch.js",
       "text/javascript; charset=utf-8",
     ),
   };

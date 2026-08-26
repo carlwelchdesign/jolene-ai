@@ -583,6 +583,18 @@ Watched-project checkpoint:
 | Safety evidence | Registry listings omit root paths; inspection is read-only and exposes no edit, commit, push, deploy, publish, or scheduling operation |
 | Remaining boundary | Approved monitoring cadence, cost ceiling, notification destination, stop condition, visible history, and bounded build verification remain pending |
 
+Project-Watch interface checkpoint:
+
+| Field | Value |
+|---|---|
+| Branch | `codex/jolene-project-watch-ui` |
+| Implementation commit | Pending |
+| Pull request | None; this local repository has no remote configured |
+| Verification | Node 22 typecheck, 82 contract tests, production build, dependency audit, diff hygiene, live desktop and 390px browser layouts, and clean browser console passed |
+| Interaction evidence | Configured-project load, current Git-boundary alert, refresh-one confirmation, empty registry, Projects-to-Approvals cross-navigation, and responsive no-overflow layout passed; partial and service-failure behavior remain contract-covered rather than live-induced |
+| Safety evidence | Persistent read-only and on-demand disclosure; root paths omitted; no scheduler, repair, edit, build, commit, push, deploy, publish, or mutation control |
+| Remaining boundary | Scheduled monitoring, durable history, notifications, build checks, authenticated production administration, and operator-approved operating limits remain pending |
+
 ## Architecture tickets
 
 | ID | Ticket | Acceptance criteria |
@@ -614,7 +626,7 @@ Current ticket evidence:
 | JOL-ARCH-007 | Partial | Deterministic risk decisions, a typed proposal-only registry, exact expiring approvals, an internal one-time claim boundary, and a local graphical approval-review workflow exist; trusted delivery adapters and execution receipts remain pending. |
 | JOL-ARCH-008 | Implemented for local slice | Six task-bound workflow templates, exact step evidence, durable history, bounded revision, explicit final review, and a local graphical control point are tested; model-facing tools, richer artifacts, scheduling, and authenticated administration remain pending. |
 | JOL-ARCH-009 | Partial | Initial runtime behavior prompt and non-impersonation rules exist; the formal personality renderer and evaluation suite are pending. |
-| JOL-ARCH-010 | Partial | An explicit local registry and on-demand read-only snapshots now report project existence, plan freshness, Git branch/revision/dirty state, and clear alerts. Scheduling, durable history, notifications, budgets, stop conditions, and build verification remain disabled. |
+| JOL-ARCH-010 | Partial | An explicit local registry, on-demand read-only snapshots, and a graphical Project Watch screen report project existence, plan freshness, Git branch/revision/dirty state, and clear alerts. Scheduling, durable history, notifications, budgets, stop conditions, and build verification remain disabled. |
 | JOL-ARCH-013 | Planned and deferred | The revised baseline at `/Users/carl.welch/Documents/Github Projects/carl-welch-portfolio/PORTFOLIO_SITE_PLAN.md` explicitly defers Jolene outside the portfolio's first release. The later public delegate still requires a public/private boundary, versioned evidence contract, adversarial evaluations, correction flow, contact handoff, and production controls. Fit Console is a pattern source, not the target project. |
 
 ## Architecture risks
