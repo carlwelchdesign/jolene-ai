@@ -576,7 +576,7 @@ Watched-project checkpoint:
 | Field | Value |
 |---|---|
 | Branch | `codex/jolene-watched-projects` |
-| Implementation commit | Pending |
+| Implementation commit | `46e96be` (`JOL-ARCH-010 add watched project snapshots`) |
 | Pull request | None; this local repository has no remote configured |
 | Verification | Node 22 typecheck, 77 contract tests, production build, diff hygiene, and live local API snapshot passed |
 | Project evidence | `carl-welch-portfolio` is registered locally; the live snapshot found its directory, correctly reported the absent Git boundary, and detected that the configured canonical plan filename no longer exists |
