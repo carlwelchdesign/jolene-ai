@@ -810,7 +810,7 @@ Public-delegate manifest-boundary checkpoint:
 | Asana | [JOL-CAREER-005A](https://app.asana.com/1/9789386902387/project/1216473233375594/task/1217873729024295) |
 | Branch | `codex/jol-career-005a-public-manifest-boundary` |
 | Implementation commit | `ccc0bc1` (`JOL-CAREER-005A isolate public manifest boundary`) |
-| Pull request | Pending |
+| Pull request | [#12](https://github.com/carlwelchdesign/jolene-ai/pull/12), stacked on #11 |
 | Process boundary | Separate public entrypoint and `.env.public.local`; no private application/config, SQLite, Obsidian, Slack, durable-memory, or OpenAI dependency |
 | Contract evidence | Exact frozen portfolio v1 manifest fields at `GET /v1/public-evidence/manifest`; public-only health at `GET /health`; artifact reloaded, schema-validated, and hash-verified per request |
 | Verification | Node 24 typecheck, 33 test files / 161 tests, production build, Compose configuration validation, staged secret scan, production dependency audit, and compiled live loopback checks passed with OpenAI and Slack credentials absent |
