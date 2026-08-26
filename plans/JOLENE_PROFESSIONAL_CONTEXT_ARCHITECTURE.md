@@ -2,7 +2,7 @@
 
 **Date:** 2026-08-26
 
-**Status:** Docker API, governed career ingestion, private hybrid retrieval, public export, loopback manifest/deterministic-answer/job-fit/contact-staging/admission boundaries, and private contact review implemented; model-backed public answers and deployment pending
+**Status:** Docker API, governed career ingestion, private hybrid retrieval, public export, loopback manifest/deterministic-answer/job-fit/contact-staging/admission/audit boundaries, and private contact review implemented; model-backed public answers and deployment pending
 
 ## Product outcome
 
@@ -363,8 +363,8 @@ Verification checkpoint:
   `JOL-CAREER-005C`; it emits direct, adjacent, or unknown results and never
   treats absent public evidence as proof of missing experience.
 - Loopback runtime admission and a fail-closed kill switch are implemented in
-  `JOL-CAREER-005D`; production-grade edge, distributed abuse, audit, redaction,
-  and cost controls remain separate gates.
+  `JOL-CAREER-005D`; production-grade edge, distributed abuse, redaction, and
+  cost controls remain separate gates.
 - Minimized consented contact-intent staging is implemented in
   `JOL-CAREER-005E`; requests enter a dedicated owner-only, retention-bounded
   local review queue and cannot trigger outbound action.
@@ -372,15 +372,20 @@ Verification checkpoint:
   scope can list, mark reviewed, save an inert reply draft, and explicitly
   delete queue records without copying PII into private SQLite or exposing a
   send operation.
+- A content-minimizing local audit ledger is implemented in
+  `JOL-CAREER-005G`; it records only fixed operational outcomes, bounded timing,
+  corpus version, and counts in a separate retention-bounded file with no
+  public read route.
 - Integrate the isolated Jolene public service through the portfolio adapter.
-- Use only the public evidence export.
-- Add rate limits, cost ceilings, input limits, redaction, and a kill switch.
+- Preserve the public-evidence-only source boundary.
+- Add production cost ceilings, broader redaction, edge admission, and
+  centralized audit monitoring.
 
-`JOL-CAREER-005A/B/C/D/E/F` do not complete this ticket: there is no
+`JOL-CAREER-005A/B/C/D/E/F/G` do not complete this ticket: there is no
 model-backed answer generation, outbound reply control, authenticated
 production owner surface, CORS, public binding, container service, portfolio
-integration, production-grade abuse controls, audit pipeline, or deployment
-path.
+integration, production-grade abuse controls, production audit pipeline, or
+deployment path.
 
 `JOL-CAREER-005F` verification checkpoint:
 
@@ -395,6 +400,17 @@ path.
 - desktop and 390 px reduced-motion browser verification confirms the contact
   list, local draft dialog, focus placement, deletion flow, empty state, and no
   horizontal overflow.
+
+`JOL-CAREER-005G` verification checkpoint:
+
+- implementation commit: `6d5689f` (`JOL-CAREER-005G add privacy-safe public audit ledger`);
+- 40 test files and 226 tests pass on Node 24.18.0, alongside TypeScript
+  validation and the production build;
+- Compose configuration, diff hygiene, and the production dependency audit
+  pass with zero reported production vulnerabilities; and
+- compiled live loopback requests record health, no-evidence answer, job-fit,
+  invalid-contact, and unknown-route outcomes while retaining none of the
+  submitted marker content.
 
 ### JOL-CAREER-006 — Evaluation and launch gates
 

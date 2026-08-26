@@ -49,7 +49,7 @@ The first runnable slice provides:
   artifact and exposes health, the frozen v1 manifest, and deterministic
   citation-complete public-evidence answers and conservative job-description
   comparisons, plus consented local contact-intent staging, a runtime kill
-  switch, and bounded local admission;
+  switch, bounded local admission, and a content-minimizing local audit ledger;
 - a private owner-scoped Contacts screen that can review or delete staged
   requests and save inert local reply drafts without sending anything;
 - contract tests that do not call OpenAI.
@@ -213,6 +213,9 @@ and thread.
 ## Security boundary
 
 - `.env.local`, the SQLite database, and generated evaluation results are ignored.
+- The isolated public audit ledger records only fixed operations, outcomes,
+  timing, corpus version, and counts; it never stores request bodies, visitor
+  identity, session tokens, source addresses, citations, or response text.
 - Obsidian access is read-only and limited to configured relative path prefixes.
 - Knowledge-search audit records retain scope, outcome, query fingerprints, and citations—but never raw queries or note excerpts.
 - Shared channels receive no Obsidian search tool.
