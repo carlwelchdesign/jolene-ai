@@ -323,6 +323,8 @@ Verification checkpoint:
 Implementation notes:
 
 - branch: `codex/jol-career-004-public-export`;
+- implementation commit: `1e03a08` (`JOL-CAREER-004 add governed public
+  evidence export`);
 - the artifact is an ignored local file, not a public API, portfolio copy, or
   deployment;
 - manifest fields align with the portfolio v1 fixture contract, while the
