@@ -587,6 +587,7 @@ Workflow-interface checkpoint:
 | JOL-ARCH-010 | Scheduling and monitoring | Every scheduled job has scope, cadence, budget, stop condition, and visible history. |
 | JOL-ARCH-011 | Client-AI task packets | Context allowlist, turn limit, expiry, sender identity, transcript, and human handoff are enforced. |
 | JOL-ARCH-012 | Original voice gate | Begins only after text quality and rights gates; voice remains clearly original. |
+| JOL-ARCH-013 | Public portfolio hiring delegate | Recruiter answers use only approved public evidence, preserve project maturity, disclose AI identity, cite sources, and hand off personal commitments to Carl. |
 
 Current ticket evidence:
 
@@ -601,6 +602,7 @@ Current ticket evidence:
 | JOL-ARCH-007 | Partial | Deterministic risk decisions, a typed proposal-only registry, exact expiring approvals, an internal one-time claim boundary, and a local graphical approval-review workflow exist; trusted delivery adapters and execution receipts remain pending. |
 | JOL-ARCH-008 | Implemented for local slice | Six task-bound workflow templates, exact step evidence, durable history, bounded revision, explicit final review, and a local graphical control point are tested; model-facing tools, richer artifacts, scheduling, and authenticated administration remain pending. |
 | JOL-ARCH-009 | Partial | Initial runtime behavior prompt and non-impersonation rules exist; the formal personality renderer and evaluation suite are pending. |
+| JOL-ARCH-013 | Planned | The existing local portfolio already has source-constrained career chat, project IDs, deterministic fallback, rate limiting, contact capture, and redacted Slack summaries; the public/private Jolene boundary, versioned evidence contract, adversarial evaluations, correction flow, and production controls remain pending. |
 
 ## Architecture risks
 
@@ -626,3 +628,4 @@ Current ticket evidence:
 | 2026-08-25 | Keep external actions propose-first | Existing approved safety direction |
 | 2026-08-25 | Proceed with MVP development | Authorized by Carl; first local slice complete |
 | 2026-08-25 | Adapt structured-work patterns without weakening Jolene's approval boundary | Implemented for the first personal-workflow slice |
+| 2026-08-25 | Treat the Carl Welch portfolio assistant as a public Jolene delegate, never a tunnel into private Jolene | Planned; repository boundary must be confirmed before portfolio edits |
