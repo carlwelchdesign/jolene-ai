@@ -6,7 +6,10 @@ import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 
 import { FilePublicArtifactSource } from "../src/public/public-artifact-source.js";
-import { DeterministicPublicAnswerService } from "../src/public/public-answer-service.js";
+import {
+  DeterministicPublicAnswerService,
+  type PublicPortfolioAnswerer,
+} from "../src/public/public-answer-service.js";
 import { DeterministicPublicJobFitService } from "../src/public/public-job-fit-service.js";
 import {
   FilePublicContactIntentQueue,
@@ -340,6 +343,51 @@ describe("public delegate manifest boundary", () => {
     const response = await fetch(`${baseUrl}/health`);
     expect(response.status).toBe(200);
     expect(await response.json()).toMatchObject({ status: "ok" });
+  });
+
+  it("blocks an unsafe answer before egress and audits only the fixed outcome", async () => {
+    const artifact = createPublicEvidenceArtifact();
+    const auditPath = path.join(await temporaryDirectory(), "audit.json");
+    const audits = new FilePublicAuditLedger({
+      filePath: auditPath,
+      maxEntries: 100,
+      retentionMilliseconds: 24 * 60 * 60 * 1_000,
+    });
+    await audits.initialize();
+    const unsafeValue = "/Users/carl/private-career-note.md";
+    const baseline = new DeterministicPublicAnswerService();
+    const answers: PublicPortfolioAnswerer = {
+      answer: (source, request) => ({
+        ...baseline.answer(source, request),
+        answer: `Unsafe provider output ${unsafeValue}`,
+      }),
+    };
+    const { baseUrl } = await start(await writeArtifact(artifact), {
+      answers,
+      audits,
+    });
+
+    const response = await fetch(`${baseUrl}/v1/portfolio/answer`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ question: "What React systems has Carl built?" }),
+    });
+    const responseText = await response.text();
+
+    expect(response.status).toBe(503);
+    expect(JSON.parse(responseText)).toEqual({
+      status: "unavailable",
+      error: "public_response_blocked",
+    });
+    expect(responseText).not.toContain(unsafeValue);
+    expect(response.headers.get("cache-control")).toBe("no-store");
+    expect(await audits.list()).toMatchObject([{
+      operation: "answer",
+      method: "POST",
+      status: 503,
+      outcome: "response_blocked",
+    }]);
+    expect(await readFile(auditPath, "utf8")).not.toContain(unsafeValue);
   });
 
   it.each([
@@ -737,6 +785,7 @@ async function start(
     readonly admissions?: PublicRequestAdmissionController;
     readonly contactIntents?: PublicContactIntentStager;
     readonly audits?: PublicAuditRecorder;
+    readonly answers?: PublicPortfolioAnswerer;
   } = {},
 ): Promise<{
   readonly baseUrl: string;
@@ -749,7 +798,7 @@ async function start(
   const server = createPublicDelegateServer({
     enabled: overrides.enabled ?? true,
     artifacts: new FilePublicArtifactSource(artifactPath),
-    answers: new DeterministicPublicAnswerService(),
+    answers: overrides.answers ?? new DeterministicPublicAnswerService(),
     jobFit: new DeterministicPublicJobFitService(),
     contactIntents: overrides.contactIntents ?? new FilePublicContactIntentQueue({
       filePath: contactQueuePath,

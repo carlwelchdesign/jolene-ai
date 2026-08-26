@@ -172,6 +172,7 @@ describe("PublicCareerExportService", () => {
       "https://example.com/work/sample",
     ],
     ["See [[Private Career Note]] for more.", "https://example.com/work/sample"],
+    ["Internal preview http://localhost:8421/memory", "https://example.com/work/sample"],
     ["A safe proposition.", "http://127.0.0.1:3000/work/sample"],
   ])("fails closed on private or unsafe export content", (proposition, href) => {
     const store = new SqliteCareerEvidenceStore(":memory:", () => fixedNow);

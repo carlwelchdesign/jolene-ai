@@ -26,6 +26,9 @@ import type {
   PublicAuditOutcome,
   PublicAuditRecorder,
 } from "./public-audit-ledger.js";
+import {
+  assertPublicResponseDisclosureSafe,
+} from "../domain/public-disclosure-policy.js";
 
 const MAX_URL_CHARACTERS = 2_048;
 const MAX_BODY_BYTES = 98_304;
@@ -249,22 +252,44 @@ function createAuditedResponder(
   const operation = auditOperation(request.url ?? "/");
   const method = auditMethod(request.method);
   return async (status, body, outcome, headers = {}, details = {}) => {
+    const guarded = guardPublicResponse(status, body, outcome, headers, details);
     if (audits) {
       try {
         void audits.record({
           operation,
           method,
-          status,
-          outcome,
+          status: guarded.status,
+          outcome: guarded.outcome,
           durationMs: Date.now() - startedAt,
-          ...details,
+          ...guarded.details,
         }).catch(() => undefined);
       } catch {
         // Auditing is best-effort and must never change the public response.
       }
     }
-    sendJson(response, status, body, headers);
+    sendJson(response, guarded.status, guarded.body, guarded.headers);
   };
+}
+
+function guardPublicResponse(
+  status: number,
+  body: unknown,
+  outcome: PublicAuditOutcome,
+  headers: Readonly<Record<string, string>>,
+  details: PublicAuditDetails,
+) {
+  try {
+    assertPublicResponseDisclosureSafe(body);
+    return { status, body, outcome, headers, details };
+  } catch {
+    return {
+      status: 503,
+      body: { status: "unavailable", error: "public_response_blocked" },
+      outcome: "response_blocked" as const,
+      headers: {},
+      details: {},
+    };
+  }
 }
 
 function auditOperation(rawUrl: string): PublicAuditOperation {
