@@ -27,6 +27,35 @@ same gates appear in the internal public-claim query. Revoked or superseded
 records disappear immediately. `JOL-CAREER-004` will later turn that bounded
 query into a versioned, content-minimized export artifact.
 
+## Human review control
+
+Run the loopback control server and open
+[http://127.0.0.1:8421/career-evidence](http://127.0.0.1:8421/career-evidence).
+The review screen:
+
+- discovers the configured owner/workspace scope from the local server and
+  cannot switch to another registry scope;
+- presents source provenance, policy findings, record state, review state,
+  visibility, and project maturity before each decision;
+- requires source approval before internal or public claim approval;
+- disables public review when no public HTTP(S) or portfolio-relative citation
+  exists;
+- requires a second exact-claim confirmation for public eligibility;
+- supports rejection and confirmation-gated source or claim revocation; and
+- keeps the 122-claim queue navigable through search, filters, summaries, and
+  collapsed source-linked claim groups.
+
+The supporting `/v1/career-evidence/*` routes are local administration routes,
+not the future recruiter-facing API. Every read and mutation is checked against
+the configured owner/workspace, and reviewer attribution must match the owner.
+Browser mutations must also originate from the same loopback control origin.
+The screen changes retrieval eligibility only. It cannot publish portfolio
+content, send a message, apply for a role, or expose raw Obsidian documents.
+
+This is a loopback pilot, not an authenticated remote administration surface.
+Do not bind it to a public interface without adding authentication, production
+CSRF controls, and an explicit deployment threat review.
+
 ## Import the canonical portfolio
 
 Configure the canonical local checkout in `.env.local` if it is not the default
