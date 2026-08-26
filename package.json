@@ -18,6 +18,7 @@
     "clean": "node --eval \"require('node:fs').rmSync('dist', { recursive: true, force: true })\"",
     "dev": "tsx watch src/server.ts",
     "dev:public": "tsx watch src/public-server.ts",
+    "eval:public": "tsx scripts/evaluate-public-delegate.ts",
     "slack": "tsx src/slack.ts",
     "start": "node dist/server.js",
     "start:public": "node dist/public-server.js",
