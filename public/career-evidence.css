@@ -35,11 +35,30 @@
 .boundary-banner strong, .boundary-banner p { display: block; margin: 0; }
 .boundary-banner p { margin-top: 3px; color: #53675a; line-height: 1.5; }
 .boundary-icon { font-weight: 900; }
-.evidence-summary { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-top: 24px; }
+.evidence-summary { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; margin-top: 24px; }
 .evidence-summary article { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 18px; background: rgba(255, 253, 248, 0.86); border: 1px solid var(--line); border-radius: 14px; }
 .evidence-summary span { color: var(--muted); font-size: 12px; font-weight: 800; }
 .evidence-summary strong { font: 600 30px/1 var(--serif); }
 .evidence-heading { align-items: end; }
+
+.conflict-panel { margin-top: 18px; }
+.conflict-heading { align-items: start; }
+.conflict-heading .supporting-copy { max-width: 720px; margin-bottom: 0; }
+.conflict-selection { display: grid; min-width: 250px; gap: 4px; padding: 14px; background: #f7f1e7; border: 1px solid var(--line); border-radius: 12px; }
+.conflict-selection > strong { font-size: 13px; }
+.conflict-selection > span { color: var(--muted); font-size: 12px; }
+.conflict-selection-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 8px; }
+.conflict-list { display: grid; gap: 12px; }
+.conflict-group { display: grid; gap: 12px; padding: 17px; background: #fffdf8; border: 1px solid var(--line); border-radius: 13px; }
+.conflict-group.is-resolved { background: #f5f2ed; }
+.conflict-group-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; }
+.conflict-group-title { margin: 6px 0 0; font: 600 20px/1.2 var(--serif); }
+.conflict-members { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.conflict-member { padding: 11px 12px; background: white; border: 1px solid #e7dfd4; border-radius: 9px; }
+.conflict-member strong, .conflict-member span { display: block; }
+.conflict-member strong { font: 500 16px/1.4 var(--serif); }
+.conflict-member span { margin-top: 4px; color: var(--muted); font-size: 11px; }
+.conflict-meta { margin: 0; color: var(--muted); font-size: 11px; }
 
 .search-field { display: grid; gap: 6px; width: min(320px, 100%); }
 .search-field span { color: var(--muted); font-size: 11px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; }
@@ -78,18 +97,24 @@
 .claim-actions .button-public { color: #fffaf2; background: #365741; border-color: #264230; }
 .claim-actions .button-public:hover { background: #294735; }
 .claim-actions .button:disabled { cursor: not-allowed; }
+.claim-actions .conflict-toggle[aria-pressed="true"] { color: #fffaf2; background: #795123; border-color: #664116; }
 .claim-policy { grid-column: 1 / -1; margin: -9px 0 0; color: #795123; font-size: 12px; }
 .issue-list { grid-column: 1 / -1; display: grid; gap: 5px; margin: 0; padding: 12px 14px 12px 32px; color: #6e3c18; background: #f8ebd4; border: 1px solid #e4c697; border-radius: 9px; font-size: 12px; }
 .exact-evidence { padding: 18px; background: #f3ede4; border: 1px solid var(--line); border-radius: 11px; }
 .exact-evidence strong, .exact-evidence span { display: block; }
 .exact-evidence strong { font: 500 20px/1.45 var(--serif); }
 .exact-evidence span { margin-top: 10px; color: var(--muted); font-size: 12px; overflow-wrap: anywhere; }
+.decision-conflict-member + .decision-conflict-member { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--line); }
+.decision-conflict-member strong, .decision-conflict-member span { display: block; }
+.decision-conflict-member span { margin-top: 5px; }
 .check-field[hidden] { display: none; }
 
 @media (max-width: 820px) {
   .evidence-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .source-header, .claim-card { grid-template-columns: 1fr; }
   .source-actions, .claim-actions { justify-content: flex-start; max-width: none; }
+  .conflict-heading { align-items: stretch; }
+  .conflict-selection { min-width: 0; }
 }
 
 @media (max-width: 720px) {

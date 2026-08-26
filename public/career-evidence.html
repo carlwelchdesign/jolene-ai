@@ -56,6 +56,28 @@
         <article><span>Claims awaiting review</span><strong id="count-review">—</strong></article>
         <article><span>Internal approved</span><strong id="count-internal">—</strong></article>
         <article><span>Public approved</span><strong id="count-public">—</strong></article>
+        <article><span>Unresolved conflicts</span><strong id="count-conflicts">—</strong></article>
+      </section>
+
+      <section class="panel conflict-panel" aria-labelledby="conflict-title">
+        <div class="section-heading conflict-heading">
+          <div>
+            <p class="eyebrow">Explicit contradiction control</p>
+            <h2 id="conflict-title">Claim conflicts</h2>
+            <p class="supporting-copy">Select two through five active claims below when their propositions disagree. Jolene will withhold unresolved evidence; she will not guess conflicts from wording.</p>
+          </div>
+          <div class="conflict-selection" aria-live="polite">
+            <strong id="selection-status">No claims selected</strong>
+            <span id="selection-help">Select at least two active claims.</span>
+            <div class="conflict-selection-actions">
+              <button class="button button-quiet button-small" id="clear-selection" type="button" disabled>Clear</button>
+              <button class="button button-primary button-small" id="review-conflict" type="button" disabled>Review conflict</button>
+            </div>
+          </div>
+        </div>
+        <div class="conflict-list" id="conflict-list" aria-live="polite" aria-busy="true">
+          <div class="loading-state">Loading claim conflicts…</div>
+        </div>
       </section>
 
       <section class="panel" aria-labelledby="queue-title">
@@ -87,6 +109,10 @@
         <label class="check-field" id="public-confirmation">
           <input id="public-confirm" type="checkbox">
           <span><strong>I confirm this exact claim is appropriate for recruiter-facing answers.</strong><small>Approval does not publish or send anything.</small></span>
+        </label>
+        <label class="check-field" id="conflict-confirmation" hidden>
+          <input id="conflict-confirm" type="checkbox">
+          <span><strong>I confirm these exact claims conflict and require review.</strong><small>Jolene will withhold affected public evidence until this group is resolved.</small></span>
         </label>
         <div class="inline-error" id="decision-error" role="alert" hidden></div>
         <div class="dialog-actions">
