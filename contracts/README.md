@@ -1,8 +1,9 @@
 # Public career evidence contract
 
 This directory defines the offline handoff between private Jolene and the
-future isolated portfolio delegate. It does not expose an HTTP endpoint or
-authorize deployment.
+isolated portfolio delegate. A separate loopback-only reference process may
+serve the validated manifest for contract testing; this does not authorize a
+public endpoint or deployment.
 
 - `public-career-evidence-v1.schema.json` is the machine-readable artifact
   schema.
@@ -22,5 +23,6 @@ Generated artifacts belong under the ignored `.jolene/exports` directory.
 Before replacement, the exporter validates the prior artifact and carries any
 previously exported but now-ineligible IDs into `revokedEvidenceIds`. An
 invalid prior artifact blocks replacement instead of resetting that history.
-Publishing, copying, or serving an artifact remains a separate Carl approval
-gate even when its evidence count is zero.
+Publishing, copying outside the configured local boundary, or serving an
+artifact beyond the loopback reference process remains a separate Carl
+approval gate even when its evidence count is zero.
