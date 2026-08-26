@@ -669,6 +669,19 @@ Project-Watch interface checkpoint:
 | Safety evidence | Persistent read-only and on-demand disclosure; root paths omitted; no scheduler, repair, edit, build, commit, push, deploy, publish, or mutation control |
 | Remaining boundary | Scheduled monitoring, durable history, notifications, build checks, authenticated production administration, and operator-approved operating limits remain pending |
 
+Conversational Project-Watch checkpoint:
+
+| Field | Value |
+|---|---|
+| Asana | [JOL-ARCH-010C](https://app.asana.com/1/9789386902387/project/1216473233375594/task/1217873279009085) |
+| Branch | `codex/jol-arch-010c-private-project-watch` |
+| Implementation commit | `e779527` (`JOL-ARCH-010C add private project watch tool`) |
+| Pull request | Pending |
+| Verification | Node 24 typecheck, 32 test files / 150 tests, production build, Compose configuration validation, staged secret scan, and production dependency audit passed |
+| Runtime evidence | A disposable private API turn inspected the real `carl-welch-portfolio` checkout and accurately reported its current branch, revision, clean worktree, same-day plan, unconfigured build verification, and no alerts; a simulated configured-owner Slack DM returned the same state without posting to Slack |
+| Safety evidence | Exact canonical-owner scope is checked again at the project-source boundary; summaries omit root paths; snapshots contain no plan contents or diffs; other scopes receive no tool; no edit, build, commit, push, deploy, publish, repair, scheduling, or notification path was added |
+| Remaining boundary | Scheduled monitoring, durable snapshot history, notifications, bounded build verification, authenticated remote administration, and live owner-DM operational evidence remain pending |
+
 ## Architecture tickets
 
 | ID | Ticket | Acceptance criteria |
@@ -702,7 +715,7 @@ Current ticket evidence:
 | JOL-ARCH-007 | Partial | Deterministic risk decisions, a typed proposal-only registry, exact expiring approvals, an internal one-time claim boundary, and a local graphical approval-review workflow exist; trusted delivery adapters and execution receipts remain pending. |
 | JOL-ARCH-008 | Implemented for local slice | Six task-bound workflow templates, exact step evidence, durable history, bounded revision, explicit final review, a local graphical control point, and private read-only model status review are tested; model-facing mutations, richer artifacts, scheduling, and authenticated administration remain pending. |
 | JOL-ARCH-009 | Partial | Initial runtime behavior prompt and non-impersonation rules exist; the formal personality renderer and evaluation suite are pending. |
-| JOL-ARCH-010 | Partial | An explicit local registry, on-demand read-only snapshots, and a graphical Project Watch screen report project existence, plan freshness, Git branch/revision/dirty state, and clear alerts. Scheduling, durable history, notifications, budgets, stop conditions, and build verification remain disabled. |
+| JOL-ARCH-010 | Partial | An explicit local registry, on-demand read-only snapshots, a graphical Project Watch screen, and canonical-owner conversational tools report project existence, plan freshness, Git branch/revision/dirty state, and clear alerts without exposing root paths, plan contents, or diffs. Scheduling, durable history, notifications, budgets, stop conditions, and build verification remain disabled. |
 | JOL-ARCH-013 | Planned and deferred | The revised baseline at `/Users/carl.welch/Documents/Github Projects/carl-welch-portfolio/PORTFOLIO_SITE_PLAN.md` explicitly defers Jolene outside the portfolio's first release. The later public delegate still requires a public/private boundary, versioned evidence contract, adversarial evaluations, correction flow, contact handoff, and production controls. Fit Console is a pattern source, not the target project. |
 | JOL-ARCH-014 | Implemented; API container verified | The ARM64 image builds successfully. The API container passed `/health` on loopback, ran as UID 1000, mounted `/vault` read-only and `/data` writable, used a read-only application filesystem, and contained no `.env` files. The Slack process uses the same image with a separate command; live Compose cutover remains pending to avoid duplicating the existing Socket Mode listener and to plan SQLite migration. |
 | JOL-ARCH-015 | Partial; private ingestion, review control, retrieval, and offline export implemented | The private SQLite registry models sources, claims, maturity, visibility, review freshness, relationships, revocation, supersession, and missing sources. Portfolio and bounded Obsidian imports produced 122 active review-required claims and zero public-approved claims. An owner-scoped loopback review screen exposes source-first decisions without publishing or messaging. Private retrieval provides stable chunks, optional embeddings, lexical/vector fusion, exact citations, deterministic fallback, and content-minimizing access logs. A deny-by-default offline artifact now exports only eligible public-approved records with a versioned manifest, stable hash, revocations, and leak checks; the canonical artifact is valid and empty. No public endpoint, portfolio transfer, delegate service, or deployment exists. Authenticated remote administration, pgvector, MCP, and graph infrastructure remain evaluation-gated. |

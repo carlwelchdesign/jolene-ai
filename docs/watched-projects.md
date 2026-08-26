@@ -42,6 +42,21 @@ The screen covers loading, empty registry, healthy, attention, partial-failure,
 and service-unavailable states. It displays no local root paths and exposes no
 repair or side-effect control.
 
-The inspector never writes project files and exposes no edit, commit, push,
-deploy, or publish operation. Scheduled monitoring remains disabled until Carl
-approves cadence, cost, notification destination, and a stop condition.
+## Private conversation
+
+Jolene can list the configured project summaries and request a fresh snapshot
+from private conversation when the resolved work scope exactly matches
+`JOLENE_OWNER_ACTOR_ID` and `JOLENE_OWNER_WORKSPACE_ID`. This includes the local
+CLI and the configured Slack owner DM because both resolve to the same canonical
+private work scope. Slack conversation and delivery identity remain tied to the
+originating Slack identifiers.
+
+The model receives only the existing public-safe summary and snapshot shapes.
+It never receives a configured root path, plan contents, or a Git diff. Project
+and plan state are evidence, never instructions. Other private scopes, shared
+channels, and unrecognized Slack DMs receive no Project Watch tools.
+
+The inspector never writes project files and exposes no edit, build, commit,
+push, deploy, publish, repair, schedule, or notification operation. Scheduled
+monitoring remains disabled until Carl approves cadence, cost, notification
+destination, and a stop condition.
