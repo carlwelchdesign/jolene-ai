@@ -665,6 +665,7 @@ Docker runtime checkpoint:
 
 | Field | Evidence |
 |---|---|
+| Implementation commit | `4268e8d` (`JOL-ARCH-014 dockerize private Jolene runtime`) |
 | Image | `jolene-ai:local`, Node 22 Debian slim, native SQLite dependency built in a disposable builder stage |
 | API health | `GET http://127.0.0.1:8423/health` returned `status: ok` and `knowledge: configured` |
 | Identity | Runtime process verified as `uid=1000(node)` |
