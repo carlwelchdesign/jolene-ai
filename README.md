@@ -29,6 +29,11 @@ The first runnable slice provides:
 
 The Slack adapter is active for a local pilot, with live mention-and-reply behavior verified. Scheduled work, specialist agents, client-AI workflows, always-on hosting, and voice remain later gates.
 
+The current Obsidian bridge uses deterministic lexical retrieval. Embedding
+RAG, MCP interoperability, a relationship index, and the public portfolio
+delegate are planned but are not implemented in this slice. See the
+[professional context architecture](plans/JOLENE_PROFESSIONAL_CONTEXT_ARCHITECTURE.md).
+
 ## Setup
 
 Prerequisite: Node.js 22 or newer.
@@ -51,6 +56,9 @@ Prerequisite: Node.js 22 or newer.
    ```bash
    npm run build
    ```
+
+   For the containerized API and Slack runtime, follow
+   [Docker runtime](docs/docker.md).
 
 4. Run a private CLI turn:
 

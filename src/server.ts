@@ -45,9 +45,9 @@ const server = createServer(async (request, response) => {
   }
 });
 
-server.listen(config.port, "127.0.0.1", () => {
+server.listen(config.port, config.host, () => {
   process.stdout.write(
-    `Jolene is listening at http://127.0.0.1:${config.port}\n`,
+    `Jolene is listening at http://${config.host}:${config.port}\n`,
   );
 });
 

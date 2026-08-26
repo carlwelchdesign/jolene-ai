@@ -9,6 +9,7 @@ import type { WatchedProjectDefinition } from "./domain/watched-project.js";
 const envSchema = z.object({
   OPENAI_API_KEY: z.string().trim().min(1),
   JOLENE_MODEL: z.string().trim().min(1).default("gpt-5.6-terra"),
+  JOLENE_HOST: z.string().trim().min(1).default("127.0.0.1"),
   JOLENE_PORT: z.coerce.number().int().min(1).max(65_535).default(8421),
   JOLENE_DATABASE_PATH: z
     .string()
@@ -27,6 +28,7 @@ const envSchema = z.object({
 
 export interface AppConfig {
   readonly model: string;
+  readonly host: string;
   readonly port: number;
   readonly databasePath: string;
   readonly vaultRoot: string | undefined;
@@ -49,6 +51,7 @@ export function loadConfig(): AppConfig {
 
   return {
     model: env.JOLENE_MODEL,
+    host: env.JOLENE_HOST,
     port: env.JOLENE_PORT,
     databasePath: path.resolve(process.cwd(), env.JOLENE_DATABASE_PATH),
     vaultRoot: emptyToUndefined(env.JOLENE_OBSIDIAN_VAULT_ROOT),

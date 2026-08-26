@@ -612,6 +612,8 @@ Project-Watch interface checkpoint:
 | JOL-ARCH-011 | Client-AI task packets | Context allowlist, turn limit, expiry, sender identity, transcript, and human handoff are enforced. |
 | JOL-ARCH-012 | Original voice gate | Begins only after text quality and rights gates; voice remains clearly original. |
 | JOL-ARCH-013 | Public portfolio hiring delegate | The owning plan is `/Users/carl.welch/Documents/Github Projects/carl-welch-portfolio/PORTFOLIO_SITE_PLAN.md`. Recruiter answers use only approved public evidence, preserve project maturity, disclose AI identity, cite sources, and hand off personal commitments to Carl. |
+| JOL-ARCH-014 | Dockerized private runtime | API and Slack run from one reproducible image with separate processes, durable data, read-only vault mount, non-root execution, health checks, and no secrets in the image. |
+| JOL-ARCH-015 | Professional context and public evidence export | Private professional RAG and the public portfolio delegate share a governed schema, while only reviewed public evidence may cross the public boundary. |
 
 Current ticket evidence:
 
@@ -628,6 +630,8 @@ Current ticket evidence:
 | JOL-ARCH-009 | Partial | Initial runtime behavior prompt and non-impersonation rules exist; the formal personality renderer and evaluation suite are pending. |
 | JOL-ARCH-010 | Partial | An explicit local registry, on-demand read-only snapshots, and a graphical Project Watch screen report project existence, plan freshness, Git branch/revision/dirty state, and clear alerts. Scheduling, durable history, notifications, budgets, stop conditions, and build verification remain disabled. |
 | JOL-ARCH-013 | Planned and deferred | The revised baseline at `/Users/carl.welch/Documents/Github Projects/carl-welch-portfolio/PORTFOLIO_SITE_PLAN.md` explicitly defers Jolene outside the portfolio's first release. The later public delegate still requires a public/private boundary, versioned evidence contract, adversarial evaluations, correction flow, contact handoff, and production controls. Fit Console is a pattern source, not the target project. |
+| JOL-ARCH-014 | Implemented; API container verified | The ARM64 image builds successfully. The API container passed `/health` on loopback, ran as UID 1000, mounted `/vault` read-only and `/data` writable, used a read-only application filesystem, and contained no `.env` files. The Slack process uses the same image with a separate command; live Compose cutover remains pending to avoid duplicating the existing Socket Mode listener and to plan SQLite migration. |
+| JOL-ARCH-015 | Planned | The canonical design is in `plans/JOLENE_PROFESSIONAL_CONTEXT_ARCHITECTURE.md`: hybrid PostgreSQL/pgvector RAG is next; MCP is a later private interoperability adapter; graph-ready relationships are preserved without adding a graph database until multi-hop evaluations justify it. |
 
 ## Architecture risks
 
@@ -654,3 +658,17 @@ Current ticket evidence:
 | 2026-08-25 | Proceed with MVP development | Authorized by Carl; first local slice complete |
 | 2026-08-25 | Adapt structured-work patterns without weakening Jolene's approval boundary | Implemented for the first personal-workflow slice |
 | 2026-08-25 | Treat the future Carl Welch portfolio assistant as a public Jolene delegate, never a tunnel into private Jolene | Target directory confirmed; the revised portfolio baseline defers Jolene outside the first release and the directory currently has no Git boundary |
+| 2026-08-25 | Dockerize private Jolene but keep the portfolio delegate physically and logically separate | Implemented; API container verified, Slack operational cutover pending |
+| 2026-08-25 | Use governed hybrid RAG for professional context; defer MCP and graph infrastructure until their boundaries and evaluations justify them | Planned in the professional context architecture |
+
+Docker runtime checkpoint:
+
+| Field | Evidence |
+|---|---|
+| Image | `jolene-ai:local`, Node 22 Debian slim, native SQLite dependency built in a disposable builder stage |
+| API health | `GET http://127.0.0.1:8423/health` returned `status: ok` and `knowledge: configured` |
+| Identity | Runtime process verified as `uid=1000(node)` |
+| Storage | `/vault` bind mount verified `rw=false`; `/data` named volume verified `rw=true` |
+| Filesystem and secrets | `/app` and `/vault` are non-writable; `/tmp` and `/data` are writable; `/app/.env` and `/app/.env.local` are absent |
+| Verification | Typecheck, 86 tests, production build, Compose config validation, image build, container health check |
+| Remaining operational gate | Stop the existing host Slack listener, decide whether to migrate its SQLite history into `jolene-data`, then start and verify `jolene-slack` without duplicate Socket Mode delivery |
