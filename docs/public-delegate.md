@@ -4,11 +4,12 @@ Jolene includes a separate local reference process for the first public
 portfolio-delegate contract slice. It consumes only a versioned public career
 evidence artifact. It does not load the private Jolene application or its
 configuration, SQLite database, Obsidian vault, Slack adapter, durable memory,
-or OpenAI client.
+or private retrieval services. OpenAI is available only through an explicit,
+disabled-by-default answer-synthesis adapter described below.
 
 This slice verifies the frozen portfolio v1 manifest, answer, job-fit, and
 contact-intent contracts. It is not a public deployment and does not implement
-model-generated answers, autonomous contact, CORS, or model access.
+autonomous contact, CORS, or public model access.
 
 ## Local configuration
 
@@ -28,6 +29,10 @@ JOLENE_PUBLIC_AUDIT_RETENTION_DAYS=30
 JOLENE_PUBLIC_AUDIT_MAX_ENTRIES=5000
 JOLENE_PUBLIC_REQUESTS_PER_MINUTE=60
 JOLENE_PUBLIC_MAX_CONCURRENT_REQUESTS=8
+JOLENE_PUBLIC_ANSWER_MODE=deterministic
+JOLENE_PUBLIC_OPENAI_MODEL=gpt-5.6-terra
+JOLENE_PUBLIC_OPENAI_TIMEOUT_MS=8000
+OPENAI_API_KEY=
 ```
 
 Only `127.0.0.1`, `::1`, and `localhost` are accepted as hosts in this slice.
@@ -82,6 +87,38 @@ into a specific answer. Question text is never executed or copied into the
 response. When no reviewed public claim matches—including for unsupported or
 injection-like input—the service returns an explicit no-evidence response. An
 optional session token is echoed for adapter continuity but is not persisted.
+
+## Optional grounded answer synthesis
+
+The default `JOLENE_PUBLIC_ANSWER_MODE=deterministic` makes no answer-model
+request and requires no API key. Model synthesis is enabled only when the mode
+is explicitly set to `openai` and `.env.public.local` contains a non-empty
+`OPENAI_API_KEY`. The public process does not read `.env.local`, and setup does
+not copy the private service key into the public environment.
+
+Deterministic evidence selection always runs first. If no reviewed public claim
+matches, the service returns the normal no-evidence response without calling
+OpenAI. For a supported question, the provider receives only the visitor's
+question and each already-public selected claim's text, limitations, and
+citation title. It does not receive citation links, session tokens, contact
+intents, job descriptions, audit data, private paths, Obsidian content, Slack
+content, private memory, or private retrieval results.
+
+The adapter uses the Responses API with `store: false`, no tools, a bounded
+output budget, a bounded timeout, and a strict JSON schema containing only an
+answer string. The existing deterministic response owns every other field:
+claims, citations, limitations, follow-up questions, corpus version, and the
+optional session token cannot be replaced by model output. Provider failure,
+timeout, refusal, malformed JSON, empty text, or oversized text returns the
+exact deterministic answer. The audit ledger records only fixed
+`model_supported` or `model_fallback` outcomes and never submitted or generated
+content.
+
+`store: false` is an API request control, not a promise about every aspect of a
+provider's processing or retention. Visitor questions remain untrusted external
+data. Model mode therefore remains a local evaluation feature until provider
+terms, prompt-injection and grounding evaluations, cost controls, and the public
+deployment topology are reviewed.
 
 Job-fit comparison deterministically segments the submitted description and
 uses lexical overlap against exact public claims and citation titles. A strong
@@ -167,8 +204,9 @@ distributed rate limiting, or portfolio BFF controls.
 `JOL-CAREER-005` remains incomplete. The loopback-only private review,
 deletion, and inert reply-draft workflow is implemented, but authenticated
 production owner access and any outbound reply workflow still require separate
-privacy, abuse, evaluation, and human-approval gates. Model-backed answer
-quality remains open. A content-minimizing local audit ledger exists, but the
+privacy, abuse, evaluation, and human-approval gates. Disabled-by-default
+grounded answer synthesis exists, but model-backed answer quality remains open.
+A content-minimizing local audit ledger exists, but the
 deterministic job-fit baseline still requires integration and evaluation before
 any public use. Authenticated audit access, production aggregation and
 monitoring, provider-specific redaction, cost controls, and distributed abuse
