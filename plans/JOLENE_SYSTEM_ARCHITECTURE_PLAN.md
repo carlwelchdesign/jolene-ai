@@ -618,7 +618,7 @@ Personal-workflow checkpoint:
 | Verification | Node 22 typecheck, 68 contract tests, production build, existing-database-compatible table creation, and live isolated API lifecycle passed |
 | Workflow evidence | Research, project planning, drafting, repository work, briefing, and follow-up preparation all require exact step evidence and reach `awaiting_review` before approval |
 | Safety evidence | Actor/workspace/task scope, no step skipping, bounded revision return, durable event history, and no model, schedule, send, publish, or execution tool |
-| Remaining boundary | Model-facing workflow tools, graphical workflow review, task-status synchronization, richer artifacts, scheduling, and authenticated production administration remain pending |
+| Remaining boundary | Model-facing workflow mutation tools, graphical workflow review, task-status synchronization, richer artifacts, scheduling, and authenticated production administration remain pending |
 
 Workflow-interface checkpoint:
 
@@ -630,7 +630,20 @@ Workflow-interface checkpoint:
 | Verification | Node 22 typecheck, 73 contract tests, production build, staged secret scan, dependency audit, and live desktop browser lifecycle passed |
 | Interaction evidence | New-task workflow creation, five ordered repository-work steps, completion review, changes requested to verification, resubmission, approval, cancellation confirmation, filters, empty states, and cross-navigation passed |
 | Safety evidence | Persistent no-external-action explanation, exact current-step capture, explicit review and revision, destructive cancellation confirmation, text-only dynamic rendering, restrictive asset headers, and no external execution control |
-| Remaining boundary | Model-facing workflow tools, richer artifact handling, task-status synchronization, scheduling, authenticated production administration, and physical narrow-screen exploratory evidence remain pending |
+| Remaining boundary | Model-facing workflow mutation tools, richer artifact handling, task-status synchronization, scheduling, authenticated production administration, and physical narrow-screen exploratory evidence remain pending |
+
+Private work-status checkpoint:
+
+| Field | Value |
+|---|---|
+| Asana | [JOL-ARCH-008D](https://app.asana.com/1/9789386902387/project/1216473233375594/task/1217872627426464) |
+| Branch | `codex/jol-arch-008d-private-work-status` |
+| Implementation commit | `3ffe917` (`JOL-ARCH-008D add canonical private work status`) |
+| Pull request | Pending |
+| Verification | Node 24 typecheck, 31 test files / 146 tests, production build, Compose configuration validation, staged secret scan, and production dependency audit passed |
+| Runtime evidence | A disposable local API turn reviewed running and approval-needed tasks with an active repository-work step; a simulated configured-owner Slack DM resolved Slack transport IDs to the same canonical private work scope without posting to Slack |
+| Safety evidence | Shared channels and unrecognized Slack DMs receive no work scope or status tool; transport conversation identity remains isolated; the model tool only reads bounded persisted task/workflow state and exposes no create, update, advance, cancel, schedule, send, publish, or execution path |
+| Remaining boundary | Model-facing task and workflow mutations, scheduling, external execution, authenticated remote administration, and live owner-DM operational evidence remain pending |
 
 Watched-project checkpoint:
 
@@ -687,7 +700,7 @@ Current ticket evidence:
 | JOL-ARCH-005 | Implemented for local slice | Read-only allowlisted Markdown retrieval is tested with exact note and heading citations. |
 | JOL-ARCH-006 | Partial | Retrieved excerpts retain provenance and private knowledge searches now have a durable, content-minimizing access ledger; external disclosure authorization and delivery receipts remain pending. |
 | JOL-ARCH-007 | Partial | Deterministic risk decisions, a typed proposal-only registry, exact expiring approvals, an internal one-time claim boundary, and a local graphical approval-review workflow exist; trusted delivery adapters and execution receipts remain pending. |
-| JOL-ARCH-008 | Implemented for local slice | Six task-bound workflow templates, exact step evidence, durable history, bounded revision, explicit final review, and a local graphical control point are tested; model-facing tools, richer artifacts, scheduling, and authenticated administration remain pending. |
+| JOL-ARCH-008 | Implemented for local slice | Six task-bound workflow templates, exact step evidence, durable history, bounded revision, explicit final review, a local graphical control point, and private read-only model status review are tested; model-facing mutations, richer artifacts, scheduling, and authenticated administration remain pending. |
 | JOL-ARCH-009 | Partial | Initial runtime behavior prompt and non-impersonation rules exist; the formal personality renderer and evaluation suite are pending. |
 | JOL-ARCH-010 | Partial | An explicit local registry, on-demand read-only snapshots, and a graphical Project Watch screen report project existence, plan freshness, Git branch/revision/dirty state, and clear alerts. Scheduling, durable history, notifications, budgets, stop conditions, and build verification remain disabled. |
 | JOL-ARCH-013 | Planned and deferred | The revised baseline at `/Users/carl.welch/Documents/Github Projects/carl-welch-portfolio/PORTFOLIO_SITE_PLAN.md` explicitly defers Jolene outside the portfolio's first release. The later public delegate still requires a public/private boundary, versioned evidence contract, adversarial evaluations, correction flow, contact handoff, and production controls. Fit Console is a pattern source, not the target project. |
