@@ -438,6 +438,14 @@ error, disabled, success, keyboard, reduced-motion, desktop, and narrow-screen
 states without adding deletion, scheduling, status mutation, public exposure,
 or remote administration.
 
+The relevance-aware-task-recall slice keeps a bounded recent continuity window
+while recovering older selected-task events whose summary or details match the
+current private request. Selection is deterministic, provider-independent, and
+inspectable through Context Preview; final events return to chronological order
+before entering the prompt. The candidate window remains bounded and all
+existing actor, workspace, selected-task, and private-channel gates run before
+ranking. Timeline review remains chronological and unchanged.
+
 The memory-governance slice adds three sensitivity levels, UTC-normalized expiry, correction through a reviewed replacement proposal, and explicit content-forgetting with a non-content tombstone. Restricted records require the selected task; sensitive records additionally require an explicit flag on that individual private request. Expired, superseded, forgotten, pending, and rejected records are excluded from model context.
 
 The contextual-ranking slice applies a deterministic lexical scorer after authorization and before the memory limit. It uses request terms, task terms, selected-task scope, and explicit standing-rule/preference baselines. Selection evidence is available through a read-only preview endpoint. The candidate window is capped, privacy gates precede ranking, and no embedding provider or new external dependency is introduced.
@@ -525,7 +533,7 @@ Task-event-history checkpoint:
 | Verification | 28 test files and 133 tests, Node 24.18.0 typecheck, production build, restart persistence, bounded ordering, actor/workspace/task isolation, and live loopback lifecycle pass |
 | Runtime evidence | Task and event creation return 201; context preview returns only the selected task's `created` and `evidence` events; foreign scope returns 404; cross-origin mutation returns 403 |
 | Safety evidence | Shared channels receive no task event context; manual callers cannot forge creation or status-transition events; task history is explicitly labeled non-authoritative |
-| Remaining boundary | Automatic compaction, retention/forget controls, event-search/ranking, graphical task-history administration, and authenticated production exposure remain pending |
+| Remaining boundary | Automatic compaction, retention/forget controls, semantic event retrieval beyond deterministic lexical selection, and authenticated production exposure remain pending |
 
 Task-timeline-interface checkpoint:
 
@@ -537,7 +545,20 @@ Task-timeline-interface checkpoint:
 | Verification | 28 test files and 133 tests, Node 24.18.0 JavaScript syntax and typecheck, production build, Compose validation, zero production dependency vulnerabilities, and live isolated desktop and 390px browser flows passed |
 | Interaction evidence | Task selection changes objective and history; factual decision entry persists, clears the form, confirms success, and appears newest-first; an empty actor/workspace scope disables task and entry controls with explicit guidance |
 | Safety evidence | Historical-context boundary remains visible; dynamic content uses text-only DOM insertion; mutations are same-origin and task scoped; no deletion, status mutation, scheduling, sending, publication, or external execution control exists |
-| Remaining boundary | Event search/ranking, retention/forget controls, automatic compaction, authenticated production administration, and remote/public exposure remain pending |
+| Remaining boundary | Semantic event retrieval beyond deterministic lexical selection, retention/forget controls, automatic compaction, authenticated production administration, and remote/public exposure remain pending |
+
+Relevance-aware-task-recall checkpoint:
+
+| Field | Value |
+|---|---|
+| Ticket | `JOL-ARCH-003D` — [Asana](https://app.asana.com/1/9789386902387/project/1216473233375594/task/1217871300013784) |
+| Branch | `codex/jol-arch-003d-task-event-recall` |
+| Implementation commit | `8c60ac4` (`JOL-ARCH-003D rank private task recall`) |
+| Pull request | Pending; stacked on [#8](https://github.com/carlwelchdesign/jolene-ai/pull/8) |
+| Selection evidence | Summary matches score above detail-only matches; recent continuity is reserved; empty-query fallback, Unicode normalization, one-item limits, recency tie-breaking, older relevant recall, and chronological output are tested |
+| Verification | 29 test files and 138 tests, Node 24.18.0 typecheck, production build, Compose validation, zero production dependency vulnerabilities, live isolated API selection, desktop and 390px Recall Preview, reduced motion, no overflow, and clean browser runtime passed |
+| Safety evidence | Candidate retrieval is actor/workspace/selected-task scoped and bounded to 500; shared channels still receive empty task context; Task timeline behavior is unchanged; no deletion, compaction, scheduling, public API, provider dependency, or external write was added |
+| Remaining boundary | Semantic vocabulary gaps, candidate-window misses, retention/forget controls, automatic compaction, authenticated production administration, and remote/public exposure remain pending |
 
 Memory Review interface checkpoint:
 
@@ -661,7 +682,7 @@ Current ticket evidence:
 |---|---|---|
 | JOL-ARCH-001 | Partial | Initial policy taxonomy and trust boundary exist; the full capability registry is pending. |
 | JOL-ARCH-002 | Implemented for first slice | Core service runs through CLI or HTTP and does not depend on Slack. |
-| JOL-ARCH-003 | Partial | Durable isolated conversations, tasks, scoped task-event timelines, governed and request-ranked memory, local graphical memory and task-history review, status updates, retries, and restart recovery are tested. Recent selected-task events enter private context only, and owners can inspect or append factual task history locally. Automatic compaction, embedding-backed similarity, retention controls, event search/ranking, and authenticated production administration remain pending. |
+| JOL-ARCH-003 | Partial | Durable isolated conversations, tasks, scoped task-event timelines, governed and request-ranked memory, local graphical memory and task-history review, relevance-aware private task recall, status updates, retries, and restart recovery are tested. A bounded chronological blend of recent and request-relevant selected-task events enters private context only, with inspectable reasons. Automatic compaction, embedding-backed semantic similarity, retention controls, and authenticated production administration remain pending. |
 | JOL-ARCH-004 | Implemented for local pilot | Socket Mode adapter, manifest, owner gate, thread mapping, live mention/reply evidence, durable generation deduplication, and durable delivery retries exist. Live owner-DM evidence and crash-window reconciliation remain operational gates. |
 | JOL-ARCH-005 | Implemented for local slice | Read-only allowlisted Markdown retrieval is tested with exact note and heading citations. |
 | JOL-ARCH-006 | Partial | Retrieved excerpts retain provenance and private knowledge searches now have a durable, content-minimizing access ledger; external disclosure authorization and delivery receipts remain pending. |
