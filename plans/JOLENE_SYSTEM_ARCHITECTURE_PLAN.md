@@ -588,7 +588,7 @@ Project-Watch interface checkpoint:
 | Field | Value |
 |---|---|
 | Branch | `codex/jolene-project-watch-ui` |
-| Implementation commit | Pending |
+| Implementation commit | `94355a6` (`JOL-ARCH-010 add Project Watch interface`) |
 | Pull request | None; this local repository has no remote configured |
 | Verification | Node 22 typecheck, 82 contract tests, production build, dependency audit, diff hygiene, live desktop and 390px browser layouts, and clean browser console passed |
 | Interaction evidence | Configured-project load, current Git-boundary alert, refresh-one confirmation, empty registry, Projects-to-Approvals cross-navigation, and responsive no-overflow layout passed; partial and service-failure behavior remain contract-covered rather than live-induced |
