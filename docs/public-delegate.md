@@ -6,9 +6,9 @@ evidence artifact. It does not load the private Jolene application or its
 configuration, SQLite database, Obsidian vault, Slack adapter, durable memory,
 or OpenAI client.
 
-This slice verifies the frozen portfolio v1 manifest and answer contracts. It
-is not a public deployment and does not implement model-generated answers,
-job-fit comparison, contact intent, CORS, rate limiting, or model access.
+This slice verifies the frozen portfolio v1 manifest, answer, and job-fit
+contracts. It is not a public deployment and does not implement model-generated
+answers, contact intent, CORS, rate limiting, or model access.
 
 ## Local configuration
 
@@ -47,6 +47,10 @@ After a production build, use `npm run start:public`.
 - `POST /v1/portfolio/answer` accepts strict JSON with a question of at most
   800 characters and an optional session token of at most 256 characters. It
   returns at most five exact exported claims and their citations.
+- `POST /v1/portfolio/job-fit` accepts strict JSON with a job description of at
+  most 12,000 characters and an optional session token of at most 256
+  characters. It returns at most 24 bounded requirements, conservative
+  assessments, and resolving public citations.
 
 The artifact is re-read, schema-validated, and hash-verified on every request.
 Missing, malformed, incompatible, internally inconsistent, or tampered
@@ -60,14 +64,25 @@ response. When no reviewed public claim matches—including for unsupported or
 injection-like input—the service returns an explicit no-evidence response. An
 optional session token is echoed for adapter continuity but is not persisted.
 
+Job-fit comparison deterministically segments the submitted description and
+uses lexical overlap against exact public claims and citation titles. A strong
+overlap is `direct`; partial overlap is `adjacent`; no support is `unknown`.
+This baseline never emits `missing`, because absence from the public corpus is
+not evidence that Carl lacks an experience. Results explicitly state that they
+are not a recommendation or blanket fit score. The job description is treated
+as untrusted ephemeral input: it is not logged, persisted, executed, sent to a
+model, or used to access private context. Instruction-like input fails to
+citation-free `unknown` results.
+
 All other routes return `404`; unsupported methods on known routes return
 `405`. The server bounds header size, header count, request time, keep-alive
 requests, and URL length.
 
 ## Remaining boundary
 
-`JOL-CAREER-005` remains incomplete. Model-backed answer quality, job-fit, and
+`JOL-CAREER-005` remains incomplete. Model-backed answer quality and
 contact-intent behavior still require separate contract, privacy, abuse, cost,
-evaluation, and human-approval gates. Adding a production bind address,
+evaluation, and human-approval gates. The deterministic job-fit baseline also
+requires integration and evaluation before any public use. Adding a production bind address,
 container service, public hostname, reverse proxy, CORS policy, or deployment
 requires explicit approval and a reviewed deployment topology.

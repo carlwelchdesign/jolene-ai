@@ -7,6 +7,7 @@ import { afterEach, describe, expect, it } from "vitest";
 
 import { FilePublicArtifactSource } from "../src/public/public-artifact-source.js";
 import { DeterministicPublicAnswerService } from "../src/public/public-answer-service.js";
+import { DeterministicPublicJobFitService } from "../src/public/public-job-fit-service.js";
 import {
   parsePublicDelegateConfig,
 } from "../src/public/public-config.js";
@@ -165,7 +166,7 @@ describe("public delegate manifest boundary", () => {
     [
       "oversized body",
       "application/json",
-      JSON.stringify({ question: "Valid", padding: "x".repeat(17_000) }),
+      JSON.stringify({ question: "Valid", padding: "x".repeat(99_000) }),
       413,
       "payload_too_large",
     ],
@@ -200,6 +201,71 @@ describe("public delegate manifest boundary", () => {
       status: "unavailable",
       error: "public_evidence_unavailable",
     });
+  });
+
+  it("serves a conservative frozen-contract job-fit comparison", async () => {
+    const artifact = createPublicEvidenceArtifact();
+    const { baseUrl } = await start(await writeArtifact(artifact));
+
+    const response = await fetch(`${baseUrl}/v1/portfolio/job-fit`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        jobDescription: [
+          "Typed React product systems.",
+          "Kubernetes operations.",
+        ].join("\n"),
+        sessionToken: "test-session",
+      }),
+    });
+    const body = await response.json() as Record<string, unknown>;
+
+    expect(response.status).toBe(200);
+    expect(body).toMatchObject({
+      schemaVersion: "1.0.0",
+      corpusVersion: artifact.manifest.corpusVersion,
+      sessionToken: "test-session",
+    });
+    expect(body.requirements).toMatchObject([
+      { assessment: "direct", evidenceIds: [artifact.evidence[0]?.evidenceId] },
+      { assessment: "unknown", evidenceIds: [] },
+    ]);
+    expect(body.citations).toEqual([artifact.evidence[0]?.citation]);
+    expect(body).not.toHaveProperty("jobDescription");
+    expect(JSON.stringify(body)).not.toContain("Typed React product systems.\n");
+  });
+
+  it.each([
+    [
+      "oversized job description",
+      JSON.stringify({ jobDescription: "x".repeat(12_001) }),
+      400,
+      "invalid_request",
+    ],
+    [
+      "extra job-fit field",
+      JSON.stringify({ jobDescription: "React", extra: true }),
+      400,
+      "invalid_request",
+    ],
+    [
+      "oversized job-fit body",
+      JSON.stringify({ jobDescription: "React", padding: "x".repeat(99_000) }),
+      413,
+      "payload_too_large",
+    ],
+  ])("rejects %s", async (_name, body, status, code) => {
+    const { baseUrl } = await start(
+      path.join(await temporaryDirectory(), "missing.json"),
+    );
+    const response = await fetch(`${baseUrl}/v1/portfolio/job-fit`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body,
+    });
+
+    expect(response.status).toBe(status);
+    expect(await response.json()).toEqual({ error: code });
   });
 
   it.each([
@@ -252,6 +318,7 @@ describe("public delegate manifest boundary", () => {
     });
     const unknown = await fetch(`${baseUrl}/v1/private-memory`);
     const answerMethod = await fetch(`${baseUrl}/v1/portfolio/answer`);
+    const jobFitMethod = await fetch(`${baseUrl}/v1/portfolio/job-fit`);
 
     expect(method.status).toBe(405);
     expect(method.headers.get("allow")).toBe("GET");
@@ -260,6 +327,8 @@ describe("public delegate manifest boundary", () => {
     expect(await unknown.json()).toEqual({ error: "not_found" });
     expect(answerMethod.status).toBe(405);
     expect(answerMethod.headers.get("allow")).toBe("POST");
+    expect(jobFitMethod.status).toBe(405);
+    expect(jobFitMethod.headers.get("allow")).toBe("POST");
   });
 
   it("bounds request URLs before reading evidence", async () => {
@@ -295,6 +364,7 @@ describe("public delegate manifest boundary", () => {
       "src/public/public-config.ts",
       "src/public/public-artifact-source.ts",
       "src/public/public-answer-service.ts",
+      "src/public/public-job-fit-service.ts",
       "src/public/public-delegate-server.ts",
     ];
     const source = (await Promise.all(
@@ -348,6 +418,7 @@ async function start(artifactPath: string): Promise<{ readonly baseUrl: string }
   const server = createPublicDelegateServer({
     artifacts: new FilePublicArtifactSource(artifactPath),
     answers: new DeterministicPublicAnswerService(),
+    jobFit: new DeterministicPublicJobFitService(),
   });
   openServers.push(server);
   server.listen(0, "127.0.0.1");

@@ -6,12 +6,16 @@ import {
 } from "node:http";
 
 import type { PublicCareerEvidenceArtifact } from "../domain/public-career-evidence.js";
-import { portfolioAnswerRequestSchema } from "../domain/public-portfolio-contract.js";
+import {
+  portfolioAnswerRequestSchema,
+  portfolioJobFitRequestSchema,
+} from "../domain/public-portfolio-contract.js";
 import type { PublicArtifactSource } from "./public-artifact-source.js";
 import type { PublicPortfolioAnswerer } from "./public-answer-service.js";
+import type { PublicJobFitComparer } from "./public-job-fit-service.js";
 
 const MAX_URL_CHARACTERS = 2_048;
-const MAX_BODY_BYTES = 16_384;
+const MAX_BODY_BYTES = 98_304;
 const SECURITY_HEADERS = {
   "cache-control": "no-store",
   "content-security-policy": "default-src 'none'; frame-ancestors 'none'",
@@ -22,6 +26,7 @@ const SECURITY_HEADERS = {
 export interface PublicDelegateServerOptions {
   readonly artifacts: PublicArtifactSource;
   readonly answers: PublicPortfolioAnswerer;
+  readonly jobFit: PublicJobFitComparer;
 }
 
 export function createPublicDelegateServer(
@@ -66,7 +71,8 @@ async function handleRequest(
   const expectedMethod = pathname === "/health" ||
       pathname === "/v1/public-evidence/manifest"
     ? "GET"
-    : pathname === "/v1/portfolio/answer"
+    : pathname === "/v1/portfolio/answer" ||
+        pathname === "/v1/portfolio/job-fit"
       ? "POST"
       : null;
 
@@ -104,10 +110,17 @@ async function handleRequest(
     throw new PublicRequestError(415, "unsupported_media_type");
   }
   const input = await readJson(request);
-  const parsed = portfolioAnswerRequestSchema.safeParse(input);
+  if (pathname === "/v1/portfolio/answer") {
+    const parsed = portfolioAnswerRequestSchema.safeParse(input);
+    if (!parsed.success) throw new PublicRequestError(400, "invalid_request");
+    const artifact = await requireArtifact(options.artifacts);
+    sendJson(response, 200, options.answers.answer(artifact, parsed.data));
+    return;
+  }
+  const parsed = portfolioJobFitRequestSchema.safeParse(input);
   if (!parsed.success) throw new PublicRequestError(400, "invalid_request");
   const artifact = await requireArtifact(options.artifacts);
-  sendJson(response, 200, options.answers.answer(artifact, parsed.data));
+  sendJson(response, 200, options.jobFit.compare(artifact, parsed.data));
 }
 
 async function requireArtifact(
