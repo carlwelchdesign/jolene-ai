@@ -2,7 +2,7 @@
 
 **Date:** 2026-08-25
 
-**Status:** Docker API, career evidence, portfolio migration, and bounded Obsidian ingestion implemented; professional RAG and public portfolio delegate pending
+**Status:** Docker API, governed career ingestion, and private hybrid retrieval implemented; evidence review, public export, and public portfolio delegate pending
 
 ## Product outcome
 
@@ -24,8 +24,8 @@ chatbot.
 |---|---|
 | OpenAI Agents SDK | Implemented |
 | Read-only Obsidian access | Implemented with path allowlists and exact note/heading citations |
-| Retrieval | Deterministic lexical search over Markdown |
-| Embedding RAG | Not implemented |
+| Retrieval | Conversational Obsidian remains lexical; reviewed career evidence uses lexical/vector fusion with deterministic fallback |
+| Embedding RAG | Implemented for private, freshly reviewed career claims; current eligible corpus is empty pending Carl's review |
 | MCP | Not implemented |
 | Graph database / GraphRAG | Not implemented |
 | Durable private memory | Implemented through explicit proposals and approval |
@@ -78,10 +78,13 @@ dropped Linux capabilities, disabled privilege escalation, and a bounded
 temporary filesystem. Dockerization improves reproducibility; it does not make
 the private service safe to expose publicly.
 
-When the retrieval index moves to PostgreSQL and pgvector, it should run as a
-separate private service with health checks, migrations, backups, and explicit
-retention. SQLite remains appropriate for the present local control-plane
-records.
+The bounded career corpus is indexed in the existing private SQLite database.
+This avoids making a second database a correctness dependency while only 122
+active imported claims exist and none is yet approved for retrieval. The index
+adapter, chunk IDs, embedding contract, and ranking policy remain independent
+of SQLite. Evaluate PostgreSQL and pgvector when corpus size or measured search
+latency makes in-process cosine ranking miss its evaluation target; migration
+must not change authorization, citation, freshness, audit, or fallback behavior.
 
 ## Professional evidence model
 
@@ -111,7 +114,8 @@ Embedding-backed hybrid RAG is the correct next knowledge capability.
 1. Parse reviewed Markdown and structured career sources.
 2. Preserve headings, frontmatter, tags, wiki links, dates, and source paths.
 3. Chunk by semantic section without losing source identity.
-4. Store embeddings in PostgreSQL with pgvector.
+4. Store embeddings in the private retrieval index behind an adapter; the first
+   implementation uses SQLite JSON vectors and bounded in-process cosine rank.
 5. Combine vector similarity with lexical search and metadata filters.
 6. Rerank within the authorized visibility and channel scope.
 7. Return exact source IDs and evidence strength with every material claim.
@@ -143,8 +147,9 @@ Do not add a separate graph database yet.
 
 Preserve graph-ready structure now: people, employers, roles, projects, skills,
 domains, outcomes, sources, and relationships such as `worked_at`, `built`,
-`used_skill`, `supports_claim`, and `supersedes`. Store those relationships in
-PostgreSQL alongside pgvector first.
+`used_skill`, `supports_claim`, and `supersedes`. Keep those relationships in
+the governed relational evidence store until evaluation justifies a different
+database.
 
 Evaluate GraphRAG or a dedicated graph database only when multi-hop questions
 cannot be answered reliably by hybrid retrieval and relational joins. Examples
@@ -232,10 +237,40 @@ Implementation evidence:
 
 ### JOL-CAREER-003 — Hybrid RAG
 
-- Add PostgreSQL and pgvector behind a knowledge-source adapter.
-- Implement chunking, embeddings, lexical/vector fusion, metadata filters, and
-  exact citations.
-- Keep deterministic fallback and access logging.
+- [x] Add a replaceable career retrieval index and embedding-provider boundary.
+- [x] Implement stable semantic chunks, embeddings, lexical/vector fusion,
+  metadata and review filters, and exact citations.
+- [x] Keep deterministic lexical fallback and content-minimizing access logs.
+- [x] Recheck actor, private-channel, source state, claim state, visibility,
+  review, and 180-day freshness before ranking.
+
+Implementation notes:
+
+- branch: `codex/jol-career-003-hybrid-retrieval`;
+- implementation commit: `3c63300` (`JOL-CAREER-003 add governed hybrid retrieval`);
+- private Jolene receives `search_career_evidence` only for the configured owner
+  in private channels;
+- synchronization deletes ineligible chunks before every search and regenerates
+  embeddings only for new or changed chunk hashes;
+- audit records retain query fingerprints plus chunk/source/claim IDs, never
+  query text or evidence excerpts;
+- vector-provider failure produces the deterministic `lexical_fallback` mode;
+- the real local index currently contains zero chunks because the 122 imported
+  claims still require Carl's review; and
+- PostgreSQL/pgvector remains a measured scale-up option, not a current runtime
+  dependency.
+
+Verification checkpoint:
+
+- 23 test files and 107 tests pass on Node 24.18.0;
+- the production TypeScript build and dependency audit pass with zero reported
+  vulnerabilities;
+- the Node 22 ARM64 Docker image builds and starts healthy as a non-root,
+  read-only-root runtime;
+- `/health` and the bounded career retrieval audit route respond successfully
+  from the container; and
+- secret and runtime-image content checks found no `.env.local`, Git metadata,
+  development scripts, vault content, or SQLite database baked into the image.
 
 ### JOL-CAREER-004 — Public evidence export
 

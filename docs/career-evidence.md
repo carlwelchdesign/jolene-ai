@@ -1,9 +1,9 @@
 # Career evidence registry
 
 Jolene's professional context begins in a private, governed SQLite registry.
-The registry is not a public API and is not supplied to the model automatically.
-It establishes the review boundary that later ingestion, RAG, and public-export
-work must use.
+The registry is not a public API. Its records become available to private
+Jolene only through a separate retrieval service after the review, freshness,
+actor, channel, and visibility gates below pass.
 
 ## Records and lifecycle
 
@@ -103,3 +103,37 @@ The August 25, 2026 bounded import of `01 Career & Job Search` produced 11
 sources, 81 active private claims, 106 tag/wiki-link relationships, and zero
 public-approved claims. A pre-import backup is retained in the ignored local
 backup directory.
+
+## Private hybrid retrieval
+
+Run the index after approving sources and claims for internal use:
+
+```bash
+npm run career:index
+```
+
+One reviewed claim becomes one or more stable semantic chunks. The local index
+stores only eligible chunk content and optional embeddings in the same private
+SQLite database. Before every search, synchronization removes stale, revoked,
+superseded, missing-source, rejected, unreviewed, and private draft records.
+
+Retrieval combines lexical rank with cosine vector rank using reciprocal-rank
+fusion. OpenAI `text-embedding-3-small` is the default embedding provider. If
+embedding creation or query embedding is unavailable, retrieval continues with
+the deterministic lexical ranker without widening its authorization scope.
+
+Private Jolene receives the `search_career_evidence` tool only for Carl in a
+private channel. Each result contains the evidence excerpt, maturity,
+visibility, score, stable chunk/source/claim IDs, logical key, provenance, and
+review date. Material career answers must cite the returned source and claim
+IDs and preserve limitations and project maturity.
+
+The career retrieval ledger stores requester/corpus scope, channel, outcome,
+retrieval mode, an HMAC query fingerprint, and returned citation IDs. It never
+stores the raw query or retrieved evidence excerpt. Read the bounded ledger at
+`GET /v1/career-retrieval-accesses?actorId=carl&workspaceId=professional` on
+the loopback-only control API.
+
+The current local corpus has zero retrieval-eligible claims because all
+imported records still require Carl's review. The index therefore synchronizes
+to zero chunks until that separate human gate is completed.

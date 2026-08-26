@@ -29,14 +29,20 @@ The first runnable slice provides:
   maturity, explicit relationships, review freshness, and claim supersession;
 - bounded Obsidian career ingestion that preserves structured note metadata,
   imports section claims as private review candidates, and records deletions;
+- private hybrid career retrieval over freshly reviewed evidence, with stable
+  semantic chunks, lexical/vector fusion, exact claim/source citations, and a
+  deterministic lexical fallback;
+- a content-minimizing career-retrieval audit ledger that retains query
+  fingerprints and citation IDs but not queries or evidence excerpts;
 - contract tests that do not call OpenAI.
 
 The Slack adapter is active for a local pilot, with live mention-and-reply behavior verified. Scheduled work, specialist agents, client-AI workflows, always-on hosting, and voice remain later gates.
 
 The conversational Obsidian bridge still uses deterministic lexical retrieval.
-The career registry, portfolio migration, and bounded Obsidian career ingestion
-are implemented, but embedding RAG, MCP interoperability, the versioned public
-export, and the public portfolio delegate are not. See the
+The governed career registry now has a separate private hybrid retrieval path,
+but no imported claim is eligible until Carl approves its source and claim for
+internal use. MCP interoperability, the versioned public export, and the public
+portfolio delegate are not implemented. See the
 [professional context architecture](plans/JOLENE_PROFESSIONAL_CONTEXT_ARCHITECTURE.md).
 
 ## Setup
@@ -124,6 +130,13 @@ Prerequisite: Node.js 22 or newer.
    The private professional review boundary and portfolio candidate migration
    are documented in [Career evidence registry](docs/career-evidence.md).
 
+   After approving internal evidence, synchronize its retrieval chunks and
+   embeddings with:
+
+   ```bash
+   npm run career:index
+   ```
+
 ## Slack pilot
 
 Jolene can connect through a dedicated Slack app using Socket Mode. The checked-in manifest grants only the scopes needed for owner DMs, explicit mentions, and replies.
@@ -162,6 +175,12 @@ Carl's configured Slack member ID is the only DM identity permitted to use priva
   create publicly approved evidence.
 - Obsidian career imports use a separate explicit folder allowlist and create
   private review-required claims only.
+- Career retrieval admits only active, freshly approved `internal_approved` or
+  `public_approved` claims and rechecks those gates before every search.
+- Career vector generation fails over to deterministic lexical retrieval; it
+  never widens actor, channel, source, review, freshness, or visibility scope.
+- Career retrieval audit records contain HMAC query fingerprints and stable
+  citation IDs, not raw queries or evidence excerpts.
 - Public career queries exclude stale, revoked, superseded, unapproved, and
   publicly uncitable evidence by construction.
 
