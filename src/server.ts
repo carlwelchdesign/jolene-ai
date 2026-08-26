@@ -315,6 +315,22 @@ async function handleRequest(
     return;
   }
 
+  if (
+    request.method === "GET" &&
+    url.pathname === "/v1/career-retrieval-accesses"
+  ) {
+    sendJson(
+      response,
+      200,
+      application.careerRetrieval.listAccesses({
+        actorId: url.searchParams.get("actorId"),
+        workspaceId: url.searchParams.get("workspaceId"),
+        limit: url.searchParams.get("limit") ?? undefined,
+      }),
+    );
+    return;
+  }
+
   if (request.method === "POST" && url.pathname === "/v1/action-proposals") {
     sendJson(
       response,

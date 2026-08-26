@@ -4,6 +4,7 @@ import path from "node:path";
 import { OpenAIJoleneRunner } from "./agent/agent-runner.js";
 import { ActionApprovalService } from "./application/action-approval-service.js";
 import { CareerEvidenceService } from "./application/career-evidence-service.js";
+import { CareerRetrievalService } from "./application/career-retrieval-service.js";
 import { JoleneService } from "./application/jolene-service.js";
 import { KnowledgeAuditService } from "./application/knowledge-audit-service.js";
 import { PersonalWorkflowService } from "./application/personal-workflow-service.js";
@@ -17,9 +18,14 @@ import {
 } from "./knowledge/knowledge-source.js";
 import { ObsidianKnowledgeSource } from "./knowledge/obsidian-source.js";
 import { AuditedKnowledgeSource } from "./knowledge/audited-knowledge-source.js";
+import {
+  OpenAICareerEmbeddingProvider,
+} from "./knowledge/openai-career-embeddings.js";
 import { SqliteConversationStore } from "./persistence/sqlite-conversation-store.js";
 import { SqliteActionApprovalStore } from "./persistence/sqlite-action-approval-store.js";
 import { SqliteCareerEvidenceStore } from "./persistence/sqlite-career-evidence-store.js";
+import { SqliteCareerRetrievalAuditStore } from "./persistence/sqlite-career-retrieval-audit-store.js";
+import { SqliteCareerRetrievalIndex } from "./persistence/sqlite-career-retrieval-index.js";
 import { SqliteKnowledgeAccessStore } from "./persistence/sqlite-knowledge-access-store.js";
 import { SqlitePersonalWorkflowStore } from "./persistence/sqlite-personal-workflow-store.js";
 import { SqliteWorkContextStore } from "./persistence/sqlite-work-context-store.js";
@@ -32,6 +38,7 @@ export interface JoleneApplication {
   readonly knowledgeAudit: KnowledgeAuditService;
   readonly actionApprovals: ActionApprovalService;
   readonly careerEvidence: CareerEvidenceService;
+  readonly careerRetrieval: CareerRetrievalService;
   readonly workflows: PersonalWorkflowService;
   readonly watchedProjects: WatchedProjectService;
   readonly health: () => {
@@ -51,6 +58,26 @@ export async function createApplication(
   const knowledgeAuditStore = new SqliteKnowledgeAccessStore(config.databasePath);
   const actionApprovalStore = new SqliteActionApprovalStore(config.databasePath);
   const careerEvidenceStore = new SqliteCareerEvidenceStore(config.databasePath);
+  const careerRetrievalAuditStore = new SqliteCareerRetrievalAuditStore(
+    config.databasePath,
+  );
+  const careerRetrievalIndex = new SqliteCareerRetrievalIndex(
+    config.databasePath,
+    careerEvidenceStore,
+    new OpenAICareerEmbeddingProvider(config.embeddingModel),
+  );
+  const careerRetrieval = new CareerRetrievalService({
+    index: careerRetrievalIndex,
+    audit: careerRetrievalAuditStore,
+    corpusScope: {
+      actorId: config.careerOwnerActorId,
+      workspaceId: config.careerWorkspaceId,
+    },
+    allowedActorIds: new Set([
+      config.careerOwnerActorId,
+      ...(config.slackOwnerUserId ? [config.slackOwnerUserId] : []),
+    ]),
+  });
   const personalWorkflowStore = new SqlitePersonalWorkflowStore(config.databasePath);
   const knowledge = new AuditedKnowledgeSource(
     createKnowledgeSource(config),
@@ -64,6 +91,7 @@ export async function createApplication(
     model: config.model,
     instructions,
     knowledge,
+    careerKnowledge: careerRetrieval,
   });
   const service = new JoleneService({
     store,
@@ -80,6 +108,7 @@ export async function createApplication(
     knowledgeAudit: new KnowledgeAuditService(knowledgeAuditStore),
     actionApprovals: new ActionApprovalService(actionApprovalStore, workStore),
     careerEvidence: new CareerEvidenceService(careerEvidenceStore),
+    careerRetrieval,
     workflows: new PersonalWorkflowService(personalWorkflowStore, workStore),
     watchedProjects: new WatchedProjectService(
       config.watchedProjects,
@@ -97,6 +126,8 @@ export async function createApplication(
       knowledgeAuditStore.close();
       actionApprovalStore.close();
       careerEvidenceStore.close();
+      careerRetrievalIndex.close();
+      careerRetrievalAuditStore.close();
       personalWorkflowStore.close();
     },
   };

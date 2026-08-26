@@ -11,6 +11,7 @@
     "build": "npm run clean && tsc -p tsconfig.build.json",
     "career:import-portfolio": "tsx scripts/import-portfolio-evidence.ts",
     "career:import-obsidian": "tsx scripts/import-obsidian-career.ts",
+    "career:index": "tsx scripts/index-career-evidence.ts",
     "check": "npm run typecheck && npm test",
     "chat": "tsx src/cli.ts",
     "clean": "node --eval \"require('node:fs').rmSync('dist', { recursive: true, force: true })\"",
@@ -27,6 +28,7 @@
     "@slack/bolt": "^5.0.0",
     "better-sqlite3": "^13.0.3",
     "dotenv": "^17.2.3",
+    "openai": "^7.5.0",
     "zod": "^4.4.3"
   },
   "devDependencies": {

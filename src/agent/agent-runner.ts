@@ -6,6 +6,7 @@ import { isPrivateChannel } from "../domain/policy.js";
 import type { ChannelKind } from "../domain/conversation.js";
 import type { AuthorizedWorkContext } from "../domain/work-context.js";
 import type { KnowledgeSource } from "../knowledge/knowledge-source.js";
+import type { CareerKnowledgeSource } from "../domain/career-retrieval.js";
 
 export interface AgentRequest {
   readonly eventId: string;
@@ -27,6 +28,7 @@ export interface OpenAIJoleneRunnerOptions {
   readonly model: string;
   readonly instructions: string;
   readonly knowledge: KnowledgeSource;
+  readonly careerKnowledge: CareerKnowledgeSource;
 }
 
 export class OpenAIJoleneRunner implements JoleneAgentRunner {
@@ -34,7 +36,12 @@ export class OpenAIJoleneRunner implements JoleneAgentRunner {
 
   async respond(request: AgentRequest): Promise<string> {
     const tools = isPrivateChannel(request.channelKind)
-      ? [this.createKnowledgeTool(request)]
+      ? [
+          this.createKnowledgeTool(request),
+          ...(this.options.careerKnowledge.canSearch(request)
+            ? [this.createCareerKnowledgeTool(request)]
+            : []),
+        ]
       : [];
 
     const agent = new Agent({
@@ -87,6 +94,25 @@ export class OpenAIJoleneRunner implements JoleneAgentRunner {
           resultCount: results.length,
           results,
         });
+      },
+    });
+  }
+
+  private createCareerKnowledgeTool(request: AgentRequest) {
+    return tool({
+      name: "search_career_evidence",
+      description:
+        "Search Carl's reviewed private career evidence. Use it for professional history, projects, skills, contributions, qualifications, and recruiter questions. Only reviewed evidence is returned. Cite the exact sourceId and claimId for every material claim, preserve maturity and limitations, and say when evidence is missing.",
+      parameters: z.object({
+        query: z.string().trim().min(2).max(1_000),
+        limit: z.number().int().min(1).max(8).default(5),
+      }),
+      execute: async ({ query, limit }) => {
+        return JSON.stringify(await this.options.careerKnowledge.search({
+          query,
+          limit,
+          context: request,
+        }));
       },
     });
   }
