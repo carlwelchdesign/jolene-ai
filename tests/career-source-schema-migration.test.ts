@@ -25,6 +25,7 @@ describe("career source schema migration", () => {
     createLegacyDatabase(databasePath);
 
     const store = new SqliteCareerEvidenceStore(databasePath);
+    let conflictId = "";
     try {
       expect(store.listSources(scope)[0]).toMatchObject({
         id: "portfolio:project:sample",
@@ -45,13 +46,48 @@ describe("career source schema migration", () => {
         metadata: { relativePath: "01 Career & Job Search/Career.md" },
       });
       expect(store.markSourceMissing(note.id, scope).state).toBe("missing");
+      const first = store.upsertDraftClaim({
+        ...scope,
+        sourceId: "portfolio:project:sample",
+        logicalKey: "conflict-a",
+        title: "Conflict A",
+        proposition: "First reviewed proposition.",
+        contribution: "Bounded contribution.",
+        maturity: "prototype",
+      });
+      const second = store.upsertDraftClaim({
+        ...scope,
+        sourceId: "portfolio:project:sample",
+        logicalKey: "conflict-b",
+        title: "Conflict B",
+        proposition: "Second reviewed proposition.",
+        contribution: "Bounded contribution.",
+        maturity: "prototype",
+      });
+      conflictId = store.declareClaimConflict({
+        ...scope,
+        claimIds: [first.id, second.id],
+        reviewerId: "carl",
+      }).id;
     } finally {
       store.close();
+    }
+
+    const reopened = new SqliteCareerEvidenceStore(databasePath);
+    try {
+      expect(reopened.listClaimConflicts(scope)).toEqual([
+        expect.objectContaining({ id: conflictId, state: "unresolved" }),
+      ]);
+    } finally {
+      reopened.close();
     }
 
     const database = new Database(databasePath, { readonly: true });
     try {
       expect(database.pragma("foreign_key_check")).toEqual([]);
+      expect(database.prepare(
+        "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'career_claim_conflicts'",
+      ).get()).toEqual({ name: "career_claim_conflicts" });
     } finally {
       database.close();
     }

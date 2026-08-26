@@ -182,6 +182,66 @@ describe("career evidence review lifecycle", () => {
       store.close();
     }
   });
+
+  it("persists, resolves, and safely reopens canonical claim conflicts", () => {
+    let now = fixedNow;
+    const store = new SqliteCareerEvidenceStore(":memory:", () => now);
+    try {
+      const source = createSource(store);
+      const first = createClaim(store, source.id, "Carl led Atlas.", "atlas-a");
+      const second = createClaim(store, source.id, "Carl advised Atlas.", "atlas-b");
+      const third = createClaim(store, source.id, "Carl observed Atlas.", "atlas-c");
+
+      const declared = store.declareClaimConflict({
+        ...scope,
+        claimIds: [second.id, first.id],
+        reviewerId: "carl",
+      });
+      expect(declared).toMatchObject({
+        claimIds: [first.id, second.id].sort(),
+        state: "unresolved",
+        reviewedBy: "carl",
+        resolvedBy: null,
+      });
+      now = new Date("2026-08-25T13:00:00.000Z");
+      expect(store.declareClaimConflict({
+        ...scope,
+        claimIds: [first.id, second.id],
+        reviewerId: "carl",
+      })).toEqual(declared);
+      expect(() => store.declareClaimConflict({
+        ...scope,
+        claimIds: [second.id, third.id],
+        reviewerId: "carl",
+      })).toThrow("only one unresolved conflict");
+
+      const resolved = store.resolveClaimConflict({
+        ...scope,
+        id: declared.id,
+        reviewerId: "carl",
+      });
+      expect(resolved).toMatchObject({ state: "resolved", resolvedBy: "carl" });
+      expect(store.resolveClaimConflict({
+        ...scope,
+        id: declared.id,
+        reviewerId: "carl",
+      })).toEqual(resolved);
+
+      const reopened = store.declareClaimConflict({
+        ...scope,
+        claimIds: [first.id, second.id],
+        reviewerId: "carl",
+      });
+      expect(reopened).toMatchObject({
+        id: declared.id,
+        state: "unresolved",
+        resolvedBy: null,
+      });
+      expect(store.listClaimConflicts(scope)).toEqual([reopened]);
+    } finally {
+      store.close();
+    }
+  });
 });
 
 describe("PortfolioEvidenceImporter", () => {
@@ -258,11 +318,12 @@ function createClaim(
   store: SqliteCareerEvidenceStore,
   sourceId: string,
   proposition: string,
+  logicalKey = "summary",
 ) {
   return store.upsertDraftClaim({
     ...scope,
     sourceId,
-    logicalKey: "summary",
+    logicalKey,
     title: "Sample claim",
     proposition,
     contribution: "Carl's contribution requires review.",

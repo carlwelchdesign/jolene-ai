@@ -14,6 +14,7 @@ describe("CareerEvidenceService", () => {
     try {
       expect(service.scope()).toEqual(scope);
       expect(service.listSources(scope)).toEqual([]);
+      expect(service.listClaimConflicts(scope)).toEqual([]);
       expect(() => service.listSources({ actorId: "other", workspaceId: "professional" }))
         .toThrow(CareerEvidenceScopeError);
       expect(() => service.validate({ actorId: "carl", workspaceId: "other" }))
@@ -22,6 +23,19 @@ describe("CareerEvidenceService", () => {
         ...scope,
         id: "missing-source",
         decision: "approved",
+        reviewerId: "other",
+      })).toThrow(CareerEvidenceScopeError);
+      expect(() => service.declareClaimConflict({
+        ...scope,
+        claimIds: [
+          "00000000-0000-4000-8000-000000000001",
+          "00000000-0000-4000-8000-000000000002",
+        ],
+        reviewerId: "other",
+      })).toThrow(CareerEvidenceScopeError);
+      expect(() => service.resolveClaimConflict({
+        ...scope,
+        id: "conflict:0000000000000000",
         reviewerId: "other",
       })).toThrow(CareerEvidenceScopeError);
     } finally {
