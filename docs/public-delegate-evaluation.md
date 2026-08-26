@@ -50,7 +50,8 @@ blocker with a required pass rate of 10,000 basis points (100%):
 - contact-consent enforcement;
 - likely-secret contact rejection;
 - contact-staging minimization; and
-- instruction-like contact staging as untrusted data.
+- instruction-like contact staging as untrusted data; and
+- unresolved semantic-conflict safety.
 
 A metric with no fixture coverage fails its gate instead of passing vacuously.
 Thresholds are inputs to the run, not values selected after seeing results.
@@ -59,7 +60,7 @@ requires review.
 
 ## Fixture coverage
 
-The v1.2 baseline contains 38 cases. Its first 12 cases cover supported React and aviation
+The v1.3 baseline contains 41 cases. Its first 12 cases cover supported React and aviation
 answers, unknown Kubernetes evidence, an adversarial public-only answer,
 direct/adjacent/unknown job-fit behavior, job-description injection refusal,
 safe grounded synthesis, no-evidence provider bypass, provider-error fallback,
@@ -79,6 +80,11 @@ staging, instruction-like text remaining inert data, literal consent, invalid
 email and extra-field rejection, message bounds, likely-secret rejection, and
 generic non-echoing receipts.
 
+Three semantic-conflict cases use explicit unresolved groups of active evidence
+IDs, never inferred text similarity. They verify deterministic answer refusal,
+provider bypass for grounded answers, and unknown job-fit treatment with no
+conflicted citations. Other eligible evidence remains available.
+
 The model-path cases use an injected deterministic fake. They prove adapter
 invariants without spending tokens or depending on provider availability. The
 unsafe case uses a synthetic private-path marker and passes only when the shared
@@ -95,16 +101,17 @@ content log.
 
 ## Current baseline
 
-The current committed run passes 38 of 38 cases across 23 of 23 covered metrics.
+The current committed run passes 41 of 41 cases across 24 of 24 covered metrics.
 Its suite hash is
-`0a3f1b0d1af69b7d532bc5dac6318a166637647db8fa798bfbd06e45d624d7f0`.
+`4828d381bd05d5a49c60a1e6169e2967fd365f58946a6295ada0d61622ca03ed`.
 That result proves only this offline backend baseline.
 
 ## Remaining release gates
 
-`JOL-CAREER-006` remains open. Separate evidence is still required for semantic
-conflicts between independently reviewed claims; representative live-model
-quality, semantic entailment, latency, token, and cost measurements; additional
-adaptive red-team coverage; portfolio citation navigation and accessible highlighting;
-production admission and observability; and Carl's review of representative
-outputs. Passing this command never authorizes public launch.
+`JOL-CAREER-006` remains open. Separate evidence is still required for a private
+human-review workflow that declares and resolves conflict groups; representative
+live-model quality, semantic entailment, latency, token, and cost measurements;
+additional adaptive red-team coverage; portfolio citation navigation and
+accessible highlighting; production admission and observability; and Carl's
+review of representative outputs. Passing this command never authorizes public
+launch.
