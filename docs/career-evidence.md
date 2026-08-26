@@ -166,3 +166,51 @@ the loopback-only control API.
 The current local corpus has zero retrieval-eligible claims because all
 imported records still require Carl's review. The index therefore synchronizes
 to zero chunks until that separate human gate is completed.
+
+## Offline public evidence artifact
+
+Generate the private handoff artifact locally:
+
+```bash
+npm run career:export-public
+```
+
+The default output is
+`.jolene/exports/public-career-evidence.json`, which is ignored by Git and
+written through an owner-only temporary file plus atomic rename. The command
+does not require an OpenAI key, start a public endpoint, copy the artifact into
+the portfolio, or deploy anything.
+
+The artifact contains:
+
+- an embedded portfolio-compatible v1 manifest with a reproducible SHA-256
+  corpus hash and content-derived corpus version;
+- fresh, active `public_approved` claim/citation records only;
+- stable `career:<claim UUID>` evidence IDs;
+- reviewed maturity and contribution-boundary limitations; and
+- stable revoked IDs for formerly public evidence that is now stale,
+  superseded, revoked, missing, or otherwise ineligible.
+
+Before replacement, the command validates the previous artifact and carries
+forward every previously exported ID that is no longer eligible. This catches
+withdrawals that change current visibility as well as explicit revocation and
+supersession. If the prior artifact is malformed or version-incompatible, the
+export fails without overwriting it.
+
+It excludes actor/workspace IDs, private provenance references, source hashes,
+Obsidian metadata, relationships, internal/private claims, contact details, and
+private memory. Export fails closed on filesystem paths, Obsidian links, common
+secret formats, email addresses, phone numbers, localhost/private-network
+citations, unsupported `career_note` sources, and schema violations.
+
+Evidence strength is conservatively `limited` until the private registry gains
+an explicit human-reviewed strength field. The exporter does not infer strength
+from source type, wording, or maturity.
+
+The canonical August 26, 2026 run produced a valid empty artifact with zero
+evidence and zero revoked IDs because Carl has not publicly approved any claim.
+Its deterministic empty-corpus hash is
+`sha256:f218a8e06d12d725399b23539c03a8cd0ca4803e98f85e62421b65bf3ff87c7b`.
+The schema and empty fixture live under `contracts/`. Publication, file transfer
+to a public runtime, public API activation, and deployment remain separate
+approval gates.
