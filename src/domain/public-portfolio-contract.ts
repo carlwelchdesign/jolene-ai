@@ -23,6 +23,13 @@ export const PUBLIC_PORTFOLIO_JOB_FIT_LIMITS = {
   sessionTokenCharacters: 256,
 } as const;
 
+export const PUBLIC_CONTACT_INTENT_LIMITS = {
+  nameCharacters: 100,
+  emailCharacters: 254,
+  organizationCharacters: 120,
+  messageCharacters: 2_000,
+} as const;
+
 export const portfolioAnswerRequestSchema = z.object({
   question: z.string().trim().min(1).max(
     PUBLIC_PORTFOLIO_ANSWER_LIMITS.questionCharacters,
@@ -170,6 +177,29 @@ export const portfolioJobFitResponseSchema = z.object({
   }
 });
 
+export const contactIntentRequestSchema = z.object({
+  name: z.string().trim().min(1).max(PUBLIC_CONTACT_INTENT_LIMITS.nameCharacters),
+  email: z.string().trim().max(PUBLIC_CONTACT_INTENT_LIMITS.emailCharacters)
+    .pipe(z.email()),
+  organization: z.string().trim().min(1).max(
+    PUBLIC_CONTACT_INTENT_LIMITS.organizationCharacters,
+  ).optional(),
+  message: z.string().trim().min(1).max(
+    PUBLIC_CONTACT_INTENT_LIMITS.messageCharacters,
+  ).refine((value) => !containsLikelySecret(value), {
+    message: "Contact messages cannot contain likely credentials or secrets.",
+  }),
+  consent: z.literal(true),
+}).strict();
+
+export const contactIntentResponseSchema = z.object({
+  schemaVersion: z.literal(PUBLIC_CAREER_EVIDENCE_SCHEMA_VERSION),
+  intentId: z.string().uuid(),
+  status: z.literal("pending_review"),
+  submittedAt: z.string().datetime({ offset: true }),
+  message: z.string().trim().min(1).max(240),
+}).strict();
+
 export type PortfolioAnswerRequest = z.infer<
   typeof portfolioAnswerRequestSchema
 >;
@@ -182,3 +212,17 @@ export type PortfolioJobFitRequest = z.infer<
 export type PortfolioJobFitResponse = z.infer<
   typeof portfolioJobFitResponseSchema
 >;
+export type ContactIntentRequest = z.infer<typeof contactIntentRequestSchema>;
+export type ContactIntentResponse = z.infer<typeof contactIntentResponseSchema>;
+
+function containsLikelySecret(value: string): boolean {
+  return LIKELY_SECRET_PATTERNS.some((pattern) => pattern.test(value));
+}
+
+const LIKELY_SECRET_PATTERNS = [
+  /\bsk-[A-Za-z0-9_-]{20,}\b/u,
+  /\bxox[baprs]-[A-Za-z0-9-]{10,}\b/u,
+  /\bAKIA[A-Z0-9]{16}\b/u,
+  /\bgh[pousr]_[A-Za-z0-9]{36,}\b/u,
+  /-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----/u,
+] as const;

@@ -9,6 +9,11 @@ import { FilePublicArtifactSource } from "../src/public/public-artifact-source.j
 import { DeterministicPublicAnswerService } from "../src/public/public-answer-service.js";
 import { DeterministicPublicJobFitService } from "../src/public/public-job-fit-service.js";
 import {
+  FilePublicContactIntentQueue,
+  PublicContactQueueUnavailableError,
+  type PublicContactIntentStager,
+} from "../src/public/public-contact-intent-queue.js";
+import {
   FixedWindowPublicRequestAdmission,
   type PublicRequestAdmissionController,
 } from "../src/public/public-request-admission.js";
@@ -50,6 +55,11 @@ describe("public delegate manifest boundary", () => {
       artifactPath: path.resolve(
         ".jolene/exports/public-career-evidence.json",
       ),
+      contactQueuePath: path.resolve(
+        ".jolene/public/contact-intents.json",
+      ),
+      contactRetentionDays: 30,
+      contactQueueMaxEntries: 500,
       requestsPerMinute: 60,
       maxConcurrentRequests: 8,
     });
@@ -73,6 +83,12 @@ describe("public delegate manifest boundary", () => {
     })).toThrow();
     expect(() => parsePublicDelegateConfig({
       JOLENE_PUBLIC_MAX_CONCURRENT_REQUESTS: "65",
+    })).toThrow();
+    expect(() => parsePublicDelegateConfig({
+      JOLENE_PUBLIC_CONTACT_RETENTION_DAYS: "91",
+    })).toThrow();
+    expect(() => parsePublicDelegateConfig({
+      JOLENE_PUBLIC_CONTACT_QUEUE_MAX_ENTRIES: "0",
     })).toThrow();
   });
 
@@ -297,6 +313,113 @@ describe("public delegate manifest boundary", () => {
     expect(JSON.stringify(body)).not.toContain("Typed React product systems.\n");
   });
 
+  it("stages a consented contact intent without reading career evidence", async () => {
+    const { baseUrl, contactQueuePath } = await start(
+      path.join(await temporaryDirectory(), "missing-artifact.json"),
+    );
+    const request = {
+      name: "Recruiter Name",
+      email: "recruiter@example.com",
+      organization: "Example Company",
+      message: "Would Carl be interested in discussing a product role?",
+      consent: true,
+    };
+
+    const response = await fetch(`${baseUrl}/v1/portfolio/contact-intent`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(request),
+    });
+    const body = await response.json() as Record<string, unknown>;
+
+    expect(response.status).toBe(202);
+    expect(body).toMatchObject({
+      schemaVersion: "1.0.0",
+      status: "pending_review",
+      message: "Your contact request is queued for Carl's review.",
+    });
+    expect(body.intentId).toEqual(expect.any(String));
+    expect(body.submittedAt).toEqual(expect.any(String));
+    expect(JSON.stringify(body)).not.toContain(request.email);
+    expect(JSON.stringify(body)).not.toContain(request.message);
+    const stored = JSON.parse(await readFile(contactQueuePath, "utf8")) as {
+      readonly intents: readonly Record<string, unknown>[];
+    };
+    expect(stored.intents).toMatchObject([request]);
+  });
+
+  it.each([
+    ["missing consent", { name: "A", email: "a@example.com", message: "Hi" }],
+    [
+      "false consent",
+      { name: "A", email: "a@example.com", message: "Hi", consent: false },
+    ],
+    [
+      "invalid email",
+      { name: "A", email: "invalid", message: "Hi", consent: true },
+    ],
+    [
+      "likely secret",
+      {
+        name: "A",
+        email: "a@example.com",
+        message: `Credential sk-${"a".repeat(32)}`,
+        consent: true,
+      },
+    ],
+    [
+      "extra field",
+      {
+        name: "A",
+        email: "a@example.com",
+        message: "Hi",
+        consent: true,
+        extra: true,
+      },
+    ],
+  ])("rejects contact intent with %s", async (_name, request) => {
+    const { baseUrl } = await start(
+      path.join(await temporaryDirectory(), "missing-artifact.json"),
+    );
+    const response = await fetch(`${baseUrl}/v1/portfolio/contact-intent`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(request),
+    });
+
+    expect(response.status).toBe(400);
+    expect(await response.json()).toEqual({ error: "invalid_request" });
+  });
+
+  it("fails closed without disclosing contact queue errors", async () => {
+    const { baseUrl } = await start(
+      path.join(await temporaryDirectory(), "missing-artifact.json"),
+      {
+        contactIntents: {
+          stage: async () => {
+            throw new PublicContactQueueUnavailableError();
+          },
+        },
+      },
+    );
+    const response = await fetch(`${baseUrl}/v1/portfolio/contact-intent`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        name: "A",
+        email: "a@example.com",
+        message: "Hello",
+        consent: true,
+      }),
+    });
+
+    expect(response.status).toBe(503);
+    expect(await response.json()).toEqual({
+      status: "unavailable",
+      error: "contact_queue_unavailable",
+    });
+  });
+
   it.each([
     [
       "oversized job description",
@@ -381,6 +504,8 @@ describe("public delegate manifest boundary", () => {
     const unknown = await fetch(`${baseUrl}/v1/private-memory`);
     const answerMethod = await fetch(`${baseUrl}/v1/portfolio/answer`);
     const jobFitMethod = await fetch(`${baseUrl}/v1/portfolio/job-fit`);
+    const contactMethod = await fetch(`${baseUrl}/v1/portfolio/contact-intent`);
+    const queueRead = await fetch(`${baseUrl}/v1/portfolio/contact-intents`);
 
     expect(method.status).toBe(405);
     expect(method.headers.get("allow")).toBe("GET");
@@ -391,6 +516,9 @@ describe("public delegate manifest boundary", () => {
     expect(answerMethod.headers.get("allow")).toBe("POST");
     expect(jobFitMethod.status).toBe(405);
     expect(jobFitMethod.headers.get("allow")).toBe("POST");
+    expect(contactMethod.status).toBe(405);
+    expect(contactMethod.headers.get("allow")).toBe("POST");
+    expect(queueRead.status).toBe(404);
   });
 
   it("bounds request URLs before reading evidence", async () => {
@@ -428,6 +556,7 @@ describe("public delegate manifest boundary", () => {
       "src/public/public-answer-service.ts",
       "src/public/public-job-fit-service.ts",
       "src/public/public-request-admission.ts",
+      "src/public/public-contact-intent-queue.ts",
       "src/public/public-delegate-server.ts",
     ];
     const source = (await Promise.all(
@@ -482,13 +611,26 @@ async function start(
   overrides: {
     readonly enabled?: boolean;
     readonly admissions?: PublicRequestAdmissionController;
+    readonly contactIntents?: PublicContactIntentStager;
   } = {},
-): Promise<{ readonly baseUrl: string }> {
+): Promise<{
+  readonly baseUrl: string;
+  readonly contactQueuePath: string;
+}> {
+  const contactQueuePath = path.join(
+    await temporaryDirectory(),
+    "contact-intents.json",
+  );
   const server = createPublicDelegateServer({
     enabled: overrides.enabled ?? true,
     artifacts: new FilePublicArtifactSource(artifactPath),
     answers: new DeterministicPublicAnswerService(),
     jobFit: new DeterministicPublicJobFitService(),
+    contactIntents: overrides.contactIntents ?? new FilePublicContactIntentQueue({
+      filePath: contactQueuePath,
+      maxEntries: 500,
+      retentionMilliseconds: 30 * 24 * 60 * 60 * 1_000,
+    }),
     admissions: overrides.admissions ?? new FixedWindowPublicRequestAdmission({
       requestsPerWindow: 1_000,
       maxConcurrentRequests: 10,
@@ -501,7 +643,10 @@ async function start(
   if (!address || typeof address === "string") {
     throw new Error("Expected an ephemeral TCP address.");
   }
-  return { baseUrl: `http://127.0.0.1:${address.port}` };
+  return {
+    baseUrl: `http://127.0.0.1:${address.port}`,
+    contactQueuePath,
+  };
 }
 
 async function close(server: ReturnType<typeof createPublicDelegateServer>) {
