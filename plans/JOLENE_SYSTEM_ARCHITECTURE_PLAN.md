@@ -564,7 +564,7 @@ Workflow-interface checkpoint:
 | Field | Value |
 |---|---|
 | Branch | `codex/jolene-workflow-ui` |
-| Implementation commit | Pending |
+| Implementation commit | `bf88605` (`JOL-ARCH-008 add workflow control center`) |
 | Pull request | None; this local repository has no remote configured |
 | Verification | Node 22 typecheck, 73 contract tests, production build, staged secret scan, dependency audit, and live desktop browser lifecycle passed |
 | Interaction evidence | New-task workflow creation, five ordered repository-work steps, completion review, changes requested to verification, resubmission, approval, cancellation confirmation, filters, empty states, and cross-navigation passed |
