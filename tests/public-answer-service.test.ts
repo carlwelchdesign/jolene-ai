@@ -7,6 +7,7 @@ import {
 import { DeterministicPublicAnswerService } from "../src/public/public-answer-service.js";
 import {
   createPublicEvidenceArtifact,
+  createPublicEvidenceConflict,
   createPublicEvidenceRecord,
 } from "./helpers/public-evidence-fixture.js";
 
@@ -73,6 +74,24 @@ describe("DeterministicPublicAnswerService", () => {
     expect(result.claims).toEqual([]);
     expect(result.sessionToken).toBe("opaque-session-token");
     expect(result.corpusVersion).toBe(artifact.manifest.corpusVersion);
+  });
+
+  it("refuses to assert evidence in an explicit unresolved conflict", () => {
+    const evidence = [
+      createPublicEvidenceRecord(1, { text: "Carl led the Atlas project." }),
+      createPublicEvidenceRecord(2, { text: "Carl advised the Atlas project." }),
+    ];
+    const artifact = createPublicEvidenceArtifact(evidence, [
+      createPublicEvidenceConflict(evidence.map((record) => record.evidenceId)),
+    ]);
+
+    const result = service.answer(artifact, { question: "What was Carl's Atlas role?" });
+
+    expect(result.claims).toEqual([]);
+    expect(result.citations).toEqual([]);
+    expect(result.answer).toContain("unresolved conflict");
+    expect(result.answer).not.toContain("led");
+    expect(result.answer).not.toContain("advised");
   });
 
   it("strictly validates question, session, and extra-field limits", () => {

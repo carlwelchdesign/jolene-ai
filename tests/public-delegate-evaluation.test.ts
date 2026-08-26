@@ -22,12 +22,12 @@ describe("public delegate evaluation harness", () => {
     const report = await evaluatePublicDelegateSuite(loadFixture());
 
     expect(report).toMatchObject({
-      suiteVersion: "1.2.0",
+      suiteVersion: "1.3.0",
       suiteId: "public-delegate:offline-baseline-v1",
       gate: "pass",
-      counts: { cases: 38, passed: 38, failed: 0 },
+      counts: { cases: 41, passed: 41, failed: 0 },
     });
-    expect(report.metrics).toHaveLength(23);
+    expect(report.metrics).toHaveLength(24);
     expect(report.metrics.every((metric) =>
       metric.total > 0 && metric.passRateBps === 10_000 && metric.gate === "pass"
     )).toBe(true);

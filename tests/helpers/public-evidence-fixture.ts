@@ -1,7 +1,9 @@
 import {
   PUBLIC_CAREER_EVIDENCE_SCHEMA_VERSION,
+  publicCareerConflictId,
   publicCareerEvidenceArtifactSchema,
   publicCareerEvidenceDigest,
+  type PublicCareerEvidenceConflict,
   type PublicCareerEvidenceArtifact,
   type PublicCareerEvidenceRecord,
 } from "../../src/domain/public-career-evidence.js";
@@ -23,9 +25,10 @@ export function createPublicEvidenceArtifact(
       maturity: "deployed_demo",
     }),
   ],
+  conflicts: readonly PublicCareerEvidenceConflict[] = [],
 ): PublicCareerEvidenceArtifact {
   const revokedEvidenceIds: string[] = [];
-  const digest = publicCareerEvidenceDigest({ evidence, revokedEvidenceIds });
+  const digest = publicCareerEvidenceDigest({ evidence, revokedEvidenceIds, conflicts });
   return publicCareerEvidenceArtifactSchema.parse({
     manifest: {
       schemaVersion: PUBLIC_CAREER_EVIDENCE_SCHEMA_VERSION,
@@ -37,7 +40,19 @@ export function createPublicEvidenceArtifact(
       revokedEvidenceIds,
     },
     evidence,
+    conflicts,
   });
+}
+
+export function createPublicEvidenceConflict(
+  evidenceIds: readonly string[],
+): PublicCareerEvidenceConflict {
+  const sortedEvidenceIds = [...evidenceIds].sort();
+  return {
+    conflictId: publicCareerConflictId(sortedEvidenceIds),
+    evidenceIds: sortedEvidenceIds,
+    status: "unresolved",
+  };
 }
 
 export function createPublicEvidenceRecord(

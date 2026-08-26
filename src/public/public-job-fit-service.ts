@@ -26,13 +26,19 @@ export class DeterministicPublicJobFitService implements PublicJobFitComparer {
     request: PortfolioJobFitRequest,
   ): PortfolioJobFitResponse {
     const requirements = segmentRequirements(request.jobDescription);
+    const conflictedIds = new Set(
+      artifact.conflicts.flatMap((conflict) => conflict.evidenceIds),
+    );
+    const usableEvidence = artifact.evidence.filter(
+      (record) => !conflictedIds.has(record.evidenceId),
+    );
     const treatAsUntrustedInstruction = looksLikeInstructionInjection(
       request.jobDescription,
     );
     const results = requirements.map((requirement) =>
       assessRequirement(
         requirement,
-        treatAsUntrustedInstruction ? [] : artifact.evidence,
+        treatAsUntrustedInstruction ? [] : usableEvidence,
       )
     );
     const citedIds = new Set(results.flatMap((result) => result.evidenceIds));
@@ -48,6 +54,9 @@ export class DeterministicPublicJobFitService implements PublicJobFitComparer {
         "This comparison uses only reviewed public evidence and is not a recommendation or blanket fit score.",
         "Unknown means the public corpus does not establish an answer; it does not mean Carl lacks the experience.",
         "The submitted job description is treated as untrusted, ephemeral text and is not persisted.",
+        ...(artifact.conflicts.length > 0
+          ? ["Evidence in unresolved conflict groups is excluded from requirement assessments."]
+          : []),
       ],
       suggestedFollowUpQuestions: [
         "Which requirement should we examine against the cited work in more detail?",

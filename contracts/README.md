@@ -13,7 +13,10 @@ testing; this does not authorize a public endpoint or deployment.
 The embedded manifest matches the portfolio v1 fixture contract:
 `schemaVersion`, `corpusVersion`, `corpusHash`, `generatedAt`, `reviewedAt`,
 `evidenceCount`, and `revokedEvidenceIds`. Each evidence record contains one
-contract-shaped claim and citation.
+contract-shaped claim and citation. The additive `conflicts` array explicitly
+groups two to five active evidence IDs when human review has found an unresolved
+semantic disagreement; absence means no conflicts have been declared, not that
+automated semantic comparison proved the corpus conflict-free.
 
 The exporter assigns `limited` evidence strength until the private registry has
 an explicit human-reviewed strength field. It never infers `strong` or
