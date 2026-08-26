@@ -639,7 +639,7 @@ Private work-status checkpoint:
 | Asana | [JOL-ARCH-008D](https://app.asana.com/1/9789386902387/project/1216473233375594/task/1217872627426464) |
 | Branch | `codex/jol-arch-008d-private-work-status` |
 | Implementation commit | `3ffe917` (`JOL-ARCH-008D add canonical private work status`) |
-| Pull request | Pending |
+| Pull request | [#10](https://github.com/carlwelchdesign/jolene-ai/pull/10), stacked on #9 |
 | Verification | Node 24 typecheck, 31 test files / 146 tests, production build, Compose configuration validation, staged secret scan, and production dependency audit passed |
 | Runtime evidence | A disposable local API turn reviewed running and approval-needed tasks with an active repository-work step; a simulated configured-owner Slack DM resolved Slack transport IDs to the same canonical private work scope without posting to Slack |
 | Safety evidence | Shared channels and unrecognized Slack DMs receive no work scope or status tool; transport conversation identity remains isolated; the model tool only reads bounded persisted task/workflow state and exposes no create, update, advance, cancel, schedule, send, publish, or execution path |
