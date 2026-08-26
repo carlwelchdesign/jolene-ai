@@ -33,7 +33,8 @@ The first runnable slice provides:
   state alerts through the local control center and authorized private
   conversation;
 - a private governed career-evidence registry with source provenance, project
-  maturity, explicit relationships, review freshness, and claim supersession;
+  maturity, explicit relationships, review freshness, claim supersession, and
+  durable owner-reviewed unresolved conflict groups;
 - bounded Obsidian career ingestion that preserves structured note metadata,
   imports section claims as private review candidates, and records deletions;
 - private hybrid career retrieval over freshly reviewed evidence, with stable
@@ -181,8 +182,8 @@ Prerequisite: Node.js 22 or newer.
    inspect fresh project, plan, and Git status without exposing local paths or
    any repair controls.
 
-   The private professional review boundary and portfolio candidate migration
-   are documented in [Career evidence registry](docs/career-evidence.md).
+  The private professional review boundary and portfolio candidate migration
+  are documented in [Career evidence registry](docs/career-evidence.md).
 
    Open [http://127.0.0.1:8421/career-evidence](http://127.0.0.1:8421/career-evidence)
    to review the configured owner's sources and claims. Public eligibility is
