@@ -107,7 +107,10 @@ export async function createApplication(
     work: new WorkContextService(workStore),
     knowledgeAudit: new KnowledgeAuditService(knowledgeAuditStore),
     actionApprovals: new ActionApprovalService(actionApprovalStore, workStore),
-    careerEvidence: new CareerEvidenceService(careerEvidenceStore),
+    careerEvidence: new CareerEvidenceService(careerEvidenceStore, {
+      actorId: config.careerOwnerActorId,
+      workspaceId: config.careerWorkspaceId,
+    }),
     careerRetrieval,
     workflows: new PersonalWorkflowService(personalWorkflowStore, workStore),
     watchedProjects: new WatchedProjectService(

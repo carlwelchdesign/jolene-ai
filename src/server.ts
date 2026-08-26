@@ -6,6 +6,7 @@ import { createApplication } from "./app.js";
 import { chatRequestSchema } from "./application/jolene-service.js";
 import { loadConfig } from "./config.js";
 import { ActionProposalPolicyError } from "./application/action-approval-service.js";
+import { CareerEvidenceScopeError } from "./application/career-evidence-service.js";
 import {
   ActionApprovalExpiredError,
   ActionPayloadMismatchError,
@@ -26,10 +27,16 @@ import {
 } from "./domain/work-context.js";
 import { WatchedProjectNotFoundError } from "./domain/watched-project.js";
 import {
+  CareerEvidenceApprovalError,
+  CareerEvidenceConflictError,
+  CareerEvidenceNotFoundError,
+} from "./domain/career-evidence.js";
+import {
   loadMemoryReviewAssets,
   memoryReviewHeaders,
   type MemoryReviewAsset,
 } from "./ui/memory-review-assets.js";
+import { assertSameOrigin, RequestOriginError } from "./http/request-origin.js";
 
 const MAX_REQUEST_BYTES = 1_000_000;
 
@@ -102,6 +109,21 @@ async function handleRequest(
 
   if (request.method === "GET" && url.pathname === "/projects") {
     sendAsset(response, memoryReviewAssets.projectHtml);
+    return;
+  }
+
+  if (request.method === "GET" && url.pathname === "/career-evidence") {
+    sendAsset(response, memoryReviewAssets.careerHtml);
+    return;
+  }
+
+  if (request.method === "GET" && url.pathname === "/career-evidence.css") {
+    sendAsset(response, memoryReviewAssets.careerCss);
+    return;
+  }
+
+  if (request.method === "GET" && url.pathname === "/career-evidence.js") {
+    sendAsset(response, memoryReviewAssets.careerJavascript);
     return;
   }
 
@@ -331,6 +353,70 @@ async function handleRequest(
     return;
   }
 
+  if (request.method === "GET" && url.pathname === "/v1/career-evidence/scope") {
+    sendJson(response, 200, application.careerEvidence.scope());
+    return;
+  }
+
+  if (request.method === "GET" && url.pathname === "/v1/career-evidence/sources") {
+    sendJson(response, 200, application.careerEvidence.listSources(scopeFrom(url)));
+    return;
+  }
+
+  if (request.method === "GET" && url.pathname === "/v1/career-evidence/claims") {
+    sendJson(response, 200, application.careerEvidence.listClaims(scopeFrom(url)));
+    return;
+  }
+
+  if (request.method === "GET" && url.pathname === "/v1/career-evidence/validation") {
+    sendJson(response, 200, application.careerEvidence.validate(scopeFrom(url)));
+    return;
+  }
+
+  const sourceDecisionMatch = url.pathname.match(
+    /^\/v1\/career-evidence\/sources\/([^/]+)\/decision$/,
+  );
+  if (request.method === "POST" && sourceDecisionMatch?.[1]) {
+    assertSameOrigin(request.headers);
+    sendJson(response, 200, application.careerEvidence.decideSource(
+      withIdentifier(await readJson(request), decodeURIComponent(sourceDecisionMatch[1])),
+    ));
+    return;
+  }
+
+  const claimDecisionMatch = url.pathname.match(
+    /^\/v1\/career-evidence\/claims\/([^/]+)\/decision$/,
+  );
+  if (request.method === "POST" && claimDecisionMatch?.[1]) {
+    assertSameOrigin(request.headers);
+    sendJson(response, 200, application.careerEvidence.decideClaim(
+      withIdentifier(await readJson(request), claimDecisionMatch[1]),
+    ));
+    return;
+  }
+
+  const sourceRevokeMatch = url.pathname.match(
+    /^\/v1\/career-evidence\/sources\/([^/]+)\/revoke$/,
+  );
+  if (request.method === "POST" && sourceRevokeMatch?.[1]) {
+    assertSameOrigin(request.headers);
+    sendJson(response, 200, application.careerEvidence.revokeSource(
+      withIdentifier(await readJson(request), decodeURIComponent(sourceRevokeMatch[1])),
+    ));
+    return;
+  }
+
+  const claimRevokeMatch = url.pathname.match(
+    /^\/v1\/career-evidence\/claims\/([^/]+)\/revoke$/,
+  );
+  if (request.method === "POST" && claimRevokeMatch?.[1]) {
+    assertSameOrigin(request.headers);
+    sendJson(response, 200, application.careerEvidence.revokeClaim(
+      withIdentifier(await readJson(request), claimRevokeMatch[1]),
+    ));
+    return;
+  }
+
   if (request.method === "POST" && url.pathname === "/v1/action-proposals") {
     sendJson(
       response,
@@ -440,7 +526,8 @@ function handleError(error: unknown, response: ServerResponse): void {
     error instanceof DurableMemoryNotFoundError ||
     error instanceof ActionProposalNotFoundError ||
     error instanceof PersonalWorkflowNotFoundError ||
-    error instanceof WatchedProjectNotFoundError
+    error instanceof WatchedProjectNotFoundError ||
+    error instanceof CareerEvidenceNotFoundError
   ) {
     sendJson(response, 404, { error: "not_found" });
     return;
@@ -472,6 +559,29 @@ function handleError(error: unknown, response: ServerResponse): void {
 
   if (error instanceof ActionProposalPolicyError) {
     sendJson(response, 403, { error: "action_not_permitted" });
+    return;
+  }
+
+  if (error instanceof CareerEvidenceScopeError) {
+    sendJson(response, 403, { error: "career_scope_not_permitted" });
+    return;
+  }
+
+  if (error instanceof RequestOriginError) {
+    sendJson(response, 403, { error: "request_origin_not_permitted" });
+    return;
+  }
+
+  if (error instanceof CareerEvidenceConflictError) {
+    sendJson(response, 409, { error: "career_evidence_conflict" });
+    return;
+  }
+
+  if (error instanceof CareerEvidenceApprovalError) {
+    sendJson(response, 422, {
+      error: "career_evidence_approval_blocked",
+      issues: error.issues,
+    });
     return;
   }
 
@@ -512,4 +622,11 @@ function asObject(body: unknown): Record<string, unknown> {
     throw new SyntaxError("Expected a JSON object.");
   }
   return body as Record<string, unknown>;
+}
+
+function scopeFrom(url: URL): Record<string, string | null> {
+  return {
+    actorId: url.searchParams.get("actorId"),
+    workspaceId: url.searchParams.get("workspaceId"),
+  };
 }

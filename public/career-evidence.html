@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light">
+    <title>Jolene Career Evidence Review</title>
+    <link rel="stylesheet" href="/memory-review.css">
+    <link rel="stylesheet" href="/career-evidence.css">
+    <script type="module" src="/career-evidence.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to career evidence review</a>
+
+    <header class="topbar">
+      <a class="brand" href="/career-evidence" aria-label="Jolene Career Evidence home">
+        <span class="brand-mark" aria-hidden="true">J</span>
+        <span><strong>Jolene</strong><small>Control Center</small></span>
+      </a>
+      <div class="header-tools">
+        <nav class="product-nav" aria-label="Jolene control center">
+          <a href="/workflows">Work</a>
+          <a href="/projects">Projects</a>
+          <a href="/career-evidence" aria-current="page">Evidence</a>
+          <a href="/memory">Memory</a>
+          <a href="/approvals">Approvals</a>
+        </nav>
+        <div class="read-only-chip scope-chip" id="scope-chip">
+          <span aria-hidden="true">●</span>
+          Loading owner scope
+        </div>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="hero hero-career" aria-labelledby="page-title">
+        <p class="eyebrow">Human-reviewed professional truth</p>
+        <h1 id="page-title">Decide what Jolene may say about your work.</h1>
+        <p class="hero-copy">Review the source first, then each claim. Internal approval helps Jolene answer you. Public approval allows an exact claim to support recruiter-facing answers only when it has a public citation.</p>
+        <div class="hero-actions">
+          <button class="button button-primary" id="refresh-button" type="button">Refresh evidence</button>
+          <span class="local-note"><span aria-hidden="true">●</span> Local owner control</span>
+        </div>
+      </section>
+
+      <aside class="boundary-banner career-boundary" aria-label="Career evidence publishing boundary">
+        <span class="boundary-icon" aria-hidden="true">✓</span>
+        <div><strong>Approval changes eligibility, not the outside world.</strong><p>This screen cannot publish a portfolio, message a recruiter, submit an application, or expose your Obsidian vault.</p></div>
+      </aside>
+
+      <div class="notice" id="page-notice" role="status" aria-live="polite" hidden></div>
+
+      <section class="summary-grid evidence-summary" aria-label="Career evidence summary">
+        <article><span>Sources</span><strong id="count-sources">—</strong></article>
+        <article><span>Claims awaiting review</span><strong id="count-review">—</strong></article>
+        <article><span>Internal approved</span><strong id="count-internal">—</strong></article>
+        <article><span>Public approved</span><strong id="count-public">—</strong></article>
+      </section>
+
+      <section class="panel" aria-labelledby="queue-title">
+        <div class="section-heading evidence-heading">
+          <div><p class="eyebrow">Source-linked queue</p><h2 id="queue-title">Career evidence</h2></div>
+          <label class="search-field"><span>Find evidence</span><input id="search" type="search" placeholder="Project, role, skill…" autocomplete="off"></label>
+        </div>
+        <div class="filter-row" role="group" aria-label="Filter career evidence">
+          <button class="filter is-active" type="button" data-filter="needs_review" aria-pressed="true">Needs review</button>
+          <button class="filter" type="button" data-filter="all" aria-pressed="false">All evidence</button>
+          <button class="filter" type="button" data-filter="internal_approved" aria-pressed="false">Internal approved</button>
+          <button class="filter" type="button" data-filter="public_approved" aria-pressed="false">Public approved</button>
+          <button class="filter" type="button" data-filter="closed" aria-pressed="false">Rejected or retired</button>
+        </div>
+        <div class="evidence-list" id="evidence-list" aria-live="polite" aria-busy="true">
+          <div class="loading-state">Loading career evidence…</div>
+        </div>
+      </section>
+    </main>
+
+    <dialog class="dialog-wide" id="decision-dialog" aria-labelledby="decision-title">
+      <form class="dialog-card dialog-card-wide" id="decision-form">
+        <div class="dialog-heading">
+          <div><p class="eyebrow" id="decision-eyebrow">Confirm decision</p><h2 id="decision-title">Review exact claim</h2></div>
+          <button class="icon-button" type="button" data-close-dialog aria-label="Close confirmation">×</button>
+        </div>
+        <p class="supporting-copy" id="decision-copy"></p>
+        <div class="exact-evidence" id="decision-evidence"></div>
+        <label class="check-field" id="public-confirmation">
+          <input id="public-confirm" type="checkbox">
+          <span><strong>I confirm this exact claim is appropriate for recruiter-facing answers.</strong><small>Approval does not publish or send anything.</small></span>
+        </label>
+        <div class="inline-error" id="decision-error" role="alert" hidden></div>
+        <div class="dialog-actions">
+          <button class="button button-secondary" type="button" data-close-dialog>Cancel</button>
+          <button class="button button-primary" id="decision-submit" type="submit">Confirm</button>
+        </div>
+      </form>
+    </dialog>
+
+    <div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true" hidden></div>
+  </body>
+</html>
