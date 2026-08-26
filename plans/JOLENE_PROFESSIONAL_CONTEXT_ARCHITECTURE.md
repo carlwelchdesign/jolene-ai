@@ -2,7 +2,7 @@
 
 **Date:** 2026-08-26
 
-**Status:** Docker API, governed career ingestion, private hybrid retrieval, public export, loopback manifest/answer/job-fit/contact-staging/admission/audit/egress-disclosure boundaries, disabled-by-default grounded answer synthesis, and private contact review implemented; public integration, evaluation, and deployment pending
+**Status:** Docker API, governed career ingestion, private hybrid retrieval, public export, loopback manifest/answer/job-fit/contact-staging/admission/audit/egress-disclosure boundaries, disabled-by-default grounded answer synthesis, private contact review, and the first offline evaluation baseline implemented; public integration, full evaluation, and deployment pending
 
 ## Product outcome
 
@@ -447,11 +447,33 @@ deployment path.
 
 ### JOL-CAREER-006 — Evaluation and launch gates
 
+- `JOL-CAREER-006A` implements a versioned offline backend harness with 12
+  deterministic/fake-provider cases, 11 precommitted 100% blocker metrics,
+  privacy-safe machine output, fail-closed fixture validation, and nonzero
+  hard-gate exits.
 - Build fixtures for supported, adjacent, missing, stale, confidential, and
   adversarial questions.
 - Require citation correctness, maturity preservation, privacy refusal, and
   factual invariance across personality modes.
 - Manually review representative answers before public launch.
+
+`JOL-CAREER-006A` does not complete this ticket. Stale, revoked, superseded,
+and conflicting lifecycle fixtures; live-model quality/latency/token/cost
+measurement; broader abuse and impersonation coverage; portfolio citation and
+accessibility verification; representative human review; production controls;
+and launch approval remain open.
+
+`JOL-CAREER-006A` verification checkpoint:
+
+- implementation commit: `84281a9` (`JOL-CAREER-006A add public delegate evaluation harness`);
+- canonical baseline: 12 of 12 cases and 11 of 11 metrics pass at precommitted
+  10,000-basis-point blocker thresholds;
+- suite hash:
+  `56d0c1015c8e8c33da4a1155eee7de5bd01f626be3b307e4f021ced163536573`;
+- 44 test files and 275 tests pass on Node 24.18.0, including malformed-suite,
+  privacy-safe-report, reproducible-failure, and nonzero-exit coverage; and
+- no live provider request, public bind, integration, merge, deployment, human
+  sign-off, or launch authorization was performed.
 
 ### JOL-CAREER-007 — Private MCP adapter
 
