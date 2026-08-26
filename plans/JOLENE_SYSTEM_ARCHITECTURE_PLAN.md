@@ -631,7 +631,7 @@ Current ticket evidence:
 | JOL-ARCH-010 | Partial | An explicit local registry, on-demand read-only snapshots, and a graphical Project Watch screen report project existence, plan freshness, Git branch/revision/dirty state, and clear alerts. Scheduling, durable history, notifications, budgets, stop conditions, and build verification remain disabled. |
 | JOL-ARCH-013 | Planned and deferred | The revised baseline at `/Users/carl.welch/Documents/Github Projects/carl-welch-portfolio/PORTFOLIO_SITE_PLAN.md` explicitly defers Jolene outside the portfolio's first release. The later public delegate still requires a public/private boundary, versioned evidence contract, adversarial evaluations, correction flow, contact handoff, and production controls. Fit Console is a pattern source, not the target project. |
 | JOL-ARCH-014 | Implemented; API container verified | The ARM64 image builds successfully. The API container passed `/health` on loopback, ran as UID 1000, mounted `/vault` read-only and `/data` writable, used a read-only application filesystem, and contained no `.env` files. The Slack process uses the same image with a separate command; live Compose cutover remains pending to avoid duplicating the existing Socket Mode listener and to plan SQLite migration. |
-| JOL-ARCH-015 | Partial; evidence foundation implemented | The private SQLite registry now models sources, claims, maturity, visibility, review freshness, relationships, revocation, and supersession. The canonical portfolio migrated into 26 sources, 41 active review-required claims, and 57 relationships with zero public-approved claims. Obsidian ingestion, hybrid PostgreSQL/pgvector RAG, the versioned public export, and portfolio delegate remain pending; MCP and graph infrastructure remain deferred. |
+| JOL-ARCH-015 | Partial; evidence and ingestion foundation implemented | The private SQLite registry models sources, claims, maturity, visibility, review freshness, relationships, revocation, supersession, and missing sources. The canonical portfolio migrated into 26 sources, 41 active review-required claims, and 57 relationships. The bounded Obsidian career import added 11 sources, 81 active private claims, and 106 relationships. Both imports produced zero public-approved claims. Hybrid PostgreSQL/pgvector RAG, the versioned public export, and portfolio delegate remain pending; MCP and graph infrastructure remain deferred. |
 
 ## Architecture risks
 
@@ -659,7 +659,7 @@ Current ticket evidence:
 | 2026-08-25 | Adapt structured-work patterns without weakening Jolene's approval boundary | Implemented for the first personal-workflow slice |
 | 2026-08-25 | Treat the future Carl Welch portfolio assistant as a public Jolene delegate, never a tunnel into private Jolene | Target directory confirmed; the revised portfolio baseline defers Jolene outside the first release and the directory currently has no Git boundary |
 | 2026-08-25 | Dockerize private Jolene but keep the portfolio delegate physically and logically separate | Implemented; API container verified, Slack operational cutover pending |
-| 2026-08-25 | Use governed hybrid RAG for professional context; defer MCP and graph infrastructure until their boundaries and evaluations justify them | Career evidence foundation implemented; ingestion and retrieval pending |
+| 2026-08-25 | Use governed hybrid RAG for professional context; defer MCP and graph infrastructure until their boundaries and evaluations justify them | Career evidence and bounded Obsidian ingestion implemented; retrieval pending |
 
 Docker runtime checkpoint:
 
@@ -687,3 +687,16 @@ Career evidence checkpoint:
 | Safety evidence | Changed content resets source review; changed claims supersede history; revoked sources cannot be reactivated by import; stale, revoked, superseded, or uncitable evidence is excluded |
 | Verification | Typecheck, 94 tests, production build, zero production dependency vulnerabilities, real canonical-portfolio import, idempotent rerun |
 | Remaining boundary | No public export artifact or public API exists; those remain `JOL-CAREER-004` and `JOL-CAREER-005` |
+
+Obsidian career-ingestion checkpoint:
+
+| Field | Evidence |
+|---|---|
+| Ticket | `JOL-CAREER-002` |
+| Branch | `codex/jol-career-002-obsidian-ingestion` |
+| Allowlist | Dedicated `JOLENE_CAREER_OBSIDIAN_ALLOWLIST`; canonical first scope is `01 Career & Job Search` |
+| Canonical import | 11 sources, 81 active private claims, 106 tag/wiki-link relationships, 0 public-approved claims |
+| Metadata | Current hash, relative path, frontmatter keys, headings, tags, aliases, wiki links, Markdown links, and document date |
+| Lifecycle | Removed sections supersede prior claims; deleted or opted-out notes become missing; reappearance resets review; revoked sources remain revoked |
+| Storage boundary | Current Markdown snapshot only; no Git history, Obsidian history, dot-directory content, symlink target, or oversized file import |
+| Remaining boundary | Claims still require human review and are not supplied to RAG; hybrid retrieval remains `JOL-CAREER-003` |

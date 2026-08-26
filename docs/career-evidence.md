@@ -68,3 +68,38 @@ The August 25, 2026 canonical portfolio snapshot produced:
 
 The pre-migration SQLite backup is retained locally under the ignored
 `.jolene/backups` directory.
+
+## Import reviewed career-note candidates from Obsidian
+
+Career ingestion uses a separate, explicit allowlist from conversational vault
+search:
+
+```dotenv
+JOLENE_CAREER_OBSIDIAN_ALLOWLIST=01 Career & Job Search
+```
+
+Run the current-snapshot import from the source checkout:
+
+```bash
+npm run career:import-obsidian
+```
+
+The importer:
+
+- refuses absolute or parent-traversing allowlist entries;
+- skips dot-directories, non-Markdown files, symlinks, and files over 1 MB;
+- parses bounded frontmatter, headings, tags, aliases, wiki links, Markdown
+  links, and document dates;
+- stores the current file hash and structured metadata, not Git or Obsidian
+  history;
+- creates section-level claims as `private` and `needs_review` only;
+- treats `jolene_career_import: false` as an explicit opt-out;
+- supersedes sections removed from the current note;
+- records deleted or opted-out notes as `missing`; and
+- restores a reappearing missing note to active `needs_review` without
+  reactivating an explicitly revoked source.
+
+The August 25, 2026 bounded import of `01 Career & Job Search` produced 11
+sources, 81 active private claims, 106 tag/wiki-link relationships, and zero
+public-approved claims. A pre-import backup is retained in the ignored local
+backup directory.

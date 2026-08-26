@@ -2,7 +2,7 @@
 
 **Date:** 2026-08-25
 
-**Status:** Docker API and career evidence foundation implemented; professional RAG and public portfolio delegate pending
+**Status:** Docker API, career evidence, portfolio migration, and bounded Obsidian ingestion implemented; professional RAG and public portfolio delegate pending
 
 ## Product outcome
 
@@ -33,6 +33,7 @@ chatbot.
 | Docker | Image and API container verified; Slack operational cutover and production deployment remain pending |
 | Career evidence registry | Implemented with sources, claims, relationships, review freshness, visibility, revocation, and supersession |
 | Portfolio candidate migration | Implemented; 26 sources, 41 active claims, and 57 relationships imported with zero public-approved claims |
+| Obsidian career ingestion | Implemented for the explicit `01 Career & Job Search` allowlist; 11 notes, 81 active private claims, 106 relationships, zero public-approved claims |
 
 ## System boundary
 
@@ -209,10 +210,24 @@ Implementation evidence:
 
 ### JOL-CAREER-002 — Obsidian career ingestion
 
-- Add an explicit professional-folder allowlist.
-- Parse frontmatter, headings, tags, links, and dates.
-- Create draft records only; never auto-promote private notes to public.
-- Record import hashes and deletions without copying raw vault history.
+- [x] Add an explicit professional-folder allowlist.
+- [x] Parse frontmatter, headings, tags, links, and dates.
+- [x] Create draft records only; never auto-promote private notes to public.
+- [x] Record import hashes and deletions without copying raw vault history.
+
+Implementation evidence:
+
+- branch: `codex/jol-career-002-obsidian-ingestion`;
+- the bounded canonical-vault import discovered and imported 11 notes from
+  `01 Career & Job Search`;
+- the import produced 81 active private review-required claims and 106 explicit
+  tag/wiki-link relationships with zero public-approved claims;
+- current file hashes and structured metadata are retained, while Git and
+  Obsidian history are not copied;
+- deleted or opted-out notes become `missing`, removed sections become
+  superseded, and reappearing notes require review again; and
+- the existing career-source schema upgrades in place with foreign-key checks
+  and a pre-migration local backup.
 
 ### JOL-CAREER-003 — Hybrid RAG
 

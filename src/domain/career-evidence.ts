@@ -9,6 +9,7 @@ export const careerSourceTypeSchema = z.enum([
   "release_artifact",
   "portfolio_page",
   "confirmed_fact",
+  "career_note",
 ]);
 export type CareerSourceType = z.infer<typeof careerSourceTypeSchema>;
 
@@ -45,6 +46,25 @@ export const careerRecordStateSchema = z.enum([
   "revoked",
 ]);
 export type CareerRecordState = z.infer<typeof careerRecordStateSchema>;
+
+export const careerSourceStateSchema = z.enum(["active", "missing", "revoked"]);
+export type CareerSourceState = z.infer<typeof careerSourceStateSchema>;
+
+export interface CareerSourceHeading {
+  readonly level: number;
+  readonly text: string;
+}
+
+export interface CareerSourceMetadata {
+  readonly relativePath: string | null;
+  readonly tags: readonly string[];
+  readonly aliases: readonly string[];
+  readonly wikiLinks: readonly string[];
+  readonly markdownLinks: readonly string[];
+  readonly headings: readonly CareerSourceHeading[];
+  readonly frontmatterKeys: readonly string[];
+  readonly documentDate: string | null;
+}
 
 export const careerEntityKindSchema = z.enum([
   "person",
@@ -83,10 +103,11 @@ export interface CareerSource {
   readonly provenanceUri: string | null;
   readonly sourceHash: string;
   readonly capturedAt: string;
+  readonly metadata: CareerSourceMetadata;
   readonly reviewState: EvidenceReviewState;
   readonly reviewedBy: string | null;
   readonly lastReviewedAt: string | null;
-  readonly state: Exclude<CareerRecordState, "superseded">;
+  readonly state: CareerSourceState;
   readonly createdAt: string;
   readonly updatedAt: string;
 }
@@ -152,6 +173,7 @@ export interface UpsertCareerSourceInput {
   readonly provenanceUri: string | null;
   readonly sourceHash: string;
   readonly capturedAt: string;
+  readonly metadata?: Partial<CareerSourceMetadata>;
 }
 
 export interface UpsertCareerClaimInput {
@@ -205,6 +227,17 @@ export interface CareerEvidenceStore {
   upsertDraftClaim(input: UpsertCareerClaimInput): CareerClaim;
   decideSource(input: DecideCareerSourceInput): CareerSource;
   decideClaim(input: DecideCareerClaimInput): CareerClaim;
+  markSourceMissing(id: string, scope: CareerEvidenceScope): CareerSource;
+  supersedeClaimsNotInSource(
+    sourceId: string,
+    activeLogicalKeys: readonly string[],
+    scope: CareerEvidenceScope,
+  ): number;
+  revokeRelationshipsNotInSource(
+    sourceId: string,
+    activeRelationshipIds: readonly string[],
+    scope: CareerEvidenceScope,
+  ): number;
   revokeSource(id: string, scope: CareerEvidenceScope): CareerSource;
   revokeClaim(id: string, scope: CareerEvidenceScope): CareerClaim;
   upsertRelationship(input: UpsertCareerRelationshipInput): CareerRelationship;
