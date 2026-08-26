@@ -9,9 +9,11 @@ import { JoleneService } from "./application/jolene-service.js";
 import { KnowledgeAuditService } from "./application/knowledge-audit-service.js";
 import { PersonalWorkflowService } from "./application/personal-workflow-service.js";
 import { WorkContextService } from "./application/work-context-service.js";
+import { WorkStatusService } from "./application/work-status-service.js";
 import { WatchedProjectService } from "./application/watched-project-service.js";
 import type { AppConfig } from "./config.js";
 import type { DeliveryStore } from "./domain/delivery.js";
+import { CanonicalPrivateWorkScopeResolver } from "./domain/private-work-scope.js";
 import {
   type KnowledgeSource,
   UnavailableKnowledgeSource,
@@ -92,11 +94,19 @@ export async function createApplication(
     instructions,
     knowledge,
     careerKnowledge: careerRetrieval,
+    workStatus: new WorkStatusService(workStore, personalWorkflowStore),
   });
   const service = new JoleneService({
     store,
     runner,
     workContext: workStore,
+    workScopeResolver: new CanonicalPrivateWorkScopeResolver({
+      ownerScope: {
+        actorId: config.ownerActorId,
+        workspaceId: config.ownerWorkspaceId,
+      },
+      slackOwnerUserId: config.slackOwnerUserId,
+    }),
     maxHistoryTurns: config.maxHistoryTurns,
     maxMemoryItems: config.maxMemoryItems,
   });

@@ -92,10 +92,13 @@ export interface ListPersonalWorkflowsInput {
   readonly status?: PersonalWorkflowStatus;
 }
 
-export interface PersonalWorkflowStore {
+export interface PersonalWorkflowReader {
+  list(input: ListPersonalWorkflowsInput): readonly PersonalWorkflow[];
+}
+
+export interface PersonalWorkflowStore extends PersonalWorkflowReader {
   start(input: StartPersonalWorkflowInput): PersonalWorkflowDetail;
   get(id: string, actorId: string, workspaceId: string): PersonalWorkflowDetail;
-  list(input: ListPersonalWorkflowsInput): readonly PersonalWorkflow[];
   completeStep(input: CompletePersonalWorkflowStepInput): PersonalWorkflowDetail;
   review(input: ReviewPersonalWorkflowInput): PersonalWorkflowDetail;
   close(): void;

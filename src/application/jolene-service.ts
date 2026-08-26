@@ -8,6 +8,10 @@ import {
   type ConversationStore,
 } from "../domain/conversation.js";
 import { isPrivateChannel } from "../domain/policy.js";
+import {
+  TransportPrivateWorkScopeResolver,
+  type PrivateWorkScopeResolver,
+} from "../domain/private-work-scope.js";
 import type {
   AuthorizedWorkContext,
   WorkContextReader,
@@ -32,6 +36,7 @@ export interface JoleneServiceOptions {
   readonly store: ConversationStore;
   readonly runner: JoleneAgentRunner;
   readonly workContext: WorkContextReader;
+  readonly workScopeResolver?: PrivateWorkScopeResolver;
   readonly maxHistoryTurns: number;
   readonly maxMemoryItems: number;
 }
@@ -61,10 +66,11 @@ export class JoleneService {
         address,
         this.options.maxHistoryTurns,
       );
-      const workContext = isPrivateChannel(request.channelKind)
+      const workScope = this.resolveWorkScope(request);
+      const workContext = workScope
         ? this.options.workContext.loadAuthorizedContext({
-            actorId: request.actorId,
-            workspaceId: request.workspaceId,
+            actorId: workScope.actorId,
+            workspaceId: workScope.workspaceId,
             taskId: request.taskId,
             memoryLimit: this.options.maxMemoryItems,
             includeSensitiveMemory: request.includeSensitiveMemory ?? false,
@@ -82,6 +88,7 @@ export class JoleneService {
         message: request.message,
         history,
         workContext,
+        workScope,
       });
 
       this.options.store.completeEvent(claim.eventKey, {
@@ -94,6 +101,12 @@ export class JoleneService {
       this.options.store.failEvent(claim.eventKey, classifyError(error));
       throw error;
     }
+  }
+
+  private resolveWorkScope(request: ChatRequest) {
+    if (!isPrivateChannel(request.channelKind)) return null;
+    return (this.options.workScopeResolver ?? new TransportPrivateWorkScopeResolver())
+      .resolve(request);
   }
 }
 

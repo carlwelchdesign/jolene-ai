@@ -4,7 +4,12 @@ import { z } from "zod";
 import type { ConversationTurn } from "../domain/conversation.js";
 import { isPrivateChannel } from "../domain/policy.js";
 import type { ChannelKind } from "../domain/conversation.js";
-import type { AuthorizedWorkContext } from "../domain/work-context.js";
+import {
+  taskStatusSchema,
+  type AuthorizedWorkContext,
+} from "../domain/work-context.js";
+import type { PrivateWorkScope } from "../domain/private-work-scope.js";
+import type { WorkStatusSource } from "../domain/work-status.js";
 import type { KnowledgeSource } from "../knowledge/knowledge-source.js";
 import type { CareerKnowledgeSource } from "../domain/career-retrieval.js";
 
@@ -18,6 +23,7 @@ export interface AgentRequest {
   readonly message: string;
   readonly history: readonly ConversationTurn[];
   readonly workContext: AuthorizedWorkContext;
+  readonly workScope: PrivateWorkScope | null;
 }
 
 export interface JoleneAgentRunner {
@@ -29,6 +35,7 @@ export interface OpenAIJoleneRunnerOptions {
   readonly instructions: string;
   readonly knowledge: KnowledgeSource;
   readonly careerKnowledge: CareerKnowledgeSource;
+  readonly workStatus: WorkStatusSource;
 }
 
 export class OpenAIJoleneRunner implements JoleneAgentRunner {
@@ -41,6 +48,7 @@ export class OpenAIJoleneRunner implements JoleneAgentRunner {
           ...(this.options.careerKnowledge.canSearch(request)
             ? [this.createCareerKnowledgeTool(request)]
             : []),
+          ...(request.workScope ? [this.createWorkStatusTool(request)] : []),
         ]
       : [];
 
@@ -112,6 +120,28 @@ export class OpenAIJoleneRunner implements JoleneAgentRunner {
           query,
           limit,
           context: request,
+        }));
+      },
+    });
+  }
+
+  private createWorkStatusTool(request: AgentRequest) {
+    return tool({
+      name: "review_work_status",
+      description:
+        "Review Carl's current persisted tasks and personal-workflow status. This is read-only. Use it for current workload, priorities, running work, approval queues, failures, and workflow progress. Optional status filters must use only these exact values: pending, running, approval_needed, failed, retryable, completed, cancelled. Report stored state factually; a task or workflow record is not proof that an external action occurred.",
+      parameters: z.object({
+        statuses: z.array(taskStatusSchema).min(1).max(7).nullable().default(null),
+        limit: z.number().int().min(1).max(20).default(10),
+      }),
+      execute: async ({ statuses, limit }) => {
+        if (!request.workScope) {
+          throw new Error("Private work scope is unavailable.");
+        }
+        return JSON.stringify(this.options.workStatus.review({
+          ...request.workScope,
+          ...(statuses ? { statuses } : {}),
+          limit,
         }));
       },
     });
