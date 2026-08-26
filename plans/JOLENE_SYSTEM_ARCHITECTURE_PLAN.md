@@ -554,7 +554,7 @@ Relevance-aware-task-recall checkpoint:
 | Ticket | `JOL-ARCH-003D` — [Asana](https://app.asana.com/1/9789386902387/project/1216473233375594/task/1217871300013784) |
 | Branch | `codex/jol-arch-003d-task-event-recall` |
 | Implementation commit | `8c60ac4` (`JOL-ARCH-003D rank private task recall`) |
-| Pull request | Pending; stacked on [#8](https://github.com/carlwelchdesign/jolene-ai/pull/8) |
+| Pull request | [#9](https://github.com/carlwelchdesign/jolene-ai/pull/9), stacked on [#8](https://github.com/carlwelchdesign/jolene-ai/pull/8) |
 | Selection evidence | Summary matches score above detail-only matches; recent continuity is reserved; empty-query fallback, Unicode normalization, one-item limits, recency tie-breaking, older relevant recall, and chronological output are tested |
 | Verification | 29 test files and 138 tests, Node 24.18.0 typecheck, production build, Compose validation, zero production dependency vulnerabilities, live isolated API selection, desktop and 390px Recall Preview, reduced motion, no overflow, and clean browser runtime passed |
 | Safety evidence | Candidate retrieval is actor/workspace/selected-task scoped and bounded to 500; shared channels still receive empty task context; Task timeline behavior is unchanged; no deletion, compaction, scheduling, public API, provider dependency, or external write was added |
