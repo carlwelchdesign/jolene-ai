@@ -24,6 +24,11 @@ import {
   createPublicDelegateServer,
 } from "../src/public/public-delegate-server.js";
 import { createPublicEvidenceArtifact } from "./helpers/public-evidence-fixture.js";
+import {
+  FilePublicAuditLedger,
+  type PublicAuditRecordInput,
+  type PublicAuditRecorder,
+} from "../src/public/public-audit-ledger.js";
 
 const temporaryDirectories: string[] = [];
 const openServers: ReturnType<typeof createPublicDelegateServer>[] = [];
@@ -60,6 +65,9 @@ describe("public delegate manifest boundary", () => {
       ),
       contactRetentionDays: 30,
       contactQueueMaxEntries: 500,
+      auditPath: path.resolve(".jolene/public/audit.json"),
+      auditRetentionDays: 30,
+      auditMaxEntries: 5_000,
       requestsPerMinute: 60,
       maxConcurrentRequests: 8,
     });
@@ -89,6 +97,12 @@ describe("public delegate manifest boundary", () => {
     })).toThrow();
     expect(() => parsePublicDelegateConfig({
       JOLENE_PUBLIC_CONTACT_QUEUE_MAX_ENTRIES: "0",
+    })).toThrow();
+    expect(() => parsePublicDelegateConfig({
+      JOLENE_PUBLIC_AUDIT_RETENTION_DAYS: "91",
+    })).toThrow();
+    expect(() => parsePublicDelegateConfig({
+      JOLENE_PUBLIC_AUDIT_MAX_ENTRIES: "10001",
     })).toThrow();
   });
 
@@ -167,6 +181,36 @@ describe("public delegate manifest boundary", () => {
     expect(await response.json()).toEqual({ error: "rate_limited" });
   });
 
+  it("audits admission and kill-switch outcomes without client identity", async () => {
+    const events: PublicAuditRecordInput[] = [];
+    const audits: PublicAuditRecorder = {
+      record: async (event) => { events.push(event); },
+    };
+    const admissions = new FixedWindowPublicRequestAdmission({
+      requestsPerWindow: 1,
+      maxConcurrentRequests: 2,
+    });
+    const fixture = await loadFixture();
+    const { baseUrl } = await start(await writeArtifact(fixture), {
+      admissions,
+      audits,
+    });
+    expect((await fetch(`${baseUrl}/health`)).status).toBe(200);
+    expect((await fetch(`${baseUrl}/health`)).status).toBe(429);
+    const disabled = await start(await writeArtifact(fixture), {
+      enabled: false,
+      audits,
+    });
+    expect((await fetch(`${disabled.baseUrl}/health`)).status).toBe(503);
+
+    expect(events.map((event) => event.outcome)).toEqual([
+      "ok",
+      "rate_limited",
+      "disabled",
+    ]);
+    expect(JSON.stringify(events)).not.toMatch(/remote|address|client|header|url/i);
+  });
+
   it("serves a frozen-contract answer from matching public evidence", async () => {
     const artifact = createPublicEvidenceArtifact();
     const { baseUrl } = await start(await writeArtifact(artifact));
@@ -216,6 +260,86 @@ describe("public delegate manifest boundary", () => {
     expect(body.limitations).toEqual([
       "No matching public-approved evidence was available.",
     ]);
+  });
+
+  it("audits answer outcomes without retaining submitted or returned content", async () => {
+    const artifact = createPublicEvidenceArtifact();
+    const auditPath = path.join(await temporaryDirectory(), "audit.json");
+    const audits = new FilePublicAuditLedger({
+      filePath: auditPath,
+      maxEntries: 100,
+      retentionMilliseconds: 24 * 60 * 60 * 1_000,
+    });
+    await audits.initialize();
+    const { baseUrl } = await start(await writeArtifact(artifact), { audits });
+    const question = "What React systems has Carl built? private-query-marker";
+    const sessionToken = "private-session-marker";
+
+    expect((await fetch(`${baseUrl}/v1/portfolio/answer`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ question, sessionToken }),
+    })).status).toBe(200);
+
+    const stored = await readFile(auditPath, "utf8");
+    expect(stored).not.toContain(question);
+    expect(stored).not.toContain(sessionToken);
+    expect(stored).not.toContain(artifact.evidence[0]?.claim.text ?? "missing");
+    expect(await audits.list()).toMatchObject([{
+      operation: "answer",
+      method: "POST",
+      status: 200,
+      outcome: "supported",
+      corpusVersion: artifact.manifest.corpusVersion,
+      counts: { claimCount: 1, citationCount: 1 },
+    }]);
+  });
+
+  it("audits refusals without retaining invalid contact content", async () => {
+    const auditPath = path.join(await temporaryDirectory(), "audit.json");
+    const audits = new FilePublicAuditLedger({
+      filePath: auditPath,
+      maxEntries: 100,
+      retentionMilliseconds: 24 * 60 * 60 * 1_000,
+    });
+    await audits.initialize();
+    const { baseUrl } = await start(
+      path.join(await temporaryDirectory(), "missing.json"),
+      { audits },
+    );
+    const privateMarker = "visitor-private-marker";
+
+    expect((await fetch(`${baseUrl}/v1/portfolio/contact-intent`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        name: privateMarker,
+        email: "invalid",
+        message: privateMarker,
+        consent: true,
+      }),
+    })).status).toBe(400);
+
+    const stored = await readFile(auditPath, "utf8");
+    expect(stored).not.toContain(privateMarker);
+    expect(await audits.list()).toMatchObject([{
+      operation: "contact_intent",
+      method: "POST",
+      status: 400,
+      outcome: "invalid_request",
+    }]);
+  });
+
+  it("keeps safe responses available when audit recording fails", async () => {
+    const audits: PublicAuditRecorder = {
+      record: async () => { throw new Error("audit unavailable"); },
+    };
+    const fixture = await loadFixture();
+    const { baseUrl } = await start(await writeArtifact(fixture), { audits });
+
+    const response = await fetch(`${baseUrl}/health`);
+    expect(response.status).toBe(200);
+    expect(await response.json()).toMatchObject({ status: "ok" });
   });
 
   it.each([
@@ -612,6 +736,7 @@ async function start(
     readonly enabled?: boolean;
     readonly admissions?: PublicRequestAdmissionController;
     readonly contactIntents?: PublicContactIntentStager;
+    readonly audits?: PublicAuditRecorder;
   } = {},
 ): Promise<{
   readonly baseUrl: string;
@@ -635,6 +760,7 @@ async function start(
       requestsPerWindow: 1_000,
       maxConcurrentRequests: 10,
     }),
+    ...(overrides.audits ? { audits: overrides.audits } : {}),
   });
   openServers.push(server);
   server.listen(0, "127.0.0.1");

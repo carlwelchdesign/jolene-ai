@@ -19,6 +19,13 @@ import {
   type PublicContactIntentStager,
 } from "./public-contact-intent-queue.js";
 import type { PublicRequestAdmissionController } from "./public-request-admission.js";
+import type {
+  PublicAuditCounts,
+  PublicAuditMethod,
+  PublicAuditOperation,
+  PublicAuditOutcome,
+  PublicAuditRecorder,
+} from "./public-audit-ledger.js";
 
 const MAX_URL_CHARACTERS = 2_048;
 const MAX_BODY_BYTES = 98_304;
@@ -36,6 +43,7 @@ export interface PublicDelegateServerOptions {
   readonly jobFit: PublicJobFitComparer;
   readonly contactIntents: PublicContactIntentStager;
   readonly admissions: PublicRequestAdmissionController;
+  readonly audits?: PublicAuditRecorder;
 }
 
 export function createPublicDelegateServer(
@@ -44,45 +52,50 @@ export function createPublicDelegateServer(
   const server = createServer(
     { maxHeaderSize: 16_384 },
     async (request, response) => {
+      const respond = createAuditedResponder(request, response, options.audits);
       if (!options.enabled) {
-        sendJson(response, 503, {
+        await respond(503, {
           status: "unavailable",
           error: "public_delegate_disabled",
-        });
+        }, "disabled");
         return;
       }
       const admission = options.admissions.acquire(
         request.socket.remoteAddress ?? "unknown",
       );
       if (!admission.accepted) {
-        sendJson(
-          response,
+        await respond(
           admission.status,
           admission.status === 503
             ? { status: "unavailable", error: admission.code }
             : { error: admission.code },
+          admission.status === 503 ? "busy" : "rate_limited",
           { "retry-after": String(admission.retryAfterSeconds) },
         );
         return;
       }
       try {
-        await handleRequest(request, response, options);
+        await handleRequest(request, options, respond);
       } catch (error) {
         if (error instanceof PublicRequestError) {
-          sendJson(response, error.status, { error: error.code });
+          await respond(
+            error.status,
+            { error: error.code },
+            requestErrorOutcome(error.code),
+          );
           return;
         }
         if (error instanceof PublicContactQueueUnavailableError) {
-          sendJson(response, 503, {
+          await respond(503, {
             status: "unavailable",
             error: "contact_queue_unavailable",
-          });
+          }, "contact_queue_unavailable");
           return;
         }
-        sendJson(response, 503, {
+        await respond(503, {
           status: "unavailable",
           error: "public_evidence_unavailable",
-        });
+        }, "public_evidence_unavailable");
       } finally {
         admission.release();
       }
@@ -98,12 +111,12 @@ export function createPublicDelegateServer(
 
 async function handleRequest(
   request: IncomingMessage,
-  response: ServerResponse,
   options: PublicDelegateServerOptions,
+  respond: PublicAuditedResponder,
 ): Promise<void> {
   const rawUrl = request.url ?? "/";
   if (rawUrl.length > MAX_URL_CHARACTERS) {
-    sendJson(response, 414, { error: "uri_too_long" });
+    await respond(414, { error: "uri_too_long" }, "uri_too_long");
     return;
   }
   const pathname = new URL(rawUrl, "http://127.0.0.1").pathname;
@@ -117,28 +130,38 @@ async function handleRequest(
       : null;
 
   if (expectedMethod && request.method !== expectedMethod) {
-    response.setHeader("allow", expectedMethod);
-    sendJson(response, 405, { error: "method_not_allowed" });
+    await respond(
+      405,
+      { error: "method_not_allowed" },
+      "method_not_allowed",
+      { allow: expectedMethod },
+    );
     return;
   }
   if (!expectedMethod) {
-    sendJson(response, 404, { error: "not_found" });
+    await respond(404, { error: "not_found" }, "not_found");
     return;
   }
 
   if (pathname === "/health") {
     const artifact = await requireArtifact(options.artifacts);
-    sendJson(response, 200, {
+    await respond(200, {
       status: "ok",
       schemaVersion: artifact.manifest.schemaVersion,
       corpusVersion: artifact.manifest.corpusVersion,
       evidenceCount: artifact.manifest.evidenceCount,
+    }, "ok", undefined, {
+      corpusVersion: artifact.manifest.corpusVersion,
+      counts: { evidenceCount: artifact.manifest.evidenceCount },
     });
     return;
   }
   if (pathname === "/v1/public-evidence/manifest") {
     const artifact = await requireArtifact(options.artifacts);
-    sendJson(response, 200, artifact.manifest);
+    await respond(200, artifact.manifest, "ok", undefined, {
+      corpusVersion: artifact.manifest.corpusVersion,
+      counts: { evidenceCount: artifact.manifest.evidenceCount },
+    });
     return;
   }
 
@@ -153,10 +176,10 @@ async function handleRequest(
   if (pathname === "/v1/portfolio/contact-intent") {
     const parsed = contactIntentRequestSchema.safeParse(input);
     if (!parsed.success) throw new PublicRequestError(400, "invalid_request");
-    sendJson(
-      response,
+    await respond(
       202,
       await options.contactIntents.stage(parsed.data),
+      "accepted",
     );
     return;
   }
@@ -164,13 +187,36 @@ async function handleRequest(
     const parsed = portfolioAnswerRequestSchema.safeParse(input);
     if (!parsed.success) throw new PublicRequestError(400, "invalid_request");
     const artifact = await requireArtifact(options.artifacts);
-    sendJson(response, 200, options.answers.answer(artifact, parsed.data));
+    const result = options.answers.answer(artifact, parsed.data);
+    await respond(
+      200,
+      result,
+      result.claims.length > 0 ? "supported" : "no_evidence",
+      undefined,
+      {
+        corpusVersion: result.corpusVersion,
+        counts: {
+          claimCount: result.claims.length,
+          citationCount: result.citations.length,
+        },
+      },
+    );
     return;
   }
   const parsed = portfolioJobFitRequestSchema.safeParse(input);
   if (!parsed.success) throw new PublicRequestError(400, "invalid_request");
   const artifact = await requireArtifact(options.artifacts);
-  sendJson(response, 200, options.jobFit.compare(artifact, parsed.data));
+  const result = options.jobFit.compare(artifact, parsed.data);
+  await respond(200, result, "compared", undefined, {
+    corpusVersion: result.corpusVersion,
+    counts: {
+      requirementCount: result.requirements.length,
+      citationCount: result.citations.length,
+      directCount: result.requirements.filter((item) => item.assessment === "direct").length,
+      adjacentCount: result.requirements.filter((item) => item.assessment === "adjacent").length,
+      unknownCount: result.requirements.filter((item) => item.assessment === "unknown").length,
+    },
+  });
 }
 
 async function requireArtifact(
@@ -179,6 +225,73 @@ async function requireArtifact(
   const artifact = await source.read();
   if (!artifact) throw new Error("Public evidence is unavailable.");
   return artifact;
+}
+
+interface PublicAuditDetails {
+  readonly corpusVersion?: string;
+  readonly counts?: PublicAuditCounts;
+}
+
+type PublicAuditedResponder = (
+  status: number,
+  body: unknown,
+  outcome: PublicAuditOutcome,
+  headers?: Readonly<Record<string, string>>,
+  details?: PublicAuditDetails,
+) => Promise<void>;
+
+function createAuditedResponder(
+  request: IncomingMessage,
+  response: ServerResponse,
+  audits: PublicAuditRecorder | undefined,
+): PublicAuditedResponder {
+  const startedAt = Date.now();
+  const operation = auditOperation(request.url ?? "/");
+  const method = auditMethod(request.method);
+  return async (status, body, outcome, headers = {}, details = {}) => {
+    if (audits) {
+      try {
+        void audits.record({
+          operation,
+          method,
+          status,
+          outcome,
+          durationMs: Date.now() - startedAt,
+          ...details,
+        }).catch(() => undefined);
+      } catch {
+        // Auditing is best-effort and must never change the public response.
+      }
+    }
+    sendJson(response, status, body, headers);
+  };
+}
+
+function auditOperation(rawUrl: string): PublicAuditOperation {
+  if (rawUrl.length > MAX_URL_CHARACTERS) return "unknown";
+  const pathname = new URL(rawUrl, "http://127.0.0.1").pathname;
+  if (pathname === "/health") return "health";
+  if (pathname === "/v1/public-evidence/manifest") return "manifest";
+  if (pathname === "/v1/portfolio/answer") return "answer";
+  if (pathname === "/v1/portfolio/job-fit") return "job_fit";
+  if (pathname === "/v1/portfolio/contact-intent") return "contact_intent";
+  return "unknown";
+}
+
+function auditMethod(method: string | undefined): PublicAuditMethod {
+  return method === "GET" || method === "POST" ? method : "OTHER";
+}
+
+function requestErrorOutcome(code: string): PublicAuditOutcome {
+  switch (code) {
+    case "invalid_request":
+    case "invalid_json":
+    case "payload_too_large":
+    case "unsupported_media_type":
+      return code;
+    default:
+      return "invalid_request";
+  }
 }
 
 function sendJson(
