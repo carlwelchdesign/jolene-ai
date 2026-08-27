@@ -27,6 +27,19 @@ describe("career evidence review interface", () => {
     expect(javascript).toContain("textContent");
   });
 
+  it("adds explicit, reversible conflict review without semantic inference", () => {
+    expect(html).toContain('id="conflict-list"');
+    expect(html).toContain("Select two through five active claims");
+    expect(html).toContain("she will not guess conflicts from wording");
+    expect(html).toContain("I confirm these exact claims conflict and require review.");
+    expect(javascript).toContain('"/v1/career-evidence/conflicts"');
+    expect(javascript).toContain('kind: "conflict_declare"');
+    expect(javascript).toContain('kind: "conflict_resolve"');
+    expect(javascript).toContain('aria-pressed');
+    expect(javascript).toContain("state.selectedClaimIds.size < 5");
+    expect(javascript).not.toContain("inferConflict");
+  });
+
   it("provides accessible status, filtering, confirmation, and narrow states", () => {
     expect(html).toContain('<a class="skip-link" href="#main">');
     expect(html).toContain('aria-live="polite"');

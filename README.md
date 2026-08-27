@@ -43,7 +43,8 @@ The first runnable slice provides:
 - a content-minimizing career-retrieval audit ledger that retains query
   fingerprints and citation IDs but not queries or evidence excerpts;
 - a local, owner-scoped Career Evidence screen for source-first internal/public
-  approval, rejection, validation review, and revocation;
+  approval, rejection, validation review, revocation, and explicit two-to-five
+  claim conflict declaration and resolution;
 - a deny-by-default offline public-evidence artifact with a versioned manifest,
   reproducible corpus hash, revocation list, and adversarial leak checks;
 - a separate loopback-only public-delegate process boundary that validates that
