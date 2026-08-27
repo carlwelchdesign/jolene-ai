@@ -93,7 +93,7 @@ describe("public delegate manifest boundary", () => {
       authMode: "disabled",
       apiToken: undefined,
       answerMode: "deterministic",
-      openaiModel: "gpt-5.6-terra",
+      openaiModel: "gpt-5.4-mini",
       openaiTimeoutMilliseconds: 8_000,
       openaiBudgetPath: path.resolve(".jolene/public/model-budget.json"),
       openaiRequestsPerDay: 100,
