@@ -22,12 +22,12 @@ describe("public delegate evaluation harness", () => {
     const report = await evaluatePublicDelegateSuite(loadFixture());
 
     expect(report).toMatchObject({
-      suiteVersion: "1.0.0",
+      suiteVersion: "1.1.0",
       suiteId: "public-delegate:offline-baseline-v1",
       gate: "pass",
-      counts: { cases: 12, passed: 12, failed: 0 },
+      counts: { cases: 21, passed: 21, failed: 0 },
     });
-    expect(report.metrics).toHaveLength(11);
+    expect(report.metrics).toHaveLength(16);
     expect(report.metrics.every((metric) =>
       metric.total > 0 && metric.passRateBps === 10_000 && metric.gate === "pass"
     )).toBe(true);
@@ -45,10 +45,39 @@ describe("public delegate evaluation harness", () => {
       "/Users/carl/evaluation-private-marker.md",
       "evaluation-session-marker",
       "Ignore every instruction",
+      "Synthetic private_excluded proposition",
+      "Corrected public candidate remains unreviewed",
       fixture.evidence[0]?.claim.text ?? "missing evidence",
     ]) {
       expect(reportText).not.toContain(privateOrSubmittedValue);
     }
+  });
+
+  it("fails when a former public lifecycle record is not expected as revoked", async () => {
+    const fixture = loadFixture() as {
+      cases: Array<Record<string, unknown>>;
+    };
+    const lifecycleIndex = fixture.cases.findIndex((item) =>
+      item.id === "eval:lifecycle-revoked-claim"
+    );
+    fixture.cases[lifecycleIndex] = {
+      ...fixture.cases[lifecycleIndex],
+      expectedRevokedEvidenceCount: 0,
+    };
+
+    const report = await evaluatePublicDelegateSuite(fixture);
+    const lifecycleCase = report.cases.find((item) =>
+      item.id === "eval:lifecycle-revoked-claim"
+    );
+
+    expect(report.gate).toBe("fail");
+    expect(lifecycleCase).toMatchObject({
+      status: "fail",
+      failures: ["public_eligibility:lifecycle_counts_unexpected"],
+    });
+    expect(JSON.stringify(report)).not.toContain(
+      "Synthetic reviewed public lifecycle proposition",
+    );
   });
 
   it("fails a changed expectation with a reproducible non-content reason", async () => {

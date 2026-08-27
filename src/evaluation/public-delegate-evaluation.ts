@@ -3,6 +3,10 @@ import { createHash } from "node:crypto";
 import { z } from "zod";
 
 import {
+  evaluatePublicCareerLifecycleCase,
+  publicCareerLifecycleScenarioSchema,
+} from "./public-career-lifecycle-evaluation.js";
+import {
   assertPublicResponseDisclosureSafe,
   containsForbiddenPublicDisclosure,
 } from "../domain/public-disclosure-policy.js";
@@ -37,6 +41,11 @@ export const publicEvaluationMetricSchema = z.enum([
   "provider_input_minimization",
   "fallback_reliability",
   "disclosure_safety",
+  "public_eligibility",
+  "review_freshness",
+  "revocation_continuity",
+  "supersession_safety",
+  "confidentiality_exclusion",
 ]);
 
 const blockingSeveritySchema = z.enum(["blocker", "major"]);
@@ -80,9 +89,15 @@ const groundedCaseSchema = baseCaseSchema.extend({
   expectedMode: z.enum(["deterministic", "model", "fallback"]),
   expectDisclosureBlocked: z.boolean().default(false),
 }).strict();
+const lifecycleCaseSchema = baseCaseSchema.extend({
+  kind: z.literal("evidence_lifecycle"),
+  scenario: publicCareerLifecycleScenarioSchema,
+  expectedEvidenceCount: z.number().int().min(0).max(50),
+  expectedRevokedEvidenceCount: z.number().int().min(0).max(50),
+}).strict();
 
 export const publicDelegateEvaluationSuiteSchema = z.object({
-  suiteVersion: z.literal("1.0.0"),
+  suiteVersion: z.literal("1.1.0"),
   suiteId: z.string().regex(/^public-delegate:[a-z0-9][a-z0-9-]{2,80}$/),
   thresholds: z.record(publicEvaluationMetricSchema, z.object({
     minimumPassRateBps: z.number().int().min(0).max(10_000),
@@ -93,6 +108,7 @@ export const publicDelegateEvaluationSuiteSchema = z.object({
     answerCaseSchema,
     jobFitCaseSchema,
     groundedCaseSchema,
+    lifecycleCaseSchema,
   ])).min(1).max(200).superRefine((cases, context) => {
     const ids = cases.map((item) => item.id);
     if (new Set(ids).size !== ids.length) {
@@ -115,7 +131,7 @@ interface EvaluationAssertion {
 }
 
 export interface PublicDelegateEvaluationReport {
-  readonly suiteVersion: "1.0.0";
+  readonly suiteVersion: "1.1.0";
   readonly suiteId: string;
   readonly suiteHash: string;
   readonly gate: "pass" | "fail";
@@ -135,7 +151,7 @@ export interface PublicDelegateEvaluationReport {
   }[];
   readonly cases: readonly {
     readonly id: string;
-    readonly kind: "answer" | "job_fit" | "grounded_answer";
+    readonly kind: "answer" | "job_fit" | "grounded_answer" | "evidence_lifecycle";
     readonly category: string;
     readonly severity: "blocker" | "major";
     readonly status: "pass" | "fail";
@@ -150,7 +166,7 @@ export async function evaluatePublicDelegateSuite(
   const artifact = createArtifact(suite);
   const caseResults = [] as Array<{
     readonly id: string;
-    readonly kind: "answer" | "job_fit" | "grounded_answer";
+    readonly kind: "answer" | "job_fit" | "grounded_answer" | "evidence_lifecycle";
     readonly category: string;
     readonly severity: "blocker" | "major";
     readonly assertions: readonly EvaluationAssertion[];
@@ -166,7 +182,9 @@ export async function evaluatePublicDelegateSuite(
           ? evaluateAnswerCase(artifact, item)
           : item.kind === "job_fit"
             ? evaluateJobFitCase(artifact, item)
-            : await evaluateGroundedCase(artifact, item),
+            : item.kind === "grounded_answer"
+              ? await evaluateGroundedCase(artifact, item)
+              : evaluatePublicCareerLifecycleCase(item),
       });
     } catch {
       caseResults.push({
