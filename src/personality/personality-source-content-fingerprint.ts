@@ -37,7 +37,7 @@ export function fingerprintPersonalitySourceContent(
     };
   }
   const html = new TextDecoder("utf-8", { fatal: true }).decode(bytes);
-  const segments = extractNormalizedSegments(method, html);
+  const segments = extractPersonalitySourceSegments(method, html);
   return {
     fingerprint: fingerprintSegments(segments),
     segmentCount: segments.length,
@@ -52,7 +52,7 @@ export function fingerprintNormalizedTranscript(
   return fingerprintPersonalitySourceContent(method, Buffer.from(html, "utf8"));
 }
 
-function extractNormalizedSegments(
+export function extractPersonalitySourceSegments(
   method: NormalizedTranscriptFingerprintMethod,
   html: string,
 ): readonly string[] {

@@ -37,6 +37,7 @@
     "research:personality:capacity:v1": "tsx scripts/validate-personality-sampling-capacity-audit.ts",
     "research:personality:boundary-protocol:v1": "tsx scripts/validate-personality-sampling-boundary-protocol.ts",
     "research:personality:av-recovery:v1": "tsx scripts/validate-personality-av-recovery-outcome.ts",
+    "research:personality:boundary-drafts:html": "tsx scripts/generate-personality-html-boundary-drafts.ts",
     "secrets:migrate-compose": "tsx scripts/migrate-compose-secrets.ts",
     "slack": "tsx src/slack.ts",
     "start": "node dist/server.js",
