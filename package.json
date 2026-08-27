@@ -23,6 +23,8 @@
     "dev:monitor": "tsx watch src/project-monitor.ts",
     "eval:public": "tsx scripts/evaluate-public-delegate.ts",
     "eval:public:live": "tsx scripts/evaluate-public-live-model.ts",
+    "mcp:career:audit": "tsx scripts/inspect-private-career-mcp-audit.ts",
+    "mcp:career:dev": "tsx src/private-career-mcp.ts",
     "research:personality:validate": "tsx scripts/validate-personality-research.ts",
     "secrets:migrate-compose": "tsx scripts/migrate-compose-secrets.ts",
     "slack": "tsx src/slack.ts",
@@ -31,12 +33,14 @@
     "start:career-export": "node dist/career-export.js",
     "start:public": "node dist/public-server.js",
     "start:monitor": "node dist/project-monitor.js",
+    "start:mcp:career": "node dist/private-career-mcp.js",
     "start:slack": "node dist/slack.js",
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
+    "@modelcontextprotocol/server": "^2.0.0",
     "@openai/agents": "^0.17.0",
     "@slack/bolt": "^5.0.0",
     "better-sqlite3": "^13.0.3",
@@ -45,6 +49,7 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@modelcontextprotocol/client": "^2.0.0",
     "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^20.19.25",
     "tsx": "^4.23.12",

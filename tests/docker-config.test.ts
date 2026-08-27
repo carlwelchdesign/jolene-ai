@@ -24,6 +24,7 @@ const parsedCompose = parse(compose, { merge: true }) as {
     readonly command?: readonly string[];
     readonly environment?: Readonly<Record<string, string>>;
     readonly network_mode?: string;
+    readonly ports?: readonly string[];
     readonly profiles?: readonly string[];
     readonly secrets?: readonly (string | { readonly source?: string })[];
     readonly volumes?: readonly (string | {
@@ -106,6 +107,26 @@ describe("Docker runtime boundary", () => {
     });
     expect(compose).not.toMatch(/^\s+OPENAI_API_KEY:/m);
     expect(compose).not.toMatch(/^\s+SLACK_(?:APP|BOT)_TOKEN:/m);
+  });
+
+  it("packages private career MCP as a canonical-volume stdio tool only", () => {
+    const mcp = parsedCompose.services["jolene-career-mcp"];
+    expect(mcp).toBeDefined();
+    expect(mcp?.command).toEqual(["node", "dist/private-career-mcp.js"]);
+    expect(mcp?.profiles).toEqual(["tools"]);
+    expect(mcp?.network_mode).toBe("none");
+    expect(mcp?.ports).toBeUndefined();
+    expect(mcp?.secrets).toBeUndefined();
+    expect(mcp?.volumes).toEqual(["jolene-data:/data"]);
+    expect(mcp?.environment).toEqual({
+      JOLENE_MCP_DATABASE_PATH: "/data/jolene.sqlite",
+      JOLENE_MCP_ACTOR_ID: "${JOLENE_OWNER_ACTOR_ID:-carl}",
+      JOLENE_MCP_WORKSPACE_ID:
+        "${JOLENE_CAREER_WORKSPACE_ID:-professional}",
+      JOLENE_MCP_CLIENT_ID: "${JOLENE_MCP_CLIENT_ID:-codex-local}",
+    });
+    expect(publicCompose).not.toContain("private-career-mcp");
+    expect(publicCompose).not.toContain("JOLENE_MCP_");
   });
 
   it("packages a network-free lexical career-index operation", () => {

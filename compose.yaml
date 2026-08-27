@@ -118,6 +118,32 @@ services:
     healthcheck:
       disable: true
 
+  jolene-career-mcp:
+    build:
+      context: .
+      target: runtime
+    image: jolene-ai:local
+    command: ["node", "dist/private-career-mcp.js"]
+    profiles: ["tools"]
+    environment:
+      JOLENE_MCP_DATABASE_PATH: /data/jolene.sqlite
+      JOLENE_MCP_ACTOR_ID: ${JOLENE_OWNER_ACTOR_ID:-carl}
+      JOLENE_MCP_WORKSPACE_ID: ${JOLENE_CAREER_WORKSPACE_ID:-professional}
+      JOLENE_MCP_CLIENT_ID: ${JOLENE_MCP_CLIENT_ID:-codex-local}
+    volumes:
+      - jolene-data:/data
+    stdin_open: true
+    init: true
+    read_only: true
+    network_mode: none
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    restart: "no"
+    healthcheck:
+      disable: true
+
 volumes:
   jolene-data:
 

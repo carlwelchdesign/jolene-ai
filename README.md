@@ -49,6 +49,10 @@ The first runnable slice provides:
   deterministic lexical fallback;
 - a content-minimizing career-retrieval audit ledger that retains query
   fingerprints and citation IDs but not queries or evidence excerpts;
+- a local read-only professional-context MCP stdio adapter with exact
+  actor/workspace/client scope, approved-evidence search and inspection,
+  conservative private job comparison, and its own content-minimizing audit
+  ledger;
 - a local, owner-scoped Career Evidence screen for source-first internal/public
   approval, rejection, validation review, revocation, and explicit two-to-five
   claim conflict declaration and resolution, with registry-wide search and
@@ -79,9 +83,9 @@ The first runnable slice provides:
 The Slack adapter is active for a local pilot, with live mention-and-reply behavior verified. One bounded private-owner briefing schedule and Project Watch monitoring are implemented locally. The client-AI packet lifecycle is implemented as a private review-only core, but no client transport or autonomous exchange is active. General scheduled work, specialist agents, always-on hosting, and voice remain later gates.
 
 The conversational Obsidian bridge still uses deterministic lexical retrieval.
-The governed career registry now has a separate private hybrid retrieval path,
-but no imported claim is eligible until Carl approves its source and claim for
-internal use. The versioned export remains a local ignored artifact. A separate
+The governed career registry now has a separate private hybrid retrieval path;
+only current owner-approved sources and claims are eligible. The versioned
+export remains a local ignored artifact. A separate
 loopback-only reference process can serve its validated manifest and bounded
 deterministic answers and job-fit comparisons from exact exported claims.
 Job-fit results distinguish unknown public evidence from missing experience and
@@ -93,8 +97,10 @@ only as a disabled local evaluation mode; CORS, public hosting, and portfolio
 production enablement are not implemented. The portfolio's disabled same-origin
 adapter has been contract-tested against the loopback delegate; that local
 integration does not constitute deployment or launch.
-MCP interoperability is also not implemented. See the
-[professional context architecture](plans/JOLENE_PROFESSIONAL_CONTEXT_ARCHITECTURE.md).
+The first private MCP interoperability slice is implemented as a local stdio
+adapter over approved professional evidence. It is not a remote service and has
+no write tools. See [Private professional-context MCP](docs/private-career-mcp.md)
+and the [professional context architecture](plans/JOLENE_PROFESSIONAL_CONTEXT_ARCHITECTURE.md).
 
 ## Setup
 
@@ -267,6 +273,12 @@ Prerequisite: Node.js 22 or newer.
    decision bound to its exact suite hash. The screen cannot run a provider,
    spend budget, alter evidence, activate the portfolio, message anyone, deploy,
    or authorize launch. A new packet hash makes an earlier decision stale.
+
+   Trusted local MCP hosts can use the canonical professional-context adapter
+   documented in [Private professional-context MCP](docs/private-career-mcp.md).
+   It is a network-disabled tools-profile container over the canonical private
+   data volume; it does not expose the vault, private memory, Slack, or the
+   public delegate.
 
 ## Slack pilot
 
