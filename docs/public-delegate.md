@@ -23,6 +23,11 @@ JOLENE_PUBLIC_PORT=8431
 JOLENE_PUBLIC_OPERATIONS_HOST=127.0.0.1
 JOLENE_PUBLIC_OPERATIONS_PORT=8432
 JOLENE_PUBLIC_ARTIFACT_PATH=.jolene/exports/public-career-evidence.json
+JOLENE_PUBLIC_ARTIFACT_SOURCE=file
+JOLENE_PUBLIC_ARTIFACT_URL=
+JOLENE_PUBLIC_ARTIFACT_ALLOW_LOOPBACK=false
+JOLENE_PUBLIC_ARTIFACT_TIMEOUT_MS=5000
+JOLENE_PUBLIC_EXPECTED_CORPUS_VERSION=
 JOLENE_PUBLIC_CONTACT_QUEUE_PATH=.jolene/public/contact-intents.json
 JOLENE_PUBLIC_CONTACT_RETENTION_DAYS=30
 JOLENE_PUBLIC_CONTACT_QUEUE_MAX_ENTRIES=500
@@ -45,6 +50,40 @@ Only `127.0.0.1`, `::1`, and `localhost` are accepted as hosts outside the
 isolated container. The public and operations listeners must use different
 ports. The artifact path must point to the generated public export, never the
 private SQLite database or vault.
+
+### Managed-container artifact source
+
+The default `JOLENE_PUBLIC_ARTIFACT_SOURCE=file` preserves the local,
+read-only mount. A managed container that cannot mount the reviewed handoff may
+instead use an independently hosted public-safe artifact:
+
+```dotenv
+JOLENE_PUBLIC_ARTIFACT_SOURCE=https
+JOLENE_PUBLIC_ARTIFACT_URL=https://evidence.example.com/public-career-evidence.json
+JOLENE_PUBLIC_EXPECTED_CORPUS_VERSION=career:<reviewed-corpus-hash>
+JOLENE_PUBLIC_ARTIFACT_TIMEOUT_MS=5000
+```
+
+HTTPS mode accepts only a fixed public HTTPS resource without URL credentials,
+query parameters, fragments, redirects, private/reserved IP literals, or local
+hostnames. The delegate sends no API key, cookie, or private Jolene credential
+to the artifact host because the artifact is already the approved public-safe
+boundary. An explicit IP-loopback HTTP override exists only for local
+rehearsal and defaults off.
+
+Every read has a bounded timeout and one-megabyte response limit. The complete
+artifact is parsed with the frozen schema, its digest is recomputed, and its
+corpus version must equal the deployment-pinned expected version. A missing,
+oversized, malformed, unreachable, redirected, internally inconsistent,
+tampered, or drifted artifact fails the request closed. No stale artifact is
+served from an application cache, minimizing the interval in which a revoked
+export could remain usable. Hosting and cache headers for the artifact itself
+remain deployment responsibilities.
+
+This mode removes the managed host's local-mount dependency; it does not make
+private evidence public, publish an artifact, choose an object-storage
+provider, or authorize deployment. The artifact location must be populated
+only by the reviewed canonical export workflow.
 
 Loopback development defaults to `JOLENE_PUBLIC_AUTH_MODE=disabled`. Before any
 Internet-facing deployment, set `JOLENE_PUBLIC_AUTH_MODE=bearer` and provision a
