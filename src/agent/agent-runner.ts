@@ -1,4 +1,5 @@
-import { Agent, run, tool } from "@openai/agents";
+import { Agent, Runner, tool } from "@openai/agents";
+import { OpenAIProvider } from "@openai/agents-openai";
 import { z } from "zod";
 
 import type { CapabilityInvocationAuditor } from
@@ -40,6 +41,7 @@ export interface JoleneAgentRunner {
 }
 
 export interface OpenAIJoleneRunnerOptions {
+  readonly apiKey: string;
   readonly model: string;
   readonly instructions: string;
   readonly knowledge: KnowledgeSource;
@@ -50,7 +52,15 @@ export interface OpenAIJoleneRunnerOptions {
 }
 
 export class OpenAIJoleneRunner implements JoleneAgentRunner {
-  constructor(private readonly options: OpenAIJoleneRunnerOptions) {}
+  readonly #runner: Runner;
+
+  constructor(private readonly options: OpenAIJoleneRunnerOptions) {
+    this.#runner = new Runner({
+      modelProvider: new OpenAIProvider({ apiKey: options.apiKey }),
+      tracingDisabled: true,
+      traceIncludeSensitiveData: false,
+    });
+  }
 
   async respond(request: AgentRequest): Promise<string> {
     const enabled = new Set(selectModelCapabilityIds(request.channelKind, {
@@ -86,7 +96,7 @@ export class OpenAIJoleneRunner implements JoleneAgentRunner {
       tools,
     });
 
-    const result = await run(agent, formatRunInput(request), {
+    const result = await this.#runner.run(agent, formatRunInput(request), {
       maxTurns: 8,
     });
 
