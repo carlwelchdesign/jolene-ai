@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import { z } from "zod";
 
 import type { WatchedProjectDefinition } from "./domain/watched-project.js";
+import type { PrivateBriefingPolicy } from "./domain/private-briefing.js";
 
 const envSchema = z.object({
   OPENAI_API_KEY: z.string().trim().min(1),
@@ -37,6 +38,7 @@ const envSchema = z.object({
   JOLENE_MAX_HISTORY_TURNS: z.coerce.number().int().min(2).max(100).default(16),
   JOLENE_MAX_MEMORY_ITEMS: z.coerce.number().int().min(1).max(100).default(24),
   JOLENE_WATCHED_PROJECTS: z.string().optional(),
+  JOLENE_PRIVATE_BRIEFING: z.string().optional(),
   SLACK_BOT_TOKEN: z.string().trim().optional(),
   SLACK_APP_TOKEN: z.string().trim().optional(),
   SLACK_OWNER_USER_ID: z.string().trim().regex(/^[UW][A-Z0-9]+$/)
@@ -66,6 +68,7 @@ export interface AppConfig {
   readonly maxHistoryTurns: number;
   readonly maxMemoryItems: number;
   readonly watchedProjects: readonly WatchedProjectDefinition[];
+  readonly privateBriefing: PrivateBriefingPolicy;
   readonly slackBotToken: string | undefined;
   readonly slackAppToken: string | undefined;
   readonly slackOwnerUserId: string | undefined;
@@ -122,6 +125,10 @@ export function parseConfig(
     maxMemoryItems: env.JOLENE_MAX_MEMORY_ITEMS,
     watchedProjects: loadWatchedProjects(
       env.JOLENE_WATCHED_PROJECTS,
+      workingDirectory,
+    ),
+    privateBriefing: loadPrivateBriefing(
+      env.JOLENE_PRIVATE_BRIEFING,
       workingDirectory,
     ),
     slackBotToken: emptyToUndefined(env.SLACK_BOT_TOKEN),
@@ -192,6 +199,37 @@ const watchedProjectConfigSchema = z.array(
   });
 });
 
+const privateBriefingSchema = z.object({
+  enabled: z.boolean().default(false),
+  destination: z.literal("slack_owner_dm").default("slack_owner_dm"),
+  frequency: z.enum(["daily", "weekly"]).default("daily"),
+  dayOfWeek: z.number().int().min(0).max(6).nullable().default(null),
+  localHour: z.number().int().min(0).max(23).default(8),
+  localMinute: z.number().int().min(0).max(59).default(0),
+  timeZone: z.string().trim().min(1).default("America/Los_Angeles"),
+  maxDeliveriesPerDay: z.number().int().min(1).max(4).default(1),
+  stopAfterDeliveries: z.number().int().min(1).max(10_000).default(365),
+  historyLimit: z.number().int().min(1).max(500).default(90),
+  maxAttempts: z.number().int().min(1).max(10).default(5),
+}).superRefine((policy, context) => {
+  if (policy.frequency === "weekly" && policy.dayOfWeek === null) {
+    context.addIssue({
+      code: "custom",
+      path: ["dayOfWeek"],
+      message: "Weekly briefings require a day of week.",
+    });
+  }
+  try {
+    new Intl.DateTimeFormat("en-US", { timeZone: policy.timeZone }).format();
+  } catch {
+    context.addIssue({
+      code: "custom",
+      path: ["timeZone"],
+      message: "Private briefing timeZone must be a valid IANA zone.",
+    });
+  }
+});
+
 export function parseWatchedProjects(
   serialized: string,
 ): readonly WatchedProjectDefinition[] {
@@ -209,6 +247,38 @@ export function parseWatchedProjects(
       ? path.normalize(project.planFile)
       : null,
   }));
+}
+
+export function parsePrivateBriefing(serialized: string): PrivateBriefingPolicy {
+  let raw: unknown;
+  try {
+    raw = JSON.parse(serialized);
+  } catch {
+    throw new Error("Private briefing configuration must be valid JSON.");
+  }
+  return privateBriefingSchema.parse(raw);
+}
+
+function loadPrivateBriefing(
+  serialized: string | undefined,
+  workingDirectory: string,
+): PrivateBriefingPolicy {
+  if (serialized !== undefined) return parsePrivateBriefing(serialized);
+  try {
+    return parsePrivateBriefing(readFileSync(
+      path.resolve(workingDirectory, ".jolene/private-briefing.json"),
+      "utf8",
+    ));
+  } catch (error) {
+    if (
+      error instanceof Error &&
+      "code" in error &&
+      (error as NodeJS.ErrnoException).code === "ENOENT"
+    ) {
+      return privateBriefingSchema.parse({});
+    }
+    throw error;
+  }
 }
 
 function loadWatchedProjects(

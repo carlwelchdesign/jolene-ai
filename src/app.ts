@@ -10,6 +10,8 @@ import { CareerRetrievalService } from "./application/career-retrieval-service.j
 import { JoleneService } from "./application/jolene-service.js";
 import { KnowledgeAuditService } from "./application/knowledge-audit-service.js";
 import { PersonalWorkflowService } from "./application/personal-workflow-service.js";
+import { PrivateBriefingService } from "./application/private-briefing-service.js";
+import { CanonicalPrivateBriefingSource } from "./application/private-briefing-source.js";
 import {
   OwnerWatchedProjectSource,
 } from "./application/private-watched-project-source.js";
@@ -37,6 +39,7 @@ import { SqliteCareerRetrievalAuditStore } from "./persistence/sqlite-career-ret
 import { SqliteCareerRetrievalIndex } from "./persistence/sqlite-career-retrieval-index.js";
 import { SqliteKnowledgeAccessStore } from "./persistence/sqlite-knowledge-access-store.js";
 import { SqlitePersonalWorkflowStore } from "./persistence/sqlite-personal-workflow-store.js";
+import { SqlitePrivateBriefingStore } from "./persistence/sqlite-private-briefing-store.js";
 import { SqliteWorkContextStore } from "./persistence/sqlite-work-context-store.js";
 import { SqliteWatchedProjectMonitorStore } from "./persistence/sqlite-watched-project-monitor-store.js";
 import { FilePublicLiveModelReviewStore } from "./persistence/file-public-live-model-review-store.js";
@@ -57,6 +60,7 @@ export interface JoleneApplication {
   readonly watchedProjects: WatchedProjectService;
   readonly projectMonitoring: WatchedProjectMonitorService;
   readonly projectNotifications: WatchedProjectNotificationService;
+  readonly privateBriefing: PrivateBriefingService;
   readonly health: () => {
     readonly status: "ok";
     readonly knowledge: "configured" | "unavailable";
@@ -128,12 +132,24 @@ export async function createApplication(
     retentionMilliseconds: config.contactRetentionDays * 24 * 60 * 60 * 1_000,
   });
   await contactQueue.initialize();
+  const workStatus = new WorkStatusService(workStore, personalWorkflowStore);
+  const actionApprovals = new ActionApprovalService(actionApprovalStore, workStore);
+  const privateBriefing = new PrivateBriefingService(
+    config.privateBriefing,
+    new SqlitePrivateBriefingStore(config.databasePath),
+    new CanonicalPrivateBriefingSource(
+      workStatus,
+      projectMonitoring,
+      actionApprovals,
+    ),
+    ownerScope,
+  );
   const runner = new OpenAIJoleneRunner({
     model: config.model,
     instructions,
     knowledge,
     careerKnowledge: careerRetrieval,
-    workStatus: new WorkStatusService(workStore, personalWorkflowStore),
+    workStatus,
     projectWatch: new OwnerWatchedProjectSource(watchedProjects, ownerScope),
   });
   const service = new JoleneService({
@@ -153,7 +169,7 @@ export async function createApplication(
     deliveries: store,
     work: new WorkContextService(workStore),
     knowledgeAudit: new KnowledgeAuditService(knowledgeAuditStore),
-    actionApprovals: new ActionApprovalService(actionApprovalStore, workStore),
+    actionApprovals,
     careerEvidence: new CareerEvidenceService(careerEvidenceStore, {
       actorId: config.careerOwnerActorId,
       workspaceId: config.careerWorkspaceId,
@@ -171,6 +187,7 @@ export async function createApplication(
     watchedProjects,
     projectMonitoring,
     projectNotifications,
+    privateBriefing,
     health: () => ({
       status: "ok",
       knowledge: config.vaultRoot ? "configured" : "unavailable",
@@ -186,6 +203,7 @@ export async function createApplication(
       careerRetrievalIndex.close();
       careerRetrievalAuditStore.close();
       personalWorkflowStore.close();
+      privateBriefing.close();
       projectMonitoring.close();
     },
   };

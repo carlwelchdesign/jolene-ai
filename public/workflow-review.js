@@ -3,6 +3,7 @@ const state = {
   tasks: [],
   templates: [],
   details: [],
+  briefing: null,
   filter: "open",
 };
 
@@ -57,6 +58,11 @@ const ui = {
   countReview: document.querySelector("#count-review"),
   countCompleted: document.querySelector("#count-completed"),
   toast: document.querySelector("#toast"),
+  briefingStatus: document.querySelector("#briefing-status"),
+  briefingToggle: document.querySelector("#briefing-toggle"),
+  briefingFacts: document.querySelector("#briefing-facts"),
+  briefingPreview: document.querySelector("#briefing-preview"),
+  briefingHistory: document.querySelector("#briefing-history"),
 };
 
 initialize();
@@ -70,6 +76,7 @@ function initialize() {
   ui.refreshButton.addEventListener("click", refreshAll);
   ui.startKind.addEventListener("change", renderTemplatePreview);
   ui.reviewDecision.addEventListener("change", updateReviewFields);
+  ui.briefingToggle.addEventListener("click", toggleBriefing);
   document.querySelectorAll('input[name="task-mode"]').forEach((input) => {
     input.addEventListener("change", updateTaskMode);
   });
@@ -127,13 +134,71 @@ function wireForms() {
 async function refreshAll() {
   clearNotice();
   setLoading(ui.workflowList, "Loading workflows…");
-  const results = await Promise.allSettled([loadTemplates(), loadTasks(), loadWorkflows()]);
+  const results = await Promise.allSettled([
+    loadTemplates(),
+    loadTasks(),
+    loadWorkflows(),
+    loadBriefing(),
+  ]);
   if (results.some((result) => result.status === "rejected")) {
     showNotice("Some workflow data could not be refreshed. Retry when Jolene’s local service is available.", true);
   }
   if (results[2]?.status === "fulfilled") {
     renderSummary();
     renderWorkflows();
+  }
+}
+
+async function loadBriefing() {
+  state.briefing = await api("/v1/private-briefing");
+  renderBriefing();
+}
+
+function renderBriefing() {
+  const briefing = state.briefing;
+  if (!briefing) return;
+  ui.briefingStatus.textContent = humanize(briefing.status);
+  ui.briefingStatus.dataset.status = briefing.status;
+  ui.briefingToggle.textContent = briefing.status === "active" ? "Pause" : "Resume";
+  ui.briefingToggle.disabled = briefing.status === "stopped" ||
+    (!briefing.policy.enabled && briefing.status !== "active");
+  const schedule = briefing.policy.frequency === "weekly"
+    ? `Weekly · ${weekdayName(briefing.policy.dayOfWeek)} at ${clockTime(briefing.policy)}`
+    : `Daily · ${clockTime(briefing.policy)}`;
+  ui.briefingFacts.replaceChildren(
+    fact("Schedule", `${schedule} · ${briefing.policy.timeZone}`),
+    fact("Next due", formatTimestamp(briefing.nextRunAt)),
+    fact("Last generated", formatTimestamp(briefing.lastRunAt)),
+    fact("Bounded delivery", `${briefing.deliveryCount} of ${briefing.policy.stopAfterDeliveries} total · ${briefing.deliveriesToday} of ${briefing.policy.maxDeliveriesPerDay} today`),
+  );
+  ui.briefingPreview.textContent = briefing.previewMessage;
+  ui.briefingHistory.replaceChildren();
+  if (briefing.history.length === 0) {
+    ui.briefingHistory.append(el("li", "briefing-history-empty", "No delivery attempts yet."));
+  } else {
+    briefing.history.forEach((run) => {
+      const item = el("li");
+      item.append(
+        el("strong", "", humanize(run.status)),
+        el("span", "", `${formatTimestamp(run.scheduledFor)} · ${run.attempts} ${run.attempts === 1 ? "attempt" : "attempts"}`),
+      );
+      ui.briefingHistory.append(item);
+    });
+  }
+}
+
+async function toggleBriefing() {
+  if (!state.briefing) return;
+  ui.briefingToggle.disabled = true;
+  const action = state.briefing.status === "active" ? "pause" : "resume";
+  try {
+    state.briefing = await api(`/v1/private-briefing/${action}`, { method: "POST" });
+    renderBriefing();
+    showToast(action === "pause" ? "Private briefings paused." : "Private briefings resumed at the next scheduled time.");
+  } catch (error) {
+    showNotice(friendlyError(error), true);
+  } finally {
+    renderBriefing();
   }
 }
 
@@ -579,6 +644,27 @@ function friendlyError(error) {
 
 function humanize(value) {
   return String(value || "").replaceAll("_", " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
+}
+
+function fact(label, value) {
+  const wrapper = el("div");
+  wrapper.append(el("dt", "", label), el("dd", "", value));
+  return wrapper;
+}
+
+function formatTimestamp(value) {
+  if (!value) return "Not scheduled";
+  const date = new Date(value);
+  return Number.isNaN(date.valueOf()) ? "Unavailable" : date.toLocaleString();
+}
+
+function clockTime(policy) {
+  const date = new Date(Date.UTC(2000, 0, 1, policy.localHour, policy.localMinute));
+  return date.toLocaleTimeString([], { hour: "numeric", minute: "2-digit", timeZone: "UTC" });
+}
+
+function weekdayName(value) {
+  return ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][value] || "Scheduled day";
 }
 
 function shorten(value) {

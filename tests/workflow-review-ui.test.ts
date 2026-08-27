@@ -40,6 +40,16 @@ describe("personal workflow interface", () => {
     expect(javascript).toContain('ui.reviewDecision.value === "changes_requested"');
   });
 
+  it("shows owner briefing schedule, minimized preview, history, and pause controls", () => {
+    expect(html).toContain("Private morning briefing");
+    expect(html).toContain("excludes task objectives, approval payloads, vault content, paths, secrets, and raw errors");
+    expect(html).toContain('id="briefing-preview"');
+    expect(html).toContain('id="briefing-history"');
+    expect(javascript).toContain('/v1/private-briefing');
+    expect(javascript).toContain('/v1/private-briefing/${action}');
+    expect(javascript).not.toContain("innerHTML");
+  });
+
   it("supports narrow screens and the shared reduced-motion boundary", () => {
     expect(css).toContain("@media (max-width: 720px)");
     expect(css).toContain(".workflow-summary");

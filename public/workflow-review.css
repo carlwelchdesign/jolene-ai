@@ -10,6 +10,26 @@
 .summary-grid span { color: var(--muted); font-size: 12px; font-weight: 800; }
 .summary-grid strong { font: 600 30px/1 var(--serif); }
 .workflow-summary { grid-template-columns: repeat(3, 1fr); }
+.briefing-panel { margin-top: 24px; }
+.briefing-heading { align-items: center; }
+.briefing-actions { display: flex; align-items: center; gap: 10px; }
+.briefing-status { padding: 6px 10px; color: #365741; background: var(--sage-soft); border: 1px solid #bcd2c2; border-radius: 999px; font-size: 11px; font-weight: 850; text-transform: uppercase; }
+.briefing-status[data-status="paused"] { color: #654716; background: var(--gold-soft); border-color: #d9ba84; }
+.briefing-status[data-status="stopped"] { color: #6a625a; background: #ede9e3; border-color: var(--line); }
+.briefing-boundary { max-width: 850px; margin-top: 8px; }
+.briefing-facts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin: 20px 0; }
+.briefing-facts div { padding: 13px 14px; background: #f7f3ed; border: 1px solid var(--line); border-radius: 10px; }
+.briefing-facts dt { color: var(--muted); font-size: 10px; font-weight: 850; letter-spacing: .06em; text-transform: uppercase; }
+.briefing-facts dd { margin: 5px 0 0; font-size: 12px; font-weight: 750; line-height: 1.45; }
+.briefing-columns { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(260px, .65fr); gap: 16px; }
+.briefing-columns h3 { margin: 0 0 8px; font-size: 13px; }
+.briefing-columns pre { min-height: 150px; margin: 0; padding: 16px; overflow: auto; color: #4b443d; background: #f7f3ed; border: 1px solid var(--line); border-radius: 11px; font: 500 12px/1.55 var(--sans); white-space: pre-wrap; overflow-wrap: anywhere; }
+.briefing-history { display: grid; gap: 8px; max-height: 260px; margin: 0; padding: 0; overflow: auto; list-style: none; }
+.briefing-history li { padding: 11px 12px; background: white; border: 1px solid var(--line); border-radius: 9px; }
+.briefing-history strong, .briefing-history span { display: block; }
+.briefing-history strong { font-size: 11px; }
+.briefing-history span { margin-top: 3px; color: var(--muted); font-size: 11px; }
+.briefing-history .briefing-history-empty { color: var(--muted); }
 
 .workflow-card { padding: 22px; background: white; border: 1px solid var(--line); border-radius: 15px; }
 .workflow-card.is-review { border-color: #d4b578; box-shadow: inset 4px 0 var(--gold); }
@@ -60,4 +80,6 @@
   .workflow-title { font-size: 23px; }
   .progress-heading { align-items: flex-start; flex-direction: column; }
   .choice-group { align-items: flex-start; flex-direction: column; }
+  .briefing-facts, .briefing-columns { grid-template-columns: 1fr; }
+  .briefing-heading { align-items: flex-start; }
 }

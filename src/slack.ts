@@ -72,7 +72,7 @@ slack.error(async (error) => {
 await slack.start();
 process.stdout.write("Jolene is connected to Slack in Socket Mode.\n");
 
-const postProjectWatchNotification = createSlackOwnerNotificationPoster(
+const postOwnerNotification = createSlackOwnerNotificationPoster(
   slack.client,
   ownerUserId,
 );
@@ -80,7 +80,7 @@ let notificationDrain: Promise<void> | null = null;
 function drainProjectWatchNotifications(): void {
   if (notificationDrain) return;
   notificationDrain = application.projectNotifications
-    .drainPending(postProjectWatchNotification)
+    .drainPending(postOwnerNotification)
     .then(({ delivered, failed }) => {
       if (delivered > 0 || failed > 0) {
         process.stdout.write(
@@ -96,14 +96,36 @@ function drainProjectWatchNotifications(): void {
 drainProjectWatchNotifications();
 const notificationTimer = setInterval(drainProjectWatchNotifications, 30_000);
 
+let briefingDrain: Promise<void> | null = null;
+function drainPrivateBriefings(): void {
+  if (briefingDrain) return;
+  briefingDrain = application.privateBriefing
+    .drainPending(postOwnerNotification)
+    .then(({ delivered, failed }) => {
+      if (delivered > 0 || failed > 0) {
+        process.stdout.write(
+          `Private briefings handled: delivered=${delivered} failed=${failed}\n`,
+        );
+      }
+    })
+    .catch(() => {
+      process.stderr.write("Private briefing drain failed.\n");
+    })
+    .finally(() => { briefingDrain = null; });
+}
+drainPrivateBriefings();
+const briefingTimer = setInterval(drainPrivateBriefings, 30_000);
+
 let stopping = false;
 for (const signal of ["SIGINT", "SIGTERM"] as const) {
   process.on(signal, () => {
     if (stopping) return;
     stopping = true;
     clearInterval(notificationTimer);
+    clearInterval(briefingTimer);
     void (async () => {
       await notificationDrain;
+      await briefingDrain;
       await slack.stop();
     })().finally(() => {
       application.close();

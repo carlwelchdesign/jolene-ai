@@ -19,15 +19,21 @@ export function createSlackOwnerNotificationPoster(
   ownerUserId: string,
 ): PostProjectWatchOwnerNotification {
   let ownerChannelId: string | null = null;
+  let ownerChannelRequest: Promise<string> | null = null;
   return async ({ text }) => {
     if (!ownerChannelId) {
-      const opened = await client.conversations.open({ users: ownerUserId });
-      ownerChannelId = opened.channel?.id ?? null;
-      if (!ownerChannelId) {
-        const error = new Error("Slack did not return the owner DM channel.");
-        error.name = "slack_owner_dm_unavailable";
-        throw error;
-      }
+      ownerChannelRequest ??= client.conversations.open({ users: ownerUserId })
+        .then((opened) => {
+          const channel = opened.channel?.id;
+          if (!channel) {
+            const error = new Error("Slack did not return the owner DM channel.");
+            error.name = "slack_owner_dm_unavailable";
+            throw error;
+          }
+          return channel;
+        })
+        .finally(() => { ownerChannelRequest = null; });
+      ownerChannelId = await ownerChannelRequest;
     }
     try {
       await client.chat.postMessage({ channel: ownerChannelId, text });

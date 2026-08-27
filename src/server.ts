@@ -34,6 +34,7 @@ import {
 } from "./domain/work-context.js";
 import { WatchedProjectNotFoundError } from "./domain/watched-project.js";
 import { WatchedProjectMonitorConflictError } from "./application/watched-project-monitor-service.js";
+import { PrivateBriefingConflictError } from "./application/private-briefing-service.js";
 import {
   CareerEvidenceApprovalError,
   CareerEvidenceConflictError,
@@ -114,7 +115,10 @@ async function handleRequest(
     return;
   }
 
-  if (request.method === "GET" && url.pathname === "/workflows") {
+  if (
+    request.method === "GET" &&
+    (url.pathname === "/work" || url.pathname === "/workflows")
+  ) {
     sendAsset(response, memoryReviewAssets.workflowHtml);
     return;
   }
@@ -216,6 +220,26 @@ async function handleRequest(
 
   if (request.method === "GET" && url.pathname === "/v1/project-monitors") {
     sendJson(response, 200, application.projectMonitoring.list());
+    return;
+  }
+
+  if (request.method === "GET" && url.pathname === "/v1/private-briefing") {
+    sendJson(response, 200, application.privateBriefing.view());
+    return;
+  }
+
+  const privateBriefingMatch = url.pathname.match(
+    /^\/v1\/private-briefing\/(pause|resume)$/,
+  );
+  if (request.method === "POST" && privateBriefingMatch?.[1]) {
+    assertSameOrigin(request.headers);
+    sendJson(
+      response,
+      200,
+      privateBriefingMatch[1] === "pause"
+        ? application.privateBriefing.pause()
+        : application.privateBriefing.resume(),
+    );
     return;
   }
 
@@ -752,6 +776,7 @@ function handleError(error: unknown, response: ServerResponse): void {
     error instanceof ActionPayloadMismatchError ||
     error instanceof PersonalWorkflowConflictError
     || error instanceof WatchedProjectMonitorConflictError
+    || error instanceof PrivateBriefingConflictError
   ) {
     sendJson(response, 409, { error: "action_conflict" });
     return;

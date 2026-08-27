@@ -49,6 +49,12 @@ messages can address only `SLACK_OWNER_USER_ID`; unchanged scheduled checks and
 manual checks do not send anything. This is separate from conversational reply
 delivery and does not authorize shared-channel or arbitrary outbound messages.
 
+When private briefings are explicitly enabled, the Slack process also drains
+their durable owner-only outbox. The first application start schedules the next
+configured occurrence rather than sending immediately. Briefings are
+deterministic minimized summaries and cannot address a channel, client AI, or
+another Slack user. See [Private owner briefings](private-briefings.md).
+
 ## Privacy behavior
 
 - Only direct messages from `SLACK_OWNER_USER_ID` are considered private and may use allowlisted Obsidian knowledge.
@@ -66,4 +72,6 @@ delivery and does not authorize shared-channel or arbitrary outbound messages.
 
 - The process must remain running on Carl's Mac.
 - A process crash while a delivery is marked `processing` requires operator reconciliation. Automatic stale-claim recovery is intentionally deferred because blindly replaying after Slack accepted a message could create a duplicate.
-- There is no approval-card interface, scheduled work, client-AI task packet, or always-on deployment yet.
+- There is no Slack approval-card interface, general-purpose scheduled work,
+  client-AI task packet, or always-on deployment yet. The bounded owner briefing
+  and Project Watch schedules are the only implemented scheduling paths.

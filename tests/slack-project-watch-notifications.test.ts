@@ -69,11 +69,24 @@ describe("Slack Project Watch owner notifications", () => {
     expect(shutdown.indexOf("clearInterval(notificationTimer)")).toBeLessThan(
       shutdown.indexOf("await notificationDrain"),
     );
+    expect(shutdown.indexOf("clearInterval(briefingTimer)")).toBeLessThan(
+      shutdown.indexOf("await briefingDrain"),
+    );
+    expect(shutdown.indexOf("await briefingDrain")).toBeLessThan(
+      shutdown.indexOf("await slack.stop()"),
+    );
     expect(shutdown.indexOf("await notificationDrain")).toBeLessThan(
       shutdown.indexOf("await slack.stop()"),
     );
     expect(shutdown.indexOf("await slack.stop()")).toBeLessThan(
       shutdown.indexOf("application.close()"),
     );
+  });
+
+  it("drains due private briefings through the same exact-owner DM poster", () => {
+    const source = readFileSync(resolve(import.meta.dirname, "../src/slack.ts"), "utf8");
+    expect(source).toContain("application.privateBriefing");
+    expect(source).toContain(".drainPending(postOwnerNotification)");
+    expect(source).toContain("setInterval(drainPrivateBriefings, 30_000)");
   });
 });
