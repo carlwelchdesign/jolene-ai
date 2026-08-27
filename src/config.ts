@@ -52,6 +52,7 @@ const envSchema = z.object({
 });
 
 export interface AppConfig {
+  readonly openaiApiKey: string;
   readonly model: string;
   readonly host: string;
   readonly port: number;
@@ -117,6 +118,7 @@ export function parseConfig(
   });
 
   return {
+    openaiApiKey: env.OPENAI_API_KEY,
     model: env.JOLENE_MODEL,
     host: env.JOLENE_HOST,
     port: env.JOLENE_PORT,
