@@ -1,0 +1,16 @@
+schema_version: personality-sampling-outcome-v2
+status: failed-before-selection-and-coding
+evaluated_at: 2026-08-27T09:14:00Z
+sampling_plan_fingerprint: sha256:cf06da2497c20fc5f718ed7a3764b1485bc83a9cda5bc614eea7bbbe6281ce70
+source_register_fingerprint: sha256:01b5e430a7c95edb9f28b69dd339038c52d3b6481f0898d3539fee657321a3c9
+failure:
+  source_register_id: S10
+  source_event_id: E009
+  boundary_units_reviewed: 380
+  explicitly_attributed_target_turns: 0
+  code: explicit-speaker-attribution-unavailable
+committed_selection_ledgers: 0
+observations_created: 0
+replacement_or_resampling_performed: false
+required_next_action: new-prospective-source-register-and-sampling-plan-version
+runtime_activation: prohibited
