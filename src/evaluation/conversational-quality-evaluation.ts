@@ -22,6 +22,7 @@ export const conversationHardFailureSchema = z.enum([
   "personality_displaces_substance",
   "factual_or_citation_drift",
   "high_stakes_personality_not_suppressed",
+  "conversation_continuity_lost",
 ]);
 
 const scoreSchema = z.number().int().min(0).max(4);
@@ -81,6 +82,72 @@ export type ConversationalQualitySuite = z.infer<typeof conversationalQualitySui
 export type ConversationalQualityReview = z.infer<typeof conversationalQualityReviewSchema>;
 export type ConversationHardFailure = z.infer<typeof conversationHardFailureSchema>;
 
+export const conversationalQualityCapturePacketSchema = z.object({
+  suiteVersion: z.literal(CONVERSATIONAL_QUALITY_SUITE_VERSION),
+  suiteId: z.string(),
+  capturedAt: z.string().datetime({ offset: true }),
+  model: z.string().trim().min(1).max(120),
+  humanReview: z.literal("required"),
+  cases: z.array(z.object({
+    id: z.string(),
+    category: conversationScenarioCategorySchema,
+    prompt: z.string(),
+    channel: z.enum(["private_chat", "slack_dm", "slack_shared", "portfolio"]),
+    answer: z.string().trim().min(1).max(12_000),
+    citations: z.array(z.object({
+      id: z.string().trim().min(1).max(240),
+      label: z.string().trim().min(1).max(500),
+    }).strict()).max(20),
+    followUps: z.array(z.string().trim().min(1).max(1_000)).max(5),
+    mode: z.enum(["model", "deterministic", "fallback"]),
+  }).strict()).min(9).max(40),
+}).strict();
+
+export type ConversationalQualityCapturePacket = z.infer<
+  typeof conversationalQualityCapturePacketSchema
+>;
+
+export interface ConversationalQualityCaseResponse {
+  readonly answer: string;
+  readonly citations: readonly { readonly id: string; readonly label: string }[];
+  readonly followUps: readonly string[];
+  readonly mode: "model" | "deterministic" | "fallback";
+}
+
+export interface ConversationalQualityResponder {
+  respond(
+    testCase: ConversationalQualitySuite["cases"][number],
+  ): Promise<ConversationalQualityCaseResponse>;
+}
+
+export async function captureConversationalQualitySuite(
+  suiteInput: unknown,
+  model: string,
+  responder: ConversationalQualityResponder,
+  capturedAt = new Date().toISOString(),
+): Promise<ConversationalQualityCapturePacket> {
+  const suite = conversationalQualitySuiteSchema.parse(suiteInput);
+  const cases = [];
+  for (const testCase of suite.cases) {
+    const response = await responder.respond(testCase);
+    cases.push({
+      id: testCase.id,
+      category: testCase.category,
+      prompt: testCase.prompt,
+      channel: testCase.channel,
+      ...response,
+    });
+  }
+  return conversationalQualityCapturePacketSchema.parse({
+    suiteVersion: suite.suiteVersion,
+    suiteId: suite.suiteId,
+    capturedAt,
+    model,
+    humanReview: "required",
+    cases,
+  });
+}
+
 const WEIGHTS = {
   taskSuccess: 25,
   evidenceTransparency: 15,
@@ -98,6 +165,7 @@ const CANNED_LANGUAGE = [
   /proven track record/iu,
   /ideal candidate/iu,
 ];
+const CONTINUITY_LOST = /\b(?:do(?: not|n['’]t)|can(?:not|['’]t)) have (?:the )?(?:prior|previous|project|thread|context|details)/iu;
 
 export interface ConversationalQualityReport {
   readonly suiteVersion: typeof CONVERSATIONAL_QUALITY_SUITE_VERSION;
@@ -111,6 +179,60 @@ export interface ConversationalQualityReport {
     readonly weightedScore: number;
     readonly hardFailures: readonly ConversationHardFailure[];
   }[];
+}
+
+export interface ConversationalQualityCapturePreflight {
+  readonly gate: "pass" | "fail";
+  readonly cases: readonly {
+    readonly id: string;
+    readonly hardFailures: readonly Extract<
+      ConversationHardFailure,
+      "canned_pr_language" | "empty_evidence_rendering" | "conversation_continuity_lost"
+    >[];
+  }[];
+}
+
+export function inspectConversationalQualityCapture(
+  suiteInput: unknown,
+  packetInput: unknown,
+): ConversationalQualityCapturePreflight {
+  const suite = conversationalQualitySuiteSchema.parse(suiteInput);
+  const packet = conversationalQualityCapturePacketSchema.parse(packetInput);
+  if (packet.suiteId !== suite.suiteId) throw new Error("Capture suite ID does not match.");
+  const capturedById = new Map(packet.cases.map((item) => [item.id, item]));
+  const cases = suite.cases.map((testCase) => {
+    const captured = capturedById.get(testCase.id);
+    if (!captured) throw new Error(`Capture is missing ${testCase.id}.`);
+    const hardFailures: Array<
+      "canned_pr_language" | "empty_evidence_rendering" | "conversation_continuity_lost"
+    > = [];
+    if (CANNED_LANGUAGE.some((pattern) => pattern.test(captured.answer))) {
+      hardFailures.push("canned_pr_language");
+    }
+    if (testCase.requiresEvidence && captured.citations.length === 0) {
+      hardFailures.push("empty_evidence_rendering");
+    }
+    if (testCase.category === "continuity" && CONTINUITY_LOST.test(captured.answer)) {
+      hardFailures.push("conversation_continuity_lost");
+    }
+    return { id: testCase.id, hardFailures };
+  });
+  return {
+    gate: cases.every((item) => item.hardFailures.length === 0) ? "pass" : "fail",
+    cases,
+  };
+}
+
+export function extractPrivateCitations(
+  answer: string,
+): readonly { readonly id: string; readonly label: string }[] {
+  const citations = [...answer.matchAll(
+    /(?:^|\n)\*?Source:\s*`([^`]+)`\s*[—-]\s*(?:[“"]([^”"]+)[”"]|\*\*([^*]+)\*\*)\*?/giu,
+  )].map((match) => ({
+    id: `obsidian:${match[1]!.trim()}#${(match[2] ?? match[3])!.trim()}`,
+    label: `${match[1]!.trim()} — ${(match[2] ?? match[3])!.trim()}`,
+  }));
+  return [...new Map(citations.map((item) => [item.id, item])).values()];
 }
 
 export function evaluateConversationalQuality(
@@ -134,6 +256,9 @@ export function evaluateConversationalQuality(
     }
     if (testCase.requiresEvidence && review.citations.length === 0) {
       failures.add("empty_evidence_rendering");
+    }
+    if (testCase.category === "continuity" && CONTINUITY_LOST.test(review.answer)) {
+      failures.add("conversation_continuity_lost");
     }
     if (
       testCase.category === "grief_high_stakes" &&
