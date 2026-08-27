@@ -89,6 +89,37 @@ npm run dev:public
 
 After a production build, use `npm run start:public`.
 
+## Deployment preflight
+
+Before configuring the portfolio BFF for a hosted delegate, run the compiled
+preflight against the exact candidate HTTPS origin:
+
+```bash
+JOLENE_PUBLIC_DEPLOYMENT_ORIGIN=https://jolene.example.com \
+JOLENE_PUBLIC_API_TOKEN='<dedicated-public-service-token>' \
+JOLENE_PUBLIC_EXPECTED_CORPUS_VERSION='career:<reviewed-corpus-hash>' \
+npm run start:public:preflight
+```
+
+The preflight rejects non-HTTPS, credential-bearing, private-network, or
+path-bearing origins. It verifies the unauthenticated health contract, proves
+that missing and deliberately invalid credentials receive `401`, validates the
+authorized manifest against the expected reviewed corpus, and requires the
+restrictive security headers with no browser CORS permission. Responses are
+bounded before JSON parsing. Redirects, timeouts, schema drift, corpus drift,
+permissive CORS, and missing authentication fail closed.
+
+The successful JSON report contains only the public origin, check states,
+corpus version/hash, evidence count, revocation count, and check time. It never
+contains the service token or response prose. For an explicit local rehearsal,
+set `JOLENE_PUBLIC_DEPLOYMENT_ALLOW_LOOPBACK=true` and use an IP-loopback
+origin; this override must remain false for a hosted candidate.
+
+A passing preflight proves only the tested origin at that moment. It does not
+provision or rotate secrets, configure an edge firewall or distributed rate
+limits, validate telemetry and alerts, approve retention, activate the
+portfolio, or authorize public launch.
+
 ## Routes
 
 - `GET /health` reports only public corpus availability, schema version,

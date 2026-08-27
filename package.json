@@ -38,6 +38,7 @@
     "start:career-relationships:audit": "node dist/career-topology.js",
     "start:career-export": "node dist/career-export.js",
     "start:public": "node dist/public-server.js",
+    "start:public:preflight": "node dist/public-deployment-preflight.js",
     "start:monitor": "node dist/project-monitor.js",
     "start:mcp:career": "node dist/private-career-mcp.js",
     "start:slack": "node dist/slack.js",
