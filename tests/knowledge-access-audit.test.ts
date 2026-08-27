@@ -215,6 +215,7 @@ function successfulSource(excerpt: string): KnowledgeSource {
   return {
     async search() {
       return [{
+        namespace: "projects",
         notePath: "02 Projects/Jolene.md",
         heading: "Roadmap",
         excerpt,
