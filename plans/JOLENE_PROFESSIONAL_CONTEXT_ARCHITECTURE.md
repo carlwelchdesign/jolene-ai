@@ -859,6 +859,31 @@ and private API/Slack continuity checks pass.
   no relationship, question, relevance decision, graph infrastructure,
   production behavior, provider request, deployment, or launch authority.
 
+### PORT-PLATFORM-002 — Public delegate origin authentication
+
+- The isolated delegate now supports explicit `disabled` and `bearer`
+  authentication modes. Loopback development remains disabled by default;
+  bearer mode fails configuration closed without a dedicated token of at least
+  32 characters.
+- Every `/v1/` endpoint verifies the bearer credential with fixed-size hashes
+  and constant-time comparison before request admission or evidence access.
+  The minimal load-balancer health route remains unauthenticated, and the
+  operations listener remains private.
+- Missing, malformed, and incorrect credentials return the frozen
+  non-disclosing `401 request_rejected` envelope. The audit boundary records
+  only the fixed `unauthorized` outcome and never the token.
+- The separate public Compose profile carries only the explicit public token
+  variables; no private Jolene credential or browser-visible variable is
+  introduced.
+- Node 24 verification passes 84 test files and 492 tests, typecheck,
+  production build, public Compose validation, a fresh public image build, and
+  a zero-vulnerability production dependency audit.
+- This closes the missing origin-authentication implementation, not deployment.
+  A public HTTPS origin, managed secret provisioning and rotation, edge/WAF and
+  distributed admission controls, production telemetry and alerts, retention
+  approval, private-preview rehearsal, and explicit public-Jolene activation
+  remain separate gates.
+
 ## Acceptance criteria
 
 - Docker images and build context contain no credentials, databases, vault

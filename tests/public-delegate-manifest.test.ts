@@ -86,6 +86,8 @@ describe("public delegate manifest boundary", () => {
       auditMaxEntries: 5_000,
       requestsPerMinute: 60,
       maxConcurrentRequests: 8,
+      authMode: "disabled",
+      apiToken: undefined,
       answerMode: "deterministic",
       openaiModel: "gpt-5.6-terra",
       openaiTimeoutMilliseconds: 8_000,
@@ -115,6 +117,23 @@ describe("public delegate manifest boundary", () => {
       openaiModel: "test-model",
       openaiTimeoutMilliseconds: 2_500,
       openaiApiKey: "test-key-not-real",
+    });
+  });
+
+  it("requires a strong API token when bearer authentication is selected", () => {
+    expect(() => parsePublicDelegateConfig({
+      JOLENE_PUBLIC_AUTH_MODE: "bearer",
+    })).toThrow();
+    expect(() => parsePublicDelegateConfig({
+      JOLENE_PUBLIC_AUTH_MODE: "bearer",
+      JOLENE_PUBLIC_API_TOKEN: "too-short",
+    })).toThrow();
+    expect(parsePublicDelegateConfig({
+      JOLENE_PUBLIC_AUTH_MODE: "bearer",
+      JOLENE_PUBLIC_API_TOKEN: "a-dedicated-public-token-at-least-32-chars",
+    })).toMatchObject({
+      authMode: "bearer",
+      apiToken: "a-dedicated-public-token-at-least-32-chars",
     });
   });
 
@@ -196,6 +215,41 @@ describe("public delegate manifest boundary", () => {
     expect(response.headers.get("x-content-type-options")).toBe("nosniff");
     expect(response.headers.get("access-control-allow-origin")).toBeNull();
     expect(JSON.stringify(body)).not.toContain("/Users/");
+  });
+
+  it("requires the configured bearer token for v1 endpoints but not health", async () => {
+    const fixture = await loadFixture();
+    const token = "test-public-token-that-is-long-enough-123";
+    const events: PublicAuditRecordInput[] = [];
+    const { baseUrl } = await start(await writeArtifact(fixture), {
+      apiToken: token,
+      audits: { record: async (event) => void events.push(event) },
+    });
+
+    expect((await fetch(`${baseUrl}/health`)).status).toBe(200);
+
+    const missing = await fetch(`${baseUrl}/v1/public-evidence/manifest`);
+    expect(missing.status).toBe(401);
+    expect(missing.headers.get("www-authenticate")).toBe("Bearer");
+    expect(await missing.json()).toEqual(safeError("request_rejected"));
+
+    const invalid = await fetch(`${baseUrl}/v1/public-evidence/manifest`, {
+      headers: { Authorization: "Bearer wrong-token" },
+    });
+    expect(invalid.status).toBe(401);
+
+    const authorized = await fetch(`${baseUrl}/v1/public-evidence/manifest`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    expect(authorized.status).toBe(200);
+    expect(await authorized.json()).toEqual(fixture.manifest);
+    expect(events.map(({ outcome }) => outcome)).toEqual([
+      "ok",
+      "unauthorized",
+      "unauthorized",
+      "ok",
+    ]);
+    expect(JSON.stringify(events)).not.toContain(token);
   });
 
   it("reports only public corpus health", async () => {
@@ -899,6 +953,7 @@ async function start(
     readonly audits?: PublicAuditRecorder;
     readonly answers?: PublicPortfolioAnswerer;
     readonly telemetry?: PublicOperationalTelemetry;
+    readonly apiToken?: string;
   } = {},
 ): Promise<{
   readonly baseUrl: string;
@@ -923,6 +978,7 @@ async function start(
       maxConcurrentRequests: 10,
     }),
     requestId: () => testRequestId,
+    ...(overrides.apiToken ? { apiToken: overrides.apiToken } : {}),
     ...(overrides.telemetry ? { telemetry: overrides.telemetry } : {}),
     ...(overrides.audits ? { audits: overrides.audits } : {}),
   });

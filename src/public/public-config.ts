@@ -36,6 +36,13 @@ const publicEnvSchema = z.object({
     .default(60),
   JOLENE_PUBLIC_MAX_CONCURRENT_REQUESTS: z.coerce.number().int().min(1).max(64)
     .default(8),
+  JOLENE_PUBLIC_AUTH_MODE: z.enum(["disabled", "bearer"]).default("disabled"),
+  JOLENE_PUBLIC_API_TOKEN: z.preprocess(
+    (value) => typeof value === "string" && value.trim() === ""
+      ? undefined
+      : value,
+    z.string().trim().min(32).optional(),
+  ),
   JOLENE_PUBLIC_ANSWER_MODE: z.enum(["deterministic", "openai"])
     .default("deterministic"),
   JOLENE_PUBLIC_OPENAI_MODEL: z.string().trim().min(1).default("gpt-5.6-terra"),
@@ -86,6 +93,16 @@ const publicEnvSchema = z.object({
       message: "OPENAI_API_KEY is required when public answer mode is openai.",
     });
   }
+  if (
+    environment.JOLENE_PUBLIC_AUTH_MODE === "bearer" &&
+    !environment.JOLENE_PUBLIC_API_TOKEN
+  ) {
+    context.addIssue({
+      code: "custom",
+      path: ["JOLENE_PUBLIC_API_TOKEN"],
+      message: "JOLENE_PUBLIC_API_TOKEN is required when bearer authentication is enabled.",
+    });
+  }
 });
 
 export interface PublicDelegateConfig {
@@ -103,6 +120,8 @@ export interface PublicDelegateConfig {
   readonly auditMaxEntries: number;
   readonly requestsPerMinute: number;
   readonly maxConcurrentRequests: number;
+  readonly authMode: "disabled" | "bearer";
+  readonly apiToken: string | undefined;
   readonly answerMode: "deterministic" | "openai";
   readonly openaiModel: string;
   readonly openaiTimeoutMilliseconds: number;
@@ -144,6 +163,8 @@ export function parsePublicDelegateConfig(
     auditMaxEntries: parsed.JOLENE_PUBLIC_AUDIT_MAX_ENTRIES,
     requestsPerMinute: parsed.JOLENE_PUBLIC_REQUESTS_PER_MINUTE,
     maxConcurrentRequests: parsed.JOLENE_PUBLIC_MAX_CONCURRENT_REQUESTS,
+    authMode: parsed.JOLENE_PUBLIC_AUTH_MODE,
+    apiToken: parsed.JOLENE_PUBLIC_API_TOKEN,
     answerMode: parsed.JOLENE_PUBLIC_ANSWER_MODE,
     openaiModel: parsed.JOLENE_PUBLIC_OPENAI_MODEL,
     openaiTimeoutMilliseconds: parsed.JOLENE_PUBLIC_OPENAI_TIMEOUT_MS,
