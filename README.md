@@ -50,6 +50,8 @@ The first runnable slice provides:
   citation-complete public-evidence answers and conservative job-description
   comparisons, plus consented local contact-intent staging, a runtime kill
   switch, bounded local admission, and a content-minimizing local audit ledger;
+- a deterministic public-response disclosure guard that replaces unsafe egress
+  with a generic fail-closed response before content leaves the process;
 - a private owner-scoped Contacts screen that can review or delete staged
   requests and save inert local reply drafts without sending anything;
 - contract tests that do not call OpenAI.
@@ -216,6 +218,9 @@ and thread.
 - The isolated public audit ledger records only fixed operations, outcomes,
   timing, corpus version, and counts; it never stores request bodies, visitor
   identity, session tokens, source addresses, citations, or response text.
+- Offline public export and runtime public egress share one disclosure policy
+  for private paths and hosts, file or Obsidian links, likely secrets, email
+  addresses, and phone numbers.
 - Obsidian access is read-only and limited to configured relative path prefixes.
 - Knowledge-search audit records retain scope, outcome, query fingerprints, and citations—but never raw queries or note excerpts.
 - Shared channels receive no Obsidian search tool.
