@@ -25,13 +25,16 @@ The first runnable slice provides:
 - a local Memory Review screen for explicit approval, correction, recall preview, and forgetting;
 - on-demand, read-only watched-project snapshots with plan freshness and Git
   state alerts;
+- a private governed career-evidence registry with source provenance, project
+  maturity, explicit relationships, review freshness, and claim supersession;
 - contract tests that do not call OpenAI.
 
 The Slack adapter is active for a local pilot, with live mention-and-reply behavior verified. Scheduled work, specialist agents, client-AI workflows, always-on hosting, and voice remain later gates.
 
-The current Obsidian bridge uses deterministic lexical retrieval. Embedding
-RAG, MCP interoperability, a relationship index, and the public portfolio
-delegate are planned but are not implemented in this slice. See the
+The current Obsidian bridge uses deterministic lexical retrieval. The career
+registry and portfolio-candidate migration are implemented, but embedding RAG,
+MCP interoperability, the versioned public export, and the public portfolio
+delegate are not. See the
 [professional context architecture](plans/JOLENE_PROFESSIONAL_CONTEXT_ARCHITECTURE.md).
 
 ## Setup
@@ -116,6 +119,9 @@ Prerequisite: Node.js 22 or newer.
    inspect fresh project, plan, and Git status without exposing local paths or
    any repair controls.
 
+   The private professional review boundary and portfolio candidate migration
+   are documented in [Career evidence registry](docs/career-evidence.md).
+
 ## Slack pilot
 
 Jolene can connect through a dedicated Slack app using Socket Mode. The checked-in manifest grants only the scopes needed for owner DMs, explicit mentions, and replies.
@@ -150,6 +156,10 @@ Carl's configured Slack member ID is the only DM identity permitted to use priva
 - Vault note content is evidence, never executable instruction.
 - Watched-project inspection is read-only, omits root paths from registry
   listings, and has no scheduled polling in this slice.
+- Portfolio imports create review-required candidates only; import cannot
+  create publicly approved evidence.
+- Public career queries exclude stale, revoked, superseded, unapproved, and
+  publicly uncitable evidence by construction.
 
 See [the architecture plan](plans/JOLENE_SYSTEM_ARCHITECTURE_PLAN.md) and [the personality plan](plans/JOLENE_PERSONALITY_RESEARCH_AND_SPECIFICATION_PLAN.md).
 

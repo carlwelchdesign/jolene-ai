@@ -3,6 +3,7 @@ import path from "node:path";
 
 import { OpenAIJoleneRunner } from "./agent/agent-runner.js";
 import { ActionApprovalService } from "./application/action-approval-service.js";
+import { CareerEvidenceService } from "./application/career-evidence-service.js";
 import { JoleneService } from "./application/jolene-service.js";
 import { KnowledgeAuditService } from "./application/knowledge-audit-service.js";
 import { PersonalWorkflowService } from "./application/personal-workflow-service.js";
@@ -18,6 +19,7 @@ import { ObsidianKnowledgeSource } from "./knowledge/obsidian-source.js";
 import { AuditedKnowledgeSource } from "./knowledge/audited-knowledge-source.js";
 import { SqliteConversationStore } from "./persistence/sqlite-conversation-store.js";
 import { SqliteActionApprovalStore } from "./persistence/sqlite-action-approval-store.js";
+import { SqliteCareerEvidenceStore } from "./persistence/sqlite-career-evidence-store.js";
 import { SqliteKnowledgeAccessStore } from "./persistence/sqlite-knowledge-access-store.js";
 import { SqlitePersonalWorkflowStore } from "./persistence/sqlite-personal-workflow-store.js";
 import { SqliteWorkContextStore } from "./persistence/sqlite-work-context-store.js";
@@ -29,6 +31,7 @@ export interface JoleneApplication {
   readonly work: WorkContextService;
   readonly knowledgeAudit: KnowledgeAuditService;
   readonly actionApprovals: ActionApprovalService;
+  readonly careerEvidence: CareerEvidenceService;
   readonly workflows: PersonalWorkflowService;
   readonly watchedProjects: WatchedProjectService;
   readonly health: () => {
@@ -47,6 +50,7 @@ export async function createApplication(
   const workStore = new SqliteWorkContextStore(config.databasePath);
   const knowledgeAuditStore = new SqliteKnowledgeAccessStore(config.databasePath);
   const actionApprovalStore = new SqliteActionApprovalStore(config.databasePath);
+  const careerEvidenceStore = new SqliteCareerEvidenceStore(config.databasePath);
   const personalWorkflowStore = new SqlitePersonalWorkflowStore(config.databasePath);
   const knowledge = new AuditedKnowledgeSource(
     createKnowledgeSource(config),
@@ -75,6 +79,7 @@ export async function createApplication(
     work: new WorkContextService(workStore),
     knowledgeAudit: new KnowledgeAuditService(knowledgeAuditStore),
     actionApprovals: new ActionApprovalService(actionApprovalStore, workStore),
+    careerEvidence: new CareerEvidenceService(careerEvidenceStore),
     workflows: new PersonalWorkflowService(personalWorkflowStore, workStore),
     watchedProjects: new WatchedProjectService(
       config.watchedProjects,
@@ -91,6 +96,7 @@ export async function createApplication(
       workStore.close();
       knowledgeAuditStore.close();
       actionApprovalStore.close();
+      careerEvidenceStore.close();
       personalWorkflowStore.close();
     },
   };
