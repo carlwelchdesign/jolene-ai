@@ -190,3 +190,18 @@ status only; fetched content is neither printed nor persisted.
 The live 2026-08-27 verification reproduced all 11 registered fingerprints with zero redirects.
 This establishes source freshness only. It does not sample v2 turns, admit traits, approve a
 personality, connect behavior to a model or channel, or activate the Jolene presentation mode.
+
+## JOL-PER-005C sampling precommit
+
+Before any v2 observations were created, `research/sampling-plan-v2.yaml` froze a 120-turn
+allocation across all 11 coding-ready sources: 96 systematic midpoint selections and 24
+purposive high-risk selections. The plan is bound to source-register fingerprint
+`sha256:01b5e430a7c95edb9f28b69dd339038c52d3b6481f0898d3539fee657321a3c9`
+and becomes stale if the reviewed register changes.
+
+The machine validator checks exact source/event coverage, allocation sums, publisher lineage,
+setting and time-band breadth, source/publisher/time concentration caps, rights constraints,
+and prohibited runtime activation. The companion guide defines the eligible-universe ledger,
+systematic midpoint formula, deterministic high-risk priority walk, controlled exclusions,
+negative/counterexample minimums, later independent-review boundary, and non-goals. This
+checkpoint freezes the method only; no v2 turn has yet been sampled or coded.
