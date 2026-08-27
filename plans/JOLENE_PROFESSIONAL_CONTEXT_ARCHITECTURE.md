@@ -859,6 +859,73 @@ and private API/Slack continuity checks pass.
   no relationship, question, relevance decision, graph infrastructure,
   production behavior, provider request, deployment, or launch authority.
 
+### PORT-PLATFORM-002 — Public delegate origin authentication
+
+- The isolated delegate now supports explicit `disabled` and `bearer`
+  authentication modes. Loopback development remains disabled by default;
+  bearer mode fails configuration closed without a dedicated token of at least
+  32 characters.
+- Every `/v1/` endpoint verifies the bearer credential with fixed-size hashes
+  and constant-time comparison before request admission or evidence access.
+  The minimal load-balancer health route remains unauthenticated, and the
+  operations listener remains private.
+- Missing, malformed, and incorrect credentials return the frozen
+  non-disclosing `401 request_rejected` envelope. The audit boundary records
+  only the fixed `unauthorized` outcome and never the token.
+- The separate public Compose profile carries only the explicit public token
+  variables; no private Jolene credential or browser-visible variable is
+  introduced.
+- Node 24 verification passes 84 test files and 492 tests, typecheck,
+  production build, public Compose validation, a fresh public image build, and
+  a zero-vulnerability production dependency audit.
+- This closes the missing origin-authentication implementation, not deployment.
+  A public HTTPS origin, managed secret provisioning and rotation, edge/WAF and
+  distributed admission controls, production telemetry and alerts, retention
+  approval, private-preview rehearsal, and explicit public-Jolene activation
+  remain separate gates.
+
+### JOL-PLATFORM-003 — Hosted delegate deployment preflight
+
+- A compiled, provider-neutral preflight now verifies the exact candidate
+  origin before portfolio configuration: public HTTPS root URL, bounded
+  no-redirect requests, health/manifest schema compatibility, reviewed corpus
+  continuity, bearer enforcement for missing and invalid credentials,
+  restrictive headers, and absent browser CORS permission.
+- An explicit IP-loopback override supports local container rehearsal without
+  weakening hosted-origin validation. The override defaults off.
+- The content-minimized report contains only the public origin, check time,
+  corpus version/hash, evidence and revocation counts, and fixed pass states.
+  Tokens and submitted or returned prose are never reported.
+- Node 24 verification passes 85 test files and 496 tests, typecheck,
+  production build, public Compose validation, zero-vulnerability production
+  dependency audit, and a fresh hardened container rehearsal against the exact
+  reviewed 41-claim/zero-revocation corpus.
+- This is release evidence, not a deployment mechanism or launch approval.
+  Hosting, managed secrets and rotation, distributed edge admission,
+  telemetry/alerts, retention approval, rollback rehearsal, portfolio cutover,
+  and explicit public activation remain open.
+
+### JOL-PLATFORM-004 — Managed-container public artifact source
+
+- The public delegate now composes either the existing read-only file source or
+  a provider-neutral HTTPS source for managed containers without local mounts.
+- HTTPS mode accepts only a fixed public resource, sends no credential, bounds
+  time and bytes, forbids redirects and private/reserved destinations, validates
+  the complete frozen artifact and recomputed digest, and requires the exact
+  deployment-pinned corpus version on every read.
+- Missing, unreachable, malformed, oversized, tampered, or drifted artifacts
+  fail closed. The delegate keeps no stale application cache, preserving the
+  revocation boundary at the cost of an explicit production availability
+  dependency on the public artifact host.
+- Node 24 verification passes 86 test files and 500 tests, typecheck,
+  production build, public Compose validation, and a zero-vulnerability
+  production dependency audit. A disposable remote-source rehearsal returned
+  ready operations and passed the authenticated deployment preflight against
+  the exact reviewed 41-claim/zero-revocation corpus.
+- This enables a deployable data path but does not publish the artifact, select
+  a storage provider, deploy the delegate, configure edge controls, activate
+  the portfolio, or authorize launch.
+
 ## Acceptance criteria
 
 - Docker images and build context contain no credentials, databases, vault

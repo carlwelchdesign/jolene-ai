@@ -6,9 +6,27 @@ import { afterEach, describe, expect, it } from "vitest";
 
 import {
   FilePublicModelRequestBudget,
+  InMemoryPublicModelRequestBudget,
 } from "../src/public/public-model-request-budget.js";
 
 const temporaryDirectories: string[] = [];
+
+describe("InMemoryPublicModelRequestBudget", () => {
+  it("bounds requests inside a runtime and resets the window", async () => {
+    let now = new Date("2026-08-27T12:00:00.000Z");
+    const budget = new InMemoryPublicModelRequestBudget({
+      maxRequestsPerWindow: 2,
+      windowMilliseconds: 1_000,
+      now: () => now,
+    });
+
+    await expect(budget.reserve()).resolves.toBe(true);
+    await expect(budget.reserve()).resolves.toBe(true);
+    await expect(budget.reserve()).resolves.toBe(false);
+    now = new Date("2026-08-27T12:00:01.000Z");
+    await expect(budget.reserve()).resolves.toBe(true);
+  });
+});
 
 afterEach(async () => {
   await Promise.all(temporaryDirectories.splice(0).map((directory) =>

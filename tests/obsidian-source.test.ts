@@ -32,10 +32,34 @@ describe("ObsidianKnowledgeSource", () => {
 
     expect(results).toHaveLength(1);
     expect(results[0]).toMatchObject({
+      namespace: "projects",
       notePath: "02 Projects/Jolene AI.md",
       heading: "Primary role",
     });
     expect(results[0]?.excerpt).toContain("personal chief of staff");
+  });
+
+  it("returns useful heading-bounded recipe sections from personal knowledge", async () => {
+    const root = await createVault();
+    const source = new ObsidianKnowledgeSource({
+      vaultRoot: root,
+      allowlist: ["06 Personal/Recipes and Cooking.md"],
+    });
+
+    const results = await source.search(
+      "cast iron naan recipe",
+      searchContext(),
+      5,
+    );
+
+    expect(results[0]).toMatchObject({
+      namespace: "personal",
+      notePath: "06 Personal/Recipes and Cooking.md",
+      heading: "Cast-iron naan",
+    });
+    expect(results[0]?.excerpt).toContain("3/4 cup warm water");
+    expect(results[0]?.excerpt).toContain("Cook until blistered");
+    expect(results[0]?.excerpt).not.toContain("Burger sauce");
   });
 
   it("returns nothing in a shared channel", async () => {
@@ -72,10 +96,28 @@ async function createVault(): Promise<string> {
   tempDirectories.push(root);
   await fs.mkdir(path.join(root, "02 Projects"), { recursive: true });
   await fs.mkdir(path.join(root, "Private"), { recursive: true });
+  await fs.mkdir(path.join(root, "06 Personal"), { recursive: true });
   await fs.mkdir(path.join(root, ".obsidian"), { recursive: true });
   await fs.writeFile(
     path.join(root, "02 Projects", "Jolene AI.md"),
     "# Jolene AI\n\n## Primary role\n\nJolene is Carl's personal chief of staff.\n",
+  );
+  await fs.writeFile(
+    path.join(root, "06 Personal", "Recipes and Cooking.md"),
+    [
+      "# Recipes and Cooking",
+      "",
+      "## Cast-iron naan",
+      "",
+      "- 3/4 cup warm water",
+      "- 2 cups flour",
+      "",
+      "Cook until blistered in a hot cast-iron skillet.",
+      "",
+      "## Burger sauce",
+      "",
+      "Mix mayonnaise, ketchup, mustard, and pickle.",
+    ].join("\n"),
   );
   await fs.writeFile(
     path.join(root, "Private", "Secrets.md"),

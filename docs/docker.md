@@ -175,6 +175,15 @@ only to host loopback. The process listens on `0.0.0.0` only inside its isolated
 container, guarded by `JOLENE_PUBLIC_CONTAINER_MODE=true`; a direct host process
 still rejects that bind address.
 
+The loopback Compose profile explicitly defaults to
+`JOLENE_PUBLIC_AUTH_MODE=disabled`. For an ingress or remote BFF integration,
+provide a dedicated token through the deployment secret store and start with
+`JOLENE_PUBLIC_AUTH_MODE=bearer`. All `/v1/` calls must then send that value as
+a bearer credential; `/health` remains credential-free and the operations port
+must remain unpublished. A token does not by itself authorize public launch or
+replace an edge firewall, distributed admission controls, telemetry, or a
+kill-switch rehearsal.
+
 The same process has a separate operations listener at container loopback
 `127.0.0.1:8432`. Compose does not publish that port. Its `/live`, `/ready`, and
 `/metrics` routes contain only fixed component states and aggregate

@@ -76,6 +76,10 @@ describe("public delegate manifest boundary", () => {
       artifactPath: path.resolve(
         ".jolene/exports/public-career-evidence.json",
       ),
+      artifactSource: "file",
+      artifactUrl: undefined,
+      artifactTimeoutMilliseconds: 5_000,
+      expectedCorpusVersion: undefined,
       contactQueuePath: path.resolve(
         ".jolene/public/contact-intents.json",
       ),
@@ -86,11 +90,15 @@ describe("public delegate manifest boundary", () => {
       auditMaxEntries: 5_000,
       requestsPerMinute: 60,
       maxConcurrentRequests: 8,
+      authMode: "disabled",
+      apiToken: undefined,
       answerMode: "deterministic",
-      openaiModel: "gpt-5.6-terra",
+      openaiModel: "gpt-5.4-mini",
       openaiTimeoutMilliseconds: 8_000,
       openaiBudgetPath: path.resolve(".jolene/public/model-budget.json"),
       openaiRequestsPerDay: 100,
+      retrievalMode: "deterministic",
+      openaiEmbeddingModel: "text-embedding-3-small",
       openaiApiKey: undefined,
     });
   });
@@ -115,6 +123,64 @@ describe("public delegate manifest boundary", () => {
       openaiModel: "test-model",
       openaiTimeoutMilliseconds: 2_500,
       openaiApiKey: "test-key-not-real",
+    });
+  });
+
+  it("requires OpenAI answer mode for hybrid public retrieval", () => {
+    expect(() => parsePublicDelegateConfig({
+      JOLENE_PUBLIC_RETRIEVAL_MODE: "hybrid",
+    })).toThrow();
+    expect(parsePublicDelegateConfig({
+      JOLENE_PUBLIC_ANSWER_MODE: "openai",
+      JOLENE_PUBLIC_RETRIEVAL_MODE: "hybrid",
+      OPENAI_API_KEY: "test-key-not-real",
+    })).toMatchObject({
+      answerMode: "openai",
+      retrievalMode: "hybrid",
+      openaiEmbeddingModel: "text-embedding-3-small",
+    });
+  });
+
+  it("requires a pinned safe URL for HTTPS artifact mode", () => {
+    expect(() => parsePublicDelegateConfig({
+      JOLENE_PUBLIC_ARTIFACT_SOURCE: "https",
+    })).toThrow();
+    expect(() => parsePublicDelegateConfig({
+      JOLENE_PUBLIC_ARTIFACT_SOURCE: "https",
+      JOLENE_PUBLIC_ARTIFACT_URL: "http://evidence.example.com/artifact.json",
+      JOLENE_PUBLIC_EXPECTED_CORPUS_VERSION: `career:${"a".repeat(64)}`,
+    })).toThrow();
+    expect(parsePublicDelegateConfig({
+      JOLENE_PUBLIC_ARTIFACT_SOURCE: "https",
+      JOLENE_PUBLIC_ARTIFACT_URL: "https://evidence.example.com/artifact.json",
+      JOLENE_PUBLIC_EXPECTED_CORPUS_VERSION: `career:${"a".repeat(64)}`,
+    })).toMatchObject({
+      artifactSource: "https",
+      artifactUrl: "https://evidence.example.com/artifact.json",
+      expectedCorpusVersion: `career:${"a".repeat(64)}`,
+    });
+    expect(parsePublicDelegateConfig({
+      JOLENE_PUBLIC_ARTIFACT_SOURCE: "https",
+      JOLENE_PUBLIC_ARTIFACT_URL: "http://127.0.0.1:9444/artifact.json",
+      JOLENE_PUBLIC_ARTIFACT_ALLOW_LOOPBACK: "true",
+      JOLENE_PUBLIC_EXPECTED_CORPUS_VERSION: `career:${"a".repeat(64)}`,
+    }).artifactUrl).toBe("http://127.0.0.1:9444/artifact.json");
+  });
+
+  it("requires a strong API token when bearer authentication is selected", () => {
+    expect(() => parsePublicDelegateConfig({
+      JOLENE_PUBLIC_AUTH_MODE: "bearer",
+    })).toThrow();
+    expect(() => parsePublicDelegateConfig({
+      JOLENE_PUBLIC_AUTH_MODE: "bearer",
+      JOLENE_PUBLIC_API_TOKEN: "too-short",
+    })).toThrow();
+    expect(parsePublicDelegateConfig({
+      JOLENE_PUBLIC_AUTH_MODE: "bearer",
+      JOLENE_PUBLIC_API_TOKEN: "a-dedicated-public-token-at-least-32-chars",
+    })).toMatchObject({
+      authMode: "bearer",
+      apiToken: "a-dedicated-public-token-at-least-32-chars",
     });
   });
 
@@ -196,6 +262,41 @@ describe("public delegate manifest boundary", () => {
     expect(response.headers.get("x-content-type-options")).toBe("nosniff");
     expect(response.headers.get("access-control-allow-origin")).toBeNull();
     expect(JSON.stringify(body)).not.toContain("/Users/");
+  });
+
+  it("requires the configured bearer token for v1 endpoints but not health", async () => {
+    const fixture = await loadFixture();
+    const token = "test-public-token-that-is-long-enough-123";
+    const events: PublicAuditRecordInput[] = [];
+    const { baseUrl } = await start(await writeArtifact(fixture), {
+      apiToken: token,
+      audits: { record: async (event) => void events.push(event) },
+    });
+
+    expect((await fetch(`${baseUrl}/health`)).status).toBe(200);
+
+    const missing = await fetch(`${baseUrl}/v1/public-evidence/manifest`);
+    expect(missing.status).toBe(401);
+    expect(missing.headers.get("www-authenticate")).toBe("Bearer");
+    expect(await missing.json()).toEqual(safeError("request_rejected"));
+
+    const invalid = await fetch(`${baseUrl}/v1/public-evidence/manifest`, {
+      headers: { Authorization: "Bearer wrong-token" },
+    });
+    expect(invalid.status).toBe(401);
+
+    const authorized = await fetch(`${baseUrl}/v1/public-evidence/manifest`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    expect(authorized.status).toBe(200);
+    expect(await authorized.json()).toEqual(fixture.manifest);
+    expect(events.map(({ outcome }) => outcome)).toEqual([
+      "ok",
+      "unauthorized",
+      "unauthorized",
+      "ok",
+    ]);
+    expect(JSON.stringify(events)).not.toContain(token);
   });
 
   it("reports only public corpus health", async () => {
@@ -899,6 +1000,7 @@ async function start(
     readonly audits?: PublicAuditRecorder;
     readonly answers?: PublicPortfolioAnswerer;
     readonly telemetry?: PublicOperationalTelemetry;
+    readonly apiToken?: string;
   } = {},
 ): Promise<{
   readonly baseUrl: string;
@@ -923,6 +1025,7 @@ async function start(
       maxConcurrentRequests: 10,
     }),
     requestId: () => testRequestId,
+    ...(overrides.apiToken ? { apiToken: overrides.apiToken } : {}),
     ...(overrides.telemetry ? { telemetry: overrides.telemetry } : {}),
     ...(overrides.audits ? { audits: overrides.audits } : {}),
   });

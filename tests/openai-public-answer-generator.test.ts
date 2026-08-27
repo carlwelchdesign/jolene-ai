@@ -40,6 +40,27 @@ describe("OpenAI public answer generator", () => {
       max_output_tokens: 321,
     });
     expect(request).not.toHaveProperty("tools");
+    expect(request.instructions).toEqual(expect.stringContaining(
+      "Lead with the direct answer",
+    ));
+    expect(request.instructions).toEqual(expect.stringContaining(
+      "Synthesize the evidence",
+    ));
+    expect(request.instructions).toEqual(expect.stringContaining(
+      "do not reflexively turn them into praise",
+    ));
+    expect(request.instructions).toEqual(expect.stringContaining(
+      "not evidence that weaknesses do not exist",
+    ));
+    expect(request.instructions).toEqual(expect.stringContaining(
+      "not a press release",
+    ));
+    expect(request.instructions).toEqual(expect.stringContaining(
+      "credible role-fit risks or unknowns",
+    ));
+    expect(request.instructions).toEqual(expect.not.stringContaining(
+      "Dolly Parton",
+    ));
     expect(request.text).toMatchObject({
       format: {
         type: "json_schema",

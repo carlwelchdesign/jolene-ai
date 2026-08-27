@@ -606,6 +606,18 @@ Knowledge-access-ledger checkpoint:
 | Privacy evidence | Raw queries and excerpts are absent from the schema and API; query fingerprints use a process-local HMAC key; actor/workspace cross-scope reads return no records; audit failure blocks successful retrieval output |
 | Remaining boundary | This records private knowledge access only; external disclosure authorization, recipient scope, approval expiry, and delivery receipts remain pending |
 
+Private personal-knowledge and recipe checkpoint:
+
+| Field | Value |
+|---|---|
+| Ticket | `JOL-KNOW-001` — [Asana](https://app.asana.com/1/9789386902387/project/1216473233375594/task/1217930791496414) |
+| Branch | `codex/jol-know-001-private-recipes` |
+| Scope | Read-only allowlisted character-profile, recipe-hub, and reviewed Apple Notes source material in private channels only |
+| Retrieval contract | Typed `personal` and `sources` namespaces plus heading-bounded Markdown sections with exact note/heading citations |
+| Recipe behavior | Returns enough of one recipe section to preserve ingredients, method, draft/test status, and recorded safety caveats instead of a three-line fragment |
+| Privacy boundary | The portfolio delegate remains physically isolated from the vault; shared Slack exposes no private knowledge tool; allowlist changes remain local and untracked |
+| Remaining boundary | Hybrid semantic retrieval, cross-note synthesis, freshness review, and channel-specific disclosure approvals remain tracked in `JOL-KNOW-002` |
+
 Exact-action-approval checkpoint:
 
 | Field | Value |

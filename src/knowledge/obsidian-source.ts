@@ -1,4 +1,5 @@
 import type {
+  KnowledgeNamespace,
   KnowledgeResult,
   KnowledgeSearchContext,
   KnowledgeSource,
@@ -8,7 +9,7 @@ import {
   type ObsidianMarkdownDocument,
 } from "./obsidian-vault.js";
 
-const MAX_EXCERPT_LENGTH = 700;
+const MAX_EXCERPT_LENGTH = 1_600;
 
 export interface ObsidianSourceOptions {
   readonly vaultRoot: string;
@@ -37,64 +38,47 @@ export class ObsidianKnowledgeSource implements KnowledgeSource {
     }
 
     const files = await this.vault.listMarkdownDocuments();
-    const results = await Promise.all(
-      files.map((file) => this.searchFile(file, terms)),
-    );
+    const results = files.flatMap((file) => this.searchFile(file, terms));
 
     return results
-      .filter((result): result is KnowledgeResult => result !== null)
       .sort((left, right) => right.score - left.score)
       .slice(0, Math.max(1, Math.min(limit, 10)));
   }
 
-  private async searchFile(
+  private searchFile(
     document: ObsidianMarkdownDocument,
     terms: readonly string[],
-  ): Promise<KnowledgeResult | null> {
+  ): KnowledgeResult[] {
     const lines = document.content.split(/\r?\n/);
     const relativeLower = document.relativePath.toLowerCase();
+    const pathScore = terms.reduce(
+      (score, term) => score + (relativeLower.includes(term) ? 3 : 0),
+      0,
+    );
 
-    let bestLine = -1;
-    let bestScore = 0;
-
-    for (let index = 0; index < lines.length; index += 1) {
-      const line = lines[index] ?? "";
-      const lower = line.toLowerCase();
-      const lineScore = terms.reduce(
-        (score, term) => score + countOccurrences(lower, term) * 4,
+    return sections(lines).flatMap((section) => {
+      const headingLower = section.heading.toLowerCase();
+      const contentLower = section.lines.join("\n").toLowerCase();
+      const headingScore = terms.reduce(
+        (score, term) => score + countOccurrences(headingLower, term) * 7,
         0,
       );
-      const pathScore = terms.reduce(
-        (score, term) => score + (relativeLower.includes(term) ? 3 : 0),
+      const contentScore = terms.reduce(
+        (score, term) => score + countOccurrences(contentLower, term) * 4,
         0,
       );
-      const score = lineScore + pathScore;
+      const score = pathScore + headingScore + contentScore;
+      if (score === 0) return [];
 
-      if (score > bestScore) {
-        bestLine = index;
-        bestScore = score;
-      }
-    }
-
-    if (bestLine < 0 || bestScore === 0) {
-      return null;
-    }
-
-    const start = Math.max(0, bestLine - 1);
-    const end = Math.min(lines.length, bestLine + 2);
-    const excerpt = lines
-      .slice(start, end)
-      .join("\n")
-      .trim()
-      .slice(0, MAX_EXCERPT_LENGTH);
-
-    return {
-      notePath: document.relativePath,
-      heading: nearestHeading(lines, bestLine),
-      excerpt,
-      modifiedAt: document.modifiedAt,
-      score: bestScore,
-    };
+      return [{
+        namespace: namespaceForPath(document.relativePath),
+        notePath: document.relativePath,
+        heading: section.heading,
+        excerpt: section.lines.join("\n").trim().slice(0, MAX_EXCERPT_LENGTH),
+        modifiedAt: document.modifiedAt,
+        score,
+      } satisfies KnowledgeResult];
+    });
   }
 
 }
@@ -122,14 +106,42 @@ function countOccurrences(text: string, term: string): number {
   return count;
 }
 
-function nearestHeading(lines: readonly string[], lineIndex: number): string {
-  for (let index = lineIndex; index >= 0; index -= 1) {
-    const line = lines[index]?.trim() ?? "";
-    const match = /^(#{1,6})\s+(.+)$/.exec(line);
-    if (match?.[2]) {
-      return match[2].trim();
-    }
-  }
+interface MarkdownSection {
+  readonly heading: string;
+  readonly lines: readonly string[];
+}
 
-  return "Document";
+function sections(lines: readonly string[]): MarkdownSection[] {
+  const found: Array<{ heading: string; lines: string[] }> = [];
+  let current = { heading: "Document", lines: [] as string[] };
+
+  for (const line of lines) {
+    const match = /^(#{1,6})\s+(.+)$/.exec(line.trim());
+    if (match?.[1] && match[2] && match[1].length <= 2) {
+      if (hasSectionContent(current)) found.push(current);
+      current = { heading: match[2].trim(), lines: [line] };
+      continue;
+    }
+    current.lines.push(line);
+  }
+  if (hasSectionContent(current)) found.push(current);
+
+  return found;
+}
+
+function hasSectionContent(section: { heading: string; lines: string[] }): boolean {
+  const contentLines = section.heading === "Document"
+    ? section.lines
+    : section.lines.slice(1);
+  return contentLines.some((value) => value.trim());
+}
+
+function namespaceForPath(relativePath: string): KnowledgeNamespace {
+  const topLevel = relativePath.split("/")[0]?.toLowerCase() ?? "";
+  if (topLevel.startsWith("01 career")) return "career";
+  if (topLevel.startsWith("02 projects")) return "projects";
+  if (topLevel.startsWith("03 engineering")) return "engineering";
+  if (topLevel.startsWith("06 personal")) return "personal";
+  if (topLevel.startsWith("07 sources")) return "sources";
+  return "other";
 }

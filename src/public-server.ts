@@ -1,7 +1,10 @@
 import OpenAI from "openai";
 
 import { loadPublicDelegateConfig } from "./public/public-config.js";
-import { FilePublicArtifactSource } from "./public/public-artifact-source.js";
+import {
+  FilePublicArtifactSource,
+  HttpsPublicArtifactSource,
+} from "./public/public-artifact-source.js";
 import {
   DeterministicPublicAnswerService,
   GroundedPublicAnswerService,
@@ -12,6 +15,10 @@ import { FixedWindowPublicRequestAdmission } from "./public/public-request-admis
 import { FilePublicContactIntentQueue } from "./public/public-contact-intent-queue.js";
 import { FilePublicAuditLedger } from "./public/public-audit-ledger.js";
 import { OpenAIPublicAnswerGenerator } from "./public/openai-public-answer-generator.js";
+import { OpenAIPublicEmbeddingProvider } from
+  "./public/openai-public-embedding-provider.js";
+import { HybridPublicEvidenceRetriever } from
+  "./public/public-hybrid-evidence-retriever.js";
 import {
   FilePublicModelRequestBudget,
 } from "./public/public-model-request-budget.js";
@@ -25,7 +32,15 @@ import {
 import { closePublicServers } from "./public/public-server-lifecycle.js";
 
 const config = loadPublicDelegateConfig();
-const artifactSource = new FilePublicArtifactSource(config.artifactPath);
+const artifactSource = config.artifactSource === "https"
+  ? new HttpsPublicArtifactSource({
+      url: requireArtifactUrl(config.artifactUrl),
+      expectedCorpusVersion: requireExpectedCorpusVersion(
+        config.expectedCorpusVersion,
+      ),
+      timeoutMilliseconds: config.artifactTimeoutMilliseconds,
+    })
+  : new FilePublicArtifactSource(config.artifactPath);
 const telemetry = new InMemoryPublicOperationalTelemetry();
 const modelBudget = config.answerMode === "openai"
   ? new FilePublicModelRequestBudget({
@@ -53,6 +68,16 @@ const answers = config.answerMode === "openai"
       timeoutMilliseconds: config.openaiTimeoutMilliseconds,
     }), {
       budget: activeModelBudget,
+      ...(config.retrievalMode === "hybrid"
+        ? {
+          retriever: new HybridPublicEvidenceRetriever(
+            new OpenAIPublicEmbeddingProvider(
+              config.openaiEmbeddingModel,
+              requireOpenAIApiKey(config.openaiApiKey),
+            ),
+          ),
+        }
+        : {}),
     })
   : new DeterministicPublicAnswerService();
 const contactIntents = new FilePublicContactIntentQueue({
@@ -93,6 +118,9 @@ const server = createPublicDelegateServer({
     requestsPerWindow: config.requestsPerMinute,
     maxConcurrentRequests: config.maxConcurrentRequests,
   }),
+  ...(config.authMode === "bearer" && config.apiToken
+    ? { apiToken: config.apiToken }
+    : {}),
 });
 const operationsServer = createPublicOperationsServer({
   telemetry,
@@ -138,5 +166,17 @@ for (const signal of ["SIGINT", "SIGTERM"] as const) {
 
 function requireOpenAIApiKey(value: string | undefined): string {
   if (!value) throw new Error("Public OpenAI mode requires an API key.");
+  return value;
+}
+
+function requireArtifactUrl(value: string | undefined): string {
+  if (!value) throw new Error("HTTPS public artifact mode requires a URL.");
+  return value;
+}
+
+function requireExpectedCorpusVersion(value: string | undefined): string {
+  if (!value) {
+    throw new Error("HTTPS public artifact mode requires an expected corpus version.");
+  }
   return value;
 }
