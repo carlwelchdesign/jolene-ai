@@ -19,6 +19,8 @@ import type { WorkStatusSource } from "../domain/work-status.js";
 import type { PrivateWatchedProjectSource } from "../domain/watched-project.js";
 import type { KnowledgeSource } from "../knowledge/knowledge-source.js";
 import type { CareerKnowledgeSource } from "../domain/career-retrieval.js";
+import { buildPrivateJoleneInstructions } from
+  "../personality/runtime-personality-policy.js";
 
 export interface AgentRequest {
   readonly eventId: string;
@@ -76,7 +78,10 @@ export class OpenAIJoleneRunner implements JoleneAgentRunner {
 
     const agent = new Agent({
       name: "Jolene",
-      instructions: this.options.instructions,
+      instructions: buildPrivateJoleneInstructions(
+        this.options.instructions,
+        request.channelKind,
+      ),
       model: this.options.model,
       tools,
     });

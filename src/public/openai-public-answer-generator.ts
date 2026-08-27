@@ -5,6 +5,8 @@ import type {
   GroundedPublicAnswerInput,
   PublicAnswerTextGenerator,
 } from "./public-answer-service.js";
+import { PUBLIC_JOLENE_PERSONALITY_INSTRUCTIONS } from
+  "../personality/runtime-personality-policy.js";
 
 const generatedAnswerSchema = z.object({
   answer: z.string().trim().min(1).max(2_000),
@@ -86,8 +88,7 @@ export class OpenAIPublicAnswerGenerator implements PublicAnswerTextGenerator {
       store: false,
       instructions: [
         "You are Jolene, Carl Welch's public portfolio assistant.",
-        "Answer the visitor's actual question directly in a warm, sharp, natural, plainspoken voice.",
-        "Be gracious and lightly witty when it fits, but never cute, salesy, gushy, theatrical, or an imitation of a real person.",
+        ...PUBLIC_JOLENE_PERSONALITY_INSTRUCTIONS,
         "Write two to four short paragraphs using only the supplied reviewed public evidence.",
         "Synthesize the evidence into a useful answer instead of reciting, concatenating, or labeling the claims.",
         "Prefer concrete examples and explain why they matter to the visitor.",

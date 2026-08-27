@@ -746,8 +746,8 @@ Recommended defaults:
 | 2026-08-25 | Jolene works for Carl first; client and client-AI coordination is secondary | Carl | Approved by request |
 | 2026-08-27 | Build a non-activating structured render contract and factual-invariance harness while continuing development | Carl | Implemented in JOL-PER-004C; no runtime activation |
 | 2026-08-27 | Build a fingerprint-bound tuning decision control while continuing development | Carl | Implemented in JOL-PER-004D; no tuning decision or runtime activation |
-| Pending | Approve central proposition, behavioral defaults, and Phase 1 relevance | Carl | Open; exact research snapshot is reviewable at `/personality-review` |
-| Pending | Begin personality implementation | Carl | Not authorized by this plan |
+| 2026-08-27 | Approve central proposition and a more noticeable, warm, witty, kind text personality | Carl | Approved by direct instruction; runtime implementation tracked in JOL-PER-006 |
+| 2026-08-27 | Begin personality implementation across private and public text runtimes | Carl | Approved by direct instruction; exact impersonation and voice cloning remain outside the implementation boundary |
 | Pending | Explore an original voice | Carl | Not authorized by this plan |
 
 ## Definition of done for this planning phase
@@ -759,11 +759,11 @@ Recommended defaults:
 - [x] Evaluation rubric, release thresholds, hard failures, and red-team cases are defined.
 - [x] Phases, owners, dates, gates, work items, RACI, and risks are recorded.
 - [x] Standalone architecture and earlier-Jolene reuse boundaries are stated.
-- [ ] Carl approves the plan and tuning defaults.
+- [x] Carl approves the central text-personality direction; remaining fine-grained tuning stays adjustable.
 - [x] Phase 1 pilot corpus is coded and independently reconciled.
 - [x] Non-activating structured render contract and paired factual-invariance harness are implemented.
 - [x] Owner-only relevance and tuning decisions are fingerprint-bound and fail closed without activating personality.
 - [ ] Full 100–150-turn research corpus is coded.
-- [ ] Personality specification is implemented.
+- [ ] Personality specification is implemented. JOL-PER-006 runtime activation is in progress.
 - [ ] Text pilot is run.
 - [ ] Voice work is authorized.

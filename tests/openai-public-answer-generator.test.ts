@@ -41,7 +41,7 @@ describe("OpenAI public answer generator", () => {
     });
     expect(request).not.toHaveProperty("tools");
     expect(request.instructions).toEqual(expect.stringContaining(
-      "Answer the visitor's actual question directly",
+      "Lead with the direct answer",
     ));
     expect(request.instructions).toEqual(expect.stringContaining(
       "Synthesize the evidence",
@@ -51,6 +51,12 @@ describe("OpenAI public answer generator", () => {
     ));
     expect(request.instructions).toEqual(expect.stringContaining(
       "not evidence that weaknesses do not exist",
+    ));
+    expect(request.instructions).toEqual(expect.stringContaining(
+      "not a press release",
+    ));
+    expect(request.instructions).toEqual(expect.stringContaining(
+      "credible role-fit risks or unknowns",
     ));
     expect(request.instructions).toEqual(expect.not.stringContaining(
       "Dolly Parton",
