@@ -66,7 +66,10 @@ export const excludedSamplingUnitSchema = z.object({
   "Excluded source-unit range is reversed");
 
 export const sourceSelectionLedgerSchema = z.object({
-  schemaVersion: z.literal("jolene.personality-source-selection-ledger.v2"),
+  schemaVersion: z.enum([
+    "jolene.personality-source-selection-ledger.v2",
+    "jolene.personality-source-selection-ledger.v3",
+  ]),
   samplingPlanFingerprint: sha256Schema,
   sourceRegisterFingerprint: sha256Schema,
   sourceRegisterId: z.string().regex(/^S\d{2}$/),
@@ -128,6 +131,12 @@ export function validateAndSelectPersonalityLedgerSource(
   }
   const plan = snapshot.plan;
   const ledger = sourceSelectionLedgerSchema.parse(ledgerInput);
+  const expectedLedgerVersion = snapshot.schemaVersion.endsWith(".v3")
+    ? "jolene.personality-source-selection-ledger.v3"
+    : "jolene.personality-source-selection-ledger.v2";
+  if (ledger.schemaVersion !== expectedLedgerVersion) {
+    throw new Error("Selection ledger version does not match the sampling plan");
+  }
   const allocation = plan.source_allocations.find(
     (candidate) => candidate.source_register_id === ledger.sourceRegisterId,
   );
