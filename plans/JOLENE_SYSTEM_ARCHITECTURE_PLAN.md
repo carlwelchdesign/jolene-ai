@@ -1065,6 +1065,7 @@ Private public-operations checkpoint:
 |---|---|
 | Asana | [JOL-CAREER-005M](https://app.asana.com/1/9789386902387/project/1216473233375594/task/1217889674883596) |
 | Branch | `codex/jol-career-005m-operations-plane` |
+| Implementation commit | `1a364af` (`JOL-CAREER-005M add private operations plane`) |
 | Listener boundary | A second configurable listener defaults to loopback port `8432`; the reference Compose project does not publish it, and the frozen portfolio API on `8431` remains unchanged |
 | Readiness boundary | Strict liveness and readiness snapshots expose only fixed delegate, public-evidence, contact-queue, audit-ledger, and optional model-budget states; probe failures collapse to a generic non-disclosing state |
 | Metrics boundary | In-memory strict-schema counters retain only process times, total/in-flight/high-water counts, fixed operation/method/outcome/status dimensions, and bounded latency aggregates; no client or submitted/returned content dimension exists |
