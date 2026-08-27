@@ -643,6 +643,34 @@ The harness does not itself satisfy live-model evidence or human review. An
 authorized run, Carl's packet review, portfolio accessibility/integration,
 production controls, deployment, and launch authorization remain open.
 
+`JOL-CAREER-004A` approved-corpus checkpoint:
+
+- implementation commit: `12c7c4c` (`JOL-CAREER-004A align portfolio
+  evidence citations`), reviewed in
+  [jolene-ai #31](https://github.com/carlwelchdesign/jolene-ai/pull/31);
+- Carl's explicit statement, "I approved all the evidence," is recorded as the
+  human review decision, not as publication or deployment approval;
+- the canonical private registry now contains 38 approved active sources and
+  143 approved active claims: 41 `public_approved` and 102
+  `internal_approved`, with zero validation issues and zero unresolved
+  conflicts;
+- project citations resolve through the portfolio-owned evidence anchors at
+  `/work/{slug}#evidence`; repository and live-project URLs remain portfolio
+  metadata and are not exported as delegate citation destinations;
+- the generated public-only artifact is stored at the ignored local boundary
+  `.jolene/exports/public-career-evidence.json`, schema `1.0.0`, with 41 public
+  claims and no revocations; corpus hash
+  `sha256:3d3b0d7361be5cfae3c634013bc48b73983388d3207d8f9b7bb1aaf50fa5c5de`,
+  generated `2026-08-27T00:42:53.419Z` from evidence last reviewed
+  `2026-08-27T00:38:07.748Z`; and
+- generating and reviewing this artifact does not create a live endpoint,
+  integrate the portfolio, authorize deployment, or publish the corpus.
+
+Node 24 verification passes 46 test files and 302 tests, the frozen offline
+suite passes 41 of 41 cases and 24 of 24 blocker metrics, and build, Compose,
+production dependency audit, diff, artifact-integrity, citation, and disclosure
+checks pass. The existing private API and Slack containers remained running.
+
 ### JOL-CAREER-007 — Private MCP adapter
 
 - Add only after the evidence service contract is stable.
