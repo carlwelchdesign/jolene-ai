@@ -7,6 +7,7 @@ import { chatRequestSchema } from "./application/jolene-service.js";
 import { loadConfig } from "./config.js";
 import { ActionProposalPolicyError } from "./application/action-approval-service.js";
 import { CareerEvidenceScopeError } from "./application/career-evidence-service.js";
+import { ClientAiTaskPacketPolicyError } from "./application/client-ai-task-packet-service.js";
 import { ContactIntentReviewScopeError } from "./application/contact-intent-review-service.js";
 import {
   PublicLiveModelReviewConflictError,
@@ -21,6 +22,13 @@ import {
   ActionProposalNotFoundError,
 } from "./domain/action-approval.js";
 import { listCapabilities } from "./domain/capability-registry.js";
+import {
+  ClientAiPacketConflictError,
+  ClientAiPacketExpiredError,
+  ClientAiPacketNotFoundError,
+  ClientAiPacketPayloadMismatchError,
+  ClientAiRecipientNotFoundError,
+} from "./domain/client-ai-task-packet.js";
 import {
   PersonalWorkflowConflictError,
   PersonalWorkflowNotFoundError,
@@ -210,6 +218,64 @@ async function handleRequest(
 
   if (request.method === "GET" && url.pathname === "/v1/capabilities") {
     sendJson(response, 200, listCapabilities());
+    return;
+  }
+
+  if (request.method === "GET" && url.pathname === "/v1/client-ai-recipients") {
+    sendJson(response, 200, application.clientAiPackets.recipients());
+    return;
+  }
+
+  if (request.method === "GET" && url.pathname === "/v1/client-ai-packets") {
+    sendJson(response, 200, application.clientAiPackets.list({
+      limit: url.searchParams.get("limit") ?? undefined,
+    }));
+    return;
+  }
+
+  if (request.method === "POST" && url.pathname === "/v1/client-ai-packets") {
+    assertSameOrigin(request.headers);
+    sendJson(response, 201, application.clientAiPackets.create(await readJson(request)));
+    return;
+  }
+
+  const clientAiPacketMatch = url.pathname.match(
+    /^\/v1\/client-ai-packets\/([^/]+)$/,
+  );
+  if (request.method === "GET" && clientAiPacketMatch?.[1]) {
+    sendJson(response, 200, application.clientAiPackets.get({ id: clientAiPacketMatch[1] }));
+    return;
+  }
+
+  const clientAiPacketActionMatch = url.pathname.match(
+    /^\/v1\/client-ai-packets\/([^/]+)\/(decision|cancel|handoff)$/,
+  );
+  if (request.method === "POST" && clientAiPacketActionMatch?.[1] && clientAiPacketActionMatch[2]) {
+    assertSameOrigin(request.headers);
+    const input = withIdentifier(await readJson(request), clientAiPacketActionMatch[1]);
+    const result = clientAiPacketActionMatch[2] === "decision"
+      ? application.clientAiPackets.decide(input)
+      : clientAiPacketActionMatch[2] === "cancel"
+        ? application.clientAiPackets.cancel(input)
+        : application.clientAiPackets.submitHandoff(input);
+    sendJson(response, 200, result);
+    return;
+  }
+
+  const clientAiHandoffReviewMatch = url.pathname.match(
+    /^\/v1\/client-ai-packets\/([^/]+)\/handoffs\/([^/]+)\/review$/,
+  );
+  if (
+    request.method === "POST" &&
+    clientAiHandoffReviewMatch?.[1] &&
+    clientAiHandoffReviewMatch[2]
+  ) {
+    assertSameOrigin(request.headers);
+    sendJson(response, 200, application.clientAiPackets.reviewHandoff({
+      ...asObject(await readJson(request)),
+      id: clientAiHandoffReviewMatch[1],
+      handoffId: clientAiHandoffReviewMatch[2],
+    }));
     return;
   }
 
@@ -756,6 +822,8 @@ function handleError(error: unknown, response: ServerResponse): void {
     error instanceof WatchedProjectNotFoundError ||
     error instanceof CareerEvidenceNotFoundError ||
     error instanceof PublicContactIntentNotFoundError
+    || error instanceof ClientAiPacketNotFoundError
+    || error instanceof ClientAiRecipientNotFoundError
   ) {
     sendJson(response, 404, { error: "not_found" });
     return;
@@ -777,6 +845,8 @@ function handleError(error: unknown, response: ServerResponse): void {
     error instanceof PersonalWorkflowConflictError
     || error instanceof WatchedProjectMonitorConflictError
     || error instanceof PrivateBriefingConflictError
+    || error instanceof ClientAiPacketConflictError
+    || error instanceof ClientAiPacketPayloadMismatchError
   ) {
     sendJson(response, 409, { error: "action_conflict" });
     return;
@@ -787,8 +857,18 @@ function handleError(error: unknown, response: ServerResponse): void {
     return;
   }
 
+  if (error instanceof ClientAiPacketExpiredError) {
+    sendJson(response, 410, { error: "client_ai_packet_expired" });
+    return;
+  }
+
   if (error instanceof ActionProposalPolicyError) {
     sendJson(response, 403, { error: "action_not_permitted" });
+    return;
+  }
+
+  if (error instanceof ClientAiTaskPacketPolicyError) {
+    sendJson(response, 422, { error: "client_ai_packet_policy_blocked" });
     return;
   }
 

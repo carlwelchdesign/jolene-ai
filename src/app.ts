@@ -4,6 +4,7 @@ import path from "node:path";
 import { OpenAIJoleneRunner } from "./agent/agent-runner.js";
 import { ActionApprovalService } from "./application/action-approval-service.js";
 import { CareerEvidenceService } from "./application/career-evidence-service.js";
+import { ClientAiTaskPacketService } from "./application/client-ai-task-packet-service.js";
 import { ContactIntentReviewService } from "./application/contact-intent-review-service.js";
 import { PublicLiveModelReviewService } from "./application/public-live-model-review-service.js";
 import { CareerRetrievalService } from "./application/career-retrieval-service.js";
@@ -37,6 +38,7 @@ import { SqliteActionApprovalStore } from "./persistence/sqlite-action-approval-
 import { SqliteCareerEvidenceStore } from "./persistence/sqlite-career-evidence-store.js";
 import { SqliteCareerRetrievalAuditStore } from "./persistence/sqlite-career-retrieval-audit-store.js";
 import { SqliteCareerRetrievalIndex } from "./persistence/sqlite-career-retrieval-index.js";
+import { SqliteClientAiTaskPacketStore } from "./persistence/sqlite-client-ai-task-packet-store.js";
 import { SqliteKnowledgeAccessStore } from "./persistence/sqlite-knowledge-access-store.js";
 import { SqlitePersonalWorkflowStore } from "./persistence/sqlite-personal-workflow-store.js";
 import { SqlitePrivateBriefingStore } from "./persistence/sqlite-private-briefing-store.js";
@@ -54,6 +56,7 @@ export interface JoleneApplication {
   readonly actionApprovals: ActionApprovalService;
   readonly careerEvidence: CareerEvidenceService;
   readonly careerRetrieval: CareerRetrievalService;
+  readonly clientAiPackets: ClientAiTaskPacketService;
   readonly contactIntents: ContactIntentReviewService;
   readonly publicLiveModelReview: PublicLiveModelReviewService;
   readonly workflows: PersonalWorkflowService;
@@ -134,6 +137,12 @@ export async function createApplication(
   await contactQueue.initialize();
   const workStatus = new WorkStatusService(workStore, personalWorkflowStore);
   const actionApprovals = new ActionApprovalService(actionApprovalStore, workStore);
+  const clientAiPackets = new ClientAiTaskPacketService(
+    new SqliteClientAiTaskPacketStore(config.databasePath),
+    workStore,
+    actionApprovals,
+    ownerScope,
+  );
   const privateBriefing = new PrivateBriefingService(
     config.privateBriefing,
     new SqlitePrivateBriefingStore(config.databasePath),
@@ -175,6 +184,7 @@ export async function createApplication(
       workspaceId: config.careerWorkspaceId,
     }),
     careerRetrieval,
+    clientAiPackets,
     contactIntents: new ContactIntentReviewService(contactQueue, ownerScope),
     publicLiveModelReview: new PublicLiveModelReviewService(
       new FilePublicLiveModelReviewStore({
@@ -202,6 +212,7 @@ export async function createApplication(
       careerEvidenceStore.close();
       careerRetrievalIndex.close();
       careerRetrievalAuditStore.close();
+      clientAiPackets.close();
       personalWorkflowStore.close();
       privateBriefing.close();
       projectMonitoring.close();
