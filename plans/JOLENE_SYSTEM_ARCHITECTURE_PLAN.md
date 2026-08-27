@@ -718,6 +718,7 @@ Bounded private-owner briefing checkpoint:
 | Asana | [JOL-ARCH-008E](https://app.asana.com/1/9789386902387/project/1216473233375594/task/1217890372222685) |
 | Branch | `codex/jol-arch-008e-owner-briefings` |
 | Implementation commit | `4ec5e30` (`JOL-ARCH-008E add owner morning briefings`) |
+| Pull request | [#42](https://github.com/carlwelchdesign/jolene-ai/pull/42) |
 | Scope | An explicitly enabled daily or weekly wall-clock schedule creates a deterministic minimized briefing for Carl's canonical private work scope and can deliver it only to the configured Slack owner DM. |
 | Scheduling evidence | First activation chooses the next future occurrence. SQLite preserves overdue work, one-per-day budget, terminal delivery count, pause state, exact generated message, bounded history and retries, and transactional single-claim behavior across restart and multiple connections. IANA time-zone evaluation retains the configured local time across daylight-saving changes. |
 | Safety evidence | The briefing contains bounded task titles/statuses, workflow counts, aggregate pending approval count, watched-project labels/fixed alerts, and a loopback URL. It excludes objectives, workflow events, approval payloads/destinations, vault/career/contact content, paths, diffs, revisions, credentials, Slack IDs, raw errors, model output, arbitrary recipients, and arbitrary messages. Stored labels cannot create Slack mentions. |
