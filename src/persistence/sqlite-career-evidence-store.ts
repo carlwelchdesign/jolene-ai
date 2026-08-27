@@ -172,6 +172,7 @@ export class SqliteCareerEvidenceStore implements CareerEvidenceStore {
     assertSourceInput(input);
     const current = this.findSource(input.id, input.actorId, input.workspaceId);
     const now = this.now().toISOString();
+    const capturedAt = normalizeTimestamp(input.capturedAt, "capturedAt");
     const metadataJson = JSON.stringify(normalizeSourceMetadata(input.metadata));
 
     if (!current) {
@@ -190,7 +191,7 @@ export class SqliteCareerEvidenceStore implements CareerEvidenceStore {
         input.provenanceRef,
         input.provenanceUri,
         input.sourceHash,
-        normalizeTimestamp(input.capturedAt, "capturedAt"),
+        capturedAt,
         metadataJson,
         now,
         now,
@@ -198,15 +199,14 @@ export class SqliteCareerEvidenceStore implements CareerEvidenceStore {
       return this.requireSource(input.id, input.actorId, input.workspaceId);
     }
 
-    const changed = current.sourceHash !== input.sourceHash ||
+    const contentChanged = current.sourceHash !== input.sourceHash ||
       current.title !== input.title ||
       current.sourceType !== input.sourceType ||
       current.provenanceRef !== input.provenanceRef ||
       current.provenanceUri !== input.provenanceUri ||
-      current.capturedAt !== normalizeTimestamp(input.capturedAt, "capturedAt") ||
       JSON.stringify(current.metadata) !== metadataJson;
 
-    if (changed || current.state === "missing") {
+    if (contentChanged || current.state === "missing") {
       const update = this.database.transaction(() => {
         this.database.prepare(
           `UPDATE career_sources
@@ -223,7 +223,7 @@ export class SqliteCareerEvidenceStore implements CareerEvidenceStore {
           input.provenanceRef,
           input.provenanceUri,
           input.sourceHash,
-          normalizeTimestamp(input.capturedAt, "capturedAt"),
+          capturedAt,
           metadataJson,
           now,
           input.id,
@@ -237,6 +237,20 @@ export class SqliteCareerEvidenceStore implements CareerEvidenceStore {
         );
       });
       update();
+    } else if (
+      current.state === "active" &&
+      new Date(capturedAt) > new Date(current.capturedAt)
+    ) {
+      this.database.prepare(
+        `UPDATE career_sources SET captured_at = ?, updated_at = ?
+         WHERE id = ? AND actor_id = ? AND workspace_id = ?`,
+      ).run(
+        capturedAt,
+        now,
+        input.id,
+        input.actorId,
+        input.workspaceId,
+      );
     }
 
     return this.requireSource(input.id, input.actorId, input.workspaceId);
@@ -1409,7 +1423,16 @@ function claimMatches(
     claim.proposition === input.proposition &&
     claim.contribution === input.contribution &&
     claim.maturity === input.maturity &&
-    claim.visibility === visibility;
+    importVisibilityMatches(claim.visibility, visibility);
+}
+
+function importVisibilityMatches(
+  current: CareerVisibility,
+  proposed: CareerVisibility,
+): boolean {
+  return current === proposed ||
+    (current === "public_approved" && proposed === "public_candidate") ||
+    (current === "internal_approved" && proposed === "private");
 }
 
 function assertSourceInput(input: UpsertCareerSourceInput): void {

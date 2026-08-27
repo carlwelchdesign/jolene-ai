@@ -10,6 +10,7 @@
   "scripts": {
     "build": "npm run clean && tsc -p tsconfig.build.json",
     "career:import-portfolio": "tsx scripts/import-portfolio-evidence.ts",
+    "career:import-portfolio:audit": "tsx scripts/import-portfolio-evidence.ts --audit",
     "career:import-obsidian": "tsx scripts/import-obsidian-career.ts",
     "career:index": "tsx scripts/index-career-evidence.ts",
     "career:index:lexical": "tsx src/career-index.ts",

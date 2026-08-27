@@ -589,6 +589,43 @@ describe("PortfolioEvidenceImporter", () => {
     }
   });
 
+  it("preserves explicit approvals when unchanged portfolio evidence is recaptured", () => {
+    const store = new SqliteCareerEvidenceStore(":memory:", () => fixedNow);
+    try {
+      const importer = new PortfolioEvidenceImporter(store);
+      importer.import(portfolioImportInput());
+      for (const source of store.listSources(scope)) {
+        store.decideSource({
+          ...scope,
+          id: source.id,
+          decision: "approved",
+          reviewerId: "carl",
+        });
+      }
+      const approvedIds = store.listClaims(scope).map((claim) =>
+        approvePublic(store, claim.sourceId, claim.id).id
+      ).sort();
+
+      const recaptured = portfolioImportInput();
+      const report = importer.import({
+        ...recaptured,
+        capturedAt: "2026-08-27T08:00:00.000Z",
+      });
+
+      expect(report.publicClaimCount).toBe(6);
+      expect(store.listSources(scope).every((source) =>
+        source.reviewState === "approved" &&
+        source.capturedAt === "2026-08-27T08:00:00.000Z"
+      )).toBe(true);
+      expect(store.listClaims(scope).filter((claim) => claim.state === "active")
+        .map((claim) => claim.id).sort()).toEqual(approvedIds);
+      expect(store.listClaims(scope).filter((claim) => claim.state === "superseded"))
+        .toEqual([]);
+    } finally {
+      store.close();
+    }
+  });
+
   it("supersedes a changed portfolio claim instead of mutating reviewed history", () => {
     const store = new SqliteCareerEvidenceStore(":memory:", () => fixedNow);
     try {

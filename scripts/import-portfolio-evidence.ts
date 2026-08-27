@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import ts from "typescript";
 
 import { PortfolioEvidenceImporter } from "../src/application/portfolio-evidence-importer.js";
+import { runPortfolioEvidenceImportAudit } from "../src/application/portfolio-evidence-import-audit.js";
 import { SqliteCareerEvidenceStore } from "../src/persistence/sqlite-career-evidence-store.js";
 
 dotenv.config({ path: path.resolve(process.cwd(), ".env.local"), quiet: true });
@@ -33,22 +34,29 @@ const [portfolio, recommendations, capabilities, timestamps] = await Promise.all
   ]),
 ]);
 
-const store = new SqliteCareerEvidenceStore(databasePath);
-try {
-  const report = new PortfolioEvidenceImporter(store).import({
-    actorId: process.env.JOLENE_OWNER_ACTOR_ID ?? "carl",
-    workspaceId: process.env.JOLENE_CAREER_WORKSPACE_ID ?? "professional",
-    capturedAt: new Date(Math.max(...timestamps.map((entry) => entry.mtimeMs))).toISOString(),
-    snapshot: {
-      projects: portfolio.projects,
-      experience: portfolio.experience,
-      recommendations: recommendations.recommendations,
-      capabilities: capabilities.capabilities,
-    },
-  });
-  process.stdout.write(`${JSON.stringify({ databasePath, portfolioRoot, ...report }, null, 2)}\n`);
-} finally {
-  store.close();
+const importInput = {
+  actorId: process.env.JOLENE_OWNER_ACTOR_ID ?? "carl",
+  workspaceId: process.env.JOLENE_CAREER_WORKSPACE_ID ?? "professional",
+  capturedAt: new Date(Math.max(...timestamps.map((entry) => entry.mtimeMs))).toISOString(),
+  snapshot: {
+    projects: portfolio.projects,
+    experience: portfolio.experience,
+    recommendations: recommendations.recommendations,
+    capabilities: capabilities.capabilities,
+  },
+};
+
+if (process.argv.includes("--audit")) {
+  const report = await runPortfolioEvidenceImportAudit({ databasePath, importInput });
+  process.stdout.write(`${JSON.stringify(report, null, 2)}\n`);
+} else {
+  const store = new SqliteCareerEvidenceStore(databasePath);
+  try {
+    const report = new PortfolioEvidenceImporter(store).import(importInput);
+    process.stdout.write(`${JSON.stringify({ databasePath, portfolioRoot, ...report }, null, 2)}\n`);
+  } finally {
+    store.close();
+  }
 }
 
 async function loadTypescriptData(filePath: string): Promise<Record<string, unknown>> {

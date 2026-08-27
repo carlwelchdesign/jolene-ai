@@ -140,8 +140,18 @@ JOLENE_CAREER_WORKSPACE_ID=professional
 Then run:
 
 ```bash
+npm run career:import-portfolio:audit
 npm run career:import-portfolio
 ```
+
+Run the audit before every canonical import. It creates a SQLite-native temporary
+backup, imports into that disposable clone, reports only aggregate approval and
+validation counts, and deletes the clone. It never mutates the configured source
+database or emits claim, source, or portfolio prose. A later capture timestamp by
+itself does not invalidate an unchanged approved source, and an unchanged reviewed
+claim retains its explicit `public_approved` or `internal_approved` decision.
+Actual source, proposition, contribution, maturity, citation, or metadata changes
+still fail closed into review-required state.
 
 Run this development migration from the source checkout, not from the pruned
 runtime container.
@@ -154,6 +164,14 @@ prior claim as `superseded`; unchanged reruns do not duplicate records.
 The existing recommendation collection remains candidate evidence. Import does
 not resolve its official-source reconciliation, publication rights, or Carl's
 record-level approval.
+
+The 2026-08-27 `JOL-PUBLIC-010` dry run used the current portfolio `origin/main`
+snapshot and the latest external canonical backup. The source database remained
+byte-for-byte unchanged. Of 41 previously eligible public claims, 14 would remain
+immediately eligible; 12 changed sources and 6 changed claims require fresh human
+review. The report exposed only those counts and fixed validation codes. No
+canonical import, approval decision, artifact replacement, endpoint change, or
+deployment occurred.
 
 ## Current local migration evidence
 
