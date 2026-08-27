@@ -262,6 +262,9 @@ describe("PortfolioEvidenceImporter", () => {
       expect(second).toEqual(first);
       expect(store.listSources(scope).every((source) => source.reviewState === "needs_review"))
         .toBe(true);
+      expect(store.listSources(scope).find((source) =>
+        source.id === "portfolio:project:sample"
+      )?.provenanceUri).toBe("/work/sample#evidence");
       expect(store.listClaims(scope).every((claim) =>
         claim.visibility === "public_candidate" && claim.reviewState === "needs_review"
       )).toBe(true);

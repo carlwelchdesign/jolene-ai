@@ -105,7 +105,7 @@ export class PortfolioEvidenceImporter {
         sourceType: "project",
         title: project.name,
         provenanceRef: `site/app/portfolio-data.ts#projects.${project.slug}`,
-        provenanceUri: project.liveUrl ?? project.repositoryUrl,
+        provenanceUri: `/work/${encodeURIComponent(project.slug)}#evidence`,
         sourceHash: hashRecord(project),
         capturedAt,
       });
