@@ -7,11 +7,15 @@ import { careerMaturitySchema } from "./career-evidence.js";
 export const PUBLIC_CAREER_EVIDENCE_SCHEMA_VERSION = "1.0.0" as const;
 
 const isoTimestampSchema = z.string().datetime({ offset: true });
-const evidenceStrengthSchema = z.enum(["strong", "moderate", "limited"]);
-const careerEvidenceIdSchema = z.string().regex(
+export const evidenceStrengthSchema = z.enum([
+  "strong",
+  "moderate",
+  "limited",
+]);
+export const careerEvidenceIdSchema = z.string().regex(
   /^career:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/,
 );
-const publicSourceTypeSchema = z.enum([
+export const publicSourceTypeSchema = z.enum([
   "resume",
   "employer_history",
   "recommendation",

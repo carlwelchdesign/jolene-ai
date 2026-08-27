@@ -2,7 +2,7 @@
 
 **Date:** 2026-08-25
 
-**Status:** Docker API, governed career ingestion, private hybrid retrieval, public export, and a loopback manifest boundary implemented; public portfolio answers and deployment pending
+**Status:** Docker API, governed career ingestion, private hybrid retrieval, public export, and loopback manifest/deterministic-answer boundaries implemented; model-backed public answers and deployment pending
 
 ## Product outcome
 
@@ -29,7 +29,7 @@ chatbot.
 | MCP | Not implemented |
 | Graph database / GraphRAG | Not implemented |
 | Durable private memory | Implemented through explicit proposals and approval |
-| Public portfolio evidence boundary | Versioned deny-by-default export and isolated loopback manifest contract implemented; public answers and deployment remain disabled |
+| Public portfolio evidence boundary | Versioned deny-by-default export plus isolated loopback manifest and deterministic evidence-answer contracts implemented; model answers, portfolio integration, and deployment remain disabled |
 | Docker | Image and API container verified; Slack operational cutover and production deployment remain pending |
 | Career evidence registry | Implemented with sources, claims, relationships, review freshness, visibility, revocation, and supersession |
 | Portfolio candidate migration | Implemented; 26 sources, 41 active claims, and 57 relationships imported with zero public-approved claims |
@@ -356,13 +356,17 @@ Verification checkpoint:
 
 - The isolated local process boundary and frozen v1 manifest route are
   implemented in `JOL-CAREER-005A`.
+- Deterministic, citation-complete public evidence answers are implemented in
+  `JOL-CAREER-005B`; unsupported questions fail to an explicit no-evidence
+  response.
 - Implement recruiter questions and job-description comparison in the
   isolated Jolene public service, consumed by the portfolio adapter.
 - Use only the public evidence export.
 - Add rate limits, cost ceilings, input limits, redaction, and a kill switch.
 
-`JOL-CAREER-005A` does not complete this ticket: it has no answer, job-fit,
-contact-intent, CORS, public binding, container service, or deployment path.
+`JOL-CAREER-005A/B` do not complete this ticket: there is no model-backed
+answer generation, job-fit, contact-intent, CORS, public binding, container
+service, portfolio integration, or deployment path.
 
 ### JOL-CAREER-006 — Evaluation and launch gates
 

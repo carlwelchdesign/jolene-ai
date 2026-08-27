@@ -6,12 +6,14 @@ import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 
 import { FilePublicArtifactSource } from "../src/public/public-artifact-source.js";
+import { DeterministicPublicAnswerService } from "../src/public/public-answer-service.js";
 import {
   parsePublicDelegateConfig,
 } from "../src/public/public-config.js";
 import {
   createPublicDelegateServer,
 } from "../src/public/public-delegate-server.js";
+import { createPublicEvidenceArtifact } from "./helpers/public-evidence-fixture.js";
 
 const temporaryDirectories: string[] = [];
 const openServers: ReturnType<typeof createPublicDelegateServer>[] = [];
@@ -86,6 +88,120 @@ describe("public delegate manifest boundary", () => {
     });
   });
 
+  it("serves a frozen-contract answer from matching public evidence", async () => {
+    const artifact = createPublicEvidenceArtifact();
+    const { baseUrl } = await start(await writeArtifact(artifact));
+
+    const response = await fetch(`${baseUrl}/v1/portfolio/answer`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        question: "What React systems has Carl built?",
+        sessionToken: "test-session",
+      }),
+    });
+    const body = await response.json() as Record<string, unknown>;
+
+    expect(response.status).toBe(200);
+    expect(body).toMatchObject({
+      schemaVersion: "1.0.0",
+      corpusVersion: artifact.manifest.corpusVersion,
+      sessionToken: "test-session",
+    });
+    expect(body.claims).toEqual([artifact.evidence[0]?.claim]);
+    expect(body.citations).toEqual([artifact.evidence[0]?.citation]);
+    expect(body).not.toHaveProperty("question");
+    expect(String(body.answer)).not.toContain(
+      "What React systems has Carl built?",
+    );
+  });
+
+  it("returns the contract no-evidence state for an empty public corpus", async () => {
+    const fixture = await loadFixture();
+    const { baseUrl } = await start(await writeArtifact(fixture));
+
+    const response = await fetch(`${baseUrl}/v1/portfolio/answer`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ question: "What systems has Carl built?" }),
+    });
+    const body = await response.json() as {
+      readonly claims: readonly unknown[];
+      readonly citations: readonly unknown[];
+      readonly limitations: readonly string[];
+    };
+
+    expect(response.status).toBe(200);
+    expect(body.claims).toEqual([]);
+    expect(body.citations).toEqual([]);
+    expect(body.limitations).toEqual([
+      "No matching public-approved evidence was available.",
+    ]);
+  });
+
+  it.each([
+    ["invalid JSON", "application/json", "{invalid", 400, "invalid_json"],
+    [
+      "wrong content type",
+      "text/plain",
+      JSON.stringify({ question: "Valid question" }),
+      415,
+      "unsupported_media_type",
+    ],
+    [
+      "oversized question",
+      "application/json",
+      JSON.stringify({ question: "x".repeat(801) }),
+      400,
+      "invalid_request",
+    ],
+    [
+      "extra field",
+      "application/json",
+      JSON.stringify({ question: "Valid question", extra: true }),
+      400,
+      "invalid_request",
+    ],
+    [
+      "oversized body",
+      "application/json",
+      JSON.stringify({ question: "Valid", padding: "x".repeat(17_000) }),
+      413,
+      "payload_too_large",
+    ],
+  ])("rejects %s", async (_name, contentType, body, status, code) => {
+    const { baseUrl } = await start(
+      path.join(await temporaryDirectory(), "missing.json"),
+    );
+
+    const response = await fetch(`${baseUrl}/v1/portfolio/answer`, {
+      method: "POST",
+      headers: { "content-type": contentType },
+      body,
+    });
+
+    expect(response.status).toBe(status);
+    expect(await response.json()).toEqual({ error: code });
+  });
+
+  it("fails closed when valid answer input has no valid artifact", async () => {
+    const { baseUrl } = await start(
+      path.join(await temporaryDirectory(), "missing.json"),
+    );
+
+    const response = await fetch(`${baseUrl}/v1/portfolio/answer`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ question: "What has Carl built?" }),
+    });
+
+    expect(response.status).toBe(503);
+    expect(await response.json()).toEqual({
+      status: "unavailable",
+      error: "public_evidence_unavailable",
+    });
+  });
+
   it.each([
     "missing",
     "malformed",
@@ -135,12 +251,15 @@ describe("public delegate manifest boundary", () => {
       method: "POST",
     });
     const unknown = await fetch(`${baseUrl}/v1/private-memory`);
+    const answerMethod = await fetch(`${baseUrl}/v1/portfolio/answer`);
 
     expect(method.status).toBe(405);
     expect(method.headers.get("allow")).toBe("GET");
     expect(await method.json()).toEqual({ error: "method_not_allowed" });
     expect(unknown.status).toBe(404);
     expect(await unknown.json()).toEqual({ error: "not_found" });
+    expect(answerMethod.status).toBe(405);
+    expect(answerMethod.headers.get("allow")).toBe("POST");
   });
 
   it("bounds request URLs before reading evidence", async () => {
@@ -175,6 +294,7 @@ describe("public delegate manifest boundary", () => {
       "src/public-server.ts",
       "src/public/public-config.ts",
       "src/public/public-artifact-source.ts",
+      "src/public/public-answer-service.ts",
       "src/public/public-delegate-server.ts",
     ];
     const source = (await Promise.all(
@@ -227,6 +347,7 @@ async function temporaryDirectory(): Promise<string> {
 async function start(artifactPath: string): Promise<{ readonly baseUrl: string }> {
   const server = createPublicDelegateServer({
     artifacts: new FilePublicArtifactSource(artifactPath),
+    answers: new DeterministicPublicAnswerService(),
   });
   openServers.push(server);
   server.listen(0, "127.0.0.1");
