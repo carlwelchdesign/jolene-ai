@@ -77,9 +77,13 @@ The first runnable slice provides:
   content-free request metrics;
 - a deterministic public-response disclosure guard that replaces unsafe egress
   with a generic fail-closed response before content leaves the process;
-- optional disabled-by-default grounded OpenAI answer synthesis that can change
-  only answer prose, sends only selected public evidence, and falls back exactly
-  to the deterministic response on provider or validation failure;
+- isolated hosted grounded OpenAI answer synthesis that can change only answer
+  prose, sends only selected public evidence, and falls back exactly to the
+  deterministic response on provider or validation failure;
+- optional public hybrid RAG that embeds only the 41-record public artifact,
+  caches those vectors per warm runtime, fuses semantic and deterministic
+  ranking, and never connects the public delegate to private SQLite, Obsidian,
+  memory, graph traversal, or MCP;
 - a versioned offline public-delegate evaluation harness with precommitted
   blocker thresholds, deterministic/fake-provider fixtures, real
   evidence-lifecycle/export and contact-staging scenarios, red-team egress
@@ -95,18 +99,18 @@ The Slack adapter is active for a local pilot, with live mention-and-reply behav
 The conversational Obsidian bridge still uses deterministic lexical retrieval.
 The governed career registry now has a separate private hybrid retrieval path;
 only current owner-approved sources and claims are eligible. The versioned
-export remains a local ignored artifact. A separate
-loopback-only reference process can serve its validated manifest and bounded
-deterministic answers and job-fit comparisons from exact exported claims.
+export remains a local ignored artifact. An isolated hosted public process
+serves its validated manifest, grounded answers, and job-fit comparisons from
+exact exported claims.
 Job-fit results distinguish unknown public evidence from missing experience and
 are not recommendations or blanket fit scores. Consented contact requests can
 be staged in a separate owner-only, retention-bounded local queue and reviewed
 through the private local service. Reply drafts remain inert in that queue; no
-outbound contact is implemented. Model-generated answer synthesis is available
-only as a disabled local evaluation mode; CORS, public hosting, and portfolio
-production enablement are not implemented. The portfolio's disabled same-origin
-adapter has been contract-tested against the loopback delegate; that local
-integration does not constitute deployment or launch.
+outbound contact is implemented. Model-generated answer synthesis and the
+same-origin portfolio BFF are deployed through an isolated bearer-authenticated
+Vercel service. The deployed public boundary still contains only the reviewed
+public artifact; private retrieval, MCP, memory, Slack, and Obsidian remain
+local and unavailable to visitors.
 The first private MCP interoperability slice is implemented as a local stdio
 adapter over approved professional evidence. It is not a remote service and has
 no write tools. See [Private professional-context MCP](docs/private-career-mcp.md)

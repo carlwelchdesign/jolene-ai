@@ -7,9 +7,10 @@ configuration, SQLite database, Obsidian vault, Slack adapter, durable memory,
 or private retrieval services. OpenAI is available only through an explicit,
 disabled-by-default answer-synthesis adapter described below.
 
-This slice verifies the frozen portfolio v1 manifest, answer, job-fit, and
-contact-intent contracts. It is not a public deployment and does not implement
-autonomous contact, CORS, or public model access.
+This boundary now backs the public portfolio through an isolated Vercel service
+and same-origin BFF. It implements the frozen portfolio v1 manifest, grounded
+answer, and job-fit contracts. It does not implement autonomous contact, direct
+browser access to the bearer service, or access to private Jolene context.
 
 ## Local configuration
 
@@ -39,10 +40,12 @@ JOLENE_PUBLIC_MAX_CONCURRENT_REQUESTS=8
 JOLENE_PUBLIC_AUTH_MODE=disabled
 JOLENE_PUBLIC_API_TOKEN=
 JOLENE_PUBLIC_ANSWER_MODE=deterministic
-JOLENE_PUBLIC_OPENAI_MODEL=gpt-5.6-terra
+JOLENE_PUBLIC_OPENAI_MODEL=gpt-5.4-mini
 JOLENE_PUBLIC_OPENAI_TIMEOUT_MS=8000
 JOLENE_PUBLIC_OPENAI_BUDGET_PATH=.jolene/public/model-budget.json
 JOLENE_PUBLIC_OPENAI_REQUESTS_PER_DAY=100
+JOLENE_PUBLIC_RETRIEVAL_MODE=deterministic
+JOLENE_PUBLIC_OPENAI_EMBEDDING_MODEL=text-embedding-3-small
 OPENAI_API_KEY=
 ```
 
@@ -167,7 +170,8 @@ functions in `api/` and `vercel.json`. The framework preset is explicitly
 Only `/health`, the three reviewed `/v1/` read/assessment operations, the
 disabled contact-intent boundary, and the approved public evidence JSON are
 deployed. Private operations, approvals, Obsidian access, SQLite, Slack, MCP,
-memory, model mode, audit files, and local contact queues are not initialized.
+memory, audit files, and local contact queues are not initialized. Model and
+embedding calls receive only visitor text plus exported public-safe evidence.
 
 Production requires `JOLENE_PUBLIC_ENABLED=true`, bearer authentication, an
 HTTPS artifact URL, and the exact expected corpus version. The public artifact
@@ -214,7 +218,8 @@ retryable response may add `retryAfterSeconds`; an artifact schema mismatch
 adds the supported schema versions. Internal adapter, provider, filesystem,
 and policy failure names never cross the public boundary.
 
-Answers use deterministic lexical overlap with stable evidence-ID tie-breaking.
+The deterministic fallback uses lexical overlap and explicit hiring-intent
+selection with stable evidence-ID tie-breaking.
 Carl's name is treated as non-discriminating so it cannot pull unrelated records
 into a specific answer. Question text is never executed or copied into the
 response. When no reviewed public claim matches—including for unsupported or
@@ -222,7 +227,7 @@ injection-like input—the service returns an explicit no-evidence response.
 Version 1 has no session field or transcript continuity; questions and job
 descriptions remain ephemeral inputs.
 
-## Optional grounded answer synthesis
+## Grounded answer synthesis and public hybrid RAG
 
 The default `JOLENE_PUBLIC_ANSWER_MODE=deterministic` makes no answer-model
 request and requires no API key. Model synthesis is enabled only when the mode
@@ -230,13 +235,18 @@ is explicitly set to `openai` and `.env.public.local` contains a non-empty
 `OPENAI_API_KEY`. The public process does not read `.env.local`, and setup does
 not copy the private service key into the public environment.
 
-Deterministic evidence selection always runs first. If no reviewed public claim
-matches, the service returns the normal no-evidence response without calling
-OpenAI. For a supported question, the provider receives only the visitor's
-question and each already-public selected claim's text, limitations, and
-citation title. It does not receive citation links, session tokens, contact
-intents, job descriptions, audit data, private paths, Obsidian content, Slack
-content, private memory, or private retrieval results.
+With `JOLENE_PUBLIC_RETRIEVAL_MODE=hybrid`, the delegate embeds the 41 approved
+public records once per warm runtime, embeds each visitor question, and combines
+semantic and deterministic ranks with reciprocal-rank fusion. This is public
+RAG without a separate vector database: the corpus is small enough for a
+bounded in-memory vector index. Provider failure falls back to deterministic
+selection. Sensitive/private-information requests bypass embeddings.
+
+For a supported question, the answer provider receives only the visitor's
+question and each selected public claim's text, limitations, and citation
+title. It does not receive citation links, session tokens, contact intents, job
+descriptions, audit data, private paths, Obsidian content, Slack content,
+private memory, private relationships, or private retrieval results.
 
 The adapter uses the Responses API with `store: false`, no tools, a bounded
 output budget, a bounded timeout, and a strict JSON schema containing only an
@@ -250,9 +260,8 @@ content.
 
 `store: false` is an API request control, not a promise about every aspect of a
 provider's processing or retention. Visitor questions remain untrusted external
-data. Model mode therefore remains a local evaluation feature until provider
-terms, prompt-injection and grounding evaluations, cost controls, and the public
-deployment topology are reviewed.
+data. Prompt-injection, grounding, cost, latency, and fallback behavior remain
+release criteria for every model or retrieval change.
 
 Model mode also requires a content-free persistent request budget. The budget
 stores only its schema version, window start, and aggregate request count. It is
@@ -381,9 +390,8 @@ All other routes return `404`; unsupported methods on known routes return
 `405`. The server bounds header size, header count, request time, keep-alive
 requests, URL length, per-client request rate, and global concurrency.
 
-These controls are appropriate for the current loopback reference process,
-not a public deployment. Origin bearer authentication now gives the portfolio
-BFF a real service credential, but the rate and concurrency controls remain
+Origin bearer authentication gives the deployed portfolio BFF a server-only
+service credential, but the rate and concurrency controls remain
 in-memory and source-address based. They reset on restart and are not a
 substitute for authenticated edge admission, distributed rate limiting, or
 the portfolio BFF controls.

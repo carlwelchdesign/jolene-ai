@@ -15,6 +15,10 @@ import { FixedWindowPublicRequestAdmission } from "./public/public-request-admis
 import { FilePublicContactIntentQueue } from "./public/public-contact-intent-queue.js";
 import { FilePublicAuditLedger } from "./public/public-audit-ledger.js";
 import { OpenAIPublicAnswerGenerator } from "./public/openai-public-answer-generator.js";
+import { OpenAIPublicEmbeddingProvider } from
+  "./public/openai-public-embedding-provider.js";
+import { HybridPublicEvidenceRetriever } from
+  "./public/public-hybrid-evidence-retriever.js";
 import {
   FilePublicModelRequestBudget,
 } from "./public/public-model-request-budget.js";
@@ -64,6 +68,16 @@ const answers = config.answerMode === "openai"
       timeoutMilliseconds: config.openaiTimeoutMilliseconds,
     }), {
       budget: activeModelBudget,
+      ...(config.retrievalMode === "hybrid"
+        ? {
+          retriever: new HybridPublicEvidenceRetriever(
+            new OpenAIPublicEmbeddingProvider(
+              config.openaiEmbeddingModel,
+              requireOpenAIApiKey(config.openaiApiKey),
+            ),
+          ),
+        }
+        : {}),
     })
   : new DeterministicPublicAnswerService();
 const contactIntents = new FilePublicContactIntentQueue({
