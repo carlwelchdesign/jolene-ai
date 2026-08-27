@@ -7,12 +7,17 @@ import {
 
 import type { PublicCareerEvidenceArtifact } from "../domain/public-career-evidence.js";
 import {
+  contactIntentRequestSchema,
   portfolioAnswerRequestSchema,
   portfolioJobFitRequestSchema,
 } from "../domain/public-portfolio-contract.js";
 import type { PublicArtifactSource } from "./public-artifact-source.js";
 import type { PublicPortfolioAnswerer } from "./public-answer-service.js";
 import type { PublicJobFitComparer } from "./public-job-fit-service.js";
+import {
+  PublicContactQueueUnavailableError,
+  type PublicContactIntentStager,
+} from "./public-contact-intent-queue.js";
 import type { PublicRequestAdmissionController } from "./public-request-admission.js";
 
 const MAX_URL_CHARACTERS = 2_048;
@@ -29,6 +34,7 @@ export interface PublicDelegateServerOptions {
   readonly artifacts: PublicArtifactSource;
   readonly answers: PublicPortfolioAnswerer;
   readonly jobFit: PublicJobFitComparer;
+  readonly contactIntents: PublicContactIntentStager;
   readonly admissions: PublicRequestAdmissionController;
 }
 
@@ -66,6 +72,13 @@ export function createPublicDelegateServer(
           sendJson(response, error.status, { error: error.code });
           return;
         }
+        if (error instanceof PublicContactQueueUnavailableError) {
+          sendJson(response, 503, {
+            status: "unavailable",
+            error: "contact_queue_unavailable",
+          });
+          return;
+        }
         sendJson(response, 503, {
           status: "unavailable",
           error: "public_evidence_unavailable",
@@ -98,7 +111,8 @@ async function handleRequest(
       pathname === "/v1/public-evidence/manifest"
     ? "GET"
     : pathname === "/v1/portfolio/answer" ||
-        pathname === "/v1/portfolio/job-fit"
+        pathname === "/v1/portfolio/job-fit" ||
+        pathname === "/v1/portfolio/contact-intent"
       ? "POST"
       : null;
 
@@ -136,6 +150,16 @@ async function handleRequest(
     throw new PublicRequestError(415, "unsupported_media_type");
   }
   const input = await readJson(request);
+  if (pathname === "/v1/portfolio/contact-intent") {
+    const parsed = contactIntentRequestSchema.safeParse(input);
+    if (!parsed.success) throw new PublicRequestError(400, "invalid_request");
+    sendJson(
+      response,
+      202,
+      await options.contactIntents.stage(parsed.data),
+    );
+    return;
+  }
   if (pathname === "/v1/portfolio/answer") {
     const parsed = portfolioAnswerRequestSchema.safeParse(input);
     if (!parsed.success) throw new PublicRequestError(400, "invalid_request");

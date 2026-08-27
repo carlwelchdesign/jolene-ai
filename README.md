@@ -48,7 +48,8 @@ The first runnable slice provides:
 - a separate loopback-only public-delegate process boundary that validates that
   artifact and exposes health, the frozen v1 manifest, and deterministic
   citation-complete public-evidence answers and conservative job-description
-  comparisons, with a runtime kill switch and bounded local admission;
+  comparisons, plus consented local contact-intent staging, a runtime kill
+  switch, and bounded local admission;
 - contract tests that do not call OpenAI.
 
 The Slack adapter is active for a local pilot, with live mention-and-reply behavior verified. Scheduled work, specialist agents, client-AI workflows, always-on hosting, and voice remain later gates.
@@ -60,9 +61,11 @@ internal use. The versioned export remains a local ignored artifact. A separate
 loopback-only reference process can serve its validated manifest and bounded
 deterministic answers and job-fit comparisons from exact exported claims.
 Job-fit results distinguish unknown public evidence from missing experience and
-are not recommendations or blanket fit scores. Model-generated answers,
-contact intent, CORS, public hosting, and portfolio integration are not
-implemented. MCP interoperability is also not implemented. See the
+are not recommendations or blanket fit scores. Consented contact requests can
+be staged in a separate owner-only, retention-bounded local queue, but no
+outbound contact or public queue review is implemented. Model-generated
+answers, CORS, public hosting, and portfolio integration are not implemented.
+MCP interoperability is also not implemented. See the
 [professional context architecture](plans/JOLENE_PROFESSIONAL_CONTEXT_ARCHITECTURE.md).
 
 ## Setup

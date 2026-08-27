@@ -14,6 +14,12 @@ const publicEnvSchema = z.object({
     .trim()
     .min(1)
     .default(".jolene/exports/public-career-evidence.json"),
+  JOLENE_PUBLIC_CONTACT_QUEUE_PATH: z.string().trim().min(1)
+    .default(".jolene/public/contact-intents.json"),
+  JOLENE_PUBLIC_CONTACT_RETENTION_DAYS: z.coerce.number().int().min(1).max(90)
+    .default(30),
+  JOLENE_PUBLIC_CONTACT_QUEUE_MAX_ENTRIES: z.coerce.number().int().min(1)
+    .max(1_000).default(500),
   JOLENE_PUBLIC_REQUESTS_PER_MINUTE: z.coerce.number().int().min(1).max(600)
     .default(60),
   JOLENE_PUBLIC_MAX_CONCURRENT_REQUESTS: z.coerce.number().int().min(1).max(64)
@@ -25,6 +31,9 @@ export interface PublicDelegateConfig {
   readonly host: string;
   readonly port: number;
   readonly artifactPath: string;
+  readonly contactQueuePath: string;
+  readonly contactRetentionDays: number;
+  readonly contactQueueMaxEntries: number;
   readonly requestsPerMinute: number;
   readonly maxConcurrentRequests: number;
 }
@@ -49,6 +58,12 @@ export function parsePublicDelegateConfig(
       process.cwd(),
       parsed.JOLENE_PUBLIC_ARTIFACT_PATH,
     ),
+    contactQueuePath: path.resolve(
+      process.cwd(),
+      parsed.JOLENE_PUBLIC_CONTACT_QUEUE_PATH,
+    ),
+    contactRetentionDays: parsed.JOLENE_PUBLIC_CONTACT_RETENTION_DAYS,
+    contactQueueMaxEntries: parsed.JOLENE_PUBLIC_CONTACT_QUEUE_MAX_ENTRIES,
     requestsPerMinute: parsed.JOLENE_PUBLIC_REQUESTS_PER_MINUTE,
     maxConcurrentRequests: parsed.JOLENE_PUBLIC_MAX_CONCURRENT_REQUESTS,
   };

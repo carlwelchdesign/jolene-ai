@@ -6,9 +6,9 @@ evidence artifact. It does not load the private Jolene application or its
 configuration, SQLite database, Obsidian vault, Slack adapter, durable memory,
 or OpenAI client.
 
-This slice verifies the frozen portfolio v1 manifest, answer, and job-fit
-contracts. It is not a public deployment and does not implement model-generated
-answers, contact intent, CORS, rate limiting, or model access.
+This slice verifies the frozen portfolio v1 manifest, answer, job-fit, and
+contact-intent contracts. It is not a public deployment and does not implement
+model-generated answers, autonomous contact, CORS, or model access.
 
 ## Local configuration
 
@@ -20,6 +20,9 @@ JOLENE_PUBLIC_ENABLED=true
 JOLENE_PUBLIC_HOST=127.0.0.1
 JOLENE_PUBLIC_PORT=8431
 JOLENE_PUBLIC_ARTIFACT_PATH=.jolene/exports/public-career-evidence.json
+JOLENE_PUBLIC_CONTACT_QUEUE_PATH=.jolene/public/contact-intents.json
+JOLENE_PUBLIC_CONTACT_RETENTION_DAYS=30
+JOLENE_PUBLIC_CONTACT_QUEUE_MAX_ENTRIES=500
 JOLENE_PUBLIC_REQUESTS_PER_MINUTE=60
 JOLENE_PUBLIC_MAX_CONCURRENT_REQUESTS=8
 ```
@@ -61,6 +64,9 @@ After a production build, use `npm run start:public`.
   most 12,000 characters and an optional session token of at most 256
   characters. It returns at most 24 bounded requirements, conservative
   assessments, and resolving public citations.
+- `POST /v1/portfolio/contact-intent` accepts strict JSON with bounded name,
+  email, optional organization, message, and literal `consent: true`. A valid
+  request returns `202 pending_review` without echoing contact fields.
 
 The artifact is re-read, schema-validated, and hash-verified on every request.
 Missing, malformed, incompatible, internally inconsistent, or tampered
@@ -84,6 +90,24 @@ as untrusted ephemeral input: it is not logged, persisted, executed, sent to a
 model, or used to access private context. Instruction-like input fails to
 citation-free `unknown` results.
 
+Contact intents are staged in a dedicated local queue, not Jolene's private
+database. The queue stores only the fields the visitor explicitly submitted,
+plus an intent ID, submission time, pending-review status, and expiry time. It
+uses serialized atomic writes, owner-only directory/file permissions, a maximum
+entry count, and configurable retention of at most 90 days. Retention is
+enforced on startup and on each new submission. Likely credential material is
+rejected rather than stored. Request payloads are not logged, and there is no
+public queue-read route.
+
+The local JSON queue is permission-restricted but not application-encrypted.
+Disk encryption and physical account security protect this development slice;
+encrypted managed storage and a deletion SLA remain production gates.
+
+Staging never sends email or Slack, schedules a meeting, contacts a recruiter,
+or authorizes Jolene to negotiate or make promises. Reviewing, deleting, or
+sending a reply requires a separate private owner workflow that is not part of
+this public process.
+
 All other routes return `404`; unsupported methods on known routes return
 `405`. The server bounds header size, header count, request time, keep-alive
 requests, URL length, per-client request rate, and global concurrency.
@@ -95,11 +119,11 @@ distributed rate limiting, or portfolio BFF controls.
 
 ## Remaining boundary
 
-`JOL-CAREER-005` remains incomplete. Model-backed answer quality and
-contact-intent behavior still require separate contract, privacy, abuse, cost,
+`JOL-CAREER-005` remains incomplete. Model-backed answer quality and a private
+owner review/deletion/reply workflow still require separate privacy, abuse,
 evaluation, and human-approval gates. The deterministic job-fit baseline also
 requires integration and evaluation before any public use. Audit-event design,
-redaction policy, contact retention, and production-grade distributed abuse
+broader redaction policy, cost controls, and production-grade distributed abuse
 controls remain open. Adding a production bind address, container service,
 public hostname, reverse proxy, CORS policy, or deployment requires explicit
 approval and a reviewed deployment topology.
