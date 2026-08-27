@@ -218,6 +218,12 @@ describe("Docker runtime boundary", () => {
     expect(publicCompose).toContain("127.0.0.1:${JOLENE_PUBLIC_HOST_PORT:-8431}:8431");
     expect(publicCompose).toContain("JOLENE_PUBLIC_OPERATIONS_HOST: 127.0.0.1");
     expect(publicCompose).toContain("JOLENE_PUBLIC_OPERATIONS_PORT: 8432");
+    expect(publicCompose).toContain(
+      "JOLENE_PUBLIC_AUTH_MODE: ${JOLENE_PUBLIC_AUTH_MODE:-disabled}",
+    );
+    expect(publicCompose).toContain(
+      "JOLENE_PUBLIC_API_TOKEN: ${JOLENE_PUBLIC_API_TOKEN:-}",
+    );
     expect(publicCompose).toContain("http://127.0.0.1:8432/ready");
     expect(publicCompose).not.toContain("127.0.0.1:8432:8432");
     expect(publicCompose).toContain(
@@ -229,5 +235,6 @@ describe("Docker runtime boundary", () => {
     expect(publicCompose).not.toContain("/vault");
     expect(publicCompose).not.toContain("SLACK_");
     expect(publicCompose).not.toContain("JOLENE_DATABASE_PATH");
+    expect(publicCompose).not.toContain("NEXT_PUBLIC_JOLENE_PUBLIC_API_TOKEN");
   });
 });

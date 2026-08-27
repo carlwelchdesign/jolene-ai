@@ -1,4 +1,4 @@
-import { randomBytes } from "node:crypto";
+import { createHash, randomBytes, timingSafeEqual } from "node:crypto";
 import {
   createServer,
   type IncomingMessage,
@@ -62,6 +62,7 @@ export interface PublicDelegateServerOptions {
   readonly admissions: PublicRequestAdmissionController;
   readonly audits?: PublicAuditRecorder;
   readonly telemetry?: PublicOperationalTelemetry;
+  readonly apiToken?: string;
   readonly requestId?: () => `req:${string}`;
 }
 
@@ -93,6 +94,19 @@ export function createPublicDelegateServer(
           503,
           publicError("public_delegate_disabled", requestId),
           "disabled",
+        );
+        return;
+      }
+      if (
+        requiresAuthorization(request.url) &&
+        options.apiToken &&
+        !hasValidBearerToken(request.headers.authorization, options.apiToken)
+      ) {
+        await respond(
+          401,
+          publicError("unauthorized", requestId),
+          "unauthorized",
+          { "www-authenticate": "Bearer" },
         );
         return;
       }
@@ -155,6 +169,25 @@ export function createPublicDelegateServer(
   server.maxHeadersCount = 64;
   server.maxRequestsPerSocket = 100;
   return server;
+}
+
+function requiresAuthorization(rawUrl: string | undefined): boolean {
+  if (!rawUrl || rawUrl.length > MAX_URL_CHARACTERS) return false;
+  try {
+    return new URL(rawUrl, "http://127.0.0.1").pathname.startsWith("/v1/");
+  } catch {
+    return false;
+  }
+}
+
+function hasValidBearerToken(
+  authorization: string | undefined,
+  expectedToken: string,
+): boolean {
+  const match = authorization?.match(/^Bearer ([^\s]+)$/i);
+  const suppliedDigest = createHash("sha256").update(match?.[1] ?? "").digest();
+  const expectedDigest = createHash("sha256").update(expectedToken).digest();
+  return Boolean(match) && timingSafeEqual(suppliedDigest, expectedDigest);
 }
 
 async function handleRequest(
@@ -478,6 +511,7 @@ function publicErrorCode(internalCode: string): PublicJoleneErrorCode {
     case "method_not_allowed":
     case "not_found":
     case "uri_too_long":
+    case "unauthorized":
       return "request_rejected";
     default:
       return "unavailable";

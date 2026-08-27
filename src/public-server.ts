@@ -93,6 +93,9 @@ const server = createPublicDelegateServer({
     requestsPerWindow: config.requestsPerMinute,
     maxConcurrentRequests: config.maxConcurrentRequests,
   }),
+  ...(config.authMode === "bearer" && config.apiToken
+    ? { apiToken: config.apiToken }
+    : {}),
 });
 const operationsServer = createPublicOperationsServer({
   telemetry,

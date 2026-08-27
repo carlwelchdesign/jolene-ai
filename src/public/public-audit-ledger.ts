@@ -49,6 +49,7 @@ export const publicAuditEventSchema = z.object({
     "contact_queue_unavailable",
     "public_evidence_unavailable",
     "response_blocked",
+    "unauthorized",
     "request_aborted",
   ]),
   durationMs: z.number().int().min(0).max(60_000),

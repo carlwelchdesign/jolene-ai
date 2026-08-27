@@ -31,6 +31,8 @@ JOLENE_PUBLIC_AUDIT_RETENTION_DAYS=30
 JOLENE_PUBLIC_AUDIT_MAX_ENTRIES=5000
 JOLENE_PUBLIC_REQUESTS_PER_MINUTE=60
 JOLENE_PUBLIC_MAX_CONCURRENT_REQUESTS=8
+JOLENE_PUBLIC_AUTH_MODE=disabled
+JOLENE_PUBLIC_API_TOKEN=
 JOLENE_PUBLIC_ANSWER_MODE=deterministic
 JOLENE_PUBLIC_OPENAI_MODEL=gpt-5.6-terra
 JOLENE_PUBLIC_OPENAI_TIMEOUT_MS=8000
@@ -43,6 +45,15 @@ Only `127.0.0.1`, `::1`, and `localhost` are accepted as hosts outside the
 isolated container. The public and operations listeners must use different
 ports. The artifact path must point to the generated public export, never the
 private SQLite database or vault.
+
+Loopback development defaults to `JOLENE_PUBLIC_AUTH_MODE=disabled`. Before any
+Internet-facing deployment, set `JOLENE_PUBLIC_AUTH_MODE=bearer` and provision a
+dedicated random `JOLENE_PUBLIC_API_TOKEN` of at least 32 characters through the
+deployment platform's secret store. The same value belongs only in the
+portfolio BFF's server-side `JOLENE_PUBLIC_API_TOKEN`; it must never use a
+`NEXT_PUBLIC_` name or enter browser code, logs, the public evidence artifact,
+or private Jolene's environment. Bearer mode fails configuration closed when
+the token is absent or too short.
 
 Set `JOLENE_PUBLIC_ENABLED=false` to fail closed before artifact access. The
 local process then returns only a non-disclosing `503` response. The admission
@@ -92,6 +103,14 @@ After a production build, use `npm run start:public`.
 - `POST /v1/portfolio/contact-intent` accepts strict JSON with bounded name,
   email, optional organization, message, and literal `consent: true`. A valid
   request returns `202 pending_review` without echoing contact fields.
+
+When bearer mode is enabled, every `/v1/` route requires the exact configured
+token in `Authorization: Bearer <token>`. Missing, malformed, and incorrect
+credentials return the existing non-disclosing `401 request_rejected` envelope
+and are recorded only as the fixed `unauthorized` audit outcome. Token
+comparison uses fixed-size SHA-256 digests and constant-time comparison. The
+minimal `/health` route remains credential-free for an external load balancer;
+the separate operations listener must remain private.
 
 The artifact is re-read, schema-validated, and hash-verified on every request.
 Missing, malformed, incompatible, internally inconsistent, or tampered
@@ -272,9 +291,11 @@ All other routes return `404`; unsupported methods on known routes return
 requests, URL length, per-client request rate, and global concurrency.
 
 These controls are appropriate for the current loopback reference process,
-not a public deployment. They are in-memory and source-address based, so they
-reset on restart and are not a substitute for authenticated edge admission,
-distributed rate limiting, or portfolio BFF controls.
+not a public deployment. Origin bearer authentication now gives the portfolio
+BFF a real service credential, but the rate and concurrency controls remain
+in-memory and source-address based. They reset on restart and are not a
+substitute for authenticated edge admission, distributed rate limiting, or
+the portfolio BFF controls.
 
 ## Remaining boundary
 
