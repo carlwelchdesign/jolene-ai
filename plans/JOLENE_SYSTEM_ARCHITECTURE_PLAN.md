@@ -631,7 +631,7 @@ Current ticket evidence:
 | JOL-ARCH-010 | Partial | An explicit local registry, on-demand read-only snapshots, and a graphical Project Watch screen report project existence, plan freshness, Git branch/revision/dirty state, and clear alerts. Scheduling, durable history, notifications, budgets, stop conditions, and build verification remain disabled. |
 | JOL-ARCH-013 | Planned and deferred | The revised baseline at `/Users/carl.welch/Documents/Github Projects/carl-welch-portfolio/PORTFOLIO_SITE_PLAN.md` explicitly defers Jolene outside the portfolio's first release. The later public delegate still requires a public/private boundary, versioned evidence contract, adversarial evaluations, correction flow, contact handoff, and production controls. Fit Console is a pattern source, not the target project. |
 | JOL-ARCH-014 | Implemented; API container verified | The ARM64 image builds successfully. The API container passed `/health` on loopback, ran as UID 1000, mounted `/vault` read-only and `/data` writable, used a read-only application filesystem, and contained no `.env` files. The Slack process uses the same image with a separate command; live Compose cutover remains pending to avoid duplicating the existing Socket Mode listener and to plan SQLite migration. |
-| JOL-ARCH-015 | Partial; private evidence ingestion and retrieval implemented | The private SQLite registry models sources, claims, maturity, visibility, review freshness, relationships, revocation, supersession, and missing sources. Portfolio and bounded Obsidian imports produced 122 active review-required claims and zero public-approved claims. A separate private retrieval adapter now provides stable chunks, optional OpenAI embeddings, lexical/vector fusion, exact citations, authorization-before-ranking, deterministic fallback, and content-minimizing access logs. No claim is currently retrieval-eligible until Carl reviews it. The versioned public export and portfolio delegate remain pending; pgvector, MCP, and graph infrastructure remain evaluation-gated. |
+| JOL-ARCH-015 | Partial; private ingestion, review control, and retrieval implemented | The private SQLite registry models sources, claims, maturity, visibility, review freshness, relationships, revocation, supersession, and missing sources. Portfolio and bounded Obsidian imports produced 122 active review-required claims and zero public-approved claims. An owner-scoped loopback review screen now exposes source-first decisions, validation findings, distinct exact-claim public confirmation, rejection, and revocation without publishing or messaging. A separate private retrieval adapter provides stable chunks, optional OpenAI embeddings, lexical/vector fusion, exact citations, authorization-before-ranking, deterministic fallback, and content-minimizing access logs. No claim is currently retrieval-eligible until Carl reviews it. The versioned public export and portfolio delegate remain pending; authenticated remote administration, pgvector, MCP, and graph infrastructure remain evaluation-gated. |
 
 ## Architecture risks
 
@@ -702,3 +702,16 @@ Obsidian career-ingestion checkpoint:
 | Storage boundary | Current Markdown snapshot only; no Git history, Obsidian history, dot-directory content, symlink target, or oversized file import |
 | Verification | Typecheck, 101 tests, production build, Compose validation, Docker image build, real canonical-vault import, idempotent rerun, foreign-key check, zero production dependency vulnerabilities |
 | Remaining boundary | Hybrid retrieval is implemented, but claims still require human review before any enters the private index; public export remains `JOL-CAREER-004` |
+
+Career evidence review-control checkpoint:
+
+| Field | Evidence |
+|---|---|
+| Ticket | `JOL-CAREER-002A` |
+| Branch | `codex/jol-career-002a-review-control` |
+| Implementation commit | `35f4406` (`JOL-CAREER-002A add career evidence review control`) |
+| Human control | Source-first decisions, claim-level internal/public approval, exact public confirmation, rejection, and confirmation-gated revocation |
+| Authorization | Fixed configured owner/workspace, owner-only reviewer attribution, same-origin browser mutation check |
+| Canonical queue | 37 sources, 122 active claims, 0 internal-approved claims, 0 public-approved claims; no real review decisions applied during automated verification |
+| Verification | JavaScript syntax, 114 tests, production build, Compose validation, zero production dependency vulnerabilities, live 403/404 policy checks, desktop/mobile browser review, zero confirmed axe WCAG A/AA violations |
+| Remaining boundary | Loopback pilot only; authenticated remote administration and fresh Docker image verification remain pending. Public export and portfolio delegate remain separate tickets. |

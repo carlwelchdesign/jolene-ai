@@ -272,6 +272,47 @@ Verification checkpoint:
 - secret and runtime-image content checks found no `.env.local`, Git metadata,
   development scripts, vault content, or SQLite database baked into the image.
 
+### JOL-CAREER-002A — Human career evidence review control
+
+- [x] Add an owner/workspace-locked local review API over the existing evidence
+  policy and SQLite store.
+- [x] Add source-first source/claim decisions, validation findings, rejection,
+  and confirmation-gated revocation.
+- [x] Make public approval a distinct exact-claim confirmation and disable it
+  without a public citation.
+- [x] Add search, lifecycle filters, summaries, collapsed claim groups, loading,
+  empty, error, permission, success, keyboard, and narrow-screen states.
+
+Implementation notes:
+
+- branch: `codex/jol-career-002a-review-control`;
+- implementation commit: `35f4406` (`JOL-CAREER-002A add career evidence review control`);
+- the local `/career-evidence` control displays the canonical 37 sources and
+  122 active claims without exposing a vault filesystem browser;
+- all review reads and writes are restricted to the configured career owner and
+  workspace, reviewer attribution must match the owner, and browser mutations
+  require the same local origin;
+- source approval remains a prerequisite for claim approval, and the store's
+  freshness, citation, revocation, supersession, missing-source, and public
+  eligibility rules remain authoritative;
+- the recruiter-facing confirmation changes evidence eligibility only and
+  cannot publish, send, apply, or claim that an outside action occurred; and
+- the screen is a loopback pilot, not an authenticated remote admin surface.
+
+Verification checkpoint:
+
+- 26 test files and 114 tests pass on Node 24.18.0;
+- JavaScript syntax, production TypeScript build, Compose configuration, and
+  dependency audit pass with zero reported production vulnerabilities;
+- live API checks return 403 for a foreign career scope and cross-origin browser
+  mutation, while the same-origin nonexistent-record path returns 404;
+- browser verification at 1440 x 1000 and 390 x 844 covers the loaded canonical
+  queue, collapsed/expanded groups, confirmation modal, and cross-page nav;
+- axe reports zero confirmed WCAG A/AA violations; gradient contrast remains an
+  automated incomplete requiring visual/manual judgment; and
+- a fresh Docker image build remains unverified in this run because Docker
+  Desktop reported that it was unable to start.
+
 ### JOL-CAREER-004 — Public evidence export
 
 - Export only active `public_approved` records.

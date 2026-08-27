@@ -19,6 +19,9 @@ export interface MemoryReviewAssets {
   readonly projectHtml: MemoryReviewAsset;
   readonly projectCss: MemoryReviewAsset;
   readonly projectJavascript: MemoryReviewAsset;
+  readonly careerHtml: MemoryReviewAsset;
+  readonly careerCss: MemoryReviewAsset;
+  readonly careerJavascript: MemoryReviewAsset;
 }
 
 const SECURITY_HEADERS = {
@@ -94,6 +97,21 @@ export function loadMemoryReviewAssets(
     projectJavascript: loadAsset(
       publicDirectory,
       "project-watch.js",
+      "text/javascript; charset=utf-8",
+    ),
+    careerHtml: loadAsset(
+      publicDirectory,
+      "career-evidence.html",
+      "text/html; charset=utf-8",
+    ),
+    careerCss: loadAsset(
+      publicDirectory,
+      "career-evidence.css",
+      "text/css; charset=utf-8",
+    ),
+    careerJavascript: loadAsset(
+      publicDirectory,
+      "career-evidence.js",
       "text/javascript; charset=utf-8",
     ),
   };

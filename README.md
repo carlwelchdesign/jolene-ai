@@ -34,6 +34,8 @@ The first runnable slice provides:
   deterministic lexical fallback;
 - a content-minimizing career-retrieval audit ledger that retains query
   fingerprints and citation IDs but not queries or evidence excerpts;
+- a local, owner-scoped Career Evidence screen for source-first internal/public
+  approval, rejection, validation review, and revocation;
 - contract tests that do not call OpenAI.
 
 The Slack adapter is active for a local pilot, with live mention-and-reply behavior verified. Scheduled work, specialist agents, client-AI workflows, always-on hosting, and voice remain later gates.
@@ -130,6 +132,11 @@ Prerequisite: Node.js 22 or newer.
    The private professional review boundary and portfolio candidate migration
    are documented in [Career evidence registry](docs/career-evidence.md).
 
+   Open [http://127.0.0.1:8421/career-evidence](http://127.0.0.1:8421/career-evidence)
+   to review the configured owner's sources and claims. Public eligibility is
+   an exact, confirmed claim decision; the screen cannot publish or message
+   anyone.
+
    After approving internal evidence, synchronize its retrieval chunks and
    embeddings with:
 
@@ -173,6 +180,8 @@ Carl's configured Slack member ID is the only DM identity permitted to use priva
   listings, and has no scheduled polling in this slice.
 - Portfolio imports create review-required candidates only; import cannot
   create publicly approved evidence.
+- Career Evidence review endpoints are locked to the configured owner and
+  workspace; reviewer attribution must match that owner.
 - Obsidian career imports use a separate explicit folder allowlist and create
   private review-required claims only.
 - Career retrieval admits only active, freshly approved `internal_approved` or
