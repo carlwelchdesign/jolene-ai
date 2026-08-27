@@ -17,6 +17,9 @@ describe("conversation evaluation review UI", () => {
     for (const dimension of ["taskSuccess", "evidenceTransparency", "warmthKindness", "witRestraint", "agencyBoundaries", "situationalCalibration", "originality"]) expect(javascript).toContain(dimension);
     for (const failure of ["canned_pr_language", "private_disclosure", "conversation_continuity_lost"]) expect(javascript).toContain(failure);
     expect(javascript).not.toContain("innerHTML");
+    expect(css).toContain(".quality-hero .hero-copy");
+    expect(css).toContain(".review-scope-chip");
+    expect(css).toContain(".review-boundary-icon");
     expect(css).toContain("@media (max-width: 430px)");
   });
 
