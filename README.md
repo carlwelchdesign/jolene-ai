@@ -393,6 +393,11 @@ and thread.
   evidence, and public export. Shared Slack cannot retrieve private sources;
   owner-DM access requires the verified canonical-owner scope; portfolio access
   permits only `public_approved` artifact records.
+- The [conversational-quality evaluation](docs/conversational-quality-evaluation.md)
+  blocks canned PR language, empty evidence, privacy/fabrication failures,
+  personality-over-substance, citation drift, and unsuppressed high-stakes wit
+  across nine required public and private scenarios. Passing requires complete
+  human review; validating the fixture does not make a provider request.
 - Public career queries exclude stale, revoked, superseded, unapproved, and
   publicly uncitable evidence by construction.
 - The offline public export emits only fresh `public_approved` claim/citation

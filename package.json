@@ -25,6 +25,7 @@
     "eval:public": "tsx scripts/evaluate-public-delegate.ts",
     "eval:public:live": "tsx scripts/evaluate-public-live-model.ts",
     "eval:career:relationships": "tsx scripts/evaluate-career-relationships.ts",
+    "eval:conversation:validate": "tsx scripts/validate-conversational-quality-suite.ts",
     "mcp:career:audit": "tsx scripts/inspect-private-career-mcp-audit.ts",
     "mcp:career:dev": "tsx src/private-career-mcp.ts",
     "research:personality:validate": "tsx scripts/validate-personality-research.ts",
