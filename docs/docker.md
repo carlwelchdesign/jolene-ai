@@ -131,10 +131,10 @@ still rejects that bind address.
 The reviewed artifact is bind-mounted read-only at
 `/public-data/public-career-evidence.json`. A missing artifact is not created as
 a directory and the service fails closed. The only writable persistent mount is
-the dedicated `jolene-public-state` volume for the minimized contact-intent and
-audit files. The root filesystem is read-only, the process is non-root, Linux
-capabilities are dropped, privilege escalation is disabled, and `/tmp` is a
-bounded tmpfs.
+the dedicated `jolene-public-state` volume for the minimized contact-intent,
+audit, and aggregate model-budget files. The root filesystem is read-only, the
+process is non-root, Linux capabilities are dropped, privilege escalation is
+disabled, and `/tmp` is a bounded tmpfs.
 
 The default is deterministic and receives an empty `OPENAI_API_KEY`. To run an
 explicit model evaluation, pass `.env.public.local` with `--env-file` and use

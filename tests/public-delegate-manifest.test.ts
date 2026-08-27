@@ -83,6 +83,8 @@ describe("public delegate manifest boundary", () => {
       answerMode: "deterministic",
       openaiModel: "gpt-5.6-terra",
       openaiTimeoutMilliseconds: 8_000,
+      openaiBudgetPath: path.resolve(".jolene/public/model-budget.json"),
+      openaiRequestsPerDay: 100,
       openaiApiKey: undefined,
     });
   });
@@ -146,6 +148,9 @@ describe("public delegate manifest boundary", () => {
     })).toThrow();
     expect(() => parsePublicDelegateConfig({
       JOLENE_PUBLIC_OPENAI_TIMEOUT_MS: "999",
+    })).toThrow();
+    expect(() => parsePublicDelegateConfig({
+      JOLENE_PUBLIC_OPENAI_REQUESTS_PER_DAY: "0",
     })).toThrow();
   });
 
@@ -444,8 +449,16 @@ describe("public delegate manifest boundary", () => {
         generate: async () => { throw new Error("provider marker"); },
       }),
     });
+    const budgetFallback = await start(await writeArtifact(artifact), {
+      audits,
+      answers: new GroundedPublicAnswerService({
+        generate: async () => "must not run",
+      }, {
+        budget: { reserve: async () => false },
+      }),
+    });
 
-    for (const baseUrl of [model.baseUrl, fallback.baseUrl]) {
+    for (const baseUrl of [model.baseUrl, fallback.baseUrl, budgetFallback.baseUrl]) {
       expect((await fetch(`${baseUrl}/v1/portfolio/answer`, {
         method: "POST",
         headers: { "content-type": "application/json" },
@@ -456,6 +469,7 @@ describe("public delegate manifest boundary", () => {
     expect(events.map((event) => event.outcome)).toEqual([
       "model_supported",
       "model_fallback",
+      "model_budget_fallback",
     ]);
     expect(JSON.stringify(events)).not.toMatch(/concise grounded|provider marker/i);
   });

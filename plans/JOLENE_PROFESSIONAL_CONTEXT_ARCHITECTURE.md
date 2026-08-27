@@ -698,6 +698,31 @@ passes 46 test files and 303 tests; the frozen suite remains 41 of 41 cases and
 diff, non-root/mount/environment inspection, and private-runtime continuity
 checks pass.
 
+`JOL-CAREER-005L` public-model budget boundary:
+
+- implementation commit: `db73709` (`JOL-CAREER-005L add public model request
+  budget`), reviewed in
+  [jolene-ai #33](https://github.com/carlwelchdesign/jolene-ai/pull/33);
+- model generation reserves from a serialized, restart-persistent fixed
+  24-hour request budget only after deterministic public evidence selection;
+- the budget file contains only schema version, window start, and aggregate
+  request count and lives in the isolated public-state boundary;
+- each provider attempt consumes a reservation before execution, including a
+  failed attempt, while no-evidence and deterministic-mode requests consume
+  nothing;
+- exhaustion, corruption, or storage failure bypasses the provider and returns
+  the exact deterministic answer with a fixed non-content audit outcome; and
+- this is a conservative request circuit breaker, not token billing
+  reconciliation, provider activation, a pricing approval, distributed quota,
+  deployment, or launch authorization.
+
+Node 24 passes 47 test files and 309 tests; the frozen suite remains 41 of 41
+cases and 24 of 24 blocker metrics. A disposable pre-exhausted model-mode
+container returned the unchanged three-claim/three-citation deterministic
+response with `model_budget_fallback` and no provider request. Build, fresh
+image, both Compose definitions, dependency audit, diff, deterministic runtime,
+and private API/Slack continuity checks pass.
+
 ### JOL-CAREER-007 — Private MCP adapter
 
 - Add only after the evidence service contract is stable.
