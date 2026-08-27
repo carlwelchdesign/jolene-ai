@@ -148,6 +148,7 @@ export async function loadPersonalitySamplingCapacityAuditV1(projectRoot = proce
     schemaVersion: "jolene.personality-allocation-capacity-audit.v1" as const,
     auditFingerprint: digest(auditText),
     status: audit.status,
+    auditedAt: audit.audited_at,
     sourceRegisterFingerprint: audit.source_register_fingerprint,
     failedSamplingPlanFingerprint: audit.failed_sampling_plan_fingerprint,
     auditedSources: audit.sources.length,
