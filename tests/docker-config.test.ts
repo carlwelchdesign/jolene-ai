@@ -32,6 +32,9 @@ describe("Docker runtime boundary", () => {
     expect(compose).toContain("read_only: true");
     expect(compose).toContain("JOLENE_DATABASE_PATH: /data/jolene.sqlite");
     expect(compose).toContain("JOLENE_HOST: 0.0.0.0");
+    expect(compose).toContain(
+      "JOLENE_CAREER_EMBEDDINGS_ENABLED: ${JOLENE_CAREER_EMBEDDINGS_ENABLED:-false}",
+    );
     expect(compose).toContain("jolene-data:/data");
     expect(compose).toContain("no-new-privileges:true");
     expect(compose).toContain("127.0.0.1:${JOLENE_HOST_PORT:-8421}:8421");

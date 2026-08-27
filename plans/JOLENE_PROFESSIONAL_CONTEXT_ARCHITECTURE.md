@@ -255,18 +255,26 @@ Implementation notes:
 - audit records retain query fingerprints plus chunk/source/claim IDs, never
   query text or evidence excerpts;
 - vector-provider failure produces the deterministic `lexical_fallback` mode;
-- the real local index currently contains zero chunks because the 122 imported
-  claims still require Carl's review; and
+- embedding egress is disabled by default and requires the exact
+  `JOLENE_CAREER_EMBEDDINGS_ENABLED=true` opt-in; without it, synchronization
+  and search remain deterministic lexical-only even when an OpenAI key exists;
+- Carl has approved 143 eligible claims (41 public-artifact eligible and 102
+  private-Jolene only), while retrieval-index synchronization remains a
+  distinct operational gate; and
 - PostgreSQL/pgvector remains a measured scale-up option, not a current runtime
   dependency.
 
 Verification checkpoint:
 
-- 23 test files and 107 tests pass on Node 24.18.0;
+- 49 test files and 313 tests pass on Node 24.18.0;
 - the production TypeScript build and dependency audit pass with zero reported
   vulnerabilities;
 - the Node 22 ARM64 Docker image builds and starts healthy as a non-root,
   read-only-root runtime;
+- an SQLite-native clone of the canonical database synchronized all 143
+  eligible claims into 152 lexical-only chunks, produced zero embeddings, and
+  returned five citation-complete lexical results; the live database retained
+  zero retrieval chunks and its API/Slack containers were not restarted;
 - `/health` and the bounded career retrieval audit route respond successfully
   from the container; and
 - secret and runtime-image content checks found no `.env.local`, Git metadata,

@@ -1,5 +1,5 @@
 import { loadConfig } from "../src/config.js";
-import { OpenAICareerEmbeddingProvider } from "../src/knowledge/openai-career-embeddings.js";
+import { createCareerEmbeddingProvider } from "../src/knowledge/openai-career-embeddings.js";
 import { SqliteCareerEvidenceStore } from "../src/persistence/sqlite-career-evidence-store.js";
 import { SqliteCareerRetrievalIndex } from "../src/persistence/sqlite-career-retrieval-index.js";
 
@@ -8,7 +8,10 @@ const evidence = new SqliteCareerEvidenceStore(config.databasePath);
 const index = new SqliteCareerRetrievalIndex(
   config.databasePath,
   evidence,
-  new OpenAICareerEmbeddingProvider(config.embeddingModel),
+  createCareerEmbeddingProvider(
+    config.careerEmbeddingsEnabled,
+    config.embeddingModel,
+  ),
 );
 
 try {
@@ -18,7 +21,10 @@ try {
   });
   process.stdout.write(`${JSON.stringify({
     databasePath: config.databasePath,
-    embeddingModel: config.embeddingModel,
+    embeddingsEnabled: config.careerEmbeddingsEnabled,
+    embeddingModel: config.careerEmbeddingsEnabled
+      ? config.embeddingModel
+      : null,
     ...report,
   }, null, 2)}\n`);
 } finally {
