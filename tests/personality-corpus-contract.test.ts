@@ -60,6 +60,7 @@ function fixture(): PersonalityCorpusV2 {
     promotionalPurpose: "no",
     rightsBasis: "metadata-and-paraphrase-only",
     fingerprintBasis: "retrieved-response-bytes",
+    fingerprintMethod: "raw-content-boundary-bytes-v1",
     sourceContentFingerprint: digest(String(index + 1)),
   }));
   const turns: PersonalityTurn[] = Array.from({ length: 120 }, (_, index) => {
