@@ -8,6 +8,8 @@ const state = {
   expandedSourceIds: new Set(),
   filter: "needs_review",
   query: "",
+  page: 1,
+  pageSize: 10,
   pendingDecision: null,
 };
 
@@ -26,6 +28,12 @@ const ui = {
   selectionHelp: document.querySelector("#selection-help"),
   clearSelection: document.querySelector("#clear-selection"),
   reviewConflict: document.querySelector("#review-conflict"),
+  pageStatus: document.querySelector("#evidence-page-status"),
+  previousPage: document.querySelector("#previous-evidence-page"),
+  nextPage: document.querySelector("#next-evidence-page"),
+  pageStatusFooter: document.querySelector("#evidence-page-status-footer"),
+  previousPageFooter: document.querySelector("#previous-evidence-page-footer"),
+  nextPageFooter: document.querySelector("#next-evidence-page-footer"),
   decisionDialog: document.querySelector("#decision-dialog"),
   decisionForm: document.querySelector("#decision-form"),
   decisionEyebrow: document.querySelector("#decision-eyebrow"),
@@ -53,9 +61,14 @@ function initialize() {
     kind: "conflict_declare",
     claims: selectedClaims(),
   }));
+  ui.previousPage.addEventListener("click", () => changeEvidencePage(-1, ui.pageStatus));
+  ui.nextPage.addEventListener("click", () => changeEvidencePage(1, ui.pageStatus));
+  ui.previousPageFooter.addEventListener("click", () => changeEvidencePage(-1, ui.pageStatusFooter));
+  ui.nextPageFooter.addEventListener("click", () => changeEvidencePage(1, ui.pageStatusFooter));
   document.querySelectorAll("[data-filter]").forEach((button) => {
     button.addEventListener("click", () => {
       state.filter = button.dataset.filter;
+      state.page = 1;
       document.querySelectorAll("[data-filter]").forEach((candidate) => {
         const active = candidate === button;
         candidate.classList.toggle("is-active", active);
@@ -66,6 +79,7 @@ function initialize() {
   });
   ui.search.addEventListener("input", () => {
     state.query = ui.search.value.trim().toLowerCase();
+    state.page = 1;
     render();
   });
   document.querySelectorAll("[data-close-dialog]").forEach((button) => {
@@ -116,6 +130,11 @@ function render() {
   updateSummary();
   renderConflictReview();
   const visibleSources = state.sources.filter((source) => sourceMatches(source));
+  const totalPages = Math.max(1, Math.ceil(visibleSources.length / state.pageSize));
+  state.page = Math.min(Math.max(state.page, 1), totalPages);
+  const start = (state.page - 1) * state.pageSize;
+  const pageSources = visibleSources.slice(start, start + state.pageSize);
+  renderPagination(visibleSources.length, totalPages, start, pageSources.length);
   ui.list.replaceChildren();
   if (visibleSources.length === 0) {
     ui.list.append(emptyState(
@@ -124,7 +143,32 @@ function render() {
     ));
     return;
   }
-  visibleSources.forEach((source) => ui.list.append(renderSource(source)));
+  pageSources.forEach((source) => ui.list.append(renderSource(source)));
+}
+
+function renderPagination(totalResults, totalPages, start, pageCount) {
+  let status;
+  if (totalResults === 0) {
+    status = "0 matching sources";
+  } else {
+    const first = start + 1;
+    const last = start + pageCount;
+    status = `Showing ${first}–${last} of ${totalResults} sources · Page ${state.page} of ${totalPages}`;
+  }
+  ui.pageStatus.textContent = status;
+  ui.pageStatusFooter.textContent = status;
+  [ui.previousPage, ui.previousPageFooter].forEach((button) => {
+    button.disabled = totalResults === 0 || state.page <= 1;
+  });
+  [ui.nextPage, ui.nextPageFooter].forEach((button) => {
+    button.disabled = totalResults === 0 || state.page >= totalPages;
+  });
+}
+
+function changeEvidencePage(offset, focusTarget) {
+  state.page += offset;
+  render();
+  focusTarget.focus();
 }
 
 function updateSummary() {
@@ -276,6 +320,14 @@ function renderSource(source) {
     provenance.append(document.createTextNode(source.provenanceRef || "No provenance recorded"));
   }
   details.append(provenance);
+  const context = el("dl", "source-context");
+  context.append(
+    sourceContextItem("Captured", formatDate(source.capturedAt)),
+    sourceContextItem("Updated", formatDate(source.updatedAt)),
+    sourceContextItem("Reviewed", source.lastReviewedAt ? formatDate(source.lastReviewedAt) : "Not reviewed"),
+    sourceContextItem("Fingerprint", shortenedFingerprint(source.sourceHash), true),
+  );
+  details.append(context);
   const sourceIssues = issuesFor("source", source.id);
   if (sourceIssues.length) {
     const list = el("ul", "issue-list");
@@ -521,6 +573,8 @@ function badge(label, extra = "") { return el("span", `badge ${extra}`.trim(), l
 function badgeClass(value) { return ["approved", "internal_approved", "public_approved", "active"].includes(value) ? "badge-active" : ["rejected", "revoked"].includes(value) ? "badge-sensitive" : ["missing", "superseded"].includes(value) ? "badge-superseded" : ""; }
 function humanize(value) { return String(value).replaceAll("_", " ").replace(/\b\w/g, (letter) => letter.toUpperCase()); }
 function formatDate(value) { const parsed = new Date(value); return Number.isNaN(parsed.getTime()) ? "at an unknown time" : new Intl.DateTimeFormat(undefined, { dateStyle: "medium", timeStyle: "short" }).format(parsed); }
+function shortenedFingerprint(value) { const normalized = String(value || "").trim(); return normalized ? `${normalized.slice(0, 12)}…` : "Unavailable"; }
+function sourceContextItem(label, value, code = false) { const item = el("div"); const details = el("dd"); details.append(code ? el("code", "", value) : document.createTextNode(value)); item.append(el("dt", "", label), details); return item; }
 function safePublicUrl(value) { if (value?.startsWith("/") && !value.startsWith("//")) return true; try { return ["http:", "https:"].includes(new URL(value).protocol); } catch { return false; } }
 function emptyState(title, copy) { const container = el("div", "empty-state"); container.append(el("strong", "", title), el("p", "", copy)); return container; }
 function errorState(copy) { const container = el("div", "error-state"); container.append(el("strong", "", "Evidence unavailable"), el("p", "", copy)); return container; }

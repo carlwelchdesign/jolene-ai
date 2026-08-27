@@ -44,7 +44,8 @@ The first runnable slice provides:
   fingerprints and citation IDs but not queries or evidence excerpts;
 - a local, owner-scoped Career Evidence screen for source-first internal/public
   approval, rejection, validation review, revocation, and explicit two-to-five
-  claim conflict declaration and resolution;
+  claim conflict declaration and resolution, with registry-wide search and
+  synchronized paginated navigation for larger private evidence sets;
 - a deny-by-default offline public-evidence artifact with a versioned manifest,
   reproducible corpus hash, revocation list, and adversarial leak checks;
 - a separate loopback-only public-delegate process boundary that validates that

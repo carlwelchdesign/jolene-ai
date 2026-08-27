@@ -63,6 +63,10 @@
 .search-field { display: grid; gap: 6px; width: min(320px, 100%); }
 .search-field span { color: var(--muted); font-size: 11px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; }
 .search-field input { width: 100%; padding: 11px 12px; color: var(--ink); background: white; border: 1px solid var(--line-strong); border-radius: 9px; }
+.evidence-pagination { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin: 14px 0; padding: 11px 13px; background: #f7f1e7; border: 1px solid var(--line); border-radius: 11px; }
+.evidence-pagination p { margin: 0; color: var(--muted); font-size: 12px; font-weight: 750; }
+.evidence-pagination-footer { margin: 18px 0 0; }
+.pagination-actions { display: flex; gap: 8px; }
 .evidence-list { display: grid; gap: 18px; }
 
 .source-card {
@@ -78,6 +82,11 @@
 .source-meta { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 12px; }
 .source-provenance { margin: 12px 0 0; color: var(--muted); font-size: 12px; overflow-wrap: anywhere; }
 .source-provenance a { color: var(--gold-dark); }
+.source-context { display: flex; flex-wrap: wrap; gap: 6px 16px; margin: 12px 0 0; color: var(--muted); font-size: 11px; }
+.source-context div { display: flex; gap: 5px; }
+.source-context dt { font-weight: 800; }
+.source-context dd { margin: 0; }
+.source-context code { color: var(--ink); font-size: 10px; }
 .source-actions { display: flex; align-items: flex-start; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
 .claim-list { display: grid; }
 .claim-disclosure > summary { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 15px 20px; color: var(--gold-dark); background: #fffdf8; cursor: pointer; font-weight: 800; list-style: none; }
@@ -120,6 +129,10 @@
 @media (max-width: 720px) {
   .read-only-chip { justify-content: center; }
   .evidence-heading { align-items: stretch; }
+  .evidence-pagination { align-items: stretch; flex-direction: column; }
+  .pagination-actions { display: grid; grid-template-columns: 1fr 1fr; }
+  .source-context { display: grid; gap: 4px; }
+  .source-context div { display: grid; grid-template-columns: 64px minmax(0, 1fr); }
 }
 
 @media (max-width: 430px) {
