@@ -53,6 +53,22 @@ describe("career evidence review interface", () => {
     expect(css).toContain(".relationship-path");
   });
 
+  it("paginates a claim-centered queue and counts claims instead of raw options", () => {
+    expect(html).toContain("Each unlinked claim receives one deterministic next option");
+    expect(html).toContain("Claims needing links");
+    expect(html).toContain('id="relationship-page-status"');
+    expect(html).toContain('id="previous-relationship-page"');
+    expect(html).toContain('id="next-relationship-page"');
+    expect(javascript).toContain("relationshipPageSize: 10");
+    expect(javascript).toContain("function relationshipClaimGroups()");
+    expect(javascript).toContain('candidate.claimQueueState === "pending"');
+    expect(javascript).toContain("new Set(");
+    expect(javascript).toContain("One deterministic next option is available.");
+    expect(javascript).toContain("Every source-derived option for this claim was rejected.");
+    expect(javascript).toContain('"Reconsider approval"');
+    expect(css).toContain(".relationship-claim-group");
+  });
+
   it("paginates the full private registry and exposes bounded source review context", () => {
     expect(html).toContain('id="evidence-page-status"');
     expect(html).toContain('id="previous-evidence-page"');

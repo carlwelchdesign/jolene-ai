@@ -11,6 +11,8 @@ const state = {
   query: "",
   page: 1,
   pageSize: 10,
+  relationshipPage: 1,
+  relationshipPageSize: 10,
   pendingDecision: null,
 };
 
@@ -27,6 +29,9 @@ const ui = {
   relationshipReviewCount: document.querySelector("#count-relationship-review"),
   conflictList: document.querySelector("#conflict-list"),
   relationshipList: document.querySelector("#relationship-list"),
+  relationshipPageStatus: document.querySelector("#relationship-page-status"),
+  previousRelationshipPage: document.querySelector("#previous-relationship-page"),
+  nextRelationshipPage: document.querySelector("#next-relationship-page"),
   selectionStatus: document.querySelector("#selection-status"),
   selectionHelp: document.querySelector("#selection-help"),
   clearSelection: document.querySelector("#clear-selection"),
@@ -70,6 +75,8 @@ function initialize() {
   ui.nextPage.addEventListener("click", () => changeEvidencePage(1, ui.pageStatus));
   ui.previousPageFooter.addEventListener("click", () => changeEvidencePage(-1, ui.pageStatusFooter));
   ui.nextPageFooter.addEventListener("click", () => changeEvidencePage(1, ui.pageStatusFooter));
+  ui.previousRelationshipPage.addEventListener("click", () => changeRelationshipPage(-1));
+  ui.nextRelationshipPage.addEventListener("click", () => changeRelationshipPage(1));
   document.querySelectorAll("[data-filter]").forEach((button) => {
     button.addEventListener("click", () => {
       state.filter = button.dataset.filter;
@@ -189,7 +196,11 @@ function updateSummary() {
   ui.internalCount.textContent = String(state.claims.filter((claim) => claim.state === "active" && claim.visibility === "internal_approved").length);
   ui.publicCount.textContent = String(state.claims.filter((claim) => claim.state === "active" && claim.visibility === "public_approved").length);
   ui.conflictCount.textContent = String(state.conflicts.filter((conflict) => conflict.state === "unresolved").length);
-  ui.relationshipReviewCount.textContent = String(state.relationshipCandidates.filter((candidate) => candidate.reviewState === "needs_review").length);
+  ui.relationshipReviewCount.textContent = String(new Set(
+    state.relationshipCandidates
+      .filter((candidate) => candidate.claimQueueState === "pending")
+      .map((candidate) => candidate.claimId),
+  ).size);
 }
 
 function renderConflictReview() {
@@ -275,44 +286,88 @@ function renderConflictGroup(conflict) {
 
 function renderRelationshipReview() {
   ui.relationshipList.replaceChildren();
-  if (state.relationshipCandidates.length === 0) {
+  const groups = relationshipClaimGroups();
+  if (groups.length === 0) {
+    ui.relationshipPageStatus.textContent = "0 claims in the relationship queue";
+    ui.previousRelationshipPage.disabled = true;
+    ui.nextRelationshipPage.disabled = true;
     ui.relationshipList.append(emptyState(
       "No source-derived suggestions",
       "Existing exact claim links are left alone. New suggestions appear only when an active claim and active source relationship share the same source.",
     ));
     return;
   }
-  const ordered = [...state.relationshipCandidates].sort((left, right) =>
-    Number(left.reviewState !== "needs_review") - Number(right.reviewState !== "needs_review") ||
-    left.sourceId.localeCompare(right.sourceId) ||
-    left.claimId.localeCompare(right.claimId)
-  );
-  const visible = ordered.slice(0, 100);
-  visible.forEach((candidate) => ui.relationshipList.append(renderRelationshipCandidate(candidate)));
-  if (ordered.length > visible.length) {
-    ui.relationshipList.append(emptyState(
-      `${ordered.length - visible.length} more suggestions are not shown`,
-      "Review the pending suggestions shown here, then refresh to continue with the bounded queue.",
-    ));
-  }
+  const totalPages = Math.max(1, Math.ceil(groups.length / state.relationshipPageSize));
+  state.relationshipPage = Math.min(Math.max(state.relationshipPage, 1), totalPages);
+  const start = (state.relationshipPage - 1) * state.relationshipPageSize;
+  const visible = groups.slice(start, start + state.relationshipPageSize);
+  ui.relationshipPageStatus.textContent = `Showing ${start + 1}–${start + visible.length} of ${groups.length} claims · Page ${state.relationshipPage} of ${totalPages}`;
+  ui.previousRelationshipPage.disabled = state.relationshipPage <= 1;
+  ui.nextRelationshipPage.disabled = state.relationshipPage >= totalPages;
+  visible.forEach((group) => ui.relationshipList.append(renderRelationshipClaimGroup(group)));
 }
 
-function renderRelationshipCandidate(candidate) {
-  const claim = state.claims.find((entry) => entry.id === candidate.claimId);
-  const source = state.sources.find((entry) => entry.id === candidate.sourceId);
-  const card = el("article", "relationship-candidate");
-  const details = el("div");
+function relationshipClaimGroups() {
+  const groups = new Map();
+  state.relationshipCandidates.forEach((candidate) => {
+    const group = groups.get(candidate.claimId) || [];
+    group.push(candidate);
+    groups.set(candidate.claimId, group);
+  });
+  const queueOrder = { pending: 0, approved: 1, exhausted: 2 };
+  return [...groups.values()].sort((left, right) =>
+    queueOrder[left[0].claimQueueState] - queueOrder[right[0].claimQueueState] ||
+    left[0].sourceId.localeCompare(right[0].sourceId) ||
+    left[0].claimId.localeCompare(right[0].claimId)
+  );
+}
+
+function renderRelationshipClaimGroup(candidates) {
+  const primary = candidates[0];
+  const claim = state.claims.find((entry) => entry.id === primary.claimId);
+  const source = state.sources.find((entry) => entry.id === primary.sourceId);
+  const card = el("article", "relationship-claim-group");
+  const header = el("div", "relationship-claim-header");
   const badges = el("div", "badge-row");
-  badges.append(badge(humanize(candidate.reviewState), badgeClass(candidate.reviewState)));
-  if (candidate.lastReview && !candidate.reviewIsCurrent) {
-    badges.append(badge("Prior decision stale", "badge-sensitive"));
-  }
-  details.append(
+  const queueLabel = primary.claimQueueState === "pending"
+    ? "Needs one decision"
+    : primary.claimQueueState === "approved"
+      ? "Claim linked"
+      : "Options exhausted";
+  badges.append(badge(queueLabel, primary.claimQueueState === "approved" ? "badge-active" : ""));
+  const queueCopy = primary.claimQueueState === "pending"
+    ? "One deterministic next option is available. Rejected options remain below as review history."
+    : primary.claimQueueState === "approved"
+      ? "This claim has an active owner-approved link. No additional coverage option is pending."
+      : "Every source-derived option for this claim was rejected. No link was created.";
+  header.append(
     badges,
     el("h3", "relationship-candidate-title", claim?.title || "Claim unavailable"),
     el("p", "relationship-claim", claim?.proposition || "The claim is unavailable in this owner scope."),
+    el("p", "relationship-meta", source?.title || "Source unavailable"),
+    el("p", "relationship-queue-copy", queueCopy),
+  );
+  const options = el("div", "relationship-options");
+  [...candidates]
+    .sort((left, right) =>
+      Number(left.reviewState !== "needs_review") - Number(right.reviewState !== "needs_review") ||
+      left.sourceRelationshipId.localeCompare(right.sourceRelationshipId)
+    )
+    .forEach((candidate) => options.append(renderRelationshipOption(candidate, claim, source)));
+  card.append(header, options);
+  return card;
+}
+
+function renderRelationshipOption(candidate, claim, source) {
+  const option = el("section", "relationship-option");
+  const details = el("div");
+  const badges = el("div", "badge-row");
+  badges.append(badge(humanize(candidate.reviewState), badgeClass(candidate.reviewState)));
+  if (candidate.lastReview && !candidate.reviewIsCurrent) badges.append(badge("Prior decision stale", "badge-sensitive"));
+  details.append(
+    badges,
     el("code", "relationship-path", candidateRelationshipText(candidate)),
-    el("p", "relationship-meta", `${source?.title || "Source unavailable"} · Candidate ${shortenedFingerprint(candidate.fingerprint)}`),
+    el("p", "relationship-meta", `Candidate ${shortenedFingerprint(candidate.fingerprint)}`),
   );
   if (candidate.lastReview) {
     details.append(el(
@@ -324,7 +379,7 @@ function renderRelationshipCandidate(candidate) {
   const actions = el("div", "relationship-actions");
   if (candidate.reviewState !== "approved") {
     actions.append(actionButton(
-      "Review approval",
+      candidate.reviewState === "rejected" ? "Reconsider approval" : "Review approval",
       "button button-primary button-small",
       () => openConfirmation({ kind: "relationship_approve", candidate, claim, source }),
     ));
@@ -336,8 +391,14 @@ function renderRelationshipCandidate(candidate) {
       () => openConfirmation({ kind: "relationship_reject", candidate, claim, source }),
     ));
   }
-  card.append(details, actions);
-  return card;
+  option.append(details, actions);
+  return option;
+}
+
+function changeRelationshipPage(offset) {
+  state.relationshipPage += offset;
+  renderRelationshipReview();
+  ui.relationshipPageStatus.focus();
 }
 
 function candidateRelationshipText(candidate) {

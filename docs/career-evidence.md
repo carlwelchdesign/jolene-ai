@@ -108,13 +108,23 @@ one same-origin mutation:
   exact candidate fingerprint, `approved` or `rejected`, and owner reviewer ID.
 
 Candidates are produced only when an active claim and an active source-level
-relationship share the same active source. Existing exact claim relationships
-are not proposed again. Approval copies only the reviewed typed endpoints;
-rejection creates no link. A source content change, source disappearance or
-revocation, relationship mutation or revocation, or inactive claim removes the
-candidate from current eligibility and revokes any review-created link. The
-decision history remains. This is deterministic enrichment, not semantic
-inference, GraphRAG, or a graph-database activation.
+relationship share the same active source. A claim with any active claim-level
+relationship receives no additional pending coverage suggestion. Each unlinked
+claim receives at most one pending option at a time. Options are ordered by the
+explicit relationship-type priority `employed_by`, `held_role`,
+`contributed_to`, `demonstrates`, `uses_skill`, `supports`, `in_domain`, then
+`related_to`, with source relationship ID and candidate ID as stable
+tie-breakers. No text, embedding, similarity score, or model chooses the order.
+
+Rejection creates no link, retains append-only history, and advances that claim
+to its next exact option. Approval copies only the reviewed typed endpoints,
+keeps the approved candidate visible, and suppresses every other pending option
+for that claim. A source content change, source disappearance or revocation,
+relationship mutation or revocation, or inactive claim removes the candidate
+from current eligibility and revokes any review-created link. The decision
+history remains. The local UI counts and paginates claims, not the underlying
+source-relationship cross product. This is deterministic enrichment, not
+semantic inference, GraphRAG, or a graph-database activation.
 
 ## Import the canonical portfolio
 

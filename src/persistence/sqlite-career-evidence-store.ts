@@ -128,6 +128,16 @@ interface RelationshipReviewRow {
 }
 
 const REVIEW_MAX_AGE_DAYS = 180;
+const RELATIONSHIP_REVIEW_PRIORITY: Readonly<Record<CareerRelationshipKind, number>> = {
+  employed_by: 0,
+  held_role: 1,
+  contributed_to: 2,
+  demonstrates: 3,
+  uses_skill: 4,
+  supports: 5,
+  in_domain: 6,
+  related_to: 7,
+};
 
 export interface SqliteCareerEvidenceStoreOptions {
   readonly readOnly?: boolean;
@@ -763,7 +773,17 @@ export class SqliteCareerEvidenceStore implements CareerEvidenceStore {
       latestReviews.set(review.candidateId, review);
     }
 
-    const candidates: CareerRelationshipCandidate[] = [];
+    const activeLinkedClaimIds = new Set(
+      relationships
+        .filter((relationship) =>
+          relationship.state === "active" && relationship.claimId !== null
+        )
+        .map((relationship) => relationship.claimId!),
+    );
+    const candidatesByClaim = new Map<
+      string,
+      Array<Omit<CareerRelationshipCandidate, "claimQueueState">>
+    >();
     for (const claim of claims) {
       const source = sources.get(claim.sourceId)!;
       for (const relationship of sourceRelationships) {
@@ -799,7 +819,7 @@ export class SqliteCareerEvidenceStore implements CareerEvidenceStore {
         const linked = exactActiveRelationship?.id === linkedRelationshipId;
         const reviewIsCurrent = lastReview?.candidateFingerprint === fingerprint &&
           (lastReview.decision === "rejected" || linked);
-        candidates.push({
+        const candidate: Omit<CareerRelationshipCandidate, "claimQueueState"> = {
           id,
           fingerprint,
           ...evidenceScope,
@@ -815,13 +835,46 @@ export class SqliteCareerEvidenceStore implements CareerEvidenceStore {
           lastReview,
           reviewIsCurrent,
           linkedRelationshipId: linked ? linkedRelationshipId : null,
-        });
+        };
+        const claimCandidates = candidatesByClaim.get(claim.id) ?? [];
+        claimCandidates.push(candidate);
+        candidatesByClaim.set(claim.id, claimCandidates);
       }
     }
-    return candidates.sort((left, right) =>
+
+    const boundedCandidates: CareerRelationshipCandidate[] = [];
+    for (const claimCandidates of candidatesByClaim.values()) {
+      claimCandidates.sort(compareRelationshipCandidates);
+      if (activeLinkedClaimIds.has(claimCandidates[0]!.claimId)) {
+        boundedCandidates.push(...claimCandidates
+          .filter((candidate) =>
+            candidate.reviewState === "approved" &&
+            candidate.linkedRelationshipId !== null
+          )
+          .map((candidate) => ({ ...candidate, claimQueueState: "approved" as const })));
+        continue;
+      }
+
+      const rejected = claimCandidates.filter(
+        (candidate) => candidate.reviewState === "rejected",
+      );
+      const pending = claimCandidates.find(
+        (candidate) => candidate.reviewState === "needs_review",
+      );
+      const claimQueueState = pending ? "pending" as const : "exhausted" as const;
+      if (pending) boundedCandidates.push({ ...pending, claimQueueState });
+      boundedCandidates.push(...rejected.map((candidate) => ({
+        ...candidate,
+        claimQueueState,
+      })));
+    }
+
+    return boundedCandidates.sort((left, right) =>
+      Number(left.reviewState !== "needs_review") -
+        Number(right.reviewState !== "needs_review") ||
       left.sourceId.localeCompare(right.sourceId) ||
       left.claimId.localeCompare(right.claimId) ||
-      left.sourceRelationshipId.localeCompare(right.sourceRelationshipId)
+      compareRelationshipCandidates(left, right)
     );
   }
 
@@ -1335,6 +1388,16 @@ function mapRelationshipReview(
     reviewedBy: row.reviewed_by,
     reviewedAt: row.reviewed_at,
   };
+}
+
+function compareRelationshipCandidates(
+  left: Pick<CareerRelationshipCandidate, "relationship" | "sourceRelationshipId" | "id">,
+  right: Pick<CareerRelationshipCandidate, "relationship" | "sourceRelationshipId" | "id">,
+): number {
+  return RELATIONSHIP_REVIEW_PRIORITY[left.relationship] -
+      RELATIONSHIP_REVIEW_PRIORITY[right.relationship] ||
+    left.sourceRelationshipId.localeCompare(right.sourceRelationshipId) ||
+    left.id.localeCompare(right.id);
 }
 
 function claimMatches(
