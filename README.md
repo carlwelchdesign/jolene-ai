@@ -55,6 +55,9 @@ The first runnable slice provides:
 - optional disabled-by-default grounded OpenAI answer synthesis that can change
   only answer prose, sends only selected public evidence, and falls back exactly
   to the deterministic response on provider or validation failure;
+- a versioned offline public-delegate evaluation harness with precommitted
+  blocker thresholds, deterministic/fake-provider fixtures, privacy-safe
+  machine reports, and nonzero hard-gate failure exits;
 - a private owner-scoped Contacts screen that can review or delete staged
   requests and save inert local reply drafts without sending anything;
 - contract tests that make no live OpenAI requests.
@@ -92,6 +95,12 @@ Prerequisite: Node.js 22 or newer.
 
    ```bash
    npm run check
+   ```
+
+   Run the public-delegate offline release baseline separately:
+
+   ```bash
+   npm run eval:public
    ```
 
    Build the production service separately with:

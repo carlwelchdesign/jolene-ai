@@ -120,6 +120,12 @@ data. Model mode therefore remains a local evaluation feature until provider
 terms, prompt-injection and grounding evaluations, cost controls, and the public
 deployment topology are reviewed.
 
+The first offline backend evaluation baseline is documented in
+[Public delegate offline evaluation](public-delegate-evaluation.md). It uses
+versioned deterministic and fake-provider fixtures; it does not make a live
+provider request or replace the remaining human, portfolio, operational, and
+launch gates.
+
 Job-fit comparison deterministically segments the submitted description and
 uses lexical overlap against exact public claims and citation titles. A strong
 overlap is `direct`; partial overlap is `adjacent`; no support is `unknown`.
