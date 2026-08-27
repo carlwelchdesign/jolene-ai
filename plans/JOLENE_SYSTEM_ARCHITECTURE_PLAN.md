@@ -1003,6 +1003,7 @@ Owner-only live-model review checkpoint:
 |---|---|
 | Asana | [JOL-CAREER-006H](https://app.asana.com/1/9789386902387/project/1216473233375594/task/1217889535236966) |
 | Branch | `codex/jol-career-006h-live-review-control` |
+| Implementation commit | `5223402` (`JOL-CAREER-006H add live evaluation review control`) |
 | Review boundary | The loopback control center displays each exact model answer beside only the reviewed public evidence included in its schema-validated packet; it cannot run a model, spend provider budget, change evidence, contact anyone, publish, integrate, deploy, or authorize launch |
 | Decision boundary | The exact owner scope must explicitly rate accuracy, grounding, usefulness, and tone for every case; the overall decision must agree with those ratings and is bound to the suite ID, model, reviewer, review time, and exact suite hash |
 | Persistence boundary | Packet input is read-only and mounted only into the private API container; atomic owner-only decision files live outside SQLite; malformed and missing files fail explicitly, and a changed suite hash makes an earlier decision stale |
