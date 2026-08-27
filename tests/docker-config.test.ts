@@ -39,6 +39,14 @@ describe("Docker runtime boundary", () => {
       "JOLENE_CAREER_EMBEDDINGS_ENABLED: ${JOLENE_CAREER_EMBEDDINGS_ENABLED:-false}",
     );
     expect(compose).toContain("jolene-data:/data");
+    expect(compose).toContain("JOLENE_PUBLIC_LIVE_REVIEW_PACKET_PATH: /review/public-live-model-review.json");
+    expect(compose).toContain("JOLENE_PUBLIC_LIVE_REVIEW_DECISION_PATH: /data/evaluations/public-live-model-decision.json");
+    expect(compose).toMatch(
+      /jolene-api:\n(?:.*\n)*?\s+source: \.\/\.jolene\/evaluations\n\s+target: \/review\n\s+read_only: true/,
+    );
+    expect(compose).not.toMatch(
+      /x-jolene-runtime:[\s\S]*?source: \.\/\.jolene\/evaluations[\s\S]*?services:/,
+    );
     expect(compose).toContain("no-new-privileges:true");
     expect(compose).toContain("127.0.0.1:${JOLENE_HOST_PORT:-8421}:8421");
   });

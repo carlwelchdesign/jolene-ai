@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light">
+    <title>Jolene Public Evaluation Review</title>
+    <link rel="stylesheet" href="/memory-review.css">
+    <link rel="stylesheet" href="/public-evaluation-review.css">
+    <script type="module" src="/public-evaluation-review.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to evaluation review</a>
+
+    <header class="topbar">
+      <a class="brand" href="/public-evaluation" aria-label="Jolene Public Evaluation Review home">
+        <span class="brand-mark" aria-hidden="true">J</span>
+        <span><strong>Jolene</strong><small>Control Center</small></span>
+      </a>
+      <div class="header-tools">
+        <nav class="product-nav" aria-label="Jolene control center">
+          <a href="/workflows">Work</a>
+          <a href="/projects">Projects</a>
+          <a href="/career-evidence">Evidence</a>
+          <a href="/public-evaluation" aria-current="page">Evaluation</a>
+          <a href="/contacts">Contacts</a>
+          <a href="/memory">Memory</a>
+          <a href="/approvals">Approvals</a>
+        </nav>
+        <div class="review-scope-chip" id="scope-chip">
+          <span aria-hidden="true">●</span>
+          Loading owner scope
+        </div>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="hero hero-evaluation" aria-labelledby="page-title">
+        <p class="eyebrow">Human quality gate</p>
+        <h1 id="page-title">Review what public Jolene actually said.</h1>
+        <p class="hero-copy">Inspect every model answer beside the exact reviewed public evidence it received. Your decision is bound to this suite hash and cannot deploy, publish, or contact anyone.</p>
+        <div class="hero-actions">
+          <button class="button button-primary" id="refresh-button" type="button">Refresh review packet</button>
+          <span class="local-note"><span aria-hidden="true">●</span> Local owner control</span>
+        </div>
+      </section>
+
+      <aside class="review-boundary" aria-label="Evaluation action boundary">
+        <span class="review-boundary-icon" aria-hidden="true">✓</span>
+        <div>
+          <strong>Human review is evidence, not launch approval.</strong>
+          <p>This page cannot run the model, spend API budget, modify the public corpus, enable the portfolio, send a message, or approve deployment.</p>
+        </div>
+      </aside>
+
+      <div class="notice" id="page-notice" role="status" aria-live="polite" hidden></div>
+
+      <section class="evaluation-summary" aria-label="Evaluation packet summary">
+        <article><span>Packet</span><strong id="summary-packet">—</strong></article>
+        <article><span>Cases</span><strong id="summary-cases">—</strong></article>
+        <article><span>Human review</span><strong id="summary-review">—</strong></article>
+      </section>
+
+      <section class="panel packet-panel" aria-labelledby="packet-title">
+        <div class="section-heading packet-heading">
+          <div>
+            <p class="eyebrow">Exact evaluation run</p>
+            <h2 id="packet-title">Review packet</h2>
+          </div>
+          <dl class="packet-meta" id="packet-meta"></dl>
+        </div>
+        <div id="packet-state" aria-live="polite" aria-busy="true">
+          <div class="loading-state">Loading the owner-only review packet…</div>
+        </div>
+      </section>
+
+      <section class="panel decision-panel" id="decision-panel" aria-labelledby="decision-title" hidden>
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Explicit human decision</p>
+            <h2 id="decision-title">Record this run’s review</h2>
+          </div>
+        </div>
+        <p class="decision-copy">Review all four dimensions for every case. Approval becomes available only when every dimension passes.</p>
+        <form id="review-form">
+          <div id="case-reviews"></div>
+          <div class="overall-decision">
+            <label class="field" for="overall-decision">
+              <span>Overall decision</span>
+              <select id="overall-decision" required>
+                <option value="">Choose after reviewing every case</option>
+                <option value="approved">Approved</option>
+                <option value="needs_changes">Needs changes</option>
+                <option value="rejected">Rejected</option>
+              </select>
+            </label>
+            <p id="decision-guidance">Approval requires every dimension to pass. Needs changes requires at least one matching rating; rejection requires at least one failure.</p>
+          </div>
+          <div class="inline-error" id="review-error" role="alert" hidden></div>
+          <div class="review-actions">
+            <button class="button button-primary" id="review-submit" type="submit" disabled>Save human review</button>
+            <span>Saved locally and bound to the exact suite hash.</span>
+          </div>
+        </form>
+      </section>
+    </main>
+
+    <div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true" hidden></div>
+  </body>
+</html>

@@ -22,6 +22,10 @@ const envSchema = z.object({
     .default(30),
   JOLENE_PUBLIC_CONTACT_QUEUE_MAX_ENTRIES: z.coerce.number().int().min(1)
     .max(1_000).default(500),
+  JOLENE_PUBLIC_LIVE_REVIEW_PACKET_PATH: z.string().trim().min(1)
+    .default(".jolene/evaluations/public-live-model-review.json"),
+  JOLENE_PUBLIC_LIVE_REVIEW_DECISION_PATH: z.string().trim().min(1)
+    .default(".jolene/evaluations/public-live-model-decision.json"),
   JOLENE_OBSIDIAN_VAULT_ROOT: z.string().trim().optional(),
   JOLENE_OBSIDIAN_ALLOWLIST: z.string().default(""),
   JOLENE_CAREER_OBSIDIAN_ALLOWLIST: z.string().default(""),
@@ -46,6 +50,8 @@ export interface AppConfig {
   readonly contactQueuePath: string;
   readonly contactRetentionDays: number;
   readonly contactQueueMaxEntries: number;
+  readonly publicLiveReviewPacketPath: string;
+  readonly publicLiveReviewDecisionPath: string;
   readonly vaultRoot: string | undefined;
   readonly vaultAllowlist: readonly string[];
   readonly careerVaultAllowlist: readonly string[];
@@ -89,6 +95,14 @@ export function parseConfig(
     ),
     contactRetentionDays: env.JOLENE_PUBLIC_CONTACT_RETENTION_DAYS,
     contactQueueMaxEntries: env.JOLENE_PUBLIC_CONTACT_QUEUE_MAX_ENTRIES,
+    publicLiveReviewPacketPath: path.resolve(
+      workingDirectory,
+      env.JOLENE_PUBLIC_LIVE_REVIEW_PACKET_PATH,
+    ),
+    publicLiveReviewDecisionPath: path.resolve(
+      workingDirectory,
+      env.JOLENE_PUBLIC_LIVE_REVIEW_DECISION_PATH,
+    ),
     vaultRoot: emptyToUndefined(env.JOLENE_OBSIDIAN_VAULT_ROOT),
     vaultAllowlist: env.JOLENE_OBSIDIAN_ALLOWLIST.split(",")
       .map((value) => value.trim())

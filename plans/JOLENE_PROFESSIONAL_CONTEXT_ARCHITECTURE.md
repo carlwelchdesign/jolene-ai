@@ -2,7 +2,7 @@
 
 **Date:** 2026-08-26
 
-**Status:** Docker API, governed career ingestion, private hybrid retrieval, durable owner-reviewed conflict registry with loopback visual review, public export, loopback manifest/answer/job-fit/contact-staging/admission/audit/egress-disclosure boundaries, disabled-by-default grounded answer synthesis, private contact review, explicit unresolved public-evidence conflict policy, and an offline response/lifecycle/red-team/contact/conflict evaluation baseline implemented; public integration, full evaluation, and deployment pending
+**Status:** Docker API, governed career ingestion, private hybrid retrieval, durable owner-reviewed conflict registry with loopback visual review, public export, loopback manifest/answer/job-fit/contact-staging/admission/audit/egress-disclosure boundaries, disabled-by-default grounded answer synthesis, private contact review, explicit unresolved public-evidence conflict policy, offline response/lifecycle/red-team/contact/conflict evaluation, and an owner-only live-model review control implemented; authorized live-provider execution, completed human review, full evaluation, and deployment remain pending
 
 ## Product outcome
 
@@ -650,6 +650,24 @@ representative human review, deployment, and launch authorization remain open.
 The harness does not itself satisfy live-model evidence or human review. An
 authorized run, Carl's packet review, portfolio accessibility/integration,
 production controls, deployment, and launch authorization remain open.
+
+`JOL-CAREER-006H` owner-review boundary:
+
+- the private loopback control center reads only the schema-validated ignored
+  review packet and exposes it only to the exact configured owner scope;
+- every case requires explicit accuracy, grounding, usefulness, and tone
+  ratings before an overall decision can be saved;
+- decisions are atomically stored outside SQLite, bind reviewer and timestamp
+  to the exact suite hash, and become visibly stale when a new packet changes
+  that hash;
+- the API alone receives the packet directory as a read-only mount; the Slack
+  process receives no packet mount; and
+- the screen cannot run a provider, alter evidence, send, integrate, deploy, or
+  authorize launch.
+
+No live evaluation or human decision is inferred by this implementation. The
+provider run still requires explicit credential reuse or creation authorization,
+and Carl must review the resulting packet himself.
 
 `JOL-CAREER-004A` approved-corpus checkpoint:
 

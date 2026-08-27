@@ -13,6 +13,8 @@ x-jolene-runtime: &jolene-runtime
     JOLENE_OBSIDIAN_VAULT_ROOT: /vault
     JOLENE_PORT: 8421
     JOLENE_CAREER_EMBEDDINGS_ENABLED: ${JOLENE_CAREER_EMBEDDINGS_ENABLED:-false}
+    JOLENE_PUBLIC_LIVE_REVIEW_PACKET_PATH: /review/public-live-model-review.json
+    JOLENE_PUBLIC_LIVE_REVIEW_DECISION_PATH: /data/evaluations/public-live-model-decision.json
   volumes:
     - jolene-data:/data
     - type: bind
@@ -33,6 +35,16 @@ services:
   jolene-api:
     <<: *jolene-runtime
     command: ["node", "dist/server.js"]
+    volumes:
+      - jolene-data:/data
+      - type: bind
+        source: ${JOLENE_OBSIDIAN_VAULT_HOST_PATH:?Set JOLENE_OBSIDIAN_VAULT_HOST_PATH in the ignored .env file}
+        target: /vault
+        read_only: true
+      - type: bind
+        source: ./.jolene/evaluations
+        target: /review
+        read_only: true
     ports:
       - "127.0.0.1:${JOLENE_HOST_PORT:-8421}:8421"
 

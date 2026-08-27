@@ -225,6 +225,12 @@ Prerequisite: Node.js 22 or newer.
    tests never call a provider; live measurement requires a separate public-only
    environment and always stages its representative outputs for Carl's review.
 
+   Open [http://127.0.0.1:8421/public-evaluation](http://127.0.0.1:8421/public-evaluation)
+   to inspect that ignored owner-only review packet and save an explicit human
+   decision bound to its exact suite hash. The screen cannot run a provider,
+   spend budget, alter evidence, activate the portfolio, message anyone, deploy,
+   or authorize launch. A new packet hash makes an earlier decision stale.
+
 ## Slack pilot
 
 Jolene can connect through a dedicated Slack app using Socket Mode. The checked-in manifest grants only the scopes needed for owner DMs, explicit mentions, and replies.

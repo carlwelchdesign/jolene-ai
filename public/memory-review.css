@@ -21,12 +21,13 @@
 
 * { box-sizing: border-box; }
 
-html { background: var(--paper); color: var(--ink); font-family: var(--sans); }
+html { overflow-x: clip; background: var(--paper); color: var(--ink); font-family: var(--sans); }
 
 body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
+  overflow-x: clip;
   background:
     radial-gradient(circle at 12% -10%, rgba(194, 151, 86, 0.18), transparent 30rem),
     linear-gradient(180deg, #fbf7ef 0, var(--paper) 42rem);
@@ -89,8 +90,8 @@ button { cursor: pointer; }
 .brand strong { font: 700 19px/1.1 var(--serif); }
 .brand small { margin-top: 3px; color: var(--muted); font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; }
 
-.header-tools { display: flex; align-items: center; gap: 12px; }
-.product-nav { display: flex; gap: 3px; max-width: 100%; overflow-x: auto; padding: 4px; background: rgba(255, 253, 248, 0.72); border: 1px solid var(--line); border-radius: 11px; }
+.header-tools { display: flex; min-width: 0; align-items: center; gap: 12px; }
+.product-nav { display: flex; min-width: 0; gap: 3px; max-width: 100%; overflow-x: auto; padding: 4px; background: rgba(255, 253, 248, 0.72); border: 1px solid var(--line); border-radius: 11px; }
 .product-nav a { white-space: nowrap; }
 .product-nav a { padding: 7px 10px; color: var(--muted); border-radius: 7px; font-size: 12px; font-weight: 800; text-decoration: none; }
 .product-nav a[aria-current="page"] { color: var(--ink); background: white; box-shadow: 0 2px 8px rgba(53, 43, 31, 0.08); }
@@ -286,9 +287,9 @@ blockquote { margin: 0; padding: 16px; background: #f3ede4; border-left: 4px sol
 .toast { position: fixed; z-index: 90; right: 22px; bottom: 22px; max-width: min(380px, calc(100% - 44px)); padding: 13px 16px; color: white; background: var(--ink); border-radius: 11px; box-shadow: var(--shadow); }
 
 @media (max-width: 720px) {
-  .topbar, main { width: min(100% - 24px, 1180px); }
+  .topbar, main { min-width: 0; width: min(100% - 24px, 1180px); }
   .topbar { align-items: stretch; flex-direction: column; gap: 12px; padding-top: 14px; }
-  .header-tools { align-items: stretch; flex-direction: column; width: 100%; }
+  .header-tools { align-items: stretch; flex-direction: column; width: 100%; max-width: 100%; }
   .product-nav { width: 100%; }
   .product-nav a { flex: 1 0 auto; text-align: center; }
   .scope-button { width: 100%; min-width: 0; max-width: none; }
