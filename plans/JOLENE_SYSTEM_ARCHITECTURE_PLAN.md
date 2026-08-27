@@ -618,6 +618,19 @@ Private personal-knowledge and recipe checkpoint:
 | Privacy boundary | The portfolio delegate remains physically isolated from the vault; shared Slack exposes no private knowledge tool; allowlist changes remain local and untracked |
 | Remaining boundary | Hybrid semantic retrieval, cross-note synthesis, freshness review, and channel-specific disclosure approvals remain tracked in `JOL-KNOW-002` |
 
+Channel-aware retrieval-policy checkpoint:
+
+| Field | Value |
+|---|---|
+| Ticket | `JOL-KNOW-002` — [Asana](https://app.asana.com/1/9789386902387/project/1216473233375594/task/1217931071239192) |
+| Branch | `codex/jol-know-002-channel-policy` |
+| Policy | Versioned deterministic matrix resolved before conversation history, durable memory, Obsidian, career evidence, or private work tools are exposed |
+| Private/local | Same-thread history, approved durable context, allowlisted Obsidian, and reviewed internal/public career evidence; sensitive memory remains explicit-request only |
+| Slack | Verified owner DM may use the canonical private scope; unverified DMs and private/shared channels receive no private retrieval capability |
+| Portfolio | Public export accepts only `public_approved` career evidence and keeps note/claim/public-evidence citation contracts explicit |
+| Injection boundary | User messages, retrieved notes, memories, recommendations, and conversation quotations cannot widen policy because content is not a policy input and remains labeled untrusted evidence |
+| Deployment boundary | Local code, tests, and documentation only for this checkpoint; pushing or opening a PR is withheld because GitHub may trigger a Vercel build. No Vercel build, environment change, promotion, or deployment without Carl's later approval |
+
 Exact-action-approval checkpoint:
 
 | Field | Value |

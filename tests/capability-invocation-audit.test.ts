@@ -10,6 +10,7 @@ import {
   type AgentRequest,
   type OpenAIJoleneRunnerOptions,
 } from "../src/agent/agent-runner.js";
+import { resolveChannelRetrievalPolicy } from "../src/domain/channel-retrieval-policy.js";
 import {
   CapabilityInvocationAuditor,
   CapabilityInvocationAuditUnavailableError,
@@ -311,5 +312,6 @@ function agentRequest(): AgentRequest {
     history: [],
     workContext: { task: null, taskEvents: [], memories: [] },
     workScope: null,
+    retrievalPolicy: resolveChannelRetrievalPolicy({ surface: "private_chat" }),
   };
 }

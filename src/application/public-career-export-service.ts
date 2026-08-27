@@ -15,6 +15,10 @@ import {
 import {
   containsForbiddenPublicText,
 } from "../domain/public-disclosure-policy.js";
+import {
+  policyAllowsCareerVisibility,
+  resolveChannelRetrievalPolicy,
+} from "../domain/channel-retrieval-policy.js";
 
 const PUBLIC_SOURCE_TYPES = new Set([
   "resume",
@@ -26,6 +30,9 @@ const PUBLIC_SOURCE_TYPES = new Set([
   "portfolio_page",
   "confirmed_fact",
 ]);
+const PUBLIC_PORTFOLIO_RETRIEVAL_POLICY = resolveChannelRetrievalPolicy({
+  surface: "portfolio",
+});
 
 export class PublicCareerExportService {
   constructor(
@@ -116,6 +123,12 @@ export class PublicCareerExportService {
     claim: CareerClaim,
     source: CareerSource,
   ): PublicCareerEvidenceRecord {
+    if (!policyAllowsCareerVisibility(
+      PUBLIC_PORTFOLIO_RETRIEVAL_POLICY,
+      claim.visibility,
+    )) {
+      throw new PublicCareerExportPolicyError("visibility_not_public");
+    }
     if (!PUBLIC_SOURCE_TYPES.has(source.sourceType)) {
       throw new PublicCareerExportPolicyError("unsupported_source_type");
     }

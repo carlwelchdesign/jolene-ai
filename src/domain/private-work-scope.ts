@@ -1,4 +1,5 @@
 import type { ChannelKind } from "./conversation.js";
+import type { SlackDisclosureScope } from "./channel-retrieval-policy.js";
 
 export interface PrivateWorkScope {
   readonly actorId: string;
@@ -11,6 +12,7 @@ export interface PrivateWorkScopeRequest extends PrivateWorkScope {
 
 export interface PrivateWorkScopeResolver {
   resolve(request: PrivateWorkScopeRequest): PrivateWorkScope | null;
+  slackDisclosureScope(request: PrivateWorkScopeRequest): SlackDisclosureScope;
 }
 
 export interface CanonicalPrivateWorkScopeOptions {
@@ -37,6 +39,14 @@ export class CanonicalPrivateWorkScopeResolver
       workspaceId: request.workspaceId,
     };
   }
+
+  slackDisclosureScope(request: PrivateWorkScopeRequest): SlackDisclosureScope {
+    return request.channelKind === "slack_dm" &&
+        Boolean(this.options.slackOwnerUserId) &&
+        request.actorId === this.options.slackOwnerUserId
+      ? "verified_owner_dm"
+      : "none";
+  }
 }
 
 export class TransportPrivateWorkScopeResolver
@@ -46,5 +56,9 @@ export class TransportPrivateWorkScopeResolver
     return request.channelKind === "slack_shared"
       ? null
       : { actorId: request.actorId, workspaceId: request.workspaceId };
+  }
+
+  slackDisclosureScope(_request: PrivateWorkScopeRequest): SlackDisclosureScope {
+    return "none";
   }
 }

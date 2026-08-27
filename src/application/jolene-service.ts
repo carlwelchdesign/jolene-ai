@@ -7,6 +7,7 @@ import {
   type ConversationAddress,
   type ConversationStore,
 } from "../domain/conversation.js";
+import { resolveChannelRetrievalPolicy } from "../domain/channel-retrieval-policy.js";
 import { isPrivateChannel } from "../domain/policy.js";
 import {
   TransportPrivateWorkScopeResolver,
@@ -62,12 +63,24 @@ export class JoleneService {
     }
 
     try {
-      const history = this.options.store.recentTurns(
-        address,
-        this.options.maxHistoryTurns,
-      );
-      const workScope = this.resolveWorkScope(request);
-      const workContext = workScope
+      const workScopeResolver = this.options.workScopeResolver ??
+        new TransportPrivateWorkScopeResolver();
+      const workScope = isPrivateChannel(request.channelKind)
+        ? workScopeResolver.resolve(request)
+        : null;
+      const retrievalPolicy = resolveChannelRetrievalPolicy({
+        surface: request.channelKind,
+        ...(request.channelKind.startsWith("slack_")
+          ? {
+              slackDisclosureScope:
+                workScopeResolver.slackDisclosureScope(request),
+            }
+          : {}),
+      });
+      const history = retrievalPolicy.conversationHistory.allowed
+        ? this.options.store.recentTurns(address, this.options.maxHistoryTurns)
+        : [];
+      const workContext = workScope && retrievalPolicy.durableMemory.allowed
         ? this.options.workContext.loadAuthorizedContext({
             actorId: workScope.actorId,
             workspaceId: workScope.workspaceId,
@@ -89,6 +102,7 @@ export class JoleneService {
         history,
         workContext,
         workScope,
+        retrievalPolicy,
       });
 
       this.options.store.completeEvent(claim.eventKey, {
@@ -101,12 +115,6 @@ export class JoleneService {
       this.options.store.failEvent(claim.eventKey, classifyError(error));
       throw error;
     }
-  }
-
-  private resolveWorkScope(request: ChatRequest) {
-    if (!isPrivateChannel(request.channelKind)) return null;
-    return (this.options.workScopeResolver ?? new TransportPrivateWorkScopeResolver())
-      .resolve(request);
   }
 }
 

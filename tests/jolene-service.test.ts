@@ -294,6 +294,12 @@ describe("JoleneService", () => {
         memories: [],
       });
       expect(runner.requests[0]?.workScope).toBeNull();
+      expect(runner.requests[0]?.retrievalPolicy).toMatchObject({
+        disclosureScope: "none",
+        durableMemory: { allowed: false },
+        obsidianKnowledge: { allowed: false },
+        careerEvidence: { allowedVisibilities: [] },
+      });
     } finally {
       store.close();
       workContext.close();
@@ -337,6 +343,14 @@ describe("JoleneService", () => {
         workspaceId: "personal",
       });
       expect(runner.requests[0]?.workContext.task?.id).toBe(task.id);
+      expect(runner.requests[0]?.retrievalPolicy).toMatchObject({
+        disclosureScope: "verified_owner_dm",
+        durableMemory: { allowed: true },
+        obsidianKnowledge: { allowed: true },
+        careerEvidence: {
+          allowedVisibilities: ["internal_approved", "public_approved"],
+        },
+      });
       expect(store.recentTurns({
         actorId: "UOWNER",
         workspaceId: "TSLACK",
@@ -378,6 +392,12 @@ describe("JoleneService", () => {
         task: null,
         taskEvents: [],
         memories: [],
+      });
+      expect(runner.requests[0]?.retrievalPolicy).toMatchObject({
+        disclosureScope: "none",
+        durableMemory: { allowed: false },
+        obsidianKnowledge: { allowed: false },
+        careerEvidence: { allowedVisibilities: [] },
       });
     } finally {
       store.close();

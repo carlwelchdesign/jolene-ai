@@ -388,6 +388,11 @@ and thread.
   never widens actor, channel, source, review, freshness, or visibility scope.
 - Career retrieval audit records contain HMAC query fingerprints and stable
   citation IDs, not raw queries or evidence excerpts.
+- A single [channel-aware retrieval policy](docs/channel-retrieval-policy.md)
+  governs same-thread conversation history, durable memory, Obsidian, career
+  evidence, and public export. Shared Slack cannot retrieve private sources;
+  owner-DM access requires the verified canonical-owner scope; portfolio access
+  permits only `public_approved` artifact records.
 - Public career queries exclude stale, revoked, superseded, unapproved, and
   publicly uncitable evidence by construction.
 - The offline public export emits only fresh `public_approved` claim/citation
