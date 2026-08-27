@@ -841,6 +841,7 @@ Private Compose secret-file checkpoint:
 |---|---|
 | Asana | [JOL-SEC-002](https://app.asana.com/1/9789386902387/project/1216473233375594/task/1217891029157503) |
 | Branch | `codex/jol-sec-002-compose-secrets` |
+| Implementation commit | `97353f9` (`JOL-SEC-002 harden private Compose secrets`) |
 | Configuration boundary | Host development may use direct values; Compose uses ignored owner-only files through exact `*_FILE` variables and rejects ambiguous, unavailable, empty, oversized, or multiline secret sources |
 | Least privilege | API and monitor mount only OpenAI; Slack mounts OpenAI plus app/bot tokens; canonical career exporter mounts no secret and has no secret environment key |
 | Migration | Idempotent `secrets:migrate-compose` filters all three values from `.env.runtime.local`, creates mode-`0700`/`0600` storage, and reports names only |
