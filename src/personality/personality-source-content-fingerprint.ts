@@ -10,6 +10,8 @@ export type PersonalitySourceFingerprintMethod =
   | "npr-station-article-body-paragraphs-v1"
   | "ted-next-data-transcript-segments-v1"
   | "blank-on-blank-transcript-paragraphs-v1"
+  | "interview-magazine-speaker-paragraphs-v1"
+  | "vanity-fair-proust-pairs-v1"
   | "wired-indexed-transcript-captions-v1";
 
 export type NormalizedTranscriptFingerprintMethod = Exclude<
@@ -74,12 +76,65 @@ function extractNormalizedSegments(
         /<p\b[^>]*>([\s\S]*?)<\/p>/gi,
       )].map((match) => normalizeVisibleText(match[1] ?? "")).filter(Boolean);
       break;
+    case "interview-magazine-speaker-paragraphs-v1":
+      segments = extractInterviewMagazineTranscript($);
+      break;
+    case "vanity-fair-proust-pairs-v1":
+      segments = extractVanityFairQuestionnaire($);
+      break;
     case "wired-indexed-transcript-captions-v1":
       segments = extractWiredTranscript(html);
       break;
   }
   if (segments.length === 0) throw new Error(`No transcript segments found for ${method}`);
   return segments;
+}
+
+function extractInterviewMagazineTranscript($: ReturnType<typeof load>): readonly string[] {
+  const containers = $("#post-body .post-block");
+  if (containers.length !== 1) throw new Error("Expected one Interview Magazine post block");
+  const paragraphs = containers.children("p").toArray().map((paragraph, domIndex) => ({
+    domIndex,
+    text: normalizeWhitespace($(paragraph).text()),
+  })).filter((paragraph) => paragraph.text.length > 0);
+  const label = /^(ANDY WARHOL|DOLLY PARTON|MAURA MOYNIHAN|WARHOL|PARTON|MOYNIHAN):(?:\s|$)/;
+  const first = paragraphs.findIndex((paragraph) => label.test(paragraph.text));
+  let last = -1;
+  for (let index = paragraphs.length - 1; index >= 0; index -= 1) {
+    if (label.test(paragraphs[index]!.text)) {
+      last = index;
+      break;
+    }
+  }
+  if (first < 0 || last < first) throw new Error("Interview Magazine speaker boundary is missing");
+  const boundary = paragraphs.slice(first, last + 1);
+  if (boundary.length !== 118 || boundary.some((paragraph) => !label.test(paragraph.text))) {
+    throw new Error("Interview Magazine speaker boundary changed");
+  }
+  return boundary.map((paragraph) => paragraph.text);
+}
+
+function extractVanityFairQuestionnaire($: ReturnType<typeof load>): readonly string[] {
+  const containers = $("[data-testid='BodyWrapper'] .body__inner-container");
+  if (containers.length !== 1) throw new Error("Expected one Vanity Fair questionnaire body");
+  const paragraphs = containers.children("p").toArray().filter(
+    (paragraph) => normalizeWhitespace($(paragraph).text()).length > 0,
+  );
+  if (paragraphs.length !== 50 || paragraphs.length % 2 !== 0) {
+    throw new Error("Vanity Fair questionnaire paragraph count changed");
+  }
+  return paragraphs.map((paragraph, index) => {
+    const text = normalizeWhitespace($(paragraph).text());
+    const strong = $(paragraph).children("strong");
+    if (index % 2 === 0) {
+      if (strong.length !== 1 || normalizeWhitespace(strong.text()) !== text) {
+        throw new Error("Vanity Fair questionnaire prompt structure changed");
+      }
+    } else if ($(paragraph).find("strong").length > 0) {
+      throw new Error("Vanity Fair questionnaire answer structure changed");
+    }
+    return text;
+  });
 }
 
 function directParagraphText(

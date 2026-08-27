@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 
@@ -66,7 +67,9 @@ export async function loadPersonalityAvRecoveryOutcomeV1(projectRoot = process.c
   }
   return {
     schemaVersion: "jolene.personality-av-attribution-recovery-outcome.v1" as const,
+    outcomeFingerprint: digest(text),
     status: outcome.status,
+    evaluatedAt: outcome.evaluated_at,
     boundaryProtocolFingerprint: outcome.boundary_protocol_fingerprint,
     sourceRegisterFingerprint: outcome.source_register_fingerprint,
     failedSources: outcome.sources.map((source) => source.source_register_id),
@@ -79,4 +82,8 @@ export async function loadPersonalityAvRecoveryOutcomeV1(projectRoot = process.c
     replacementPerformed: outcome.replacement_performed,
     runtimeActivation: outcome.runtime_activation,
   };
+}
+
+function digest(value: string) {
+  return `sha256:${createHash("sha256").update(value).digest("hex")}`;
 }

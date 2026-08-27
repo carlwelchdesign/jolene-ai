@@ -7,6 +7,8 @@ import type { PersonalitySourceFingerprintMethod } from
   "../src/personality/personality-source-content-fingerprint.js";
 import { loadPersonalitySourceRegisterV2 } from
   "../src/personality/personality-source-register.js";
+import { loadPersonalitySourceRegisterV3 } from
+  "../src/personality/personality-source-register-v3.js";
 import type { PersonalitySourceEvent } from
   "../src/personality/personality-source-register.js";
 
@@ -18,6 +20,8 @@ const supportedMethods = new Set<PersonalitySourceFingerprintMethod>([
   "npr-station-article-body-paragraphs-v1",
   "ted-next-data-transcript-segments-v1",
   "blank-on-blank-transcript-paragraphs-v1",
+  "interview-magazine-speaker-paragraphs-v1",
+  "vanity-fair-proust-pairs-v1",
   "wired-indexed-transcript-captions-v1",
 ]);
 
@@ -26,6 +30,26 @@ export async function validatePersonalitySourceFingerprints(
   fetcher: typeof fetch = fetch,
 ) {
   const register = await loadPersonalitySourceRegisterV2(projectRoot);
+  return validateRegisterFingerprints(register, fetcher);
+}
+
+export async function validatePersonalitySourceFingerprintsV3(
+  projectRoot = process.cwd(),
+  fetcher: typeof fetch = fetch,
+) {
+  const register = await loadPersonalitySourceRegisterV3(projectRoot);
+  return validateRegisterFingerprints(register, fetcher);
+}
+
+async function validateRegisterFingerprints(
+  register: {
+    readonly events: readonly PersonalitySourceEvent[];
+    readonly liveFingerprintPolicy: LiveFingerprintNetworkPolicy & {
+      readonly requiredSourceIds: readonly string[];
+    };
+  },
+  fetcher: typeof fetch,
+) {
   const sources = resolveRequiredLiveSources(
     register.events,
     register.liveFingerprintPolicy.requiredSourceIds,

@@ -36,7 +36,8 @@ export const personalitySourceEventSchema = z.object({
   medium: z.enum(["audio", "text", "video"]),
   transcriptProvenance: z.enum([
     "edited-primary-highlights", "first-party-statement", "metadata-only",
-    "official-archive-transcript", "official-caption-track", "publisher-transcript",
+    "official-archive-transcript", "official-caption-track", "official-publisher-reprint",
+    "publisher-questionnaire", "publisher-transcript",
   ]),
   accessState: z.enum(["coding-ready", "excluded", "metadata-only", "unavailable"]),
   accessReason: z.string().min(20),
@@ -61,6 +62,8 @@ export const personalitySourceEventSchema = z.object({
     "npr-station-article-body-paragraphs-v1",
     "ted-next-data-transcript-segments-v1",
     "blank-on-blank-transcript-paragraphs-v1",
+    "interview-magazine-speaker-paragraphs-v1",
+    "vanity-fair-proust-pairs-v1",
     "wired-indexed-transcript-captions-v1",
   ]),
   sourceContentFingerprint: sha256Schema.nullable(),
@@ -107,6 +110,8 @@ export const personalitySourceEventSchema = z.object({
     "npr-station-article-body-paragraphs-v1",
     "ted-next-data-transcript-segments-v1",
     "blank-on-blank-transcript-paragraphs-v1",
+    "interview-magazine-speaker-paragraphs-v1",
+    "vanity-fair-proust-pairs-v1",
     "wired-indexed-transcript-captions-v1",
   ]);
   if ((source.fingerprintBasis === "normalized-transcript-segments") !==

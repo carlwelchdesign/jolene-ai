@@ -83,6 +83,33 @@ describe("personality source content fingerprints", () => {
     ));
   });
 
+  it("binds Interview Magazine to exactly 118 explicitly labeled speaker paragraphs", () => {
+    const turns = Array.from({ length: 118 }, (_, index) =>
+      `<p>${index % 2 === 0 ? "PARTON" : "WARHOL"}: Turn ${index}</p>`).join("");
+    const html = `<div id="post-body"><div class="post-block"><p>Intro</p>${turns}` +
+      `<p>Postscript</p></div></div>`;
+    expect(fingerprintNormalizedTranscript(
+      "interview-magazine-speaker-paragraphs-v1", html,
+    ).segmentCount).toBe(118);
+    expect(() => fingerprintNormalizedTranscript(
+      "interview-magazine-speaker-paragraphs-v1",
+      html.replace("PARTON: Turn 20", "Unlabeled turn 20"),
+    )).toThrow("boundary changed");
+  });
+
+  it("binds Vanity Fair to 25 exact strong-prompt and plain-answer pairs", () => {
+    const pairs = Array.from({ length: 25 }, (_, index) =>
+      `<p><strong>Prompt ${index}</strong></p><p>Answer ${index}</p>`).join("");
+    const html = `<div data-testid="BodyWrapper"><div class="body__inner-container">` +
+      `${pairs}</div></div>`;
+    expect(fingerprintNormalizedTranscript(
+      "vanity-fair-proust-pairs-v1", html,
+    ).segmentCount).toBe(50);
+    expect(() => fingerprintNormalizedTranscript(
+      "vanity-fair-proust-pairs-v1", html.replace("Answer 4", "<strong>Answer 4</strong>"),
+    )).toThrow("answer structure changed");
+  });
+
   it("changes exact-byte PDF and official-caption fingerprints when bytes change", () => {
     const pdf = fingerprintPersonalitySourceContent("raw-pdf-bytes-v1", Buffer.from("%PDF-one"));
     const changedPdf = fingerprintPersonalitySourceContent("raw-pdf-bytes-v1", Buffer.from("%PDF-two"));
