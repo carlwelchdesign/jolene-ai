@@ -1,0 +1,21 @@
+schema_version: personality-sampling-outcome-v3
+status: failed-before-selection-and-coding
+evaluated_at: 2026-08-27T09:48:59Z
+sampling_plan_fingerprint: sha256:94b07d436aa053801e8ea1de484035635bb9d19bb10c78d4ace5531dd21c5c3f
+source_register_fingerprint: sha256:b17ed2346343313d1940071177573c95a7ecaf5bcc273e1da09b3592639d1db1
+failure:
+  source_register_id: S09
+  source_event_id: E008
+  boundary_units_reviewed: 11
+  explicitly_attributed_target_turns: 5
+  other_speaker_units: 5
+  preamble_or_non_dialogue_units: 1
+  required_target_turns: 8
+  required_systematic_turns: 6
+  required_purposive_high_risk_turns: 2
+  code: allocated-turns-exceed-eligible-universe
+committed_selection_ledgers: 0
+observations_created: 0
+replacement_or_resampling_performed: false
+required_next_action: new-prospective-sampling-plan-version-after-capacity-audit
+runtime_activation: prohibited

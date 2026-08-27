@@ -144,11 +144,15 @@ export interface PersonalitySamplingPlanSnapshot {
 }
 
 export interface PersonalitySamplingPlanAudit {
-  readonly schemaVersion: "jolene.personality-sampling-plan.v2";
+  readonly schemaVersion:
+    | "jolene.personality-sampling-plan.v2"
+    | "jolene.personality-sampling-plan.v3";
   readonly planFingerprint: string;
   readonly createdAt: string;
   readonly sourceRegisterFingerprint: string;
-  readonly sourceRegisterState: "superseded-after-recorded-failure";
+  readonly sourceRegisterState:
+    | "superseded-after-recorded-failure"
+    | "current-at-recorded-failure";
   readonly targetAtomicTurns: number;
   readonly systematicTurns: number;
   readonly purposiveHighRiskTurns: number;
@@ -157,7 +161,7 @@ export interface PersonalitySamplingPlanAudit {
   readonly runtimeActivation: "prohibited";
 }
 
-const samplingOutcomeSchema = z.object({
+const samplingOutcomeV2Schema = z.object({
   schema_version: z.literal("personality-sampling-outcome-v2"),
   status: z.literal("failed-before-selection-and-coding"),
   evaluated_at: z.string().datetime(),
@@ -176,6 +180,38 @@ const samplingOutcomeSchema = z.object({
   required_next_action: z.literal("new-prospective-source-register-and-sampling-plan-version"),
   runtime_activation: z.literal("prohibited"),
 });
+
+const samplingOutcomeV3Schema = z.object({
+  schema_version: z.literal("personality-sampling-outcome-v3"),
+  status: z.literal("failed-before-selection-and-coding"),
+  evaluated_at: z.string().datetime(),
+  sampling_plan_fingerprint: sha256Schema,
+  source_register_fingerprint: sha256Schema,
+  failure: z.object({
+    source_register_id: z.literal("S09"),
+    source_event_id: z.literal("E008"),
+    boundary_units_reviewed: z.literal(11),
+    explicitly_attributed_target_turns: z.literal(5),
+    other_speaker_units: z.literal(5),
+    preamble_or_non_dialogue_units: z.literal(1),
+    required_target_turns: z.literal(8),
+    required_systematic_turns: z.literal(6),
+    required_purposive_high_risk_turns: z.literal(2),
+    code: z.literal("allocated-turns-exceed-eligible-universe"),
+  }),
+  committed_selection_ledgers: z.literal(0),
+  observations_created: z.literal(0),
+  replacement_or_resampling_performed: z.literal(false),
+  required_next_action: z.literal(
+    "new-prospective-sampling-plan-version-after-capacity-audit",
+  ),
+  runtime_activation: z.literal("prohibited"),
+});
+
+const samplingOutcomeSchema = z.discriminatedUnion("schema_version", [
+  samplingOutcomeV2Schema,
+  samplingOutcomeV3Schema,
+]);
 
 export type PersonalitySamplingOutcome = z.infer<typeof samplingOutcomeSchema>;
 
@@ -203,6 +239,10 @@ async function loadCurrentPersonalitySamplingPlan(
   const plan = samplingPlanSchema.parse(parse(planText));
   if (plan.schema_version !== `personality-sampling-plan-v${version}`) {
     throw new Error(`Sampling plan file does not contain v${version}`);
+  }
+  if (version === 3) {
+    await loadPersonalitySamplingOutcomeV3(projectRoot);
+    throw new Error("Sampling plan has a recorded failure outcome");
   }
   const register = await loadPersonalitySourceRegisterV2(projectRoot);
   const registerIsCurrent = plan.source_register.fingerprint === register.registerFingerprint &&
@@ -281,12 +321,31 @@ async function loadCurrentPersonalitySamplingPlan(
 export async function loadPersonalitySamplingOutcomeV2(
   projectRoot = process.cwd(),
 ): Promise<PersonalitySamplingOutcome> {
+  return loadPersonalitySamplingOutcome(projectRoot, 2);
+}
+
+export async function loadPersonalitySamplingOutcomeV3(
+  projectRoot = process.cwd(),
+): Promise<PersonalitySamplingOutcome> {
+  return loadPersonalitySamplingOutcome(projectRoot, 3);
+}
+
+async function loadPersonalitySamplingOutcome(
+  projectRoot: string,
+  version: 2 | 3,
+): Promise<PersonalitySamplingOutcome> {
   const [outcomeText, planText] = await Promise.all([
-    readFile(path.resolve(projectRoot, "research", "sampling-plan-v2-outcome.yaml"), "utf8"),
-    readFile(path.resolve(projectRoot, "research", "sampling-plan-v2.yaml"), "utf8"),
+    readFile(path.resolve(
+      projectRoot, "research", `sampling-plan-v${version}-outcome.yaml`,
+    ), "utf8"),
+    readFile(path.resolve(projectRoot, "research", `sampling-plan-v${version}.yaml`), "utf8"),
   ]);
   const outcome = samplingOutcomeSchema.parse(parse(outcomeText));
   const rawPlan = samplingPlanSchema.parse(parse(planText));
+  if (outcome.schema_version !== `personality-sampling-outcome-v${version}` ||
+      rawPlan.schema_version !== `personality-sampling-plan-v${version}`) {
+    throw new Error(`Sampling outcome file does not contain v${version}`);
+  }
   if (outcome.sampling_plan_fingerprint !== digest(planText) ||
       outcome.source_register_fingerprint !== rawPlan.source_register.fingerprint) {
     throw new Error("Sampling outcome does not match the frozen plan snapshot");
@@ -300,11 +359,27 @@ export async function loadPersonalitySamplingOutcomeV2(
 export async function loadPersonalitySamplingAuditV2(
   projectRoot = process.cwd(),
 ): Promise<PersonalitySamplingPlanAudit> {
+  return loadPersonalitySamplingAudit(projectRoot, 2);
+}
+
+export async function loadPersonalitySamplingAuditV3(
+  projectRoot = process.cwd(),
+): Promise<PersonalitySamplingPlanAudit> {
+  return loadPersonalitySamplingAudit(projectRoot, 3);
+}
+
+async function loadPersonalitySamplingAudit(
+  projectRoot: string,
+  version: 2 | 3,
+): Promise<PersonalitySamplingPlanAudit> {
   const planText = await readFile(
-    path.resolve(projectRoot, "research", "sampling-plan-v2.yaml"), "utf8",
+    path.resolve(projectRoot, "research", `sampling-plan-v${version}.yaml`), "utf8",
   );
   const plan = samplingPlanSchema.parse(parse(planText));
-  await loadPersonalitySamplingOutcomeV2(projectRoot);
+  if (plan.schema_version !== `personality-sampling-plan-v${version}`) {
+    throw new Error(`Sampling plan file does not contain v${version}`);
+  }
+  await loadPersonalitySamplingOutcome(projectRoot, version);
   assertUnique(plan.source_allocations.map((allocation) => allocation.source_register_id),
     "sampling source register ID");
   assertUnique(plan.source_allocations.map((allocation) => allocation.source_event_id),
@@ -322,11 +397,13 @@ export async function loadPersonalitySamplingAuditV2(
     throw new Error("Sampling plan predates its source-register snapshot");
   }
   return {
-    schemaVersion: "jolene.personality-sampling-plan.v2",
+    schemaVersion: `jolene.personality-sampling-plan.v${version}`,
     planFingerprint: digest(planText),
     createdAt: plan.created_at,
     sourceRegisterFingerprint: plan.source_register.fingerprint,
-    sourceRegisterState: "superseded-after-recorded-failure",
+    sourceRegisterState: version === 2
+      ? "superseded-after-recorded-failure"
+      : "current-at-recorded-failure",
     targetAtomicTurns: plan.target_atomic_turns,
     systematicTurns: plan.selection_rules.systematic.target_turns,
     purposiveHighRiskTurns: plan.selection_rules.purposive_high_risk.target_turns,

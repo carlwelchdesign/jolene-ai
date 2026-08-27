@@ -16,6 +16,8 @@ import { loadPersonalitySamplingPlanV3 } from
   "../src/personality/personality-sampling-plan.js";
 import { loadPersonalitySamplingOutcomeV2 } from
   "../src/personality/personality-sampling-plan.js";
+import { loadPersonalitySamplingOutcomeV3 } from
+  "../src/personality/personality-sampling-plan.js";
 import type { PersonalitySamplingPlan } from
   "../src/personality/personality-sampling-plan.js";
 
@@ -48,35 +50,46 @@ describe("personality sampling plan v2", () => {
       .rejects.toThrow("Sampling plan source-register snapshot is stale");
   });
 
-  it("freezes a current prospective v3 plan against the repaired register", async () => {
+  it("preserves v3 as a failed historical snapshot without making it executable", async () => {
     await expect(validatePersonalitySamplingPlanV3()).resolves.toMatchObject({
       schemaVersion: "jolene.personality-sampling-plan.v3",
       planFingerprint: "sha256:94b07d436aa053801e8ea1de484035635bb9d19bb10c78d4ace5531dd21c5c3f",
       sourceRegisterFingerprint:
         "sha256:b17ed2346343313d1940071177573c95a7ecaf5bcc273e1da09b3592639d1db1",
-      sourceRegisterState: "current",
+      sourceRegisterState: "current-at-recorded-failure",
       targetAtomicTurns: 120,
       systematicTurns: 96,
       purposiveHighRiskTurns: 24,
       sourceEvents: 11,
-      publisherFamilies: 9,
-      settingFamilies: 8,
-      timeBands: 4,
+      historicalDiversityMetricsRecomputed: false,
       runtimeActivation: "prohibited",
+      outcome: {
+        status: "failed-before-selection-and-coding",
+        failureCode: "allocated-turns-exceed-eligible-universe",
+        failureSourceId: "S09",
+        boundaryUnitsReviewed: 11,
+        explicitlyAttributedTargetTurns: 5,
+        observationsCreated: 0,
+        committedSelectionLedgers: 0,
+        replacementOrResamplingPerformed: false,
+      },
     });
-    const snapshot = await loadPersonalitySamplingPlanV3();
-    expect(snapshot.plan.source_allocations.some(
-      (allocation) => allocation.source_register_id === "S10",
-    )).toBe(false);
-    expect(snapshot.plan.source_allocations.find(
-      (allocation) => allocation.source_register_id === "S18",
-    )).toMatchObject({
-      source_event_id: "E014",
-      target_turns: 2,
-      systematic_turns: 2,
-      purposive_high_risk_turns: 0,
-      locator_unit: "paragraph-index",
-      segmentation_rule: "pdf-attributed-statement-blocks-v1",
+    await expect(loadPersonalitySamplingPlanV3())
+      .rejects.toThrow("Sampling plan has a recorded failure outcome");
+  });
+
+  it("binds the v3 failure outcome to the immutable frozen plan", async () => {
+    await expect(loadPersonalitySamplingOutcomeV3()).resolves.toMatchObject({
+      schema_version: "personality-sampling-outcome-v3",
+      sampling_plan_fingerprint:
+        "sha256:94b07d436aa053801e8ea1de484035635bb9d19bb10c78d4ace5531dd21c5c3f",
+      failure: {
+        source_register_id: "S09",
+        explicitly_attributed_target_turns: 5,
+        required_target_turns: 8,
+      },
+      committed_selection_ledgers: 0,
+      observations_created: 0,
     });
   });
 

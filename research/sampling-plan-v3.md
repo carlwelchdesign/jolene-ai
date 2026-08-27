@@ -1,10 +1,18 @@
 # Personality v3 prospective sampling plan
 
-**Status:** frozen before any v3 selection ledger or observation coding
+**Status:** failed before any v3 selection ledger or observation coding
 
 **Runtime status:** prohibited
 
 **Machine-readable plan:** `research/sampling-plan-v3.yaml`
+
+**Machine-readable outcome:** `research/sampling-plan-v3-outcome.yaml`
+
+Under the frozen `pdf-speaker-label-blocks-v1` rule, S09 contains five eligible
+target-speaker blocks, but this plan allocated eight. The outcome record binds that failure to
+the immutable plan and register fingerprints. This plan cannot drive selection, coding, trait
+admission, or runtime behavior. A capacity audit and new prospective plan version are required;
+the v3 allocation must not be edited or backfilled.
 
 This plan replaces, but does not rewrite, the failed v2 plan. It is bound to repaired source
 register fingerprint
