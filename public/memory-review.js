@@ -1,6 +1,8 @@
 const state = {
   scope: loadScope(),
   tasks: [],
+  taskEvents: [],
+  selectedTaskId: "",
   proposals: [],
   memories: [],
   memoryFilter: "active",
@@ -42,6 +44,16 @@ const ui = {
   previewTask: document.querySelector("#preview-task"),
   previewSensitive: document.querySelector("#preview-sensitive"),
   previewResults: document.querySelector("#preview-results"),
+  timelineTask: document.querySelector("#timeline-task"),
+  timelineTaskSummary: document.querySelector("#timeline-task-summary"),
+  timelineRefresh: document.querySelector("#timeline-refresh"),
+  taskEventList: document.querySelector("#task-event-list"),
+  taskEventForm: document.querySelector("#task-event-form"),
+  taskEventKind: document.querySelector("#task-event-kind"),
+  taskEventSummary: document.querySelector("#task-event-summary"),
+  taskEventDetails: document.querySelector("#task-event-details"),
+  taskEventError: document.querySelector("#task-event-error"),
+  taskEventSubmit: document.querySelector("#task-event-submit"),
   toast: document.querySelector("#toast"),
 };
 
@@ -57,6 +69,7 @@ function initialize() {
   document.querySelectorAll("[data-refresh]").forEach((button) => {
     button.addEventListener("click", refreshAll);
   });
+  ui.timelineRefresh.addEventListener("click", loadTaskEvents);
   refreshAll();
 }
 
@@ -136,12 +149,18 @@ function wireForms() {
   ui.proposalTask.addEventListener("change", validateProposalScope);
   ui.forgetForm.addEventListener("submit", submitForget);
   ui.previewForm.addEventListener("submit", submitPreview);
+  ui.timelineTask.addEventListener("change", () => {
+    state.selectedTaskId = ui.timelineTask.value;
+    loadTaskEvents();
+  });
+  ui.taskEventForm.addEventListener("submit", submitTaskEvent);
 }
 
 async function refreshAll() {
   clearNotice();
   setLoading(ui.proposalList, "Loading proposals…");
   setLoading(ui.memoryList, "Loading retained memory…");
+  setTimelineLoading("Loading task history…");
   const results = await Promise.allSettled([loadTasks(), loadProposals(), loadMemories()]);
   const failures = results.filter((result) => result.status === "rejected");
   if (failures.length > 0) {
@@ -153,9 +172,11 @@ async function loadTasks() {
   try {
     state.tasks = await api("/v1/tasks" + scopeQuery());
     populateTaskSelects();
+    await loadTaskEvents();
   } catch (error) {
     state.tasks = [];
     populateTaskSelects();
+    renderTimelineError(friendlyError(error));
     throw error;
   }
 }
@@ -392,6 +413,7 @@ async function submitPreview(event) {
         query: ui.previewQuery.value.trim(),
         includeSensitiveMemory: ui.previewSensitive.checked,
         memoryLimit: 24,
+        taskEventLimit: 20,
       },
     });
     renderPreview(result);
@@ -409,7 +431,8 @@ function renderPreview(result) {
   const summary = el(
     "div",
     "preview-summary",
-    "Jolene selected " + result.memories.length + " of " + (selection.candidateCount || 0) + " authorized candidates.",
+    "Jolene selected " + result.memories.length + " of " + (selection.candidateCount || 0) +
+      " authorized memory candidates and " + (result.taskEvents || []).length + " recent task events.",
   );
   ui.previewResults.append(summary);
   if (result.memories.length === 0) {
@@ -442,6 +465,167 @@ function populateTaskSelects() {
     select.replaceChildren(option("", firstLabel));
     state.tasks.forEach((task) => select.append(option(task.id, task.title + " · " + humanize(task.status))));
     if ([...select.options].some((candidate) => candidate.value === current)) select.value = current;
+  });
+
+  const currentTimelineTask = state.selectedTaskId || ui.timelineTask.value;
+  ui.timelineTask.replaceChildren();
+  state.tasks.forEach((task) => {
+    ui.timelineTask.append(option(task.id, task.title + " · " + humanize(task.status)));
+  });
+  const selected = state.tasks.some((task) => task.id === currentTimelineTask)
+    ? currentTimelineTask
+    : state.tasks[0]?.id || "";
+  if (state.tasks.length === 0) {
+    ui.timelineTask.append(option("", "No tasks in this scope"));
+  }
+  state.selectedTaskId = selected;
+  ui.timelineTask.value = selected;
+  ui.timelineTask.disabled = state.tasks.length === 0;
+  setTaskEventFormDisabled(state.tasks.length === 0);
+}
+
+async function loadTaskEvents() {
+  clearInlineError(ui.taskEventError);
+  const task = selectedTask();
+  renderTaskSummary(task);
+  if (!task) {
+    state.taskEvents = [];
+    renderNoTaskTimeline();
+    return;
+  }
+
+  setTimelineLoading("Loading " + task.title + "…");
+  try {
+    const query = new URLSearchParams({
+      ...state.scope,
+      limit: "100",
+    });
+    state.taskEvents = await api(
+      "/v1/tasks/" + encodeURIComponent(task.id) + "/events?" + query.toString(),
+    );
+    renderTaskEvents();
+  } catch (error) {
+    state.taskEvents = [];
+    renderTimelineError(friendlyError(error));
+  }
+}
+
+function renderTaskSummary(task) {
+  ui.timelineTaskSummary.replaceChildren();
+  if (!task) {
+    ui.timelineTaskSummary.append(
+      emptyState("No tasks in this scope", "Create a task from Work, then return here to record its history."),
+    );
+    return;
+  }
+
+  const heading = el("div", "task-summary-heading");
+  heading.append(
+    el("h3", "", task.title),
+    badge(humanize(task.status), task.status === "completed" ? "badge-active" : ""),
+  );
+  ui.timelineTaskSummary.append(
+    heading,
+    el("p", "task-objective", task.objective),
+    el("p", "task-updated", "Task updated " + formatDate(task.updatedAt)),
+  );
+}
+
+function renderTaskEvents() {
+  ui.taskEventList.replaceChildren();
+  ui.taskEventList.setAttribute("aria-busy", "false");
+  if (state.taskEvents.length === 0) {
+    ui.taskEventList.append(
+      timelineState("No timeline entries", "Record the first factual update for this task."),
+    );
+    return;
+  }
+
+  [...state.taskEvents].reverse().forEach((event) => {
+    const item = el("li", "task-event task-event-" + event.kind);
+    const top = el("div", "task-event-topline");
+    top.append(
+      badge(humanize(event.kind), "badge-event badge-event-" + event.kind),
+      el("time", "", formatDate(event.createdAt)),
+    );
+    const summary = el("h4", "", event.summary);
+    item.append(top, summary);
+    if (event.details) item.append(el("p", "task-event-details", event.details));
+    if (event.kind === "status_changed" && event.fromStatus && event.toStatus) {
+      item.append(el(
+        "p",
+        "task-event-transition",
+        humanize(event.fromStatus) + " → " + humanize(event.toStatus),
+      ));
+    }
+    ui.taskEventList.append(item);
+  });
+}
+
+async function submitTaskEvent(event) {
+  event.preventDefault();
+  const task = selectedTask();
+  if (!task) {
+    showInlineError(ui.taskEventError, "Choose a task before recording an update.");
+    return;
+  }
+
+  clearInlineError(ui.taskEventError);
+  ui.taskEventSubmit.disabled = true;
+  try {
+    await api("/v1/tasks/" + encodeURIComponent(task.id) + "/events", {
+      method: "POST",
+      body: {
+        ...state.scope,
+        kind: ui.taskEventKind.value,
+        summary: ui.taskEventSummary.value.trim(),
+        details: ui.taskEventDetails.value.trim() || null,
+      },
+    });
+    ui.taskEventSummary.value = "";
+    ui.taskEventDetails.value = "";
+    showToast("Task update recorded.");
+    await loadTaskEvents();
+    ui.taskEventSummary.focus();
+  } catch (error) {
+    showInlineError(ui.taskEventError, friendlyError(error));
+  } finally {
+    ui.taskEventSubmit.disabled = false;
+  }
+}
+
+function setTimelineLoading(message) {
+  ui.taskEventList.replaceChildren(timelineState("Loading task history", message, "loading-state"));
+  ui.taskEventList.setAttribute("aria-busy", "true");
+}
+
+function renderNoTaskTimeline() {
+  ui.taskEventList.replaceChildren(
+    timelineState("No task selected", "Task history appears after a scoped task exists."),
+  );
+  ui.taskEventList.setAttribute("aria-busy", "false");
+}
+
+function renderTimelineError(message) {
+  ui.taskEventList.replaceChildren(
+    timelineState("Couldn’t load task history", message, "error-state"),
+  );
+  ui.taskEventList.setAttribute("aria-busy", "false");
+}
+
+function timelineState(title, message, className = "empty-state") {
+  const item = el("li", className + " timeline-state");
+  item.append(el("strong", "", title), el("p", "", message));
+  return item;
+}
+
+function selectedTask() {
+  return state.tasks.find((task) => task.id === state.selectedTaskId) || null;
+}
+
+function setTaskEventFormDisabled(disabled) {
+  [...ui.taskEventForm.elements].forEach((control) => {
+    control.disabled = disabled;
   });
 }
 

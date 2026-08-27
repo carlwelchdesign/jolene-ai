@@ -233,6 +233,38 @@ main { width: min(1180px, calc(100% - 40px)); margin: 0 auto; padding-bottom: 80
 .preview-summary { margin-bottom: 14px; padding: 14px 16px; color: #3f5948; background: var(--sage-soft); border: 1px solid #bcd2c2; border-radius: 11px; }
 .score { min-width: 54px; text-align: right; color: var(--gold-dark); font: 700 20px/1 var(--serif); }
 
+.timeline-boundary { margin: -8px 0 22px; padding: 14px 16px; color: #4f493f; background: #f3ede3; border-left: 4px solid var(--gold); border-radius: 9px; line-height: 1.55; }
+.timeline-task-field { max-width: 640px; margin-bottom: 22px; }
+.timeline-layout { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(280px, 0.85fr); gap: 22px; align-items: start; }
+.timeline-main { min-width: 0; }
+.task-summary { min-height: 146px; padding: 22px; background: var(--surface-strong); border: 1px solid var(--line); border-radius: 14px; }
+.task-summary .empty-state { padding: 24px 18px; }
+.task-summary-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+.task-summary h3, .timeline-heading h3, .task-event-form h3 { margin: 0; font: 500 25px/1.15 var(--serif); }
+.task-objective { margin: 14px 0 0; color: #4e4740; font-size: 15px; line-height: 1.6; overflow-wrap: anywhere; }
+.task-updated { margin: 12px 0 0; color: var(--muted); font-size: 12px; }
+.timeline-heading { display: flex; align-items: end; justify-content: space-between; gap: 16px; margin: 26px 0 12px; }
+.timeline-heading .eyebrow { margin-bottom: 6px; }
+.timeline-heading > span { color: var(--muted); font-size: 11px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; }
+.task-event-list { display: grid; gap: 12px; margin: 0; padding: 0; list-style: none; }
+.task-event { position: relative; overflow: hidden; padding: 18px 18px 18px 22px; background: var(--surface-strong); border: 1px solid var(--line); border-radius: 12px; }
+.task-event::before { content: ""; position: absolute; inset: 0 auto 0 0; width: 4px; background: var(--line-strong); }
+.task-event-evidence::before { background: var(--sage); }
+.task-event-decision::before { background: var(--gold); }
+.task-event-blocker::before { background: var(--danger); }
+.task-event-next_action::before { background: #4f7596; }
+.task-event-topline { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.task-event-topline time { color: var(--muted); font-size: 11px; }
+.task-event h4 { margin: 13px 0 0; font: 500 18px/1.4 var(--serif); overflow-wrap: anywhere; }
+.task-event-details { margin: 9px 0 0; color: #585047; font-size: 13px; line-height: 1.55; white-space: pre-wrap; overflow-wrap: anywhere; }
+.task-event-transition { width: fit-content; margin: 10px 0 0; padding: 5px 8px; color: #4d463e; background: #f1ece4; border-radius: 6px; font-size: 11px; font-weight: 800; }
+.task-event-form { display: grid; gap: 16px; padding: 22px; background: #f3ede3; border: 1px solid var(--line); border-radius: 14px; }
+.task-event-form > div:first-child > p:last-child { margin: 8px 0 0; color: var(--muted); font-size: 13px; line-height: 1.5; }
+.task-event-form .field small { color: var(--muted); font-weight: 500; }
+.timeline-state { list-style: none; }
+.timeline-state strong { display: block; margin-bottom: 7px; font: 500 22px/1.2 var(--serif); }
+.timeline-state p { margin: 0; color: var(--muted); line-height: 1.6; }
+
 dialog { width: min(620px, calc(100% - 28px)); max-height: calc(100vh - 40px); padding: 0; color: var(--ink); background: transparent; border: 0; }
 dialog.dialog-wide { width: min(760px, calc(100vw - 28px)); }
 dialog::backdrop { background: rgba(28, 24, 21, 0.62); backdrop-filter: blur(3px); }
@@ -264,6 +296,9 @@ blockquote { margin: 0; padding: 16px; background: #f3ede4; border-left: 4px sol
   .tab { flex: 1 0 auto; }
   .panel { padding: 20px 16px; }
   .preview-form, .form-grid { grid-template-columns: 1fr; }
+  .timeline-layout { grid-template-columns: 1fr; }
+  .task-event-form { grid-row: 1; }
+  .task-summary-heading, .timeline-heading, .task-event-topline { align-items: flex-start; flex-direction: column; }
   .field-wide { grid-column: auto; }
   .card-topline { align-items: stretch; flex-direction: column; }
   .score { text-align: left; }
