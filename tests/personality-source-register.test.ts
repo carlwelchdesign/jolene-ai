@@ -61,8 +61,15 @@ describe("personality source register v2", () => {
       unavailableEvents: 1,
       excludedEvents: 0,
       liveFingerprintPolicy: {
-        requiredSourceIds: ["S16", "S17"],
-        allowedOrigins: ["https://blankonblank.org", "https://www.wired.com"],
+        requiredSourceIds: [
+          "S02", "S03", "S04", "S05", "S07", "S08", "S09", "S10", "S13", "S16", "S17",
+        ],
+        allowedOrigins: [
+          "https://freshairarchive.org", "https://transcripts.cnn.com",
+          "https://www.press.org", "https://www.wfae.org", "https://www.wprl.org",
+          "https://danratherjournalist.org", "https://www.loc.gov", "https://tile.loc.gov",
+          "https://www.ted.com", "https://blankonblank.org", "https://www.wired.com",
+        ],
         timeoutMs: 15000,
         maximumResponseBytes: 2500000,
         maximumRedirects: 2,

@@ -1,26 +1,32 @@
 import { resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 
-import { fingerprintNormalizedTranscript } from
+import { fingerprintPersonalitySourceContent } from
   "../src/personality/personality-source-content-fingerprint.js";
-import type { NormalizedTranscriptFingerprintMethod } from
+import type { PersonalitySourceFingerprintMethod } from
   "../src/personality/personality-source-content-fingerprint.js";
 import { loadPersonalitySourceRegisterV2 } from
   "../src/personality/personality-source-register.js";
 import type { PersonalitySourceEvent } from
   "../src/personality/personality-source-register.js";
 
-const supportedMethods = new Set<NormalizedTranscriptFingerprintMethod>([
+const supportedMethods = new Set<PersonalitySourceFingerprintMethod>([
+  "raw-pdf-bytes-v1",
+  "raw-vtt-bytes-v1",
+  "fresh-air-transcript-paragraphs-v1",
+  "cnn-transcript-body-paragraphs-v1",
+  "npr-station-article-body-paragraphs-v1",
+  "ted-next-data-transcript-segments-v1",
   "blank-on-blank-transcript-paragraphs-v1",
   "wired-indexed-transcript-captions-v1",
 ]);
 
-export async function validateNormalizedPersonalitySourceFingerprints(
+export async function validatePersonalitySourceFingerprints(
   projectRoot = process.cwd(),
   fetcher: typeof fetch = fetch,
 ) {
   const register = await loadPersonalitySourceRegisterV2(projectRoot);
-  const sources = resolveRequiredNormalizedSources(
+  const sources = resolveRequiredLiveSources(
     register.events,
     register.liveFingerprintPolicy.requiredSourceIds,
   );
@@ -29,22 +35,33 @@ export async function validateNormalizedPersonalitySourceFingerprints(
     if (!source.contentBoundaryUrl || !source.sourceContentFingerprint) {
       throw new Error(`${source.sourceRegisterId} lacks a fingerprinted content boundary`);
     }
-    const html = await fetchAllowedHtmlBoundary(
-      source.contentBoundaryUrl,
-      register.liveFingerprintPolicy,
-      fetcher,
-    );
-    const computed = fingerprintNormalizedTranscript(
-      source.fingerprintMethod as NormalizedTranscriptFingerprintMethod,
-      html,
-    );
+    const method = source.fingerprintMethod as PersonalitySourceFingerprintMethod;
+    let retrieved: RetrievedContentBoundary;
+    let computed: ReturnType<typeof fingerprintPersonalitySourceContent>;
+    try {
+      retrieved = await fetchAllowedContentBoundary(
+        source.contentBoundaryUrl,
+        method,
+        register.liveFingerprintPolicy,
+        fetcher,
+      );
+      computed = fingerprintPersonalitySourceContent(method, retrieved.bytes);
+    } catch (error) {
+      const detail = error instanceof Error ? error.message : "unknown verification failure";
+      throw new Error(`${source.sourceRegisterId} live verification failed: ${detail}`, {
+        cause: error,
+      });
+    }
     if (computed.fingerprint !== source.sourceContentFingerprint) {
-      throw new Error(`${source.sourceRegisterId} normalized transcript fingerprint changed`);
+      throw new Error(`${source.sourceRegisterId} source content is stale: fingerprint changed`);
     }
     results.push({
       sourceRegisterId: source.sourceRegisterId,
       fingerprintMethod: source.fingerprintMethod,
+      mediaType: retrieved.mediaType,
+      byteCount: computed.byteCount,
       segmentCount: computed.segmentCount,
+      redirectCount: retrieved.redirectCount,
       fingerprint: computed.fingerprint,
       status: "verified" as const,
     });
@@ -52,7 +69,10 @@ export async function validateNormalizedPersonalitySourceFingerprints(
   return { verifiedSources: results.length, sources: results };
 }
 
-export function resolveRequiredNormalizedSources(
+export const validateNormalizedPersonalitySourceFingerprints =
+  validatePersonalitySourceFingerprints;
+
+export function resolveRequiredLiveSources(
   events: readonly PersonalitySourceEvent[],
   requiredSourceIds: readonly string[],
 ): readonly PersonalitySourceEvent[] {
@@ -60,14 +80,17 @@ export function resolveRequiredNormalizedSources(
   return requiredSourceIds.map((id) => {
     const source = byId.get(id);
     if (!source) throw new Error(`Required live fingerprint source ${id} is missing`);
-    if (!supportedMethods.has(
-      source.fingerprintMethod as NormalizedTranscriptFingerprintMethod,
-    )) {
+    if (source.accessState !== "coding-ready") {
+      throw new Error(`Required live fingerprint source ${id} is not coding-ready`);
+    }
+    if (!supportedMethods.has(source.fingerprintMethod as PersonalitySourceFingerprintMethod)) {
       throw new Error(`Required live fingerprint source ${id} has an unsupported method`);
     }
     return source;
   });
 }
+
+export const resolveRequiredNormalizedSources = resolveRequiredLiveSources;
 
 interface LiveFingerprintNetworkPolicy {
   readonly allowedOrigins: readonly string[];
@@ -76,15 +99,30 @@ interface LiveFingerprintNetworkPolicy {
   readonly maximumRedirects: number;
 }
 
-export async function fetchAllowedHtmlBoundary(
+export interface RetrievedContentBoundary {
+  readonly bytes: Uint8Array;
+  readonly mediaType: string;
+  readonly redirectCount: number;
+}
+
+export async function fetchAllowedContentBoundary(
   initialUrl: string,
+  method: PersonalitySourceFingerprintMethod,
   policy: LiveFingerprintNetworkPolicy,
   fetcher: typeof fetch = fetch,
-): Promise<string> {
+): Promise<RetrievedContentBoundary> {
   let current = assertAllowedUrl(initialUrl, policy.allowedOrigins);
   const signal = AbortSignal.timeout(policy.timeoutMs);
   for (let redirectCount = 0; ; redirectCount += 1) {
-    const response = await fetcher(current, { redirect: "manual", signal });
+    const response = await fetcher(current, {
+      redirect: "manual",
+      signal,
+      headers: {
+        accept: acceptedMediaTypes(method),
+        "accept-encoding": "identity",
+        "user-agent": "JoleneSourceDriftVerifier/1.0",
+      },
+    });
     const responseUrl = response.url || current.toString();
     const finalUrl = assertAllowedUrl(responseUrl, policy.allowedOrigins);
     if (finalUrl.origin !== current.origin) throw new Error("Cross-origin content redirect denied");
@@ -97,23 +135,57 @@ export async function fetchAllowedHtmlBoundary(
       current = next;
       continue;
     }
-    if (!response.ok) throw new Error(`Content boundary returned ${response.status}`);
-    if (!response.headers.get("content-type")?.toLowerCase().includes("text/html")) {
-      throw new Error("Content boundary did not return HTML");
+    if (response.status !== 200) throw new Error(`Content boundary returned ${response.status}`);
+    const contentEncoding = response.headers.get("content-encoding")?.toLowerCase();
+    if (contentEncoding && contentEncoding !== "identity") {
+      throw new Error(`Content boundary returned unsupported encoding ${contentEncoding}`);
     }
-    return readBoundedText(response, policy.maximumResponseBytes);
+    const mediaType = response.headers.get("content-type")?.split(";", 1)[0]?.trim().toLowerCase();
+    if (!mediaType || !allowedMediaTypes(method).includes(mediaType)) {
+      throw new Error(`Content boundary returned unsupported media type ${mediaType ?? "missing"}`);
+    }
+    return {
+      bytes: await readBoundedBytes(response, policy.maximumResponseBytes),
+      mediaType,
+      redirectCount,
+    };
   }
+}
+
+export async function fetchAllowedHtmlBoundary(
+  initialUrl: string,
+  policy: LiveFingerprintNetworkPolicy,
+  fetcher: typeof fetch = fetch,
+): Promise<string> {
+  const result = await fetchAllowedContentBoundary(
+    initialUrl,
+    "blank-on-blank-transcript-paragraphs-v1",
+    policy,
+    fetcher,
+  );
+  return new TextDecoder("utf-8", { fatal: true }).decode(result.bytes);
+}
+
+function acceptedMediaTypes(method: PersonalitySourceFingerprintMethod): string {
+  return allowedMediaTypes(method).join(", ");
+}
+
+function allowedMediaTypes(method: PersonalitySourceFingerprintMethod): readonly string[] {
+  if (method === "raw-pdf-bytes-v1") return ["application/pdf"];
+  if (method === "raw-vtt-bytes-v1") return ["text/vtt"];
+  return ["text/html", "application/xhtml+xml"];
 }
 
 function assertAllowedUrl(value: string, allowedOrigins: readonly string[]): URL {
   const parsed = new URL(value);
-  if (parsed.protocol !== "https:" || !allowedOrigins.includes(parsed.origin)) {
+  if (parsed.protocol !== "https:" || parsed.username || parsed.password ||
+      !allowedOrigins.includes(parsed.origin)) {
     throw new Error(`Content boundary origin is not allowed: ${parsed.origin}`);
   }
   return parsed;
 }
 
-async function readBoundedText(response: Response, maximumBytes: number): Promise<string> {
+async function readBoundedBytes(response: Response, maximumBytes: number): Promise<Uint8Array> {
   const declaredLength = response.headers.get("content-length");
   if (declaredLength !== null && Number.parseInt(declaredLength, 10) > maximumBytes) {
     throw new Error("Content boundary exceeds the response-size limit");
@@ -138,10 +210,10 @@ async function readBoundedText(response: Response, maximumBytes: number): Promis
     bytes.set(chunk, offset);
     offset += chunk.byteLength;
   }
-  return new TextDecoder("utf-8", { fatal: true }).decode(bytes);
+  return bytes;
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
-  const result = await validateNormalizedPersonalitySourceFingerprints();
+  const result = await validatePersonalitySourceFingerprints();
   process.stdout.write(`${JSON.stringify(result, null, 2)}\n`);
 }

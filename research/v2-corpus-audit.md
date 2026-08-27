@@ -104,10 +104,9 @@ to February 28, 2018. The S15 official-site statement remains unavailable becaus
 article URL redirects to the homepage.
 
 The register stores SHA-256 values only, never source text, transcripts, lyrics, audio, or
-video. Retrieved HTML hashes record the exact response bytes observed during normalization.
-They are historical retrieval fingerprints, not live freshness checks; canonical retrieval
-and comparison semantics must be added before validation can detect source drift. No v2 turns
-have been sampled or coded.
+video. Historical whole-response hashes were retrieval evidence only. JOL-PER-005B3 replaces
+the coding-ready HTML values with reproducible content-only fingerprints and gives stable PDF
+and caption artifacts explicit byte-hash methods. No v2 turns have been sampled or coded.
 
 ## JOL-PER-005B2 source-diversity gate closure
 
@@ -154,5 +153,40 @@ segments, normalizes visible text, length-prefixes each UTF-8 segment, and hashe
 sequence without retaining or printing source content. Live verification covers these two
 new boundaries and fails closed unless both IDs are present with their required methods.
 Network retrieval is HTTPS-only, origin-allowlisted across redirects, time-bounded, and
-limited to 2.5 MB per response. Generalized drift verification for the older register remains
-JOL-PER-005B3.
+limited to 2.5 MB per response. JOL-PER-005B3 generalizes this control to the full coding-ready
+register as documented below.
+
+## JOL-PER-005B3 reproducible source drift verification
+
+The explicit `npm run research:personality:sources:content` check now requires all 11
+coding-ready source IDs. It cannot silently reduce coverage: the registered policy, the
+coding-ready event set, and the pinned source/origin inventory must agree exactly.
+
+Canonicalization is source-boundary specific:
+
+- Fresh Air uses direct transcript-container paragraphs.
+- CNN uses the single large line-delimited transcript body inside its legacy transcript frame.
+- WFAE and WPRL use only direct paragraphs in the article body, excluding page furniture,
+  figures, captions, and embedded enhancements.
+- TED uses the identity-bound transcript slice in its embedded structured page data.
+- Blank on Blank uses transcript paragraphs and WIRED uses contiguous indexed captions.
+- National Press Club, Dan Rather, and Library of Congress PDFs hash exact response octets;
+  the Library of Congress VTT uses the same exact-byte rule for official captions.
+
+Normalized text is decoded as UTF-8, normalized to Unicode NFC, whitespace-collapsed, kept in
+publisher order, length-prefixed per segment, and SHA-256 hashed. HTML shell, advertising,
+request metadata, and unrelated page components are outside the boundary. Exact-byte methods
+do not use ETag or Last-Modified as identity.
+
+Retrieval is credential-free HTTPS with exact origin allowlisting, manual same-origin redirects,
+a fixed user agent and media-type accept header, `Accept-Encoding: identity`, a 15-second
+deadline, a 2.5 MB streaming limit, HTTP 200 enforcement, method-specific content types, and
+rejection of unsupported content encodings. HTTP transfer framing is decoded by Fetch and is
+not part of the content identity. A missing boundary, structural invariant change,
+redirect-policy failure, wrong media type, unavailable response, or fingerprint mismatch fails
+closed. Command output contains IDs, methods, types, sizes, counts, hashes, redirect counts, and
+status only; fetched content is neither printed nor persisted.
+
+The live 2026-08-27 verification reproduced all 11 registered fingerprints with zero redirects.
+This establishes source freshness only. It does not sample v2 turns, admit traits, approve a
+personality, connect behavior to a model or channel, or activate the Jolene presentation mode.
