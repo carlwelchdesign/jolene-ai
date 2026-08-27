@@ -1,0 +1,62 @@
+name: jolene-public
+
+services:
+  public-delegate:
+    build:
+      context: .
+      target: runtime
+    image: jolene-public-ai:local
+    command: ["node", "dist/public-server.js"]
+    environment:
+      JOLENE_PUBLIC_ENABLED: ${JOLENE_PUBLIC_ENABLED:-true}
+      JOLENE_PUBLIC_CONTAINER_MODE: "true"
+      JOLENE_PUBLIC_HOST: 0.0.0.0
+      JOLENE_PUBLIC_PORT: 8431
+      JOLENE_PUBLIC_ARTIFACT_PATH: /public-data/public-career-evidence.json
+      JOLENE_PUBLIC_CONTACT_QUEUE_PATH: /public-state/contact-intents.json
+      JOLENE_PUBLIC_CONTACT_RETENTION_DAYS: ${JOLENE_PUBLIC_CONTACT_RETENTION_DAYS:-30}
+      JOLENE_PUBLIC_CONTACT_QUEUE_MAX_ENTRIES: ${JOLENE_PUBLIC_CONTACT_QUEUE_MAX_ENTRIES:-500}
+      JOLENE_PUBLIC_AUDIT_PATH: /public-state/audit.json
+      JOLENE_PUBLIC_AUDIT_RETENTION_DAYS: ${JOLENE_PUBLIC_AUDIT_RETENTION_DAYS:-30}
+      JOLENE_PUBLIC_AUDIT_MAX_ENTRIES: ${JOLENE_PUBLIC_AUDIT_MAX_ENTRIES:-5000}
+      JOLENE_PUBLIC_REQUESTS_PER_MINUTE: ${JOLENE_PUBLIC_REQUESTS_PER_MINUTE:-60}
+      JOLENE_PUBLIC_MAX_CONCURRENT_REQUESTS: ${JOLENE_PUBLIC_MAX_CONCURRENT_REQUESTS:-8}
+      JOLENE_PUBLIC_ANSWER_MODE: ${JOLENE_PUBLIC_ANSWER_MODE:-deterministic}
+      JOLENE_PUBLIC_OPENAI_MODEL: ${JOLENE_PUBLIC_OPENAI_MODEL:-gpt-5.6-terra}
+      JOLENE_PUBLIC_OPENAI_TIMEOUT_MS: ${JOLENE_PUBLIC_OPENAI_TIMEOUT_MS:-8000}
+      OPENAI_API_KEY: ${JOLENE_PUBLIC_CONTAINER_OPENAI_API_KEY:-}
+    volumes:
+      - type: bind
+        source: ${JOLENE_PUBLIC_ARTIFACT_HOST_PATH:-./.jolene/exports/public-career-evidence.json}
+        target: /public-data/public-career-evidence.json
+        read_only: true
+        bind:
+          create_host_path: false
+      - type: volume
+        source: jolene-public-state
+        target: /public-state
+    ports:
+      - "127.0.0.1:${JOLENE_PUBLIC_HOST_PORT:-8431}:8431"
+    init: true
+    read_only: true
+    tmpfs:
+      - /tmp:size=32m,mode=1777
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    restart: "no"
+    healthcheck:
+      interval: 10s
+      timeout: 5s
+      start_period: 10s
+      retries: 3
+      test:
+        - CMD
+        - node
+        - --input-type=module
+        - -e
+        - "const response=await fetch('http://127.0.0.1:8431/health');if(!response.ok)process.exit(1)"
+
+volumes:
+  jolene-public-state:

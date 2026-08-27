@@ -99,3 +99,59 @@ Before moving Slack from the current host process into Compose, stop the host
 listener and decide whether its existing SQLite history should be migrated into
 the `jolene-data` volume. Running both listeners can duplicate Socket Mode
 delivery.
+
+## Isolated public delegate container
+
+The public portfolio delegate has a separate Compose project and image. It does
+not extend the private Compose file and does not receive `.env.local`,
+`jolene-data`, the Obsidian mount, Slack configuration, private SQLite, or
+private durable memory.
+
+Generate and review the public artifact before starting it, then run the
+deterministic container explicitly:
+
+```bash
+npm run career:export-public
+docker compose -f compose.public.yaml up --build -d
+docker compose -f compose.public.yaml ps
+```
+
+The export command above applies when the configured host database is
+canonical. When the private Compose database is canonical, use the governed
+review/export workflow against that database and copy only its generated public
+artifact to the ignored host handoff path. Do not export from a stale host
+database merely to satisfy the container mount.
+
+Open `http://127.0.0.1:8431/health` or request
+`http://127.0.0.1:8431/v1/public-evidence/manifest`. Compose binds port 8431
+only to host loopback. The process listens on `0.0.0.0` only inside its isolated
+container, guarded by `JOLENE_PUBLIC_CONTAINER_MODE=true`; a direct host process
+still rejects that bind address.
+
+The reviewed artifact is bind-mounted read-only at
+`/public-data/public-career-evidence.json`. A missing artifact is not created as
+a directory and the service fails closed. The only writable persistent mount is
+the dedicated `jolene-public-state` volume for the minimized contact-intent and
+audit files. The root filesystem is read-only, the process is non-root, Linux
+capabilities are dropped, privilege escalation is disabled, and `/tmp` is a
+bounded tmpfs.
+
+The default is deterministic and receives an empty `OPENAI_API_KEY`. To run an
+explicit model evaluation, pass `.env.public.local` with `--env-file` and use
+the separate `JOLENE_PUBLIC_CONTAINER_OPENAI_API_KEY`; never copy the private
+Jolene environment automatically:
+
+```bash
+docker compose --env-file .env.public.local -f compose.public.yaml up -d
+```
+
+Stop the public process without affecting private Jolene:
+
+```bash
+docker compose -f compose.public.yaml down
+```
+
+That preserves `jolene-public-state`. Removing the volume is a separate
+destructive operation and is not part of ordinary rollback. This local
+container is an integration-test boundary, not a public hostname, reverse
+proxy, deployment, or launch authorization.

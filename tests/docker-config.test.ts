@@ -6,6 +6,10 @@ import { describe, expect, it } from "vitest";
 const projectRoot = resolve(import.meta.dirname, "..");
 const dockerfile = readFileSync(resolve(projectRoot, "Dockerfile"), "utf8");
 const compose = readFileSync(resolve(projectRoot, "compose.yaml"), "utf8");
+const publicCompose = readFileSync(
+  resolve(projectRoot, "compose.public.yaml"),
+  "utf8",
+);
 const dockerignore = readFileSync(resolve(projectRoot, ".dockerignore"), "utf8");
 
 describe("Docker runtime boundary", () => {
@@ -41,5 +45,26 @@ describe("Docker runtime boundary", () => {
     expect(compose).toMatch(
       /jolene-slack:\n(?:.*\n)*?\s+healthcheck:\n\s+disable: true/,
     );
+  });
+
+  it("packages the public delegate without private runtime mounts or secrets", () => {
+    expect(publicCompose).toContain("name: jolene-public");
+    expect(publicCompose).toContain('["node", "dist/public-server.js"]');
+    expect(publicCompose).toContain("JOLENE_PUBLIC_CONTAINER_MODE: \"true\"");
+    expect(publicCompose).toContain("target: /public-data/public-career-evidence.json");
+    expect(publicCompose).toContain("create_host_path: false");
+    expect(publicCompose).toContain("jolene-public-state");
+    expect(publicCompose).toContain("read_only: true");
+    expect(publicCompose).toContain("no-new-privileges:true");
+    expect(publicCompose).toContain("127.0.0.1:${JOLENE_PUBLIC_HOST_PORT:-8431}:8431");
+    expect(publicCompose).toContain(
+      "OPENAI_API_KEY: ${JOLENE_PUBLIC_CONTAINER_OPENAI_API_KEY:-}",
+    );
+    expect(publicCompose).not.toContain("OPENAI_API_KEY: ${OPENAI_API_KEY");
+    expect(publicCompose).not.toContain(".env.local");
+    expect(publicCompose).not.toContain("jolene-data");
+    expect(publicCompose).not.toContain("/vault");
+    expect(publicCompose).not.toContain("SLACK_");
+    expect(publicCompose).not.toContain("JOLENE_DATABASE_PATH");
   });
 });

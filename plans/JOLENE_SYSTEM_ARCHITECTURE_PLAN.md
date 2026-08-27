@@ -1021,3 +1021,13 @@ Approved public-corpus checkpoint:
 | Artifact boundary | Ignored local artifact `.jolene/exports/public-career-evidence.json`; schema `1.0.0`; corpus `career:3d3b0d7361be5cfae3c634013bc48b73983388d3207d8f9b7bb1aaf50fa5c5de`; generated `2026-08-27T00:42:53.419Z`; evidence reviewed through `2026-08-27T00:38:07.748Z`; 41 public claims; zero revocations |
 | Safety boundary | Approval, artifact generation, portfolio integration, a live public endpoint, deployment, and launch remain distinct gates; no private/internal evidence is present in the artifact |
 | Verification | Node 24: 46 test files / 302 tests; frozen offline suite 41/41 cases and 24/24 blocker metrics; build, Compose, zero production dependency vulnerabilities, diff, artifact integrity, citation, and disclosure checks pass; private API and Slack runtime preserved |
+
+Isolated public-container checkpoint:
+
+| Field | Evidence |
+|---|---|
+| Asana | [JOL-CAREER-005K](https://app.asana.com/1/9789386902387/project/1216473233375594/task/1217888652988866) |
+| Runtime boundary | Separate `compose.public.yaml`, `jolene-public` Compose project, `jolene-public-ai:local` image, public-state volume, and host-loopback `8431` port |
+| Data boundary | Read-only approved artifact plus minimized public contact/audit state only; no private Compose environment, SQLite, Obsidian, Slack, or durable-memory mounts |
+| Process boundary | Non-root, read-only root filesystem, dropped capabilities, no privilege escalation, bounded tmpfs, explicit container-mode bind guard, and deterministic default |
+| Activation boundary | Local integration testing only; no public hostname, reverse proxy, CORS, portfolio cutover, deployment, or launch authorization |

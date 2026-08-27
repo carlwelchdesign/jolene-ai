@@ -671,6 +671,22 @@ suite passes 41 of 41 cases and 24 of 24 blocker metrics, and build, Compose,
 production dependency audit, diff, artifact-integrity, citation, and disclosure
 checks pass. The existing private API and Slack containers remained running.
 
+`JOL-CAREER-005K` isolated-container boundary:
+
+- `compose.public.yaml` creates a separate `jolene-public` project, dedicated
+  `jolene-public-ai:local` image, and dedicated public-state volume;
+- the container receives only the reviewed artifact as a read-only bind and
+  cannot mount or address the private database, Obsidian vault, Slack context,
+  private environment, or durable memory;
+- the process runs non-root with a read-only root filesystem, all Linux
+  capabilities dropped, privilege escalation disabled, bounded tmpfs, and a
+  host-loopback-only `8431` publication;
+- deterministic mode is the default, and Compose maps only the separately
+  named `JOLENE_PUBLIC_CONTAINER_OPENAI_API_KEY` when model mode is explicitly
+  selected; and
+- this is a local integration boundary, not a production origin, public
+  deployment, portfolio cutover, or launch authorization.
+
 ### JOL-CAREER-007 — Private MCP adapter
 
 - Add only after the evidence service contract is stable.
