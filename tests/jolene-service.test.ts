@@ -5,6 +5,7 @@ import type {
   JoleneAgentRunner,
 } from "../src/agent/agent-runner.js";
 import { JoleneService } from "../src/application/jolene-service.js";
+import { CanonicalPrivateWorkScopeResolver } from "../src/domain/private-work-scope.js";
 import { SqliteConversationStore } from "../src/persistence/sqlite-conversation-store.js";
 import { SqliteWorkContextStore } from "../src/persistence/sqlite-work-context-store.js";
 
@@ -287,6 +288,92 @@ describe("JoleneService", () => {
         }),
       );
 
+      expect(runner.requests[0]?.workContext).toEqual({
+        task: null,
+        taskEvents: [],
+        memories: [],
+      });
+      expect(runner.requests[0]?.workScope).toBeNull();
+    } finally {
+      store.close();
+      workContext.close();
+    }
+  });
+
+  it("loads canonical owner work for Slack DM without changing conversation identity", async () => {
+    const store = new SqliteConversationStore(":memory:");
+    const workContext = new SqliteWorkContextStore(":memory:");
+    const runner = new RecordingRunner();
+    const service = new JoleneService({
+      store,
+      runner,
+      workContext,
+      workScopeResolver: new CanonicalPrivateWorkScopeResolver({
+        ownerScope: { actorId: "carl", workspaceId: "personal" },
+        slackOwnerUserId: "UOWNER",
+      }),
+      maxHistoryTurns: 16,
+      maxMemoryItems: 24,
+    });
+
+    try {
+      const task = workContext.createTask({
+        actorId: "carl",
+        workspaceId: "personal",
+        title: "Canonical owner task",
+        objective: "Remain visible across private owner channels.",
+      });
+      await service.chat(request({
+        eventId: "owner-dm",
+        actorId: "UOWNER",
+        workspaceId: "TSLACK",
+        channelKind: "slack_dm",
+        channelId: "DOWNER",
+        taskId: task.id,
+      }));
+
+      expect(runner.requests[0]?.workScope).toEqual({
+        actorId: "carl",
+        workspaceId: "personal",
+      });
+      expect(runner.requests[0]?.workContext.task?.id).toBe(task.id);
+      expect(store.recentTurns({
+        actorId: "UOWNER",
+        workspaceId: "TSLACK",
+        channelKind: "slack_dm",
+        channelId: "DOWNER",
+        threadId: "main",
+      }, 10).map((turn) => turn.content)).toEqual(["Hello", "Answer 1"]);
+    } finally {
+      store.close();
+      workContext.close();
+    }
+  });
+
+  it("does not resolve canonical work for a different Slack DM actor", async () => {
+    const store = new SqliteConversationStore(":memory:");
+    const workContext = new SqliteWorkContextStore(":memory:");
+    const runner = new RecordingRunner();
+    const service = new JoleneService({
+      store,
+      runner,
+      workContext,
+      workScopeResolver: new CanonicalPrivateWorkScopeResolver({
+        ownerScope: { actorId: "carl", workspaceId: "personal" },
+        slackOwnerUserId: "UOWNER",
+      }),
+      maxHistoryTurns: 16,
+      maxMemoryItems: 24,
+    });
+
+    try {
+      await service.chat(request({
+        eventId: "other-dm",
+        actorId: "UOTHER",
+        workspaceId: "TSLACK",
+        channelKind: "slack_dm",
+      }));
+      expect(runner.requests[0]?.workScope).toBeNull();
       expect(runner.requests[0]?.workContext).toEqual({
         task: null,
         taskEvents: [],

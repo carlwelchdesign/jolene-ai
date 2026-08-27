@@ -20,6 +20,7 @@ const envSchema = z.object({
   JOLENE_OBSIDIAN_ALLOWLIST: z.string().default(""),
   JOLENE_CAREER_OBSIDIAN_ALLOWLIST: z.string().default(""),
   JOLENE_OWNER_ACTOR_ID: z.string().trim().min(1).default("carl"),
+  JOLENE_OWNER_WORKSPACE_ID: z.string().trim().min(1).default("personal"),
   JOLENE_CAREER_WORKSPACE_ID: z.string().trim().min(1).default("professional"),
   OPENAI_EMBEDDING_MODEL: z.string().trim().min(1).default("text-embedding-3-small"),
   JOLENE_MAX_HISTORY_TURNS: z.coerce.number().int().min(2).max(100).default(16),
@@ -38,6 +39,8 @@ export interface AppConfig {
   readonly vaultRoot: string | undefined;
   readonly vaultAllowlist: readonly string[];
   readonly careerVaultAllowlist: readonly string[];
+  readonly ownerActorId: string;
+  readonly ownerWorkspaceId: string;
   readonly careerOwnerActorId: string;
   readonly careerWorkspaceId: string;
   readonly embeddingModel: string;
@@ -69,6 +72,8 @@ export function loadConfig(): AppConfig {
     careerVaultAllowlist: env.JOLENE_CAREER_OBSIDIAN_ALLOWLIST.split(",")
       .map((value) => value.trim())
       .filter(Boolean),
+    ownerActorId: env.JOLENE_OWNER_ACTOR_ID,
+    ownerWorkspaceId: env.JOLENE_OWNER_WORKSPACE_ID,
     careerOwnerActorId: env.JOLENE_OWNER_ACTOR_ID,
     careerWorkspaceId: env.JOLENE_CAREER_WORKSPACE_ID,
     embeddingModel: env.OPENAI_EMBEDDING_MODEL,

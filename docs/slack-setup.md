@@ -18,6 +18,8 @@ The ChatGPT Slack connection and this standalone Slack app are separate integrat
    SLACK_BOT_TOKEN=xoxb-...
    SLACK_APP_TOKEN=xapp-...
    SLACK_OWNER_USER_ID=U...
+   JOLENE_OWNER_ACTOR_ID=carl
+   JOLENE_OWNER_WORKSPACE_ID=personal
    ```
 
 The manifest requests only:
@@ -44,9 +46,15 @@ Jolene replies in the originating thread. A durable delivery ledger suppresses c
 ## Privacy behavior
 
 - Only direct messages from `SLACK_OWNER_USER_ID` are considered private and may use allowlisted Obsidian knowledge.
+- The configured owner DM resolves private task and workflow reads to
+  `JOLENE_OWNER_ACTOR_ID` and `JOLENE_OWNER_WORKSPACE_ID`. Slack conversation
+  history and delivery records retain the actual Slack user, workspace, channel,
+  and thread identifiers.
 - Direct messages from other Slack members are ignored.
 - Every channel mention is treated as shared context, including mentions inside Slack private channels. Shared context receives no Obsidian search tool.
 - Ambient channel messages, bot messages, and edited-message events are ignored.
+- Current-work review is read-only. The model cannot create, advance, cancel,
+  schedule, send, publish, or execute work through this tool.
 
 ## Current pilot limitations
 

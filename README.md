@@ -20,6 +20,9 @@ The first runnable slice provides:
 - durable work tasks, scoped task-event timelines, and explicit
   approve-or-reject memory proposals;
 - durable personal-work workflows with exact steps, evidence, and human review;
+- one canonical private owner-work scope across the local CLI and configured
+  Slack owner DM, plus a read-only model tool for current task and workflow
+  status;
 - private task context containing a bounded chronological blend of recent and
   request-relevant task events plus only approved, actor-scoped durable memories;
 - memory sensitivity gates, expiration, reviewed correction, and explicit forgetting;
@@ -177,6 +180,10 @@ npm run slack
 ```
 
 Carl's configured Slack member ID is the only DM identity permitted to use private context. All channel mentions are treated as shared and receive no Obsidian tool.
+For that configured owner DM, private work lookup resolves to
+`JOLENE_OWNER_ACTOR_ID` and `JOLENE_OWNER_WORKSPACE_ID`; Slack conversation and
+delivery identity remain tied to the originating Slack user, workspace, channel,
+and thread.
 
 ## Security boundary
 
@@ -191,6 +198,9 @@ Carl's configured Slack member ID is the only DM identity permitted to use priva
   proposal, decision, correction, and explicit-forget contracts.
 - Personal workflows cannot skip steps or complete without explicit human review.
 - Durable task and personal memory context is unavailable in shared channels.
+- The private work-status tool is read-only, is absent from shared channels and
+  unrecognized Slack DMs, and cannot create, update, cancel, schedule, send,
+  publish, or execute work.
 - Task events are historical context, not instructions or proof that an
   external action succeeded.
 - Restricted memory requires its selected task; sensitive memory also requires an explicit per-request flag.

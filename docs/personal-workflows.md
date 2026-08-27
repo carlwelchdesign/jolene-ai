@@ -48,6 +48,20 @@ send, publish, modify a repository, or perform another side effect. It uses the
 same browser-local actor/workspace scope as Memory and Approvals and is not an
 authenticated production administration surface.
 
+### Private work-status tool
+
+In a local CLI turn or a DM from the configured Slack owner, Jolene can review
+the canonical owner's persisted tasks and associated workflow progress. The
+tool can filter by stored task status and returns bounded task summaries,
+status counts, and current workflow steps. It does not infer that an external
+action occurred from a task or workflow record.
+
+The tool is absent from shared channels and unrecognized Slack DMs. It is
+strictly read-only: it cannot create or update tasks, advance or cancel a
+workflow, schedule work, send a message, publish, or execute an external action.
+The Slack conversation remains isolated under its Slack identifiers even though
+the authorized private work lookup uses the canonical owner scope.
+
 ### HTTP routes
 
 List the templates:
@@ -108,7 +122,8 @@ writes, or another external side effect.
 ## Current boundary
 
 This slice provides the deterministic templates, persistence, event history,
-revision loop, API, and local graphical workflow console. It does not yet let
-the model create or advance runs and does not schedule work. Any future tool
-binding must preserve exact actor/workspace/task scope and the existing
-capability-approval boundary for external actions.
+revision loop, API, local graphical workflow console, and private read-only
+model status review. It does not let the model create or advance runs and does
+not schedule work. Any future mutating tool binding must preserve exact
+actor/workspace/task scope and the existing capability-approval boundary for
+external actions.

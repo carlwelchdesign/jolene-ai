@@ -216,14 +216,18 @@ export interface WorkTaskReader {
   getTask(id: string, actorId: string, workspaceId: string): WorkTask;
 }
 
-export interface WorkContextStore extends WorkContextReader, WorkTaskReader {
-  createTask(input: CreateTaskInput): WorkTask;
-  updateTaskStatus(input: UpdateTaskStatusInput): WorkTask;
+export interface WorkTaskDirectory {
   listTasks(
     actorId: string,
     workspaceId: string,
     status: TaskStatus | undefined,
   ): readonly WorkTask[];
+}
+
+export interface WorkContextStore
+extends WorkContextReader, WorkTaskReader, WorkTaskDirectory {
+  createTask(input: CreateTaskInput): WorkTask;
+  updateTaskStatus(input: UpdateTaskStatusInput): WorkTask;
   appendTaskEvent(input: AppendTaskEventInput): TaskEvent;
   listTaskEvents(
     taskId: string,
