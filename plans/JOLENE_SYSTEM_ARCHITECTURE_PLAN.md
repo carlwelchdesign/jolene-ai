@@ -748,7 +748,7 @@ Owner client-AI review checkpoint:
 |---|---|
 | Asana | [JOL-ARCH-011B](https://app.asana.com/1/9789386902387/project/1216473233375594/task/1217890793123698) |
 | Branch | `codex/jol-arch-011b-client-ai-review` |
-| Implementation commit | Pending delivery commit |
+| Implementation commit | `23d6906` (`JOL-ARCH-011B add client AI packet review control`) |
 | Human-control boundary | The local `/client-ai` control surface creates drafts, reviews the complete immutable payload/fingerprint, records approval/rejection, confirms cancellation, displays transcript/handoff provenance, and reviews only the latest pending handoff. |
 | Identity boundary | The page reads the canonical private owner scope and exact Jenny/Maria registry from the application; actor, workspace, project, sender, and transport identities cannot be invented in the browser. |
 | Safety boundary | Dynamic content uses text nodes; every mutation remains same-origin protected. The page has no transcript-recording, action-claim, model, Slack, client-repository, Obsidian, arbitrary-message, or delivery control. |
