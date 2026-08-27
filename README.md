@@ -16,7 +16,8 @@ The first runnable slice provides:
 - a typed proposal-only capability registry with exact, expiring external-action approvals;
 - durable review-only client-AI task packets for the exact Jenny and Maria
   project identities, with bounded context, expiry, turn limits, append-only
-  transcripts, exact-action approval per Jolene turn, and reviewed handoff;
+  transcripts, exact-action approval per Jolene turn, reviewed handoff, and a
+  local owner control surface;
 - a CLI and an HTTP API with `/health` and `/v1/chat`;
 - a Slack Socket Mode adapter for owner-only DMs and explicit channel mentions;
 - a durable Slack delivery ledger that retries failed posts without another model call;
@@ -152,6 +153,13 @@ Prerequisite: Node.js 22 or newer.
    Open [http://127.0.0.1:8421/approvals](http://127.0.0.1:8421/approvals)
    to stage and review exact external-message proposals. Approval remains local
    and inert; the screen exposes no send or execution control.
+
+   Open [http://127.0.0.1:8421/client-ai](http://127.0.0.1:8421/client-ai)
+   to create and review bounded Jenny/Maria task packets, inspect immutable
+   fingerprints and transcript provenance, cancel active packets, and review
+   versioned handoffs. The page exposes no conversation, model, Slack, or send
+   control; each future outbound message still requires separate exact-action
+   approval.
 
    Open [http://127.0.0.1:8421/contacts](http://127.0.0.1:8421/contacts)
    to review consented portfolio contact requests, mark them reviewed, save a

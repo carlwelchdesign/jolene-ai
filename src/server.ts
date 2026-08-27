@@ -161,6 +161,11 @@ async function handleRequest(
     return;
   }
 
+  if (request.method === "GET" && url.pathname === "/client-ai") {
+    sendAsset(response, memoryReviewAssets.clientAiHtml);
+    return;
+  }
+
   if (request.method === "GET" && url.pathname === "/contact-review.css") {
     sendAsset(response, memoryReviewAssets.contactCss);
     return;
@@ -178,6 +183,16 @@ async function handleRequest(
 
   if (request.method === "GET" && url.pathname === "/public-evaluation-review.js") {
     sendAsset(response, memoryReviewAssets.publicEvaluationJavascript);
+    return;
+  }
+
+  if (request.method === "GET" && url.pathname === "/client-ai-review.css") {
+    sendAsset(response, memoryReviewAssets.clientAiCss);
+    return;
+  }
+
+  if (request.method === "GET" && url.pathname === "/client-ai-review.js") {
+    sendAsset(response, memoryReviewAssets.clientAiJavascript);
     return;
   }
 
@@ -223,6 +238,11 @@ async function handleRequest(
 
   if (request.method === "GET" && url.pathname === "/v1/client-ai-recipients") {
     sendJson(response, 200, application.clientAiPackets.recipients());
+    return;
+  }
+
+  if (request.method === "GET" && url.pathname === "/v1/client-ai-scope") {
+    sendJson(response, 200, application.clientAiPackets.scope());
     return;
   }
 

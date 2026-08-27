@@ -28,6 +28,9 @@ export interface MemoryReviewAssets {
   readonly publicEvaluationHtml: MemoryReviewAsset;
   readonly publicEvaluationCss: MemoryReviewAsset;
   readonly publicEvaluationJavascript: MemoryReviewAsset;
+  readonly clientAiHtml: MemoryReviewAsset;
+  readonly clientAiCss: MemoryReviewAsset;
+  readonly clientAiJavascript: MemoryReviewAsset;
 }
 
 const SECURITY_HEADERS = {
@@ -148,6 +151,21 @@ export function loadMemoryReviewAssets(
     publicEvaluationJavascript: loadAsset(
       publicDirectory,
       "public-evaluation-review.js",
+      "text/javascript; charset=utf-8",
+    ),
+    clientAiHtml: loadAsset(
+      publicDirectory,
+      "client-ai-review.html",
+      "text/html; charset=utf-8",
+    ),
+    clientAiCss: loadAsset(
+      publicDirectory,
+      "client-ai-review.css",
+      "text/css; charset=utf-8",
+    ),
+    clientAiJavascript: loadAsset(
+      publicDirectory,
+      "client-ai-review.js",
       "text/javascript; charset=utf-8",
     ),
   };

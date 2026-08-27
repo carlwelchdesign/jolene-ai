@@ -43,6 +43,7 @@ output remains untrusted input and never represents Carl's decision.
 The private service exposes:
 
 - `GET /v1/client-ai-recipients`
+- `GET /v1/client-ai-scope`
 - `GET /v1/client-ai-packets?limit=50`
 - `GET /v1/client-ai-packets/{packetId}`
 - `POST /v1/client-ai-packets`
@@ -56,9 +57,25 @@ and workspace identifiers are never accepted from callers; the application
 binds the configured owner scope. There is intentionally no HTTP route for
 recording transcript turns or executing a send.
 
+## Owner control surface
+
+`http://127.0.0.1:8421/client-ai` provides the human review workflow on top of
+the owner-bound API. Carl can create a draft from an existing task and the exact
+recipient registry, review its complete canonical payload and fingerprint,
+approve or reject it, cancel a non-terminal packet, inspect append-only
+transcript and handoff history, and approve or return the latest pending
+handoff. Loading, empty, conflict, expiry, invalid-input, not-found, and local
+origin failures remain explicit and recoverable.
+
+The page renders API content through text nodes, uses the shared restrictive
+asset policy, preserves keyboard-visible focus and narrow-screen layouts, and
+inherits the control center's reduced-motion rule. It accepts no caller-selected
+actor/workspace identity. There is no UI or route for recording a turn,
+claiming an action approval, contacting a recipient, or invoking a model.
+
 ## Deferred work
 
 This slice does not add Slack posting, a client-project adapter, model tools,
-Obsidian retrieval, arbitrary recipients, a public endpoint, a graphical packet
-review screen, or production activation. Those require separate review,
+Obsidian retrieval, arbitrary recipients, a public endpoint, or production
+activation. Those require separate review,
 transport authentication, disclosure, receipt, and deployment gates.
