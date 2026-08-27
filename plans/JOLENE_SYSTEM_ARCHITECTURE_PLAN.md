@@ -1109,6 +1109,19 @@ Approved public-corpus checkpoint:
 | Safety boundary | Approval, artifact generation, portfolio integration, a live public endpoint, deployment, and launch remain distinct gates; no private/internal evidence is present in the artifact |
 | Verification | Node 24: 46 test files / 302 tests; frozen offline suite 41/41 cases and 24/24 blocker metrics; build, Compose, zero production dependency vulnerabilities, diff, artifact integrity, citation, and disclosure checks pass; private API and Slack runtime preserved |
 
+Canonical runtime-export checkpoint:
+
+| Field | Evidence |
+|---|---|
+| Asana | [JOL-CAREER-004B](https://app.asana.com/1/9789386902387/project/1216473233375594/task/1217890909226575) |
+| Delivery | Branch `codex/jol-career-004b-runtime-export`; implementation `e8f92de` (`JOL-CAREER-004B export canonical public corpus`) |
+| Source-of-truth repair | `career:export-public` now runs a compiled one-shot exporter against the canonical private Docker data volume; the host-only command is explicitly development-scoped |
+| Isolation | Network disabled; no ports, dependencies, `.env.local`, OpenAI/Slack credentials, vault, portfolio, review-packet mount, private server, or public delegate |
+| Read boundary | Existing SQLite database required and opened query-only; prior-artifact validation, revocation continuity, leak rejection, atomic replacement, and owner-only output retained |
+| Artifact | Ignored `.jolene/exports/public-career-evidence.json`; schema `1.0.0`; corpus `career:3d3b0d7361be5cfae3c634013bc48b73983388d3207d8f9b7bb1aaf50fa5c5de`; generated `2026-08-27T04:30:02.751Z`; reviewed through `2026-08-27T00:38:07.748Z`; 41 claims; zero revocations |
+| Boundary | Review approval, artifact generation, portfolio transfer/integration, live endpoint, deployment, publication, and launch remain distinct gates |
+| Verification | Node 24: 64 test files / 378 tests; production build; fresh image; private/tools and public Compose validation; zero production dependency vulnerabilities; frozen suite 41/41 and 24/24 blocker metrics; artifact schema, digest, citation, mode, ignore, and runtime credential-absence checks; clean diff; private API, Slack, and monitor remained running |
+
 Isolated public-container checkpoint:
 
 | Field | Evidence |

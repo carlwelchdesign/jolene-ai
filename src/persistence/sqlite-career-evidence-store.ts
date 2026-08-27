@@ -108,20 +108,33 @@ interface ClaimConflictRow {
 
 const REVIEW_MAX_AGE_DAYS = 180;
 
+export interface SqliteCareerEvidenceStoreOptions {
+  readonly readOnly?: boolean;
+}
+
 export class SqliteCareerEvidenceStore implements CareerEvidenceStore {
   private readonly database: Database.Database;
 
   constructor(
     databasePath: string,
     private readonly now: () => Date = () => new Date(),
+    options: SqliteCareerEvidenceStoreOptions = {},
   ) {
-    if (databasePath !== ":memory:") {
+    const readOnly = options.readOnly ?? false;
+    if (databasePath !== ":memory:" && !readOnly) {
       fs.mkdirSync(path.dirname(path.resolve(databasePath)), { recursive: true });
     }
-    this.database = new Database(databasePath);
-    this.database.pragma("journal_mode = WAL");
+    this.database = new Database(
+      databasePath,
+      readOnly ? { readonly: true, fileMustExist: true } : undefined,
+    );
+    if (readOnly) {
+      this.database.pragma("query_only = ON");
+    } else {
+      this.database.pragma("journal_mode = WAL");
+    }
     this.database.pragma("foreign_keys = ON");
-    this.migrate();
+    if (!readOnly) this.migrate();
   }
 
   upsertSource(input: UpsertCareerSourceInput): CareerSource {

@@ -230,6 +230,12 @@ Prerequisite: Node.js 22 or newer.
    npm run career:export-public
    ```
 
+   This command builds and runs a network-disabled one-shot container against
+   the canonical private Docker data volume. The export job receives no OpenAI,
+   Slack, Obsidian, portfolio, or monitoring configuration. Use
+   `career:export-public:host` only for an explicitly selected development
+   database; it is not the canonical review-state path.
+
    The default output is ignored at
    `.jolene/exports/public-career-evidence.json`. The current approved artifact
    contains 41 public claims and zero revocations under schema `1.0.0`. This
