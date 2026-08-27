@@ -1,0 +1,118 @@
+schema_version: personality-source-register-v1
+reviewed_at: 2026-08-26
+rights_policy:
+  repository_storage: metadata-and-paraphrase-only
+  transcript_storage: prohibited
+  lyrics_storage: prohibited
+  excerpt_limit_words: 24
+sources:
+  - id: S01
+    date: 1977
+    title: On the road with Dolly Parton
+    publisher: ABC News
+    url: https://abcnews.com/video/66760052/
+    setting: adversarial-profile-interview
+    access_state: metadata-verified-video-coding-pending
+    rights_handling: no-media-or-transcript-copied
+    research_value: pressure recovery and boundaries
+    weight: medium
+  - id: S02
+    date: 2001
+    title: Fresh Air interview archive
+    publisher: Fresh Air Archive
+    url: https://freshairarchive.org/segments/dolly-parton-fresh-air-interview
+    setting: long-form-radio-interview
+    access_state: metadata-verified-full-coding-pending
+    rights_handling: no-audio-or-transcript-copied
+    research_value: self-authorship, work, and humor
+    weight: high
+  - id: S03
+    date: 2003-07-12
+    title: Larry King Live interview
+    publisher: CNN
+    url: https://transcripts.cnn.com/show/lkl/date/2003-07-12/segment/00
+    setting: live-television-interview
+    access_state: transcript-reviewed-for-pilot
+    rights_handling: paraphrase-only; no excerpts retained
+    research_value: candor, credit, uncertainty, boundaries, and self-directed humor
+    weight: high
+  - id: S04
+    date: 2009-02-10
+    title: National Press Club luncheon
+    publisher: National Press Club
+    url: https://www.press.org/sites/default/files/20090210_parton.pdf
+    setting: formal-public-question-and-answer
+    access_state: transcript-reviewed-for-pilot
+    rights_handling: paraphrase-only; no excerpts retained
+    research_value: practical service, business judgment, credit, and serious pivots
+    weight: high
+  - id: S05
+    date: 2009-02-18
+    title: Faith, politics, and hard times
+    publisher: NPR Tell Me More via WFAE
+    url: https://www.wfae.org/2009-02-18/dolly-parton-on-faith-politics-and-hard-times
+    setting: radio-interview
+    access_state: metadata-verified-full-coding-pending
+    rights_handling: no-audio-or-transcript-copied
+    research_value: humane firmness and ownership
+    weight: high
+  - id: S07
+    date: 2012-11-27
+    title: After decades of dreaming, Dolly Parton says dream more
+    publisher: NPR Music via WPRL
+    url: https://www.wprl.org/npr-music/2012-11-27/after-decades-of-dreaming-dolly-parton-says-dream-more
+    setting: radio-interview
+    access_state: metadata-verified-full-coding-pending
+    rights_handling: no-audio-or-transcript-copied
+    research_value: operational optimism and advisers
+    weight: medium-high
+  - id: S08
+    date: 2014-04-15
+    title: The Big Interview
+    publisher: AXS TV / Dan Rather
+    url: https://danratherjournalist.org/sites/default/files/documents/2014%20The_Big_Interview_210%20on%2004%2015%20Dolly%20Parton.pdf
+    setting: long-form-television-interview
+    access_state: transcript-reviewed-for-pilot
+    rights_handling: paraphrase-only; no excerpts retained
+    research_value: business discipline, collaborator credit, candid boundaries, and private/public distinction
+    weight: high
+  - id: S09
+    date: 2016
+    title: Dolly Parton interview on Coat of Many Colors
+    publisher: Library of Congress
+    url: https://www.loc.gov/static/programs/national-recording-preservation-board/documents/DollyPartonInterview.pdf
+    setting: archival-creative-process-interview
+    access_state: transcript-reviewed-for-pilot
+    rights_handling: paraphrase-only; no lyrics or excerpts retained
+    research_value: creative improvisation and meaning-making after hurt
+    weight: high-narrow
+  - id: S10
+    date: 2018-02-27
+    title: Dolly Parton and the roots of the Imagination Library
+    publisher: Library of Congress
+    url: https://www.loc.gov/item/2021690731/
+    setting: public-service-interview
+    access_state: metadata-verified-video-coding-pending
+    rights_handling: no-media-or-transcript-copied
+    research_value: concrete service and child-centered communication
+    weight: high
+  - id: S13
+    date: 2022
+    title: Dolly Parton is burning up, not burning out
+    publisher: TED WorkLife
+    url: https://www.ted.com/podcasts/worklife/dolly-parton-is-burning-up-not-burning-out-transcript
+    setting: workplace-interview
+    access_state: transcript-reviewed-for-pilot
+    rights_handling: paraphrase-only; no excerpts retained
+    research_value: leadership, criticism, mistakes, ambition, and compassionate candor
+    weight: high
+  - id: S15
+    date: 2021-01-19
+    title: Dolly's birthday wish for everyone
+    publisher: Dolly Parton official site
+    url: https://dollyparton.com/life-and-career/dollys-birthday-wish-for-everyone
+    setting: first-person-public-statement
+    access_state: metadata-verified-full-coding-pending
+    rights_handling: no-statement-text-copied
+    research_value: kindness framed as concrete action
+    weight: medium
