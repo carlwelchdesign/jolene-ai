@@ -13,6 +13,8 @@ import { ContactIntentReviewService } from "./application/contact-intent-review-
 import { PublicLiveModelReviewService } from "./application/public-live-model-review-service.js";
 import { PersonalityResearchReviewService } from
   "./application/personality-research-review-service.js";
+import { PersonalityTuningReviewService } from
+  "./application/personality-tuning-review-service.js";
 import { CareerRetrievalService } from "./application/career-retrieval-service.js";
 import { JoleneService } from "./application/jolene-service.js";
 import { KnowledgeAuditService } from "./application/knowledge-audit-service.js";
@@ -55,6 +57,8 @@ import { SqliteWatchedProjectMonitorStore } from "./persistence/sqlite-watched-p
 import { FilePublicLiveModelReviewStore } from "./persistence/file-public-live-model-review-store.js";
 import { FilePersonalityResearchReviewStore } from
   "./persistence/file-personality-research-review-store.js";
+import { FilePersonalityTuningStore } from
+  "./persistence/file-personality-tuning-store.js";
 import { loadPersonalityResearch } from "./personality/personality-research.js";
 import { LocalWatchedProjectInspector } from "./projects/local-watched-project-inspector.js";
 import { FilePublicContactIntentQueue } from "./public/public-contact-intent-queue.js";
@@ -72,6 +76,7 @@ export interface JoleneApplication {
   readonly contactIntents: ContactIntentReviewService;
   readonly publicLiveModelReview: PublicLiveModelReviewService;
   readonly personalityResearchReview: PersonalityResearchReviewService;
+  readonly personalityTuningReview: PersonalityTuningReviewService;
   readonly workflows: PersonalWorkflowService;
   readonly watchedProjects: WatchedProjectService;
   readonly projectMonitoring: WatchedProjectMonitorService;
@@ -145,6 +150,9 @@ export async function createApplication(
     actorId: config.ownerActorId,
     workspaceId: config.ownerWorkspaceId,
   };
+  const personalityResearchStore = new FilePersonalityResearchReviewStore(
+    config.personalityResearchDecisionPath,
+  );
   const contactQueue = new FilePublicContactIntentQueue({
     filePath: config.contactQueuePath,
     maxEntries: config.contactQueueMaxEntries,
@@ -215,9 +223,13 @@ export async function createApplication(
     ),
     personalityResearchReview: new PersonalityResearchReviewService(
       () => loadPersonalityResearch(process.cwd()),
-      new FilePersonalityResearchReviewStore(
-        config.personalityResearchDecisionPath,
-      ),
+      personalityResearchStore,
+      ownerScope,
+    ),
+    personalityTuningReview: new PersonalityTuningReviewService(
+      () => loadPersonalityResearch(process.cwd()),
+      personalityResearchStore,
+      new FilePersonalityTuningStore(config.personalityTuningDecisionPath),
       ownerScope,
     ),
     workflows: new PersonalWorkflowService(personalWorkflowStore, workStore),

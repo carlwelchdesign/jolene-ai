@@ -391,7 +391,7 @@ and thread.
   and fails closed on private paths, contacts, secrets, Obsidian links, and
   citation destinations that are not site-relative portfolio paths.
 
-See [the architecture plan](plans/JOLENE_SYSTEM_ARCHITECTURE_PLAN.md) and [the personality plan](plans/JOLENE_PERSONALITY_RESEARCH_AND_SPECIFICATION_PLAN.md).
+See [the architecture plan](plans/JOLENE_SYSTEM_ARCHITECTURE_PLAN.md), [the personality plan](plans/JOLENE_PERSONALITY_RESEARCH_AND_SPECIFICATION_PLAN.md), the [personality renderer boundary](docs/personality-renderer.md), and the [non-activating tuning decision](docs/personality-tuning.md).
 
 Architecture visuals:
 

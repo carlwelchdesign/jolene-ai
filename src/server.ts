@@ -20,6 +20,11 @@ import {
   PersonalityResearchReviewScopeError,
 } from "./application/personality-research-review-service.js";
 import {
+  PersonalityTuningReviewConflictError,
+  PersonalityTuningReviewNotEligibleError,
+  PersonalityTuningReviewScopeError,
+} from "./application/personality-tuning-review-service.js";
+import {
   ActionApprovalExpiredError,
   ActionPayloadMismatchError,
   ActionProposalConflictError,
@@ -699,6 +704,21 @@ async function handleRequest(
     return;
   }
 
+  if (request.method === "GET" && url.pathname === "/v1/personality-tuning-review") {
+    sendJson(response, 200, await application.personalityTuningReview.get(scopeFrom(url)));
+    return;
+  }
+
+  if (request.method === "POST" && url.pathname === "/v1/personality-tuning-review/decision") {
+    assertSameOrigin(request.headers);
+    sendJson(
+      response,
+      200,
+      await application.personalityTuningReview.submit(await readJson(request)),
+    );
+    return;
+  }
+
   const contactReviewMatch = url.pathname.match(
     /^\/v1\/contact-intents\/([^/]+)\/review$/,
   );
@@ -1000,7 +1020,10 @@ function handleError(error: unknown, response: ServerResponse): void {
     return;
   }
 
-  if (error instanceof PersonalityResearchReviewScopeError) {
+  if (
+    error instanceof PersonalityResearchReviewScopeError ||
+    error instanceof PersonalityTuningReviewScopeError
+  ) {
     sendJson(response, 403, { error: "personality_review_scope_not_permitted" });
     return;
   }
@@ -1020,6 +1043,19 @@ function handleError(error: unknown, response: ServerResponse): void {
 
   if (error instanceof PersonalityResearchReviewConflictError) {
     sendJson(response, 409, { error: "personality_review_conflict" });
+    return;
+  }
+
+  if (error instanceof PersonalityTuningReviewConflictError) {
+    sendJson(response, 409, { error: "personality_tuning_conflict" });
+    return;
+  }
+
+  if (error instanceof PersonalityTuningReviewNotEligibleError) {
+    sendJson(response, 409, {
+      error: "personality_tuning_not_eligible",
+      reason: error.reason,
+    });
     return;
   }
 
