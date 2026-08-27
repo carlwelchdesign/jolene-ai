@@ -1,6 +1,6 @@
 schema_version: personality-source-register-v2
 status: normalized-non-activating
-reviewed_at: 2026-08-27T08:18:30Z
+reviewed_at: 2026-08-27T08:42:18Z
 rights_policy:
   repository_storage: metadata-and-paraphrase-only
   transcript_storage: prohibited
@@ -8,8 +8,19 @@ rights_policy:
   audio_video_storage: prohibited
   content_fingerprint_storage: sha256-only
 live_fingerprint_verification:
-  required_source_ids: [S16, S17]
-  allowed_origins: [https://blankonblank.org, https://www.wired.com]
+  required_source_ids: [S02, S03, S04, S05, S07, S08, S09, S10, S13, S16, S17]
+  allowed_origins:
+    - https://freshairarchive.org
+    - https://transcripts.cnn.com
+    - https://www.press.org
+    - https://www.wfae.org
+    - https://www.wprl.org
+    - https://danratherjournalist.org
+    - https://www.loc.gov
+    - https://tile.loc.gov
+    - https://www.ted.com
+    - https://blankonblank.org
+    - https://www.wired.com
   timeout_ms: 15000
   maximum_response_bytes: 2500000
   maximum_redirects: 2
@@ -162,9 +173,9 @@ events:
     deliveryStructure: unscripted
     promotionalPurpose: mixed
     rightsBasis: metadata-and-paraphrase-only
-    fingerprintBasis: retrieved-response-bytes
-    fingerprintMethod: raw-content-boundary-bytes-v1
-    sourceContentFingerprint: sha256:d8beb73f1e4b63396bbe4eb433d968ef1e1904ac4d96578d9483f9aad710f0b9
+    fingerprintBasis: normalized-transcript-segments
+    fingerprintMethod: fresh-air-transcript-paragraphs-v1
+    sourceContentFingerprint: sha256:1c46f426b7df309ac2e2257556ae345b8bdfe6324d2961a8168493be071811c1
 
   - sourceEventId: E003
     sourceRegisterId: S03
@@ -197,9 +208,9 @@ events:
     deliveryStructure: unscripted
     promotionalPurpose: mixed
     rightsBasis: metadata-and-paraphrase-only
-    fingerprintBasis: retrieved-response-bytes
-    fingerprintMethod: raw-content-boundary-bytes-v1
-    sourceContentFingerprint: sha256:a2d7118119be5ff74eb384e7f5bfda09cbdb64ddd8e326378ae6bdeea1bde0cb
+    fingerprintBasis: normalized-transcript-segments
+    fingerprintMethod: cnn-transcript-body-paragraphs-v1
+    sourceContentFingerprint: sha256:61a049d29ada1bb6aae3a0700336bb11a1f4ba151139c1db0e12032d5ea4931b
 
   - sourceEventId: E004
     sourceRegisterId: S04
@@ -233,7 +244,7 @@ events:
     promotionalPurpose: mixed
     rightsBasis: metadata-and-paraphrase-only
     fingerprintBasis: retrieved-response-bytes
-    fingerprintMethod: raw-content-boundary-bytes-v1
+    fingerprintMethod: raw-pdf-bytes-v1
     sourceContentFingerprint: sha256:7f7db3b1766d2656041cbbe6bfdf5df3c2f3342bf4904a4be94027260a018cc5
 
   - sourceEventId: E005
@@ -267,9 +278,9 @@ events:
     deliveryStructure: unscripted
     promotionalPurpose: mixed
     rightsBasis: metadata-and-paraphrase-only
-    fingerprintBasis: retrieved-response-bytes
-    fingerprintMethod: raw-content-boundary-bytes-v1
-    sourceContentFingerprint: sha256:2c2d6219d196620ec90c2e6c6af9badf447d00ce298ad305157baf9510e02dc4
+    fingerprintBasis: normalized-transcript-segments
+    fingerprintMethod: npr-station-article-body-paragraphs-v1
+    sourceContentFingerprint: sha256:9c0e43d1f051e69bd26feb9a18da6d2ea1c8151660b94dfd7b9c72982e3edd1b
 
   - sourceEventId: E006
     sourceRegisterId: S07
@@ -302,9 +313,9 @@ events:
     deliveryStructure: unscripted
     promotionalPurpose: yes
     rightsBasis: metadata-and-paraphrase-only
-    fingerprintBasis: retrieved-response-bytes
-    fingerprintMethod: raw-content-boundary-bytes-v1
-    sourceContentFingerprint: sha256:001442e77643063257933026054596fbce149281fe47afeb9a33d28de02077d2
+    fingerprintBasis: normalized-transcript-segments
+    fingerprintMethod: npr-station-article-body-paragraphs-v1
+    sourceContentFingerprint: sha256:eb393e89afa6c8ac0fc322b4226426be1975be6ad1491cb1041c386241736f37
 
   - sourceEventId: E007
     sourceRegisterId: S08
@@ -338,7 +349,7 @@ events:
     promotionalPurpose: yes
     rightsBasis: metadata-and-paraphrase-only
     fingerprintBasis: retrieved-response-bytes
-    fingerprintMethod: raw-content-boundary-bytes-v1
+    fingerprintMethod: raw-pdf-bytes-v1
     sourceContentFingerprint: sha256:13f4a6112aa8ef9f9f552e0fc52df3f3bcb527d6e8817caed77e3d32ef974321
 
   - sourceEventId: E008
@@ -373,7 +384,7 @@ events:
     promotionalPurpose: no
     rightsBasis: metadata-and-paraphrase-only
     fingerprintBasis: retrieved-response-bytes
-    fingerprintMethod: raw-content-boundary-bytes-v1
+    fingerprintMethod: raw-pdf-bytes-v1
     sourceContentFingerprint: sha256:f98b081573e5fdd39450e030f87a2630a52a1bc652e231239f4561f12a429976
 
   - sourceEventId: E009
@@ -408,7 +419,7 @@ events:
     promotionalPurpose: mixed
     rightsBasis: metadata-and-paraphrase-only
     fingerprintBasis: official-caption-bytes
-    fingerprintMethod: raw-content-boundary-bytes-v1
+    fingerprintMethod: raw-vtt-bytes-v1
     sourceContentFingerprint: sha256:d3815a8e5fe3f536f65e43d8724e9b3f9e376365f876f9dab683865b81f51104
 
   - sourceEventId: E010
@@ -442,9 +453,9 @@ events:
     deliveryStructure: unscripted
     promotionalPurpose: mixed
     rightsBasis: metadata-and-paraphrase-only
-    fingerprintBasis: retrieved-response-bytes
-    fingerprintMethod: raw-content-boundary-bytes-v1
-    sourceContentFingerprint: sha256:623ebc2f7a50409d3e5bc12026a3fc02c83ea59af6544fe2a85de4dd4f9f4736
+    fingerprintBasis: normalized-transcript-segments
+    fingerprintMethod: ted-next-data-transcript-segments-v1
+    sourceContentFingerprint: sha256:9d0476cf1ddd59b79fa088b823e695bb3498474730855fbdc1f12b1514bd06f4
 
   - sourceEventId: E011
     sourceRegisterId: S15

@@ -55,7 +55,11 @@ export const personalitySourceEventSchema = z.object({
     "retrieved-response-bytes",
   ]),
   fingerprintMethod: z.enum([
-    "none", "raw-content-boundary-bytes-v1",
+    "none", "raw-content-boundary-bytes-v1", "raw-pdf-bytes-v1", "raw-vtt-bytes-v1",
+    "fresh-air-transcript-paragraphs-v1",
+    "cnn-transcript-body-paragraphs-v1",
+    "npr-station-article-body-paragraphs-v1",
+    "ted-next-data-transcript-segments-v1",
     "blank-on-blank-transcript-paragraphs-v1",
     "wired-indexed-transcript-captions-v1",
   ]),
@@ -98,6 +102,10 @@ export const personalitySourceEventSchema = z.object({
     context.addIssue({ code: "custom", message: "Source fingerprint and method disagree" });
   }
   const normalizedMethods = new Set([
+    "fresh-air-transcript-paragraphs-v1",
+    "cnn-transcript-body-paragraphs-v1",
+    "npr-station-article-body-paragraphs-v1",
+    "ted-next-data-transcript-segments-v1",
     "blank-on-blank-transcript-paragraphs-v1",
     "wired-indexed-transcript-captions-v1",
   ]);
@@ -262,10 +270,34 @@ export async function loadPersonalitySourceRegisterV2(
   };
 }
 
-const requiredNormalizedSourceIds = ["S16", "S17"] as const;
-const requiredNormalizedSourceOrigins = [
+const requiredLiveSourceIds = [
+  "S02", "S03", "S04", "S05", "S07", "S08", "S09", "S10", "S13", "S16", "S17",
+] as const;
+const requiredLiveSourceOrigins = [
+  "https://freshairarchive.org",
+  "https://transcripts.cnn.com",
+  "https://www.press.org",
+  "https://www.wfae.org",
+  "https://www.wprl.org",
+  "https://danratherjournalist.org",
+  "https://www.loc.gov",
+  "https://tile.loc.gov",
+  "https://www.ted.com",
   "https://blankonblank.org",
   "https://www.wired.com",
+] as const;
+const requiredLiveSourceMethods = [
+  "fresh-air-transcript-paragraphs-v1",
+  "cnn-transcript-body-paragraphs-v1",
+  "raw-pdf-bytes-v1",
+  "npr-station-article-body-paragraphs-v1",
+  "npr-station-article-body-paragraphs-v1",
+  "raw-pdf-bytes-v1",
+  "raw-pdf-bytes-v1",
+  "raw-vtt-bytes-v1",
+  "ted-next-data-transcript-segments-v1",
+  "blank-on-blank-transcript-paragraphs-v1",
+  "wired-indexed-transcript-captions-v1",
 ] as const;
 
 function assertLiveFingerprintPolicy(
@@ -275,13 +307,13 @@ function assertLiveFingerprintPolicy(
     readonly allowed_origins: readonly string[];
   },
 ) {
-  if (policy.required_source_ids.length !== requiredNormalizedSourceIds.length ||
-      requiredNormalizedSourceIds.some((id) => !policy.required_source_ids.includes(id))) {
-    throw new Error("Live fingerprint policy must require S16 and S17 exactly");
+  if (policy.required_source_ids.length !== requiredLiveSourceIds.length ||
+      requiredLiveSourceIds.some((id) => !policy.required_source_ids.includes(id))) {
+    throw new Error("Live fingerprint policy must require every coding-ready source exactly");
   }
-  if (policy.allowed_origins.length !== requiredNormalizedSourceOrigins.length ||
-      requiredNormalizedSourceOrigins.some((origin) => !policy.allowed_origins.includes(origin))) {
-    throw new Error("Live fingerprint policy must allow only the S16 and S17 content origins");
+  if (policy.allowed_origins.length !== requiredLiveSourceOrigins.length ||
+      requiredLiveSourceOrigins.some((origin) => !policy.allowed_origins.includes(origin))) {
+    throw new Error("Live fingerprint policy must allow only coding-ready content origins");
   }
   for (const origin of policy.allowed_origins) {
     const parsed = new URL(origin);
@@ -289,13 +321,35 @@ function assertLiveFingerprintPolicy(
       throw new Error(`Allowed content origin must be an exact HTTPS origin: ${origin}`);
     }
   }
+  const codingReadyIds = events.filter((source) => source.accessState === "coding-ready")
+    .map((source) => source.sourceRegisterId);
+  if (codingReadyIds.length !== policy.required_source_ids.length ||
+      codingReadyIds.some((id) => !policy.required_source_ids.includes(id))) {
+    throw new Error("Live fingerprint policy and coding-ready source set disagree");
+  }
   const byId = new Map(events.map((source) => [source.sourceRegisterId, source]));
   for (const id of policy.required_source_ids) {
     const source = byId.get(id);
-    if (!source || source.fingerprintBasis !== "normalized-transcript-segments") {
-      throw new Error(`${id} must use normalized transcript fingerprinting`);
+    if (!source?.contentBoundaryUrl ||
+        new URL(source.contentBoundaryUrl).origin !== originForSource(id)) {
+      throw new Error(`${id} must use its registered content origin`);
+    }
+    if (source.fingerprintMethod !== methodForSource(id)) {
+      throw new Error(`${id} must use its registered canonical fingerprint method`);
     }
   }
+}
+
+function originForSource(sourceId: string): string {
+  const index = requiredLiveSourceIds.indexOf(sourceId as typeof requiredLiveSourceIds[number]);
+  if (index < 0) throw new Error(`Unexpected live fingerprint source ${sourceId}`);
+  return requiredLiveSourceOrigins[index] ?? "";
+}
+
+function methodForSource(sourceId: string): string {
+  const index = requiredLiveSourceIds.indexOf(sourceId as typeof requiredLiveSourceIds[number]);
+  if (index < 0) throw new Error(`Unexpected live fingerprint source ${sourceId}`);
+  return requiredLiveSourceMethods[index] ?? "";
 }
 
 function assertSettingTaxonomy(

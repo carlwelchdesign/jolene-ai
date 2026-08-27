@@ -816,6 +816,14 @@ Current ticket evidence:
 | JOL-ARCH-014 | Implemented for local pilot | The ARM64 image builds successfully. Private API, Slack, and bounded Project Watch monitor run as separate Compose processes from the same non-root image with a read-only application filesystem, read-only vault/project mounts, durable SQLite volume, no baked-in secrets, and least-privilege file-mounted runtime credentials. The operational cutover is complete and all three processes are running; credential rotation and production deployment remain separate. |
 | JOL-ARCH-015 | Partial; private ingestion, approval, live lexical retrieval, conflict governance, public export, isolated loopback delegate, offline evaluation, and private read-only MCP implemented | The private SQLite registry models sources, claims, maturity, visibility, review freshness, relationships, revocation, supersession, missing sources, and owner-reviewed conflicts. Carl approved 38 active sources and 143 active claims: 41 public-artifact eligible and 102 private-Jolene only. The live private index contains 152 lexical-only chunks with exact citations, content-minimizing access logs, and zero stored vectors; embeddings remain disabled by default and exact opt-in. The deny-by-default artifact contains 41 public claims and zero revocations under schema `1.0.0`, and the physically separate loopback delegate serves only that artifact plus minimized public state. A network-disabled local stdio MCP adapter exposes three read-only approved-evidence tools without raw-vault or private-memory access. The frozen v1.4 offline harness passes 61/61 expanded cases and all 25 blocker metrics, including 20 deterministic hostile-request mutations. Public hosting, full live-model/human evaluation, production operations, deployment, and launch remain absent. Authenticated remote administration, pgvector, remote/write MCP, and graph infrastructure remain evaluation-gated. |
 
+JOL-ARCH-009 follow-up (2026-08-27): JOL-PER-005B3 now reproduces and compares every
+coding-ready source fingerprint. Seven HTML boundaries use source-specific content-only
+canonicalization; three official PDFs and one official VTT use exact-byte verification. The
+source-ID set and exact HTTPS origins are pinned, so coverage cannot be silently reduced. This
+closes generalized source-drift verification only; v2 sampling, coding, reconciliation, trait
+admission, owner decisions, behavior activation, model wiring, Slack use, and voice remain
+pending or explicitly out of scope.
+
 ## Architecture risks
 
 | Risk | Impact | Mitigation | Owner | Release gate |
