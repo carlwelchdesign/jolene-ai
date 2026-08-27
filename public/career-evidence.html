@@ -60,7 +60,7 @@
         <article><span>Internal approved</span><strong id="count-internal">—</strong></article>
         <article><span>Public approved</span><strong id="count-public">—</strong></article>
         <article><span>Unresolved conflicts</span><strong id="count-conflicts">—</strong></article>
-        <article><span>Relationship reviews</span><strong id="count-relationship-review">—</strong></article>
+        <article><span>Claims needing links</span><strong id="count-relationship-review">—</strong></article>
       </section>
 
       <section class="panel conflict-panel" aria-labelledby="conflict-title">
@@ -89,7 +89,14 @@
           <div>
             <p class="eyebrow">Source-derived graph control</p>
             <h2 id="relationship-title">Claim relationship suggestions</h2>
-            <p class="supporting-copy">These suggestions copy exact relationships already attached to a claim's source. Jolene does not infer relevance from wording, and no link exists until you approve that exact candidate.</p>
+            <p class="supporting-copy">Each unlinked claim receives one deterministic next option copied from its source. Rejection advances to the next typed option; approval closes that claim's coverage queue. Jolene does not infer relevance from wording, and no link exists until you approve the exact candidate.</p>
+          </div>
+        </div>
+        <div class="evidence-pagination" aria-label="Relationship review pages">
+          <p id="relationship-page-status" tabindex="-1" aria-live="polite">Loading relationship review pages…</p>
+          <div class="pagination-actions">
+            <button class="button button-secondary button-small" id="previous-relationship-page" type="button" disabled>Previous page</button>
+            <button class="button button-secondary button-small" id="next-relationship-page" type="button" disabled>Next page</button>
           </div>
         </div>
         <div class="relationship-list" id="relationship-list" aria-live="polite" aria-busy="true">

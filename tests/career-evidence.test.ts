@@ -288,6 +288,7 @@ describe("career evidence review lifecycle", () => {
       });
       expect(rejected).toMatchObject({
         reviewState: "rejected",
+        claimQueueState: "exhausted",
         reviewIsCurrent: true,
         linkedRelationshipId: null,
       });
@@ -296,6 +297,156 @@ describe("career evidence review lifecycle", () => {
       expect(store.listRelationships(scope).find((relationship) =>
         relationship.id === approved.linkedRelationshipId
       )?.state).toBe("revoked");
+    } finally {
+      store.close();
+    }
+  });
+
+  it("advances one deterministic relationship option per unlinked claim", () => {
+    const store = new SqliteCareerEvidenceStore(":memory:", () => fixedNow);
+    try {
+      const source = createSource(store);
+      const firstClaim = createClaim(store, source.id, "First bounded claim.", "first");
+      const secondClaim = createClaim(store, source.id, "Second bounded claim.", "second");
+      for (const relationship of [
+        {
+          id: "source-relationship:related",
+          relationship: "related_to" as const,
+          toKind: "artifact" as const,
+          toId: "artifact:portfolio",
+        },
+        {
+          id: "source-relationship:domain",
+          relationship: "in_domain" as const,
+          toKind: "domain" as const,
+          toId: "domain:applied-ai",
+        },
+        {
+          id: "source-relationship:skill",
+          relationship: "uses_skill" as const,
+          toKind: "skill" as const,
+          toId: "skill:typescript",
+        },
+      ]) {
+        store.upsertRelationship({
+          ...scope,
+          ...relationship,
+          sourceId: source.id,
+          claimId: null,
+          fromKind: "project",
+          fromId: "project:sample",
+        });
+      }
+
+      const initial = store.listRelationshipCandidates(scope);
+      expect(initial).toHaveLength(2);
+      expect(new Set(initial.map((candidate) => candidate.claimId))).toEqual(
+        new Set([firstClaim.id, secondClaim.id]),
+      );
+      expect(initial.every((candidate) =>
+        candidate.relationship === "uses_skill" &&
+        candidate.claimQueueState === "pending"
+      )).toBe(true);
+
+      const firstOption = initial.find((candidate) => candidate.claimId === firstClaim.id)!;
+      store.decideRelationshipCandidate({
+        ...scope,
+        id: firstOption.id,
+        fingerprint: firstOption.fingerprint,
+        decision: "rejected",
+        reviewerId: "carl",
+      });
+      const afterRejection = store.listRelationshipCandidates(scope).filter(
+        (candidate) => candidate.claimId === firstClaim.id,
+      );
+      expect(afterRejection).toHaveLength(2);
+      expect(afterRejection.filter((candidate) => candidate.reviewState === "needs_review"))
+        .toEqual([expect.objectContaining({
+          relationship: "in_domain",
+          claimQueueState: "pending",
+        })]);
+      expect(afterRejection.filter((candidate) => candidate.reviewState === "rejected"))
+        .toEqual([expect.objectContaining({ id: firstOption.id })]);
+
+      const nextOption = afterRejection.find(
+        (candidate) => candidate.reviewState === "needs_review",
+      )!;
+      store.decideRelationshipCandidate({
+        ...scope,
+        id: nextOption.id,
+        fingerprint: nextOption.fingerprint,
+        decision: "approved",
+        reviewerId: "carl",
+      });
+      expect(store.listRelationshipCandidates(scope).filter(
+        (candidate) => candidate.claimId === firstClaim.id,
+      )).toEqual([expect.objectContaining({
+        id: nextOption.id,
+        reviewState: "approved",
+        claimQueueState: "approved",
+      })]);
+      expect(store.listRelationshipReviews(scope).map((review) => review.decision))
+        .toEqual(["rejected", "approved"]);
+    } finally {
+      store.close();
+    }
+  });
+
+  it("does not propose coverage links for claims that already have an active link", () => {
+    const store = new SqliteCareerEvidenceStore(":memory:", () => fixedNow);
+    try {
+      const source = createSource(store);
+      const claim = createClaim(store, source.id, "Already linked claim.");
+      store.upsertRelationship(sourceRelationshipInput(source.id));
+      store.upsertRelationship({
+        id: "claim-relationship:existing",
+        ...scope,
+        sourceId: source.id,
+        claimId: claim.id,
+        fromKind: "claim",
+        fromId: claim.id,
+        relationship: "supports",
+        toKind: "artifact",
+        toId: "artifact:existing",
+      });
+
+      expect(store.listRelationshipCandidates(scope)).toEqual([]);
+    } finally {
+      store.close();
+    }
+  });
+
+  it("bounds a canonical-shaped relationship cross product to one pending option per claim", () => {
+    const store = new SqliteCareerEvidenceStore(":memory:", () => fixedNow);
+    try {
+      const source = createSource(store);
+      for (let index = 0; index < 120; index += 1) {
+        createClaim(store, source.id, `Bounded claim ${index}.`, `claim-${index}`);
+      }
+      for (let index = 0; index < 25; index += 1) {
+        store.upsertRelationship({
+          id: `source-relationship:related-${index}`,
+          ...scope,
+          sourceId: source.id,
+          claimId: null,
+          fromKind: "artifact",
+          fromId: "artifact:career-note",
+          relationship: "related_to",
+          toKind: "artifact",
+          toId: `artifact:reference-${index}`,
+        });
+      }
+
+      const candidates = store.listRelationshipCandidates(scope);
+      expect(candidates).toHaveLength(120);
+      expect(new Set(candidates.map((candidate) => candidate.claimId)).size).toBe(120);
+      expect(candidates.every((candidate) =>
+        candidate.reviewState === "needs_review" &&
+        candidate.claimQueueState === "pending" &&
+        candidate.sourceRelationshipId === "source-relationship:related-0"
+      )).toBe(true);
+      expect(store.listRelationshipCandidates(scope).map((candidate) => candidate.id))
+        .toEqual(candidates.map((candidate) => candidate.id));
     } finally {
       store.close();
     }
@@ -328,6 +479,7 @@ describe("career evidence review lifecycle", () => {
       expect(changed).toMatchObject({
         toId: "skill:reviewed-retrieval",
         reviewState: "needs_review",
+        claimQueueState: "pending",
         reviewIsCurrent: false,
         linkedRelationshipId: null,
       });

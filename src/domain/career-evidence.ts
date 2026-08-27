@@ -185,6 +185,7 @@ export interface CareerRelationshipCandidate {
   readonly toKind: CareerEntityKind;
   readonly toId: string;
   readonly reviewState: "needs_review" | CareerRelationshipReviewDecision;
+  readonly claimQueueState: "pending" | "approved" | "exhausted";
   readonly lastReview: CareerRelationshipReview | null;
   readonly reviewIsCurrent: boolean;
   readonly linkedRelationshipId: string | null;
