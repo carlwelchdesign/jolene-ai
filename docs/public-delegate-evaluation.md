@@ -154,3 +154,28 @@ the ignored owner-permission file
 therefore still incomplete until Carl reviews that packet. The harness neither
 approves evidence nor enables the service, portfolio adapter, CORS, deployment,
 or launch.
+
+## Owner-only review control
+
+`JOL-CAREER-006H` adds a local review surface at
+[http://127.0.0.1:8421/public-evaluation](http://127.0.0.1:8421/public-evaluation).
+It reads only the schema-validated ignored review packet and is scoped to the
+exact configured private owner and workspace. Missing, malformed, and changed
+packets remain visibly unavailable or stale; they never count as human review.
+
+For every case, Carl records accuracy, grounding, usefulness, and tone as
+`pass`, `needs_changes`, or `fail`, with optional bounded notes. A final
+`approved` decision is valid only when every case dimension passes. The saved
+decision includes the suite ID, model, exact suite hash, reviewer, and review
+timestamp and is written atomically to an ignored owner-only file. If a later
+run changes the suite hash, the prior decision is retained as stale history and
+cannot approve the new packet.
+
+The private Docker API receives the review-packet directory as a read-only
+mount. The Slack process does not receive that mount, and the decision stays in
+the private data volume. Neither packet nor decision enters public delegate
+state, private SQLite, Slack, Obsidian, or audit logs.
+
+This screen has no provider-run, send, evidence-edit, integration, deployment,
+or launch control. Human approval of a representative output packet remains
+only one input to `JOL-CAREER-006`; it is not publication or deployment approval.

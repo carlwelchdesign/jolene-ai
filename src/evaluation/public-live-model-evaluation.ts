@@ -161,26 +161,35 @@ export interface PublicLiveModelEvaluationReport {
   }[];
 }
 
-export interface PublicLiveModelReviewPacket {
-  readonly suiteVersion: "1.0.0";
-  readonly suiteId: string;
-  readonly suiteHash: string;
-  readonly model: string;
-  readonly generatedAt: string;
-  readonly humanReview: "required";
-  readonly cases: readonly {
-    readonly id: string;
-    readonly question: string;
-    readonly mode: "model" | "deterministic" | "fallback";
-    readonly answer: string;
-    readonly evidence: readonly {
-      readonly evidenceId: string;
-      readonly claimText: string;
-      readonly limitations: readonly string[];
-      readonly citationTitle: string;
-    }[];
-  }[];
-}
+export const publicLiveModelReviewPacketSchema = z.object({
+  suiteVersion: z.literal("1.0.0"),
+  suiteId: z.string().regex(/^public-live-model:[a-z0-9][a-z0-9-]{2,80}$/),
+  suiteHash: z.string().regex(/^[a-f0-9]{64}$/),
+  model: z.string().trim().min(1).max(120),
+  generatedAt: z.string().datetime({ offset: true }),
+  humanReview: z.literal("required"),
+  cases: z.array(z.object({
+    id: z.string().regex(/^live:[a-z0-9][a-z0-9-]{2,80}$/),
+    question: z.string().trim().min(1).max(800),
+    mode: z.enum(["model", "deterministic", "fallback"]),
+    answer: z.string().trim().min(1).max(4_000),
+    evidence: z.array(z.object({
+      evidenceId: evidenceIdSchema,
+      claimText: z.string().trim().min(1).max(4_000),
+      limitations: z.array(z.string().trim().min(1).max(2_000)).max(8),
+      citationTitle: z.string().trim().min(1).max(240),
+    }).strict()).max(5),
+  }).strict()).min(2).max(20).superRefine((cases, context) => {
+    const ids = cases.map((item) => item.id);
+    if (new Set(ids).size !== ids.length) {
+      context.addIssue({ code: "custom", message: "Review case IDs must be unique." });
+    }
+  }),
+}).strict();
+
+export type PublicLiveModelReviewPacket = z.infer<
+  typeof publicLiveModelReviewPacketSchema
+>;
 
 export interface PublicLiveModelEvaluationResult {
   readonly report: PublicLiveModelEvaluationReport;

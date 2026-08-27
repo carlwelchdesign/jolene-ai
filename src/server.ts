@@ -9,6 +9,12 @@ import { ActionProposalPolicyError } from "./application/action-approval-service
 import { CareerEvidenceScopeError } from "./application/career-evidence-service.js";
 import { ContactIntentReviewScopeError } from "./application/contact-intent-review-service.js";
 import {
+  PublicLiveModelReviewConflictError,
+  PublicLiveModelReviewIncompleteError,
+  PublicLiveModelReviewScopeError,
+  PublicLiveModelReviewUnavailableError,
+} from "./application/public-live-model-review-service.js";
+import {
   ActionApprovalExpiredError,
   ActionPayloadMismatchError,
   ActionProposalConflictError,
@@ -137,6 +143,11 @@ async function handleRequest(
     return;
   }
 
+  if (request.method === "GET" && url.pathname === "/public-evaluation") {
+    sendAsset(response, memoryReviewAssets.publicEvaluationHtml);
+    return;
+  }
+
   if (request.method === "GET" && url.pathname === "/contact-review.css") {
     sendAsset(response, memoryReviewAssets.contactCss);
     return;
@@ -144,6 +155,16 @@ async function handleRequest(
 
   if (request.method === "GET" && url.pathname === "/contact-review.js") {
     sendAsset(response, memoryReviewAssets.contactJavascript);
+    return;
+  }
+
+  if (request.method === "GET" && url.pathname === "/public-evaluation-review.css") {
+    sendAsset(response, memoryReviewAssets.publicEvaluationCss);
+    return;
+  }
+
+  if (request.method === "GET" && url.pathname === "/public-evaluation-review.js") {
+    sendAsset(response, memoryReviewAssets.publicEvaluationJavascript);
     return;
   }
 
@@ -443,6 +464,30 @@ async function handleRequest(
     return;
   }
 
+  if (request.method === "GET" && url.pathname === "/v1/public-live-model-review/scope") {
+    sendJson(response, 200, application.publicLiveModelReview.scope());
+    return;
+  }
+
+  if (request.method === "GET" && url.pathname === "/v1/public-live-model-review") {
+    sendJson(
+      response,
+      200,
+      await application.publicLiveModelReview.get(scopeFrom(url)),
+    );
+    return;
+  }
+
+  if (request.method === "POST" && url.pathname === "/v1/public-live-model-review/decision") {
+    assertSameOrigin(request.headers);
+    sendJson(
+      response,
+      200,
+      await application.publicLiveModelReview.submit(await readJson(request)),
+    );
+    return;
+  }
+
   const contactReviewMatch = url.pathname.match(
     /^\/v1\/contact-intents\/([^/]+)\/review$/,
   );
@@ -702,6 +747,24 @@ function handleError(error: unknown, response: ServerResponse): void {
 
   if (error instanceof ContactIntentReviewScopeError) {
     sendJson(response, 403, { error: "contact_scope_not_permitted" });
+    return;
+  }
+
+  if (error instanceof PublicLiveModelReviewScopeError) {
+    sendJson(response, 403, { error: "public_live_review_scope_not_permitted" });
+    return;
+  }
+
+  if (error instanceof PublicLiveModelReviewUnavailableError) {
+    sendJson(response, 503, { error: "public_live_review_unavailable" });
+    return;
+  }
+
+  if (
+    error instanceof PublicLiveModelReviewConflictError ||
+    error instanceof PublicLiveModelReviewIncompleteError
+  ) {
+    sendJson(response, 409, { error: "public_live_review_conflict" });
     return;
   }
 

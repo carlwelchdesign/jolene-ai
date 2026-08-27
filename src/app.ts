@@ -5,6 +5,7 @@ import { OpenAIJoleneRunner } from "./agent/agent-runner.js";
 import { ActionApprovalService } from "./application/action-approval-service.js";
 import { CareerEvidenceService } from "./application/career-evidence-service.js";
 import { ContactIntentReviewService } from "./application/contact-intent-review-service.js";
+import { PublicLiveModelReviewService } from "./application/public-live-model-review-service.js";
 import { CareerRetrievalService } from "./application/career-retrieval-service.js";
 import { JoleneService } from "./application/jolene-service.js";
 import { KnowledgeAuditService } from "./application/knowledge-audit-service.js";
@@ -35,6 +36,7 @@ import { SqliteCareerRetrievalIndex } from "./persistence/sqlite-career-retrieva
 import { SqliteKnowledgeAccessStore } from "./persistence/sqlite-knowledge-access-store.js";
 import { SqlitePersonalWorkflowStore } from "./persistence/sqlite-personal-workflow-store.js";
 import { SqliteWorkContextStore } from "./persistence/sqlite-work-context-store.js";
+import { FilePublicLiveModelReviewStore } from "./persistence/file-public-live-model-review-store.js";
 import { LocalWatchedProjectInspector } from "./projects/local-watched-project-inspector.js";
 import { FilePublicContactIntentQueue } from "./public/public-contact-intent-queue.js";
 
@@ -47,6 +49,7 @@ export interface JoleneApplication {
   readonly careerEvidence: CareerEvidenceService;
   readonly careerRetrieval: CareerRetrievalService;
   readonly contactIntents: ContactIntentReviewService;
+  readonly publicLiveModelReview: PublicLiveModelReviewService;
   readonly workflows: PersonalWorkflowService;
   readonly watchedProjects: WatchedProjectService;
   readonly health: () => {
@@ -144,6 +147,13 @@ export async function createApplication(
     }),
     careerRetrieval,
     contactIntents: new ContactIntentReviewService(contactQueue, ownerScope),
+    publicLiveModelReview: new PublicLiveModelReviewService(
+      new FilePublicLiveModelReviewStore({
+        packetPath: config.publicLiveReviewPacketPath,
+        decisionPath: config.publicLiveReviewDecisionPath,
+      }),
+      ownerScope,
+    ),
     workflows: new PersonalWorkflowService(personalWorkflowStore, workStore),
     watchedProjects,
     health: () => ({

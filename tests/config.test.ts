@@ -10,6 +10,12 @@ describe("private runtime configuration", () => {
     );
 
     expect(config.careerEmbeddingsEnabled).toBe(false);
+    expect(config.publicLiveReviewPacketPath).toBe(
+      "/tmp/jolene-config-test/.jolene/evaluations/public-live-model-review.json",
+    );
+    expect(config.publicLiveReviewDecisionPath).toBe(
+      "/tmp/jolene-config-test/.jolene/evaluations/public-live-model-decision.json",
+    );
   });
 
   it("requires an exact explicit opt-in for career embeddings", () => {
