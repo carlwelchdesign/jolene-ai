@@ -15,8 +15,18 @@ import { OpenAIPublicAnswerGenerator } from "./public/openai-public-answer-gener
 import {
   FilePublicModelRequestBudget,
 } from "./public/public-model-request-budget.js";
+import {
+  buildPublicReadinessSnapshot,
+  createPublicOperationsServer,
+} from "./public/public-operations-server.js";
+import {
+  InMemoryPublicOperationalTelemetry,
+} from "./public/public-operational-telemetry.js";
+import { closePublicServers } from "./public/public-server-lifecycle.js";
 
 const config = loadPublicDelegateConfig();
+const artifactSource = new FilePublicArtifactSource(config.artifactPath);
+const telemetry = new InMemoryPublicOperationalTelemetry();
 const modelBudget = config.answerMode === "openai"
   ? new FilePublicModelRequestBudget({
       filePath: config.openaiBudgetPath,
@@ -50,28 +60,59 @@ const contactIntents = new FilePublicContactIntentQueue({
   maxEntries: config.contactQueueMaxEntries,
   retentionMilliseconds: config.contactRetentionDays * 24 * 60 * 60 * 1_000,
 });
-if (config.enabled) await contactIntents.initialize();
+let contactQueueAvailable = true;
+if (config.enabled) {
+  await contactIntents.initialize().catch(() => {
+    contactQueueAvailable = false;
+    process.stderr.write(
+      "Jolene public contact queue is unavailable; contact staging is disabled.\n",
+    );
+  });
+}
 const audits = new FilePublicAuditLedger({
   filePath: config.auditPath,
   maxEntries: config.auditMaxEntries,
   retentionMilliseconds: config.auditRetentionDays * 24 * 60 * 60 * 1_000,
 });
+let auditAvailable = true;
 await audits.initialize().catch(() => {
+  auditAvailable = false;
   process.stderr.write(
     "Jolene public audit ledger is unavailable; public responses remain isolated.\n",
   );
 });
 const server = createPublicDelegateServer({
   enabled: config.enabled,
-  artifacts: new FilePublicArtifactSource(config.artifactPath),
+  artifacts: artifactSource,
   answers,
   jobFit: new DeterministicPublicJobFitService(),
   contactIntents,
   audits,
+  telemetry,
   admissions: new FixedWindowPublicRequestAdmission({
     requestsPerWindow: config.requestsPerMinute,
     maxConcurrentRequests: config.maxConcurrentRequests,
   }),
+});
+const operationsServer = createPublicOperationsServer({
+  telemetry,
+  readiness: async () => {
+    const publicEvidenceReady = await artifactSource.read()
+      .then((artifact) => Boolean(artifact))
+      .catch(() => false);
+    return buildPublicReadinessSnapshot({
+      checkedAt: new Date(),
+      delegateEnabled: config.enabled,
+      publicEvidenceReady,
+      contactIntentQueueReady: contactQueueAvailable,
+      auditLedgerReady: auditAvailable,
+      modelRequestBudget: config.answerMode === "deterministic"
+        ? "not_required"
+        : modelBudgetAvailable
+          ? "ready"
+          : "unavailable",
+    });
+  },
 });
 
 server.listen(config.port, config.host, () => {
@@ -79,10 +120,19 @@ server.listen(config.port, config.host, () => {
     `Jolene public delegate is listening at http://${config.host}:${config.port}\n`,
   );
 });
+operationsServer.listen(config.operationsPort, config.operationsHost, () => {
+  process.stdout.write(
+    `Jolene public operations is listening at http://${config.operationsHost}:${config.operationsPort}\n`,
+  );
+});
 
+let shuttingDown = false;
 for (const signal of ["SIGINT", "SIGTERM"] as const) {
-  process.on(signal, () => {
-    server.close(() => process.exit(0));
+  process.on(signal, async () => {
+    if (shuttingDown) return;
+    shuttingDown = true;
+    const result = await closePublicServers([server, operationsServer]);
+    process.exit(result.forced ? 1 : 0);
   });
 }
 

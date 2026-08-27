@@ -10,6 +10,11 @@ const publicEnvSchema = z.object({
     .default("127.0.0.1"),
   JOLENE_PUBLIC_CONTAINER_MODE: z.enum(["true", "false"]).default("false"),
   JOLENE_PUBLIC_PORT: z.coerce.number().int().min(1).max(65_535).default(8431),
+  JOLENE_PUBLIC_OPERATIONS_HOST: z
+    .enum(["127.0.0.1", "::1", "localhost", "0.0.0.0"])
+    .default("127.0.0.1"),
+  JOLENE_PUBLIC_OPERATIONS_PORT: z.coerce.number().int().min(1).max(65_535)
+    .default(8432),
   JOLENE_PUBLIC_ARTIFACT_PATH: z
     .string()
     .trim()
@@ -57,6 +62,23 @@ const publicEnvSchema = z.object({
       message: "0.0.0.0 is allowed only inside the isolated public container.",
     });
   }
+  if (
+    environment.JOLENE_PUBLIC_OPERATIONS_HOST === "0.0.0.0" &&
+    environment.JOLENE_PUBLIC_CONTAINER_MODE !== "true"
+  ) {
+    context.addIssue({
+      code: "custom",
+      path: ["JOLENE_PUBLIC_OPERATIONS_HOST"],
+      message: "0.0.0.0 is allowed only inside the isolated public container.",
+    });
+  }
+  if (environment.JOLENE_PUBLIC_PORT === environment.JOLENE_PUBLIC_OPERATIONS_PORT) {
+    context.addIssue({
+      code: "custom",
+      path: ["JOLENE_PUBLIC_OPERATIONS_PORT"],
+      message: "The public and operations listeners require different ports.",
+    });
+  }
   if (environment.JOLENE_PUBLIC_ANSWER_MODE === "openai" && !environment.OPENAI_API_KEY) {
     context.addIssue({
       code: "custom",
@@ -70,6 +92,8 @@ export interface PublicDelegateConfig {
   readonly enabled: boolean;
   readonly host: string;
   readonly port: number;
+  readonly operationsHost: string;
+  readonly operationsPort: number;
   readonly artifactPath: string;
   readonly contactQueuePath: string;
   readonly contactRetentionDays: number;
@@ -103,6 +127,8 @@ export function parsePublicDelegateConfig(
     enabled: parsed.JOLENE_PUBLIC_ENABLED === "true",
     host: parsed.JOLENE_PUBLIC_HOST,
     port: parsed.JOLENE_PUBLIC_PORT,
+    operationsHost: parsed.JOLENE_PUBLIC_OPERATIONS_HOST,
+    operationsPort: parsed.JOLENE_PUBLIC_OPERATIONS_PORT,
     artifactPath: path.resolve(
       process.cwd(),
       parsed.JOLENE_PUBLIC_ARTIFACT_PATH,

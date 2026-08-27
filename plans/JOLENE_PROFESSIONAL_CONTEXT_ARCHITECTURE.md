@@ -2,7 +2,7 @@
 
 **Date:** 2026-08-26
 
-**Status:** Docker API, governed career ingestion, private hybrid retrieval, durable owner-reviewed conflict registry with loopback visual review, public export, loopback manifest/answer/job-fit/contact-staging/admission/audit/egress-disclosure boundaries, disabled-by-default grounded answer synthesis, private contact review, explicit unresolved public-evidence conflict policy, offline response/lifecycle/red-team/contact/conflict evaluation, and an owner-only live-model review control implemented; authorized live-provider execution, completed human review, full evaluation, and deployment remain pending
+**Status:** Docker API, governed career ingestion, private hybrid retrieval, durable owner-reviewed conflict registry with loopback visual review, public export, loopback manifest/answer/job-fit/contact-staging/admission/audit/egress-disclosure boundaries, a separate private readiness/aggregate-metrics plane, disabled-by-default grounded answer synthesis, private contact review, explicit unresolved public-evidence conflict policy, offline response/lifecycle/red-team/contact/conflict evaluation, and an owner-only live-model review control implemented; authorized live-provider execution, completed human review, production aggregation/alerting, full evaluation, and deployment remain pending
 
 ## Product outcome
 
@@ -31,6 +31,7 @@ chatbot.
 | Durable private memory | Implemented through explicit proposals and approval |
 | Public portfolio evidence boundary | Versioned deny-by-default export plus isolated loopback contracts and disabled-by-default grounded OpenAI answer synthesis implemented; portfolio integration and deployment remain disabled |
 | Docker | Private API and Slack plus the isolated public delegate run as separate healthy local containers; production deployment remains pending |
+| Public operations | Separate loopback-only listener provides strict liveness, component readiness, aggregate fixed-dimension request counts, latency buckets, and bounded two-listener shutdown; no operations port is host-published |
 | Career evidence registry | Implemented with 38 approved active sources and 143 approved active claims: 41 public-artifact eligible and 102 private-Jolene only |
 | Portfolio candidate migration | Implemented; 26 sources, 41 active claims, and 57 relationships imported with zero public-approved claims |
 | Obsidian career ingestion | Implemented for the explicit `01 Career & Job Search` allowlist; 11 notes, 81 active private claims, 106 relationships, zero public-approved claims |

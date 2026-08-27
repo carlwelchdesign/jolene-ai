@@ -49,6 +49,7 @@ export const publicAuditEventSchema = z.object({
     "contact_queue_unavailable",
     "public_evidence_unavailable",
     "response_blocked",
+    "request_aborted",
   ]),
   durationMs: z.number().int().min(0).max(60_000),
   corpusVersion: z.string().regex(/^career:[a-f0-9]{64}$/).optional(),
