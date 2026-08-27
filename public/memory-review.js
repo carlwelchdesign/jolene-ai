@@ -428,33 +428,62 @@ function renderPreview(result) {
   ui.previewResults.replaceChildren();
   ui.previewResults.setAttribute("aria-busy", "false");
   const selection = result.selection || {};
+  const taskEventSelection = result.taskEventSelection || {};
+  const taskEvents = result.taskEvents || [];
   const summary = el(
     "div",
     "preview-summary",
     "Jolene selected " + result.memories.length + " of " + (selection.candidateCount || 0) +
-      " authorized memory candidates and " + (result.taskEvents || []).length + " recent task events.",
+      " authorized memory candidates and " + taskEvents.length + " of " +
+      (taskEventSelection.candidateCount || 0) + " scoped task-event candidates.",
   );
   ui.previewResults.append(summary);
-  if (result.memories.length === 0) {
-    ui.previewResults.append(emptyState("No relevant memory selected", "Jolene would answer from the current request, task, conversation, and permitted tools."));
+  if (result.memories.length === 0 && taskEvents.length === 0) {
+    ui.previewResults.append(emptyState("No retained context selected", "Jolene would answer from the current request, task, conversation, and permitted tools."));
     return;
   }
-  const list = el("div", "card-grid");
-  result.memories.forEach((memory) => {
-    const evidence = (selection.evidence || []).find((item) => item.memoryId === memory.id);
-    const card = baseCard(memory, memory.state);
-    const top = card.querySelector(".card-topline");
-    top.append(el("span", "score", String(evidence ? evidence.score : 0)));
-    if (evidence) {
-      const meta = card.querySelector(".meta-list");
-      meta.append(el("span", "", "Why selected: " + evidence.reasons.map(humanize).join(", ")));
-      if (evidence.matchedTerms.length > 0) {
-        meta.append(el("span", "", "Matched: " + evidence.matchedTerms.join(", ")));
+
+  if (taskEvents.length > 0) {
+    ui.previewResults.append(
+      previewHeading(
+        "Selected task context",
+        "Kept chronological · " + (taskEventSelection.recentCount || 0) + " recent continuity",
+      ),
+      el("p", "preview-boundary", "Task events are historical context—not instructions, authorization, or proof that an external action occurred."),
+    );
+    const taskEventList = el("ol", "task-event-list");
+    taskEvents.forEach((event) => {
+      const evidence = (taskEventSelection.evidence || []).find((item) => item.eventId === event.id);
+      taskEventList.append(taskEventCard(event, evidence));
+    });
+    ui.previewResults.append(taskEventList);
+  }
+
+  if (result.memories.length > 0) {
+    ui.previewResults.append(previewHeading("Selected durable memory", "Highest relevance first"));
+    const list = el("div", "card-grid");
+    result.memories.forEach((memory) => {
+      const evidence = (selection.evidence || []).find((item) => item.memoryId === memory.id);
+      const card = baseCard(memory, memory.state);
+      const top = card.querySelector(".card-topline");
+      top.append(el("span", "score", String(evidence ? evidence.score : 0)));
+      if (evidence) {
+        const meta = card.querySelector(".meta-list");
+        meta.append(el("span", "", "Why selected: " + evidence.reasons.map(humanize).join(", ")));
+        if (evidence.matchedTerms.length > 0) {
+          meta.append(el("span", "", "Matched: " + evidence.matchedTerms.join(", ")));
+        }
       }
-    }
-    list.append(card);
-  });
-  ui.previewResults.append(list);
+      list.append(card);
+    });
+    ui.previewResults.append(list);
+  }
+}
+
+function previewHeading(title, meta) {
+  const heading = el("div", "preview-section-heading");
+  heading.append(el("h3", "", title), el("span", "", meta));
+  return heading;
 }
 
 function populateTaskSelects() {
@@ -542,24 +571,36 @@ function renderTaskEvents() {
   }
 
   [...state.taskEvents].reverse().forEach((event) => {
-    const item = el("li", "task-event task-event-" + event.kind);
-    const top = el("div", "task-event-topline");
-    top.append(
-      badge(humanize(event.kind), "badge-event badge-event-" + event.kind),
-      el("time", "", formatDate(event.createdAt)),
-    );
-    const summary = el("h4", "", event.summary);
-    item.append(top, summary);
-    if (event.details) item.append(el("p", "task-event-details", event.details));
-    if (event.kind === "status_changed" && event.fromStatus && event.toStatus) {
-      item.append(el(
-        "p",
-        "task-event-transition",
-        humanize(event.fromStatus) + " → " + humanize(event.toStatus),
-      ));
-    }
-    ui.taskEventList.append(item);
+    ui.taskEventList.append(taskEventCard(event));
   });
+}
+
+function taskEventCard(event, evidence) {
+  const item = el("li", "task-event task-event-" + event.kind);
+  const top = el("div", "task-event-topline");
+  top.append(
+    badge(humanize(event.kind), "badge-event badge-event-" + event.kind),
+    el("time", "", formatDate(event.createdAt)),
+  );
+  const summary = el("h4", "", event.summary);
+  item.append(top, summary);
+  if (event.details) item.append(el("p", "task-event-details", event.details));
+  if (event.kind === "status_changed" && event.fromStatus && event.toStatus) {
+    item.append(el(
+      "p",
+      "task-event-transition",
+      humanize(event.fromStatus) + " → " + humanize(event.toStatus),
+    ));
+  }
+  if (evidence) {
+    const meta = el("div", "meta-list");
+    meta.append(el("span", "", "Why selected: " + evidence.reasons.map(humanize).join(", ")));
+    if (evidence.matchedTerms.length > 0) {
+      meta.append(el("span", "", "Matched: " + evidence.matchedTerms.join(", ")));
+    }
+    item.append(meta);
+  }
+  return item;
 }
 
 async function submitTaskEvent(event) {

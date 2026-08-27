@@ -31,8 +31,10 @@ authorization for any remotely exposed deployment.
 
 - Chat history remains isolated by actor, workspace, channel, and thread.
 - A chat request may include a task UUID. Jolene loads that task only when it belongs to the same actor and workspace.
-- The selected private task contributes at most 20 recent chronological task
-  events by default. Events from other tasks never enter that context.
+- The selected private task contributes at most 20 chronological task events by
+  default. Deterministic selection reserves recent continuity and can recover
+  older events whose summary or details match the current request. Events from
+  other tasks never enter that context.
 - Private chat receives approved global memories plus approved memories linked to that task.
 - Shared channels receive no task or durable personal-memory context.
 - Restricted memory must be linked to the selected task.
@@ -172,9 +174,26 @@ Each record reports `active`, `expired`, `superseded`, or `forgotten` state. Non
 }
 ```
 
-This read-only endpoint returns the exact task, recent task events, and memories
-Jolene would authorize, plus deterministic selection evidence: candidate count,
-normalized query terms, score, matched terms, and selection reasons.
+This read-only endpoint returns the exact task, selected task events, and
+memories Jolene would authorize, plus deterministic selection evidence:
+candidate count, normalized query terms, score, matched terms, and selection
+reasons.
+
+Task-event selection uses `deterministic_lexical_v1`. With a request query, it
+reserves roughly one third of the event limit for the newest continuity window,
+selects older summary matches ahead of detail-only matches, fills any remaining
+capacity from newest events, and restores chronological order before returning
+context. A one-event query preview selects the strongest relevant event instead
+of reserving an impossible second continuity slot. Score ties use event recency
+and then stable event ID. Without usable query terms, selection is purely the
+bounded recent chronological window.
+
+The task-event candidate window is the newest 64 records or eight times the
+requested event limit, whichever is larger, capped at 500. Recall Preview shows
+the candidate count, reserved recent-continuity count, matched terms, and
+reasons such as `summary_term_match`, `details_term_match`,
+`recent_continuity`, or `recency_fallback`. These are retrieval explanations,
+not evidence that an external action occurred.
 
 The `deterministic_lexical_v1` strategy scores current-request matches most strongly, then task-term matches and selected-task scope. Standing rules and preferences retain small baseline scores because they may apply across requests. Global project decisions and corrected facts with no request or task relevance are excluded. Ties use newest-first ordering and then stable memory ID ordering.
 
@@ -202,8 +221,12 @@ This explicit destructive operation removes the retained content from both the d
 ## Current limitations
 
 - There is no bulk retention manager or automatic compaction workflow yet.
-- The task timeline is a local review and context-entry surface; it does not
-  search, rank, edit, or delete historical events.
+- The Task timeline remains a chronological local review and context-entry
+  surface; relevance selection occurs only when building private request
+  context and does not edit or delete historical events.
+- Task-event relevance is deterministic lexical matching; related events that
+  use entirely different vocabulary may be missed outside the reserved recent
+  window.
 - The graphical review interface is a local-pilot surface without production authentication.
 - Ranking is deterministic lexical matching, not embedding or model-based semantic similarity; meaningfully related records that use entirely different vocabulary may be missed.
 - Only the bounded authorized candidate window is ranked; an older relevant record outside that window may be missed until a future index-backed retriever is added.

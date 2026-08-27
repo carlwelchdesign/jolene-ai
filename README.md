@@ -20,8 +20,8 @@ The first runnable slice provides:
 - durable work tasks, scoped task-event timelines, and explicit
   approve-or-reject memory proposals;
 - durable personal-work workflows with exact steps, evidence, and human review;
-- private task context containing bounded recent task events plus only approved,
-  actor-scoped durable memories;
+- private task context containing a bounded chronological blend of recent and
+  request-relevant task events plus only approved, actor-scoped durable memories;
 - memory sensitivity gates, expiration, reviewed correction, and explicit forgetting;
 - deterministic request-aware memory ranking with inspectable selection evidence;
 - a local Memory Review screen for explicit approval, correction, recall preview,
@@ -98,8 +98,10 @@ Prerequisite: Node.js 22 or newer.
    Task timeline tab can switch between scoped tasks and record factual
    progress, evidence, decisions, blockers, or next actions. Timeline entries
    remain historical context; recording one does not authorize or prove an
-   external action. The page uses the same local actor/workspace boundary as
-   the API and is not an authenticated production administration surface.
+   external action. Recall preview shows which recent or query-relevant task
+   events would enter private context and the deterministic reasons they were
+   selected. The page uses the same local actor/workspace boundary as the API
+   and is not an authenticated production administration surface.
 
    Open [http://127.0.0.1:8421/approvals](http://127.0.0.1:8421/approvals)
    to stage and review exact external-message proposals. Approval remains local

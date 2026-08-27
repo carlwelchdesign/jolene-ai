@@ -171,6 +171,59 @@ describe("durable task events", () => {
     }
   });
 
+  it("recalls older relevant task evidence while preserving recent continuity", () => {
+    const store = new SqliteWorkContextStore(":memory:");
+    try {
+      const selected = createTask(store);
+      store.appendTaskEvent({
+        taskId: selected.id,
+        actorId: "carl",
+        workspaceId: "personal",
+        kind: "evidence",
+        summary: "Logic host validation passed for the release build.",
+      });
+      for (let index = 1; index <= 5; index += 1) {
+        store.appendTaskEvent({
+          taskId: selected.id,
+          actorId: "carl",
+          workspaceId: "personal",
+          kind: "progress",
+          summary: `Routine follow-up ${index}.`,
+        });
+      }
+
+      const context = store.loadAuthorizedContext({
+        actorId: "carl",
+        workspaceId: "personal",
+        taskId: selected.id,
+        memoryLimit: 24,
+        taskEventLimit: 3,
+        includeSensitiveMemory: false,
+        query: "What release validation evidence do we have?",
+      });
+
+      expect(context.taskEvents.map((event) => event.summary)).toEqual([
+        "Logic host validation passed for the release build.",
+        "Routine follow-up 4.",
+        "Routine follow-up 5.",
+      ]);
+      expect(context.taskEventSelection).toMatchObject({
+        strategy: "deterministic_lexical_v1",
+        candidateCount: 7,
+        recentCount: 1,
+        queryTerms: expect.arrayContaining(["release", "validation", "evidence"]),
+        evidence: expect.arrayContaining([
+          expect.objectContaining({
+            eventId: context.taskEvents[0]?.id,
+            reasons: ["summary_term_match"],
+          }),
+        ]),
+      });
+    } finally {
+      store.close();
+    }
+  });
+
   it("rejects automatic event kinds and oversized content at the application boundary", () => {
     const store = new SqliteWorkContextStore(":memory:");
     const service = new WorkContextService(store);

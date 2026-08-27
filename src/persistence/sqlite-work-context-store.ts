@@ -5,6 +5,7 @@ import path from "node:path";
 import Database from "better-sqlite3";
 
 import { rankMemories } from "../domain/memory-ranking.js";
+import { rankTaskEvents } from "../domain/task-event-ranking.js";
 import {
   DurableMemoryConflictError,
   DurableMemoryNotFoundError,
@@ -485,17 +486,34 @@ export class SqliteWorkContextStore implements WorkContextStore {
       task,
       limit: memoryLimit,
     });
-
-    return {
-      task,
-      taskEvents: task
-        ? this.listTaskEvents(
+    const taskEventLimit = Math.max(1, Math.min(request.taskEventLimit ?? 20, 100));
+    const taskEventCandidateLimit = Math.min(
+      500,
+      Math.max(taskEventLimit * 8, 64),
+    );
+    const rankedTaskEvents = rankTaskEvents({
+      candidates: task
+        ? this.listTaskEventCandidates(
             task.id,
             request.actorId,
             request.workspaceId,
-            request.taskEventLimit ?? 20,
+            taskEventCandidateLimit,
           )
         : [],
+      query: request.query,
+      limit: taskEventLimit,
+    });
+
+    return {
+      task,
+      taskEvents: rankedTaskEvents.events,
+      taskEventSelection: {
+        strategy: "deterministic_lexical_v1",
+        candidateCount: rankedTaskEvents.candidateCount,
+        recentCount: rankedTaskEvents.recentCount,
+        queryTerms: rankedTaskEvents.queryTerms,
+        evidence: rankedTaskEvents.evidence,
+      },
       memories: ranked.memories,
       selection: {
         strategy: "deterministic_lexical_v1",
@@ -524,6 +542,28 @@ export class SqliteWorkContextStore implements WorkContextStore {
 
     if (!row) throw new WorkTaskNotFoundError();
     return mapTask(row);
+  }
+
+  private listTaskEventCandidates(
+    taskId: string,
+    actorId: string,
+    workspaceId: string,
+    limit: number,
+  ): readonly TaskEvent[] {
+    const rows = this.database
+      .prepare(
+        `SELECT * FROM task_events
+         WHERE task_id = ? AND actor_id = ? AND workspace_id = ?
+         ORDER BY sequence_id DESC
+         LIMIT ?`,
+      )
+      .all(
+        taskId,
+        actorId,
+        workspaceId,
+        Math.max(1, Math.min(limit, 500)),
+      ) as TaskEventRow[];
+    return rows.reverse().map(mapTaskEvent);
   }
 
   private requireProposal(

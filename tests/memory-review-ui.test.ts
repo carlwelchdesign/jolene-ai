@@ -37,6 +37,8 @@ describe("memory review interface", () => {
     expect(javascript).toContain('"rejected"');
     expect(javascript).toContain('"/forget"');
     expect(javascript).toContain('"/events"');
+    expect(javascript).toContain("taskEventSelection");
+    expect(javascript).toContain("recent continuity");
     expect(javascript).toContain("textContent");
     expect(html).toContain("not instructions, authorization, or proof");
   });
