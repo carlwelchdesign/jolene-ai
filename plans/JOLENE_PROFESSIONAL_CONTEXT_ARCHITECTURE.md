@@ -516,15 +516,18 @@ launch remain separate tickets and gates.
   loopback Career Evidence screen. It requires exact proposition review and
   explicit confirmation, preserves conflict history, and performs no semantic
   inference.
+- `JOL-CAREER-006I` expands five precommitted hostile-request families through
+  four deterministic transforms. The v1.4 baseline has 61 expanded cases and
+  25 precommitted 100% blocker metrics, including 20 mutation variants that
+  use the production deterministic answer service without a provider call.
 - Build fixtures for supported, adjacent, missing, stale, confidential, and
   adversarial questions.
 - Require citation correctness, maturity preservation, privacy refusal, and
   factual invariance across personality modes.
 - Manually review representative answers before public launch.
 
-`JOL-CAREER-006A/B/C/D/E/F` do not complete this ticket. Live-model
-quality/semantic-entailment/latency/token/cost measurement; additional adaptive
-red-team coverage; portfolio citation and
+`JOL-CAREER-006A/B/C/D/E/F/G/H/I` do not complete this ticket. Live-model
+quality/semantic-entailment/latency/token/cost evidence; portfolio citation and
 accessibility verification; representative human review; production controls;
 and launch approval remain open.
 

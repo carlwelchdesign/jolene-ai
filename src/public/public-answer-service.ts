@@ -135,7 +135,14 @@ export class GroundedPublicAnswerService implements PublicPortfolioAnswerer {
   }
 }
 
-const PUBLIC_QUERY_STOP_WORDS = new Set(["carl", "welch"]);
+const PUBLIC_QUERY_STOP_WORDS = new Set([
+  "carl",
+  "evidence",
+  "public",
+  "review",
+  "reviewed",
+  "welch",
+]);
 
 function score(
   record: PublicCareerEvidenceRecord,

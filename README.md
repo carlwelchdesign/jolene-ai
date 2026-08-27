@@ -77,7 +77,8 @@ The first runnable slice provides:
 - a versioned offline public-delegate evaluation harness with precommitted
   blocker thresholds, deterministic/fake-provider fixtures, real
   evidence-lifecycle/export and contact-staging scenarios, red-team egress
-  checks, explicit semantic-conflict refusal, privacy-safe machine reports, and
+  checks, explicit semantic-conflict refusal, deterministic adversarial mutation
+  matrices, privacy-safe machine reports, and
   nonzero hard-gate failure exits;
 - a private owner-scoped Contacts screen that can review or delete staged
   requests and save inert local reply drafts without sending anything;
