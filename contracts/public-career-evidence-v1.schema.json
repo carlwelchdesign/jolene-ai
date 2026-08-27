@@ -69,6 +69,25 @@
           }
         }
       }
+    },
+    "conflicts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["conflictId", "evidenceIds", "status"],
+        "properties": {
+          "conflictId": { "type": "string", "pattern": "^conflict:[a-f0-9]{16}$" },
+          "evidenceIds": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 5,
+            "uniqueItems": true,
+            "items": { "type": "string", "pattern": "^career:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }
+          },
+          "status": { "const": "unresolved" }
+        }
+      }
     }
   }
 }

@@ -64,8 +64,15 @@ export class DeterministicPublicAnswerService
       )
       .slice(0, PUBLIC_PORTFOLIO_ANSWER_LIMITS.responseItems)
       .map((candidate) => candidate.record);
+    const conflict = artifact.conflicts.find((candidate) =>
+      candidate.evidenceIds.some((evidenceId) =>
+        selected.some((record) => record.evidenceId === evidenceId)
+      )
+    );
 
-    return selected.length === 0
+    return conflict
+      ? conflictResponse(artifact, request)
+      : selected.length === 0
       ? noEvidenceResponse(artifact, request)
       : supportedResponse(artifact, request, selected);
   }
@@ -163,6 +170,27 @@ function noEvidenceResponse(
     limitations: ["No matching public-approved evidence was available."],
     suggestedFollowUpQuestions: [
       "Would you like to ask about a published project, professional role, skill, or contribution?",
+    ],
+    corpusVersion: artifact.manifest.corpusVersion,
+    ...(request.sessionToken ? { sessionToken: request.sessionToken } : {}),
+  });
+}
+
+function conflictResponse(
+  artifact: PublicCareerEvidenceArtifact,
+  request: PortfolioAnswerRequest,
+): PortfolioAnswerResponse {
+  return portfolioAnswerResponseSchema.parse({
+    schemaVersion: PUBLIC_CAREER_EVIDENCE_SCHEMA_VERSION,
+    answer:
+      "The reviewed public evidence contains an unresolved conflict, so it does not support a reliable answer yet.",
+    claims: [],
+    citations: [],
+    limitations: [
+      "Conflicting public evidence requires Carl's review before it can support an answer.",
+    ],
+    suggestedFollowUpQuestions: [
+      "Would you like to ask about a different published project, role, skill, or contribution?",
     ],
     corpusVersion: artifact.manifest.corpusVersion,
     ...(request.sessionToken ? { sessionToken: request.sessionToken } : {}),

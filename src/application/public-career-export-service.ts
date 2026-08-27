@@ -9,6 +9,7 @@ import {
   publicCareerEvidenceDigest,
   publicCareerEvidenceArtifactSchema,
   type PublicCareerEvidenceArtifact,
+  type PublicCareerEvidenceConflict,
   type PublicCareerEvidenceRecord,
 } from "../domain/public-career-evidence.js";
 import {
@@ -36,6 +37,7 @@ export class PublicCareerExportService {
   generate(
     scope: CareerEvidenceScope,
     previous: PublicCareerEvidenceArtifact | null = null,
+    conflicts: readonly PublicCareerEvidenceConflict[] = [],
   ): PublicCareerEvidenceArtifact {
     const generatedAt = this.now().toISOString();
     const sources = new Map(
@@ -68,6 +70,7 @@ export class PublicCareerExportService {
     const digest = publicCareerEvidenceDigest({
       evidence,
       revokedEvidenceIds,
+      conflicts,
     });
     const reviewedAt = latestReview(evidence) ?? generatedAt;
 
@@ -82,6 +85,7 @@ export class PublicCareerExportService {
         revokedEvidenceIds,
       },
       evidence,
+      conflicts,
     });
   }
 

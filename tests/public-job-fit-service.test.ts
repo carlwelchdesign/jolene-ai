@@ -7,6 +7,7 @@ import {
 import { DeterministicPublicJobFitService } from "../src/public/public-job-fit-service.js";
 import {
   createPublicEvidenceArtifact,
+  createPublicEvidenceConflict,
   createPublicEvidenceRecord,
 } from "./helpers/public-evidence-fixture.js";
 
@@ -93,6 +94,27 @@ describe("DeterministicPublicJobFitService", () => {
     expect(result.citations).toEqual([]);
     expect(result.sessionToken).toBe("opaque-session-token");
     expect(result.corpusVersion).toBe(artifact.manifest.corpusVersion);
+  });
+
+  it("excludes explicitly conflicted evidence from requirement support", () => {
+    const evidence = [
+      createPublicEvidenceRecord(1, { text: "Carl led the Atlas migration." }),
+      createPublicEvidenceRecord(2, { text: "Carl observed the Atlas migration." }),
+      createPublicEvidenceRecord(3, { text: "Carl built React interfaces." }),
+    ];
+    const artifact = createPublicEvidenceArtifact(evidence, [
+      createPublicEvidenceConflict(evidence.slice(0, 2).map((record) => record.evidenceId)),
+    ]);
+
+    const result = service.compare(artifact, {
+      jobDescription: "Atlas migration leadership.\nReact interfaces.",
+    });
+
+    expect(result.requirements[0]?.assessment).toBe("unknown");
+    expect(result.requirements[0]?.evidenceIds).toEqual([]);
+    expect(result.requirements[1]?.assessment).toBe("direct");
+    expect(result.requirements[1]?.evidenceIds).toEqual([evidence[2]?.evidenceId]);
+    expect(result.caveats.join(" ")).toContain("unresolved conflict groups");
   });
 
   it("strictly validates description, session, and extra-field limits", () => {

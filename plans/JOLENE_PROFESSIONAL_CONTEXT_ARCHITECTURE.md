@@ -2,7 +2,7 @@
 
 **Date:** 2026-08-26
 
-**Status:** Docker API, governed career ingestion, private hybrid retrieval, public export, loopback manifest/answer/job-fit/contact-staging/admission/audit/egress-disclosure boundaries, disabled-by-default grounded answer synthesis, private contact review, and an offline response/lifecycle/red-team/contact evaluation baseline implemented; public integration, full evaluation, and deployment pending
+**Status:** Docker API, governed career ingestion, private hybrid retrieval, public export, loopback manifest/answer/job-fit/contact-staging/admission/audit/egress-disclosure boundaries, disabled-by-default grounded answer synthesis, private contact review, explicit unresolved public-evidence conflict policy, and an offline response/lifecycle/red-team/contact/conflict evaluation baseline implemented; public integration, full evaluation, and deployment pending
 
 ## Product outcome
 
@@ -457,15 +457,20 @@ deployment path.
 - `JOL-CAREER-006C` adds 17 impersonation, abuse, exfiltration, unsafe-egress,
   consent, validation, secret-rejection, and real contact-staging cases. The
   v1.2 baseline now has 38 cases and 23 precommitted 100% blocker metrics.
+- `JOL-CAREER-006D` adds canonical unresolved-conflict groups over active
+  evidence IDs plus deterministic answer refusal, grounded-provider bypass,
+  and job-fit exclusion. The v1.3 baseline now has 41 cases and 24
+  precommitted 100% blocker metrics.
 - Build fixtures for supported, adjacent, missing, stale, confidential, and
   adversarial questions.
 - Require citation correctness, maturity preservation, privacy refusal, and
   factual invariance across personality modes.
 - Manually review representative answers before public launch.
 
-`JOL-CAREER-006A/B/C` do not complete this ticket. Semantic conflict fixtures;
-live-model quality/semantic-entailment/latency/token/cost measurement;
-additional adaptive red-team coverage; portfolio citation and
+`JOL-CAREER-006A/B/C/D` do not complete this ticket. Private conflict
+declaration/resolution workflow; live-model
+quality/semantic-entailment/latency/token/cost measurement; additional adaptive
+red-team coverage; portfolio citation and
 accessibility verification; representative human review; production controls;
 and launch approval remain open.
 
@@ -513,6 +518,24 @@ and launch approval remain open.
   dependency-audit, hard-failure, report-privacy, diff, and secret checks; and
 - arbitrary model-prose entailment, semantic conflicts, live model measurement,
   integration, deployment, human sign-off, and launch authorization remain open.
+
+`JOL-CAREER-006D` verification checkpoint:
+
+- implementation commit: `429d180` (`JOL-CAREER-006D add semantic conflict policy`);
+- canonical v1.3 baseline: 41 of 41 cases and 24 of 24 metrics pass at
+  precommitted 10,000-basis-point blocker thresholds;
+- suite hash:
+  `4828d381bd05d5a49c60a1e6169e2967fd365f58946a6295ada0d61622ca03ed`;
+- conflict groups are explicit, canonical, limited to two through five active
+  evidence IDs, and validated without attempting semantic inference from text;
+- answer requests touching conflicted evidence return no claims or citations,
+  grounded generation is bypassed, and job-fit comparisons exclude conflicted
+  records while retaining unrelated eligible evidence;
+- 44 test files and 281 tests pass on Node 24.18.0, alongside build, Compose,
+  dependency-audit, diff, and focused secret checks; and
+- conflict declaration/resolution UI, arbitrary model-prose entailment, live
+  model measurement, integration, deployment, human sign-off, and launch
+  authorization remain open.
 
 ### JOL-CAREER-007 — Private MCP adapter
 

@@ -15,6 +15,9 @@ export const evidenceStrengthSchema = z.enum([
 export const careerEvidenceIdSchema = z.string().regex(
   /^career:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/,
 );
+export const publicCareerConflictIdSchema = z.string().regex(
+  /^conflict:[a-f0-9]{16}$/,
+);
 export const publicSourceTypeSchema = z.enum([
   "resume",
   "employer_history",
@@ -69,9 +72,32 @@ export const publicCareerEvidenceRecordSchema = z.object({
   }
 });
 
+export const publicCareerEvidenceConflictSchema = z.object({
+  conflictId: publicCareerConflictIdSchema,
+  evidenceIds: z.array(careerEvidenceIdSchema).min(2).max(5).refine(unique, {
+    message: "Conflict evidence IDs must be unique.",
+  }),
+  status: z.literal("unresolved"),
+}).superRefine((conflict, context) => {
+  if (JSON.stringify(conflict.evidenceIds) !==
+      JSON.stringify([...conflict.evidenceIds].sort())) {
+    context.addIssue({
+      code: "custom",
+      message: "Conflict evidence IDs must use stable sorted order.",
+    });
+  }
+  if (conflict.conflictId !== publicCareerConflictId(conflict.evidenceIds)) {
+    context.addIssue({
+      code: "custom",
+      message: "Conflict ID must be derived from its sorted evidence IDs.",
+    });
+  }
+});
+
 export const publicCareerEvidenceArtifactSchema = z.object({
   manifest: publicCareerEvidenceManifestSchema,
   evidence: z.array(publicCareerEvidenceRecordSchema),
+  conflicts: z.array(publicCareerEvidenceConflictSchema).default([]),
 }).superRefine((artifact, context) => {
   const evidenceIds = artifact.evidence.map((record) => record.evidenceId);
   if (new Set(evidenceIds).size !== evidenceIds.length) {
@@ -89,6 +115,31 @@ export const publicCareerEvidenceArtifactSchema = z.object({
       message: "Active and revoked evidence IDs must be disjoint.",
     });
   }
+  const conflictIds = artifact.conflicts.map((conflict) => conflict.conflictId);
+  if (new Set(conflictIds).size !== conflictIds.length) {
+    context.addIssue({ code: "custom", message: "Conflict IDs must be unique." });
+  }
+  if (JSON.stringify(conflictIds) !== JSON.stringify([...conflictIds].sort())) {
+    context.addIssue({
+      code: "custom",
+      message: "Conflict groups must use stable conflict-ID order.",
+    });
+  }
+  const conflictedEvidenceIds = artifact.conflicts.flatMap(
+    (conflict) => conflict.evidenceIds,
+  );
+  if (new Set(conflictedEvidenceIds).size !== conflictedEvidenceIds.length) {
+    context.addIssue({
+      code: "custom",
+      message: "An evidence record may belong to only one unresolved conflict.",
+    });
+  }
+  if (conflictedEvidenceIds.some((id) => !evidenceIds.includes(id))) {
+    context.addIssue({
+      code: "custom",
+      message: "Every conflict evidence ID must resolve to active evidence.",
+    });
+  }
 });
 
 export type PublicCareerEvidenceManifest = z.infer<
@@ -97,6 +148,9 @@ export type PublicCareerEvidenceManifest = z.infer<
 export type PublicCareerEvidenceRecord = z.infer<
   typeof publicCareerEvidenceRecordSchema
 >;
+export type PublicCareerEvidenceConflict = z.infer<
+  typeof publicCareerEvidenceConflictSchema
+>;
 export type PublicCareerEvidenceArtifact = z.infer<
   typeof publicCareerEvidenceArtifactSchema
 >;
@@ -104,14 +158,27 @@ export type PublicCareerEvidenceArtifact = z.infer<
 export function publicCareerEvidenceDigest(input: {
   readonly evidence: readonly PublicCareerEvidenceRecord[];
   readonly revokedEvidenceIds: readonly string[];
+  readonly conflicts?: readonly PublicCareerEvidenceConflict[];
 }): string {
+  const conflicts = input.conflicts ?? [];
   return createHash("sha256")
     .update(JSON.stringify({
       schemaVersion: PUBLIC_CAREER_EVIDENCE_SCHEMA_VERSION,
       evidence: input.evidence,
       revokedEvidenceIds: input.revokedEvidenceIds,
+      ...(conflicts.length > 0 ? { conflicts } : {}),
     }))
     .digest("hex");
+}
+
+export function publicCareerConflictId(
+  evidenceIds: readonly string[],
+): `conflict:${string}` {
+  const digest = createHash("sha256")
+    .update(JSON.stringify([...evidenceIds].sort()))
+    .digest("hex")
+    .slice(0, 16);
+  return `conflict:${digest}`;
 }
 
 function unique(values: readonly string[]): boolean {

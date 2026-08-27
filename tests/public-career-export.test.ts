@@ -10,6 +10,7 @@ import {
   PublicCareerExportService,
 } from "../src/application/public-career-export-service.js";
 import {
+  publicCareerConflictId,
   publicCareerEvidenceArtifactSchema,
 } from "../src/domain/public-career-evidence.js";
 import { SqliteCareerEvidenceStore } from "../src/persistence/sqlite-career-evidence-store.js";
@@ -139,6 +140,60 @@ describe("PublicCareerExportService", () => {
     }
   });
 
+  it("exports explicit unresolved conflicts without inferring them from prose", () => {
+    const store = new SqliteCareerEvidenceStore(":memory:", () => fixedNow);
+    try {
+      const source = createSource(store);
+      const first = createClaim(store, source.id, "Carl led the Atlas project.", "atlas-role-a");
+      const second = createClaim(store, source.id, "Carl advised the Atlas project.", "atlas-role-b");
+      approvePublic(store, source.id, first.id);
+      approvePublic(store, source.id, second.id);
+      const evidenceIds = [`career:${first.id}`, `career:${second.id}`];
+      const conflict = {
+        conflictId: publicCareerConflictId(evidenceIds),
+        evidenceIds,
+        status: "unresolved" as const,
+      };
+
+      const artifact = new PublicCareerExportService(store, () => fixedNow)
+        .generate(scope, null, [conflict]);
+
+      expect(artifact.conflicts).toEqual([conflict]);
+      expect(artifact.evidence).toHaveLength(2);
+      expect(artifact.manifest.corpusHash).toBe(
+        `sha256:${hash({
+          schemaVersion: "1.0.0",
+          evidence: artifact.evidence,
+          revokedEvidenceIds: [],
+          conflicts: [conflict],
+        })}`,
+      );
+    } finally {
+      store.close();
+    }
+  });
+
+  it("rejects conflict declarations that do not resolve to active evidence", () => {
+    const store = new SqliteCareerEvidenceStore(":memory:", () => fixedNow);
+    try {
+      const unknownIds = [
+        "career:00000000-0000-4000-8000-000000000001",
+        "career:00000000-0000-4000-8000-000000000002",
+      ];
+      expect(() => new PublicCareerExportService(store, () => fixedNow).generate(
+        scope,
+        null,
+        [{
+          conflictId: publicCareerConflictId(unknownIds),
+          evidenceIds: unknownIds,
+          status: "unresolved",
+        }],
+      )).toThrow("Every conflict evidence ID must resolve to active evidence.");
+    } finally {
+      store.close();
+    }
+  });
+
   it("carries prior exported IDs into revocations when current visibility is withdrawn", () => {
     const store = new SqliteCareerEvidenceStore(":memory:", () => fixedNow);
     try {
@@ -253,11 +308,12 @@ function createClaim(
   store: SqliteCareerEvidenceStore,
   sourceId: string,
   proposition: string,
+  logicalKey = "summary",
 ) {
   return store.upsertDraftClaim({
     ...scope,
     sourceId,
-    logicalKey: "summary",
+    logicalKey,
     title: "Sample claim",
     proposition,
     contribution: "Carl's reviewed contribution.",
