@@ -53,4 +53,30 @@ describe("private runtime configuration", () => {
       SLACK_OWNER_USER_ID: "",
     }).slackOwnerUserId).toBeUndefined();
   });
+
+  it("keeps private briefings disabled by default and validates owner schedules", () => {
+    const disabled = parseConfig(
+      { OPENAI_API_KEY: "test-key" },
+      "/tmp/jolene-config-test",
+    );
+    expect(disabled.privateBriefing).toMatchObject({
+      enabled: false,
+      destination: "slack_owner_dm",
+      frequency: "daily",
+      timeZone: "America/Los_Angeles",
+    });
+    const enabled = parseConfig({
+      OPENAI_API_KEY: "test-key",
+      JOLENE_PRIVATE_BRIEFING: JSON.stringify({ enabled: true, frequency: "weekly", dayOfWeek: 1 }),
+    });
+    expect(enabled.privateBriefing).toMatchObject({ enabled: true, frequency: "weekly", dayOfWeek: 1 });
+    expect(() => parseConfig({
+      OPENAI_API_KEY: "test-key",
+      JOLENE_PRIVATE_BRIEFING: JSON.stringify({ enabled: true, frequency: "weekly", dayOfWeek: null }),
+    })).toThrow(/day of week/i);
+    expect(() => parseConfig({
+      OPENAI_API_KEY: "test-key",
+      JOLENE_PRIVATE_BRIEFING: JSON.stringify({ timeZone: "Mars/Olympus" }),
+    })).toThrow(/IANA zone/i);
+  });
 });

@@ -13,13 +13,13 @@
     <a class="skip-link" href="#main">Skip to workflows</a>
 
     <header class="topbar">
-      <a class="brand" href="/workflows" aria-label="Jolene Workflows home">
+      <a class="brand" href="/work" aria-label="Jolene Work home">
         <span class="brand-mark" aria-hidden="true">J</span>
         <span><strong>Jolene</strong><small>Control Center</small></span>
       </a>
       <div class="header-tools">
         <nav class="product-nav" aria-label="Jolene control center">
-          <a href="/workflows" aria-current="page">Work</a>
+          <a href="/work" aria-current="page">Work</a>
           <a href="/projects">Projects</a>
           <a href="/career-evidence">Evidence</a>
           <a href="/public-evaluation">Evaluation</a>
@@ -51,6 +51,22 @@
       </aside>
 
       <div class="notice" id="page-notice" role="status" aria-live="polite" hidden></div>
+
+      <section class="panel briefing-panel" aria-labelledby="briefing-title">
+        <div class="section-heading briefing-heading">
+          <div><p class="eyebrow">Owner-only Slack DM</p><h2 id="briefing-title">Private morning briefing</h2></div>
+          <div class="briefing-actions">
+            <span class="briefing-status" id="briefing-status">Loading</span>
+            <button class="button button-secondary button-small" id="briefing-toggle" type="button" disabled>Pause</button>
+          </div>
+        </div>
+        <p class="supporting-copy briefing-boundary">This deterministic summary is sent only to Carl’s configured Slack member ID. It excludes task objectives, approval payloads, vault content, paths, secrets, and raw errors.</p>
+        <dl class="briefing-facts" id="briefing-facts" aria-live="polite"></dl>
+        <div class="briefing-columns">
+          <div><h3>Current preview</h3><pre id="briefing-preview">Loading private briefing…</pre></div>
+          <div><h3>Delivery history</h3><ol class="briefing-history" id="briefing-history"></ol></div>
+        </div>
+      </section>
 
       <section class="summary-grid workflow-summary" aria-label="Workflow summary">
         <article><span>In progress</span><strong id="count-active">0</strong></article>

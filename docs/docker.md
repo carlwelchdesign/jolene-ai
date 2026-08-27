@@ -1,14 +1,16 @@
 # Docker runtime
 
-Jolene runs as two processes built from one image:
+Jolene runs as three processes built from one image:
 
 - `jolene-api` serves the local control center and HTTP API on `127.0.0.1:8421`;
-- `jolene-slack` runs the existing Slack Socket Mode adapter.
+- `jolene-slack` runs the existing Slack Socket Mode adapter and drains durable
+  owner-only Project Watch alerts and private briefings; and
+- `jolene-monitor` performs bounded read-only Project Watch checks.
 
 The API image healthcheck is disabled for the Slack worker because that process
 maintains a Socket Mode connection and does not serve an HTTP port.
 
-Both processes share one durable Docker volume for SQLite and receive the
+All three processes share one durable Docker volume for SQLite and receive the
 Obsidian vault as a read-only bind mount. The image contains no `.env` files,
 database, vault content, or local project configuration.
 
@@ -31,10 +33,10 @@ that container-safe path.
 ```bash
 docker compose up --build -d
 docker compose ps
-docker compose logs -f jolene-api jolene-slack
+docker compose logs -f jolene-api jolene-slack jolene-monitor
 ```
 
-Open `http://127.0.0.1:8421/projects` or request
+Open `http://127.0.0.1:8421/work` or `http://127.0.0.1:8421/projects`, or request
 `http://127.0.0.1:8421/health`.
 
 If port 8421 is already occupied by a local Jolene process:

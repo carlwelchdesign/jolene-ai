@@ -17,6 +17,9 @@ The first runnable slice provides:
 - a CLI and an HTTP API with `/health` and `/v1/chat`;
 - a Slack Socket Mode adapter for owner-only DMs and explicit channel mentions;
 - a durable Slack delivery ledger that retries failed posts without another model call;
+- deterministic daily or weekly private-owner briefings with a durable SQLite
+  schedule/outbox, bounded retries and history, exact-owner Slack delivery, and
+  local pause/resume controls;
 - durable work tasks, scoped task-event timelines, and explicit
   approve-or-reject memory proposals;
 - durable personal-work workflows with exact steps, evidence, and human review;
@@ -69,7 +72,7 @@ The first runnable slice provides:
   requests and save inert local reply drafts without sending anything;
 - contract tests that make no live OpenAI requests.
 
-The Slack adapter is active for a local pilot, with live mention-and-reply behavior verified. Scheduled work, specialist agents, client-AI workflows, always-on hosting, and voice remain later gates.
+The Slack adapter is active for a local pilot, with live mention-and-reply behavior verified. One bounded private-owner briefing schedule and Project Watch monitoring are implemented locally. General scheduled work, specialist agents, client-AI workflows, always-on hosting, and voice remain later gates.
 
 The conversational Obsidian bridge still uses deterministic lexical retrieval.
 The governed career registry now has a separate private hybrid retrieval path,
