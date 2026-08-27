@@ -611,6 +611,43 @@ describe("PortfolioEvidenceImporter", () => {
       store.close();
     }
   });
+
+  it("imports a corrected recommendation relationship into the replacement claim", () => {
+    const store = new SqliteCareerEvidenceStore(":memory:", () => fixedNow);
+    try {
+      const importer = new PortfolioEvidenceImporter(store);
+      const original = portfolioImportInput();
+      const originalSnapshot = original.snapshot as ReturnType<typeof portfolioSnapshot>;
+      originalSnapshot.recommendations[0]!.name = "David Allen";
+      originalSnapshot.recommendations[0]!.date = "June 23, 2011";
+      originalSnapshot.recommendations[0]!.relationship = "David was Carl’s client";
+      originalSnapshot.recommendations[0]!.quote =
+        "Carl did great work for us in web design and multimedia production. Super good guy to work with.";
+      importer.import(original);
+
+      const corrected = portfolioImportInput();
+      const correctedSnapshot = corrected.snapshot as ReturnType<typeof portfolioSnapshot>;
+      correctedSnapshot.recommendations[0]!.name = "David Allen";
+      correctedSnapshot.recommendations[0]!.date = "June 23, 2011";
+      correctedSnapshot.recommendations[0]!.relationship = "David was Carl’s employer";
+      correctedSnapshot.recommendations[0]!.quote =
+        "Carl did great work for us in web design and multimedia production. Super good guy to work with.";
+      importer.import(corrected);
+
+      const claims = store.listClaims(scope).filter((claim) =>
+        claim.sourceId === "portfolio:recommendation:david-allen:june-23-2011"
+      );
+      expect(claims).toHaveLength(2);
+      expect(claims.find((claim) => claim.state === "active")?.contribution).toContain(
+        "David was Carl’s employer",
+      );
+      expect(claims.find((claim) => claim.state === "superseded")?.contribution).toContain(
+        "David was Carl’s client",
+      );
+    } finally {
+      store.close();
+    }
+  });
 });
 
 function createSource(
@@ -708,7 +745,12 @@ function portfolioSnapshot() {
       summary: "A bounded evidence product.",
       stack: ["TypeScript"],
       architecture: [{ id: "api", label: "API", detail: "Typed boundary" }],
-      evidence: ["Uses reviewed evidence."],
+      evidence: [{
+        id: "portfolio:claim:sample:reviewed-evidence",
+        text: "Uses reviewed evidence.",
+        reviewState: "approved",
+        publicApproved: true,
+      }],
       boundaries: ["Not an autonomous decision maker."],
       repositoryUrl: "https://github.com/example/sample",
     }],

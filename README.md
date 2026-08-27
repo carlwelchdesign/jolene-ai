@@ -284,7 +284,7 @@ Prerequisite: Node.js 22 or newer.
 
    The default output is ignored at
    `.jolene/exports/public-career-evidence.json`. The current approved artifact
-   contains 41 public claims and zero revocations under schema `1.0.0`. This
+   contains 41 public claims and one supersession revocation under schema `1.0.0`. This
    command does not publish, deploy, or start a public endpoint.
 
    The isolated local manifest boundary is documented in

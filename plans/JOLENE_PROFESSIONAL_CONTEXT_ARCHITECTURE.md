@@ -36,6 +36,12 @@ chatbot.
 | Portfolio candidate migration | Implemented; 26 sources, 41 active claims, and 57 relationships imported with zero public-approved claims |
 | Obsidian career ingestion | Implemented for the explicit `01 Career & Job Search` allowlist; 11 notes, 81 active private claims, 106 relationships, zero public-approved claims |
 
+Correction checkpoint (2026-08-27): David Allen was Carl's employer, not his
+client. The prior reviewed claim is retained as superseded history, the corrected
+replacement is public-approved, and corpus
+`career:fd223e58149ded86f5d3083678b496239b66cdf3b458b740dd637ddb8a27549e`
+contains 41 public claims plus one supersession revocation.
+
 ## System boundary
 
 ```text

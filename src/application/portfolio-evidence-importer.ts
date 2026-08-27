@@ -14,6 +14,13 @@ const architectureNodeSchema = z.object({
   detail: z.string().trim().min(1),
 });
 
+const projectEvidenceSchema = z.union([
+  z.string().trim().min(1),
+  z.object({
+    text: z.string().trim().min(1),
+  }).passthrough(),
+]);
+
 const projectSchema = z.object({
   slug: z.string().trim().min(1),
   name: z.string().trim().min(1),
@@ -22,7 +29,7 @@ const projectSchema = z.object({
   summary: z.string().trim().min(1),
   stack: z.array(z.string().trim().min(1)),
   architecture: z.array(architectureNodeSchema),
-  evidence: z.array(z.string().trim().min(1)),
+  evidence: z.array(projectEvidenceSchema),
   boundaries: z.array(z.string().trim().min(1)),
   repositoryUrl: z.string().url(),
   liveUrl: z.string().url().optional(),
@@ -119,7 +126,8 @@ export class PortfolioEvidenceImporter {
         contribution,
         maturity: maturityFromStatus(project.status),
       });
-      project.evidence.forEach((proposition, index) => {
+      project.evidence.forEach((evidence, index) => {
+        const proposition = typeof evidence === "string" ? evidence : evidence.text;
         this.store.upsertDraftClaim({
           ...scope,
           sourceId,
