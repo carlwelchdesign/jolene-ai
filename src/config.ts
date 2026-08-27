@@ -28,6 +28,8 @@ const envSchema = z.object({
     .default(".jolene/evaluations/public-live-model-review.json"),
   JOLENE_PUBLIC_LIVE_REVIEW_DECISION_PATH: z.string().trim().min(1)
     .default(".jolene/evaluations/public-live-model-decision.json"),
+  JOLENE_PERSONALITY_RESEARCH_DECISION_PATH: z.string().trim().min(1)
+    .default(".jolene/personality/research-decision.json"),
   JOLENE_OBSIDIAN_VAULT_ROOT: z.string().trim().optional(),
   JOLENE_OBSIDIAN_ALLOWLIST: z.string().default(""),
   JOLENE_CAREER_OBSIDIAN_ALLOWLIST: z.string().default(""),
@@ -57,6 +59,7 @@ export interface AppConfig {
   readonly contactQueueMaxEntries: number;
   readonly publicLiveReviewPacketPath: string;
   readonly publicLiveReviewDecisionPath: string;
+  readonly personalityResearchDecisionPath: string;
   readonly vaultRoot: string | undefined;
   readonly vaultAllowlist: readonly string[];
   readonly careerVaultAllowlist: readonly string[];
@@ -128,6 +131,10 @@ export function parseConfig(
     publicLiveReviewDecisionPath: path.resolve(
       workingDirectory,
       env.JOLENE_PUBLIC_LIVE_REVIEW_DECISION_PATH,
+    ),
+    personalityResearchDecisionPath: path.resolve(
+      workingDirectory,
+      env.JOLENE_PERSONALITY_RESEARCH_DECISION_PATH,
     ),
     vaultRoot: emptyToUndefined(env.JOLENE_OBSIDIAN_VAULT_ROOT),
     vaultAllowlist: env.JOLENE_OBSIDIAN_ALLOWLIST.split(",")

@@ -16,6 +16,10 @@ import {
   PublicLiveModelReviewUnavailableError,
 } from "./application/public-live-model-review-service.js";
 import {
+  PersonalityResearchReviewConflictError,
+  PersonalityResearchReviewScopeError,
+} from "./application/personality-research-review-service.js";
+import {
   ActionApprovalExpiredError,
   ActionPayloadMismatchError,
   ActionProposalConflictError,
@@ -163,6 +167,21 @@ async function handleRequest(
 
   if (request.method === "GET" && url.pathname === "/client-ai") {
     sendAsset(response, memoryReviewAssets.clientAiHtml);
+    return;
+  }
+
+  if (request.method === "GET" && url.pathname === "/personality-review") {
+    sendAsset(response, memoryReviewAssets.personalityHtml);
+    return;
+  }
+
+  if (request.method === "GET" && url.pathname === "/personality-review.css") {
+    sendAsset(response, memoryReviewAssets.personalityCss);
+    return;
+  }
+
+  if (request.method === "GET" && url.pathname === "/personality-review.js") {
+    sendAsset(response, memoryReviewAssets.personalityJavascript);
     return;
   }
 
@@ -636,6 +655,26 @@ async function handleRequest(
     return;
   }
 
+  if (request.method === "GET" && url.pathname === "/v1/personality-research-review/scope") {
+    sendJson(response, 200, application.personalityResearchReview.scope());
+    return;
+  }
+
+  if (request.method === "GET" && url.pathname === "/v1/personality-research-review") {
+    sendJson(response, 200, await application.personalityResearchReview.get(scopeFrom(url)));
+    return;
+  }
+
+  if (request.method === "POST" && url.pathname === "/v1/personality-research-review/decision") {
+    assertSameOrigin(request.headers);
+    sendJson(
+      response,
+      200,
+      await application.personalityResearchReview.submit(await readJson(request)),
+    );
+    return;
+  }
+
   const contactReviewMatch = url.pathname.match(
     /^\/v1\/contact-intents\/([^/]+)\/review$/,
   );
@@ -919,6 +958,11 @@ function handleError(error: unknown, response: ServerResponse): void {
     return;
   }
 
+  if (error instanceof PersonalityResearchReviewScopeError) {
+    sendJson(response, 403, { error: "personality_review_scope_not_permitted" });
+    return;
+  }
+
   if (error instanceof PublicLiveModelReviewUnavailableError) {
     sendJson(response, 503, { error: "public_live_review_unavailable" });
     return;
@@ -929,6 +973,11 @@ function handleError(error: unknown, response: ServerResponse): void {
     error instanceof PublicLiveModelReviewIncompleteError
   ) {
     sendJson(response, 409, { error: "public_live_review_conflict" });
+    return;
+  }
+
+  if (error instanceof PersonalityResearchReviewConflictError) {
+    sendJson(response, 409, { error: "personality_review_conflict" });
     return;
   }
 

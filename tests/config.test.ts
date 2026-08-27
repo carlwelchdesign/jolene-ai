@@ -20,6 +20,9 @@ describe("private runtime configuration", () => {
     expect(config.publicLiveReviewDecisionPath).toBe(
       "/tmp/jolene-config-test/.jolene/evaluations/public-live-model-decision.json",
     );
+    expect(config.personalityResearchDecisionPath).toBe(
+      "/tmp/jolene-config-test/.jolene/personality/research-decision.json",
+    );
   });
 
   it("requires an exact explicit opt-in for career embeddings", () => {

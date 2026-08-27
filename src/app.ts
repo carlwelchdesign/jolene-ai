@@ -11,6 +11,8 @@ import { CareerEvidenceService } from "./application/career-evidence-service.js"
 import { ClientAiTaskPacketService } from "./application/client-ai-task-packet-service.js";
 import { ContactIntentReviewService } from "./application/contact-intent-review-service.js";
 import { PublicLiveModelReviewService } from "./application/public-live-model-review-service.js";
+import { PersonalityResearchReviewService } from
+  "./application/personality-research-review-service.js";
 import { CareerRetrievalService } from "./application/career-retrieval-service.js";
 import { JoleneService } from "./application/jolene-service.js";
 import { KnowledgeAuditService } from "./application/knowledge-audit-service.js";
@@ -51,6 +53,9 @@ import { SqlitePrivateBriefingStore } from "./persistence/sqlite-private-briefin
 import { SqliteWorkContextStore } from "./persistence/sqlite-work-context-store.js";
 import { SqliteWatchedProjectMonitorStore } from "./persistence/sqlite-watched-project-monitor-store.js";
 import { FilePublicLiveModelReviewStore } from "./persistence/file-public-live-model-review-store.js";
+import { FilePersonalityResearchReviewStore } from
+  "./persistence/file-personality-research-review-store.js";
+import { loadPersonalityResearch } from "./personality/personality-research.js";
 import { LocalWatchedProjectInspector } from "./projects/local-watched-project-inspector.js";
 import { FilePublicContactIntentQueue } from "./public/public-contact-intent-queue.js";
 
@@ -66,6 +71,7 @@ export interface JoleneApplication {
   readonly clientAiPackets: ClientAiTaskPacketService;
   readonly contactIntents: ContactIntentReviewService;
   readonly publicLiveModelReview: PublicLiveModelReviewService;
+  readonly personalityResearchReview: PersonalityResearchReviewService;
   readonly workflows: PersonalWorkflowService;
   readonly watchedProjects: WatchedProjectService;
   readonly projectMonitoring: WatchedProjectMonitorService;
@@ -205,6 +211,13 @@ export async function createApplication(
         packetPath: config.publicLiveReviewPacketPath,
         decisionPath: config.publicLiveReviewDecisionPath,
       }),
+      ownerScope,
+    ),
+    personalityResearchReview: new PersonalityResearchReviewService(
+      () => loadPersonalityResearch(process.cwd()),
+      new FilePersonalityResearchReviewStore(
+        config.personalityResearchDecisionPath,
+      ),
       ownerScope,
     ),
     workflows: new PersonalWorkflowService(personalWorkflowStore, workStore),

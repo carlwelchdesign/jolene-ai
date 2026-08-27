@@ -520,6 +520,16 @@ independent reviewer reconciled seven segments (28%). The reconciliation correct
 material readings and separated observed behavior, inferred traits, and designed adaptations.
 Carl's relevance confirmation remains open, so the Phase 1 product gate is not closed.
 
+**2026-08-26 review-control update:** The local owner control center now exposes a
+read-only personality-research review at `/personality-review`. It validates the existing
+rights-conscious artifacts, shows sources, paraphrased observations, pilot hypotheses,
+rejected patterns, and review coverage, then binds Carl's relevance decision to SHA-256
+fingerprints for all five reviewed files. A changed artifact makes an earlier decision stale.
+The decision is local, owner-scoped, same-origin protected, and durable across restarts.
+It does not change the runtime prompt or behavior, authorize impersonation or voice work,
+approve public deployment, or close any later implementation or rights gate. Carl has not
+made the relevance decision merely because this control exists.
+
 ### Phase 2 — Full coding and character graph
 
 **Target:** 2026-09-04
@@ -734,7 +744,7 @@ Recommended defaults:
 | 2026-08-25 | Research before personality implementation | Carl | Approved by request |
 | 2026-08-25 | Save the canonical plan in this repository and capture durable decisions in Obsidian | Carl | Approved by request |
 | 2026-08-25 | Jolene works for Carl first; client and client-AI coordination is secondary | Carl | Approved by request |
-| Pending | Approve central proposition, behavioral defaults, and Phase 1 relevance | Carl | Open; technical corpus pilot is reviewable |
+| Pending | Approve central proposition, behavioral defaults, and Phase 1 relevance | Carl | Open; exact research snapshot is reviewable at `/personality-review` |
 | Pending | Begin personality implementation | Carl | Not authorized by this plan |
 | Pending | Explore an original voice | Carl | Not authorized by this plan |
 

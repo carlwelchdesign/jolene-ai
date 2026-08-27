@@ -21,6 +21,7 @@ x-jolene-runtime: &jolene-runtime
     JOLENE_CAREER_EMBEDDINGS_ENABLED: ${JOLENE_CAREER_EMBEDDINGS_ENABLED:-false}
     JOLENE_PUBLIC_LIVE_REVIEW_PACKET_PATH: /review/public-live-model-review.json
     JOLENE_PUBLIC_LIVE_REVIEW_DECISION_PATH: /data/evaluations/public-live-model-decision.json
+    JOLENE_PERSONALITY_RESEARCH_DECISION_PATH: /data/personality/research-decision.json
   volumes:
     - jolene-data:/data
     - type: bind

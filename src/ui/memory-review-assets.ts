@@ -31,6 +31,9 @@ export interface MemoryReviewAssets {
   readonly clientAiHtml: MemoryReviewAsset;
   readonly clientAiCss: MemoryReviewAsset;
   readonly clientAiJavascript: MemoryReviewAsset;
+  readonly personalityHtml: MemoryReviewAsset;
+  readonly personalityCss: MemoryReviewAsset;
+  readonly personalityJavascript: MemoryReviewAsset;
 }
 
 const SECURITY_HEADERS = {
@@ -166,6 +169,21 @@ export function loadMemoryReviewAssets(
     clientAiJavascript: loadAsset(
       publicDirectory,
       "client-ai-review.js",
+      "text/javascript; charset=utf-8",
+    ),
+    personalityHtml: loadAsset(
+      publicDirectory,
+      "personality-review.html",
+      "text/html; charset=utf-8",
+    ),
+    personalityCss: loadAsset(
+      publicDirectory,
+      "personality-review.css",
+      "text/css; charset=utf-8",
+    ),
+    personalityJavascript: loadAsset(
+      publicDirectory,
+      "personality-review.js",
       "text/javascript; charset=utf-8",
     ),
   };
