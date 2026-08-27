@@ -2,7 +2,7 @@
 
 **Date:** 2026-08-26
 
-**Status:** Docker API, governed career ingestion, private hybrid retrieval, public export, loopback manifest/deterministic-answer/job-fit/contact-staging/admission/audit/egress-disclosure boundaries, and private contact review implemented; model-backed public answers and deployment pending
+**Status:** Docker API, governed career ingestion, private hybrid retrieval, public export, loopback manifest/answer/job-fit/contact-staging/admission/audit/egress-disclosure boundaries, disabled-by-default grounded answer synthesis, and private contact review implemented; public integration, evaluation, and deployment pending
 
 ## Product outcome
 
@@ -29,7 +29,7 @@ chatbot.
 | MCP | Not implemented |
 | Graph database / GraphRAG | Not implemented |
 | Durable private memory | Implemented through explicit proposals and approval |
-| Public portfolio evidence boundary | Versioned deny-by-default export plus isolated loopback manifest and deterministic evidence-answer contracts implemented; model answers, portfolio integration, and deployment remain disabled |
+| Public portfolio evidence boundary | Versioned deny-by-default export plus isolated loopback contracts and disabled-by-default grounded OpenAI answer synthesis implemented; portfolio integration and deployment remain disabled |
 | Docker | Image and API container verified; Slack operational cutover and production deployment remain pending |
 | Career evidence registry | Implemented with sources, claims, relationships, review freshness, visibility, revocation, and supersession |
 | Portfolio candidate migration | Implemented; 26 sources, 41 active claims, and 57 relationships imported with zero public-approved claims |
@@ -380,13 +380,18 @@ Verification checkpoint:
   `JOL-CAREER-005H`; offline export and runtime egress share one private-data
   policy, and unsafe candidate responses become a generic audited `503` with no
   offending content disclosed.
+- Disabled-by-default grounded OpenAI answer synthesis is implemented in
+  `JOL-CAREER-005I`; deterministic evidence selection precedes the provider,
+  no-evidence requests bypass it, successful output can replace only answer
+  prose, and all provider or validation failures preserve the deterministic
+  response.
 - Integrate the isolated Jolene public service through the portfolio adapter.
 - Preserve the public-evidence-only source boundary.
 - Add production cost ceilings, provider-specific redaction, edge admission, and
   centralized audit monitoring.
 
-`JOL-CAREER-005A/B/C/D/E/F/G/H` do not complete this ticket: there is no
-model-backed answer generation, outbound reply control, authenticated
+`JOL-CAREER-005A/B/C/D/E/F/G/H/I` do not complete this ticket: there is no
+evaluated or production-enabled model answer path, outbound reply control, authenticated
 production owner surface, CORS, public binding, container service, portfolio
 integration, production-grade abuse controls, production audit pipeline, or
 deployment path.
@@ -426,6 +431,19 @@ deployment path.
 - a compiled live server with deliberately unsafe provider output returns only
   `503 public_response_blocked`, emits the fixed audit outcome, and discloses
   none of the injected private-path marker.
+
+`JOL-CAREER-005I` verification checkpoint:
+
+- implementation commit: `ba2946c` (`JOL-CAREER-005I add grounded OpenAI answers`);
+- 43 test files and 270 tests pass on Node 24.18.0, alongside TypeScript
+  validation and the production build;
+- Compose configuration, diff hygiene, secret-pattern scanning, and the
+  production dependency audit pass with zero reported vulnerabilities;
+- compiled fake-provider verification confirms model and exact deterministic
+  fallback paths while excluding the session token and citation link from the
+  provider input; and
+- no live provider request, key copy, public binding, CORS, portfolio
+  integration, merge, or deployment was performed.
 
 ### JOL-CAREER-006 — Evaluation and launch gates
 

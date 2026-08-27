@@ -8,6 +8,7 @@ import { afterEach, describe, expect, it } from "vitest";
 import { FilePublicArtifactSource } from "../src/public/public-artifact-source.js";
 import {
   DeterministicPublicAnswerService,
+  GroundedPublicAnswerService,
   type PublicPortfolioAnswerer,
 } from "../src/public/public-answer-service.js";
 import { DeterministicPublicJobFitService } from "../src/public/public-job-fit-service.js";
@@ -73,6 +74,33 @@ describe("public delegate manifest boundary", () => {
       auditMaxEntries: 5_000,
       requestsPerMinute: 60,
       maxConcurrentRequests: 8,
+      answerMode: "deterministic",
+      openaiModel: "gpt-5.6-terra",
+      openaiTimeoutMilliseconds: 8_000,
+      openaiApiKey: undefined,
+    });
+  });
+
+  it("requires an API key only when OpenAI answer synthesis is selected", () => {
+    expect(parsePublicDelegateConfig({ OPENAI_API_KEY: "" })).toMatchObject({
+      answerMode: "deterministic",
+      openaiApiKey: undefined,
+    });
+    expect(() => parsePublicDelegateConfig({
+      JOLENE_PUBLIC_ANSWER_MODE: "openai",
+      OPENAI_API_KEY: "",
+    })).toThrow();
+
+    expect(parsePublicDelegateConfig({
+      JOLENE_PUBLIC_ANSWER_MODE: "openai",
+      JOLENE_PUBLIC_OPENAI_MODEL: "test-model",
+      JOLENE_PUBLIC_OPENAI_TIMEOUT_MS: "2500",
+      OPENAI_API_KEY: "test-key-not-real",
+    })).toMatchObject({
+      answerMode: "openai",
+      openaiModel: "test-model",
+      openaiTimeoutMilliseconds: 2_500,
+      openaiApiKey: "test-key-not-real",
     });
   });
 
@@ -106,6 +134,9 @@ describe("public delegate manifest boundary", () => {
     })).toThrow();
     expect(() => parsePublicDelegateConfig({
       JOLENE_PUBLIC_AUDIT_MAX_ENTRIES: "10001",
+    })).toThrow();
+    expect(() => parsePublicDelegateConfig({
+      JOLENE_PUBLIC_OPENAI_TIMEOUT_MS: "999",
     })).toThrow();
   });
 
@@ -357,9 +388,12 @@ describe("public delegate manifest boundary", () => {
     const unsafeValue = "/Users/carl/private-career-note.md";
     const baseline = new DeterministicPublicAnswerService();
     const answers: PublicPortfolioAnswerer = {
-      answer: (source, request) => ({
-        ...baseline.answer(source, request),
-        answer: `Unsafe provider output ${unsafeValue}`,
+      execute: (source, request) => ({
+        mode: "model",
+        response: {
+          ...baseline.answer(source, request),
+          answer: `Unsafe provider output ${unsafeValue}`,
+        },
       }),
     };
     const { baseUrl } = await start(await writeArtifact(artifact), {
@@ -388,6 +422,40 @@ describe("public delegate manifest boundary", () => {
       outcome: "response_blocked",
     }]);
     expect(await readFile(auditPath, "utf8")).not.toContain(unsafeValue);
+  });
+
+  it("audits model and fallback answer modes without retaining content", async () => {
+    const artifact = createPublicEvidenceArtifact();
+    const events: PublicAuditRecordInput[] = [];
+    const audits: PublicAuditRecorder = {
+      record: async (event) => { events.push(event); },
+    };
+    const model = await start(await writeArtifact(artifact), {
+      audits,
+      answers: new GroundedPublicAnswerService({
+        generate: async () => "A concise grounded model answer.",
+      }),
+    });
+    const fallback = await start(await writeArtifact(artifact), {
+      audits,
+      answers: new GroundedPublicAnswerService({
+        generate: async () => { throw new Error("provider marker"); },
+      }),
+    });
+
+    for (const baseUrl of [model.baseUrl, fallback.baseUrl]) {
+      expect((await fetch(`${baseUrl}/v1/portfolio/answer`, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ question: "What React systems has Carl built?" }),
+      })).status).toBe(200);
+    }
+
+    expect(events.map((event) => event.outcome)).toEqual([
+      "model_supported",
+      "model_fallback",
+    ]);
+    expect(JSON.stringify(events)).not.toMatch(/concise grounded|provider marker/i);
   });
 
   it.each([
@@ -726,6 +794,7 @@ describe("public delegate manifest boundary", () => {
       "src/public/public-config.ts",
       "src/public/public-artifact-source.ts",
       "src/public/public-answer-service.ts",
+      "src/public/openai-public-answer-generator.ts",
       "src/public/public-job-fit-service.ts",
       "src/public/public-request-admission.ts",
       "src/public/public-contact-intent-queue.ts",
@@ -743,7 +812,6 @@ describe("public delegate manifest boundary", () => {
       "/slack/",
       "sqlite",
       "obsidian",
-      "OPENAI_API_KEY",
     ]) {
       expect(source.toLowerCase()).not.toContain(forbidden.toLowerCase());
     }

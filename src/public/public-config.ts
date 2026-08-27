@@ -30,6 +30,25 @@ const publicEnvSchema = z.object({
     .default(60),
   JOLENE_PUBLIC_MAX_CONCURRENT_REQUESTS: z.coerce.number().int().min(1).max(64)
     .default(8),
+  JOLENE_PUBLIC_ANSWER_MODE: z.enum(["deterministic", "openai"])
+    .default("deterministic"),
+  JOLENE_PUBLIC_OPENAI_MODEL: z.string().trim().min(1).default("gpt-5.6-terra"),
+  JOLENE_PUBLIC_OPENAI_TIMEOUT_MS: z.coerce.number().int().min(1_000).max(30_000)
+    .default(8_000),
+  OPENAI_API_KEY: z.preprocess(
+    (value) => typeof value === "string" && value.trim() === ""
+      ? undefined
+      : value,
+    z.string().trim().min(1).optional(),
+  ),
+}).superRefine((environment, context) => {
+  if (environment.JOLENE_PUBLIC_ANSWER_MODE === "openai" && !environment.OPENAI_API_KEY) {
+    context.addIssue({
+      code: "custom",
+      path: ["OPENAI_API_KEY"],
+      message: "OPENAI_API_KEY is required when public answer mode is openai.",
+    });
+  }
 });
 
 export interface PublicDelegateConfig {
@@ -45,6 +64,10 @@ export interface PublicDelegateConfig {
   readonly auditMaxEntries: number;
   readonly requestsPerMinute: number;
   readonly maxConcurrentRequests: number;
+  readonly answerMode: "deterministic" | "openai";
+  readonly openaiModel: string;
+  readonly openaiTimeoutMilliseconds: number;
+  readonly openaiApiKey: string | undefined;
 }
 
 export function loadPublicDelegateConfig(): PublicDelegateConfig {
@@ -78,5 +101,9 @@ export function parsePublicDelegateConfig(
     auditMaxEntries: parsed.JOLENE_PUBLIC_AUDIT_MAX_ENTRIES,
     requestsPerMinute: parsed.JOLENE_PUBLIC_REQUESTS_PER_MINUTE,
     maxConcurrentRequests: parsed.JOLENE_PUBLIC_MAX_CONCURRENT_REQUESTS,
+    answerMode: parsed.JOLENE_PUBLIC_ANSWER_MODE,
+    openaiModel: parsed.JOLENE_PUBLIC_OPENAI_MODEL,
+    openaiTimeoutMilliseconds: parsed.JOLENE_PUBLIC_OPENAI_TIMEOUT_MS,
+    openaiApiKey: parsed.OPENAI_API_KEY,
   };
 }

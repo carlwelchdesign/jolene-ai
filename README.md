@@ -52,9 +52,12 @@ The first runnable slice provides:
   switch, bounded local admission, and a content-minimizing local audit ledger;
 - a deterministic public-response disclosure guard that replaces unsafe egress
   with a generic fail-closed response before content leaves the process;
+- optional disabled-by-default grounded OpenAI answer synthesis that can change
+  only answer prose, sends only selected public evidence, and falls back exactly
+  to the deterministic response on provider or validation failure;
 - a private owner-scoped Contacts screen that can review or delete staged
   requests and save inert local reply drafts without sending anything;
-- contract tests that do not call OpenAI.
+- contract tests that make no live OpenAI requests.
 
 The Slack adapter is active for a local pilot, with live mention-and-reply behavior verified. Scheduled work, specialist agents, client-AI workflows, always-on hosting, and voice remain later gates.
 
@@ -68,8 +71,9 @@ Job-fit results distinguish unknown public evidence from missing experience and
 are not recommendations or blanket fit scores. Consented contact requests can
 be staged in a separate owner-only, retention-bounded local queue and reviewed
 through the private local service. Reply drafts remain inert in that queue; no
-outbound contact is implemented. Model-generated
-answers, CORS, public hosting, and portfolio integration are not implemented.
+outbound contact is implemented. Model-generated answer synthesis is available
+only as a disabled local evaluation mode; CORS, public hosting, and portfolio
+integration are not implemented.
 MCP interoperability is also not implemented. See the
 [professional context architecture](plans/JOLENE_PROFESSIONAL_CONTEXT_ARCHITECTURE.md).
 
