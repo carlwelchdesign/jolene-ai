@@ -76,6 +76,10 @@ describe("public delegate manifest boundary", () => {
       artifactPath: path.resolve(
         ".jolene/exports/public-career-evidence.json",
       ),
+      artifactSource: "file",
+      artifactUrl: undefined,
+      artifactTimeoutMilliseconds: 5_000,
+      expectedCorpusVersion: undefined,
       contactQueuePath: path.resolve(
         ".jolene/public/contact-intents.json",
       ),
@@ -118,6 +122,32 @@ describe("public delegate manifest boundary", () => {
       openaiTimeoutMilliseconds: 2_500,
       openaiApiKey: "test-key-not-real",
     });
+  });
+
+  it("requires a pinned safe URL for HTTPS artifact mode", () => {
+    expect(() => parsePublicDelegateConfig({
+      JOLENE_PUBLIC_ARTIFACT_SOURCE: "https",
+    })).toThrow();
+    expect(() => parsePublicDelegateConfig({
+      JOLENE_PUBLIC_ARTIFACT_SOURCE: "https",
+      JOLENE_PUBLIC_ARTIFACT_URL: "http://evidence.example.com/artifact.json",
+      JOLENE_PUBLIC_EXPECTED_CORPUS_VERSION: `career:${"a".repeat(64)}`,
+    })).toThrow();
+    expect(parsePublicDelegateConfig({
+      JOLENE_PUBLIC_ARTIFACT_SOURCE: "https",
+      JOLENE_PUBLIC_ARTIFACT_URL: "https://evidence.example.com/artifact.json",
+      JOLENE_PUBLIC_EXPECTED_CORPUS_VERSION: `career:${"a".repeat(64)}`,
+    })).toMatchObject({
+      artifactSource: "https",
+      artifactUrl: "https://evidence.example.com/artifact.json",
+      expectedCorpusVersion: `career:${"a".repeat(64)}`,
+    });
+    expect(parsePublicDelegateConfig({
+      JOLENE_PUBLIC_ARTIFACT_SOURCE: "https",
+      JOLENE_PUBLIC_ARTIFACT_URL: "http://127.0.0.1:9444/artifact.json",
+      JOLENE_PUBLIC_ARTIFACT_ALLOW_LOOPBACK: "true",
+      JOLENE_PUBLIC_EXPECTED_CORPUS_VERSION: `career:${"a".repeat(64)}`,
+    }).artifactUrl).toBe("http://127.0.0.1:9444/artifact.json");
   });
 
   it("requires a strong API token when bearer authentication is selected", () => {

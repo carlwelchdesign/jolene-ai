@@ -905,6 +905,27 @@ and private API/Slack continuity checks pass.
   telemetry/alerts, retention approval, rollback rehearsal, portfolio cutover,
   and explicit public activation remain open.
 
+### JOL-PLATFORM-004 — Managed-container public artifact source
+
+- The public delegate now composes either the existing read-only file source or
+  a provider-neutral HTTPS source for managed containers without local mounts.
+- HTTPS mode accepts only a fixed public resource, sends no credential, bounds
+  time and bytes, forbids redirects and private/reserved destinations, validates
+  the complete frozen artifact and recomputed digest, and requires the exact
+  deployment-pinned corpus version on every read.
+- Missing, unreachable, malformed, oversized, tampered, or drifted artifacts
+  fail closed. The delegate keeps no stale application cache, preserving the
+  revocation boundary at the cost of an explicit production availability
+  dependency on the public artifact host.
+- Node 24 verification passes 86 test files and 500 tests, typecheck,
+  production build, public Compose validation, and a zero-vulnerability
+  production dependency audit. A disposable remote-source rehearsal returned
+  ready operations and passed the authenticated deployment preflight against
+  the exact reviewed 41-claim/zero-revocation corpus.
+- This enables a deployable data path but does not publish the artifact, select
+  a storage provider, deploy the delegate, configure edge controls, activate
+  the portfolio, or authorize launch.
+
 ## Acceptance criteria
 
 - Docker images and build context contain no credentials, databases, vault
