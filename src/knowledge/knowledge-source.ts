@@ -10,7 +10,16 @@ export interface KnowledgeSearchContext {
   readonly eventId: string;
 }
 
+export type KnowledgeNamespace =
+  | "career"
+  | "projects"
+  | "engineering"
+  | "personal"
+  | "sources"
+  | "other";
+
 export interface KnowledgeResult {
+  readonly namespace: KnowledgeNamespace;
   readonly notePath: string;
   readonly heading: string;
   readonly excerpt: string;
