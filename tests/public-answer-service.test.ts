@@ -48,6 +48,35 @@ describe("DeterministicPublicAnswerService", () => {
     );
   });
 
+  it("answers an exact recommendation relationship without unrelated client evidence", () => {
+    const david = createPublicEvidenceRecord(1, {
+      text: "Carl did great work for us in web design and multimedia production. Super good guy to work with.",
+      title: "Recommendation from David Allen",
+      href: "/recommendations",
+      limitations: [
+        "Contribution boundary: Third-party statement attributed to David Allen (David was Carl’s employer); exact wording and publication rights require reconciliation.",
+      ],
+    });
+    const unrelatedClient = createPublicEvidenceRecord(2, {
+      text: "Carl provided our clients with forward-thinking designs.",
+      title: "Recommendation from Another Person",
+      href: "/recommendations",
+      limitations: [
+        "Contribution boundary: Third-party statement attributed to Another Person (Another was Carl’s client); exact wording and publication rights require reconciliation.",
+      ],
+    });
+
+    const result = service.answer(
+      createPublicEvidenceArtifact([unrelatedClient, david]),
+      { question: "What was David Allen’s relationship to Carl?" },
+    );
+
+    expect(result.answer).toContain("David Allen was Carl’s employer.");
+    expect(result.claims).toEqual([david.claim]);
+    expect(result.citations).toEqual([david.citation]);
+    expect(JSON.stringify(result).toLocaleLowerCase("en-US")).not.toContain("client");
+  });
+
   it.each([
     "Why should I hire Carl?",
     "Why shouldn't I hire Carl?",
