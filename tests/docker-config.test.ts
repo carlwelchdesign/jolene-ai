@@ -63,7 +63,12 @@ describe("Docker runtime boundary", () => {
     expect(compose).toContain("JOLENE_PUBLIC_LIVE_REVIEW_DECISION_PATH: /data/evaluations/public-live-model-decision.json");
     expect(compose).toContain("JOLENE_PERSONALITY_RESEARCH_DECISION_PATH: /data/personality/research-decision.json");
     expect(compose).toContain("JOLENE_PERSONALITY_TUNING_DECISION_PATH: /data/personality/tuning-decision.json");
+    expect(compose).toContain("JOLENE_CONVERSATION_QUALITY_PACKET_PATH: /review/conversation-quality-capture.json");
+    expect(compose).toContain("JOLENE_CONVERSATION_QUALITY_DECISION_PATH: /data/evaluations/conversation-quality-decision.json");
     expect(dockerfile).toContain("COPY --chown=node:node research ./research");
+    expect(dockerfile).toContain(
+      "COPY --chown=node:node evaluations/conversational-quality-v1.json ./evaluations/conversational-quality-v1.json",
+    );
     expect(compose).toMatch(
       /jolene-api:\n(?:.*\n)*?\s+source: \.\/\.jolene\/evaluations\n\s+target: \/review\n\s+read_only: true/,
     );
