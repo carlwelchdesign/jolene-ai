@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light">
+    <title>Jolene Client-AI Packets</title>
+    <link rel="stylesheet" href="/memory-review.css">
+    <link rel="stylesheet" href="/client-ai-review.css">
+    <script type="module" src="/client-ai-review.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to client-AI packets</a>
+
+    <header class="topbar">
+      <a class="brand" href="/client-ai" aria-label="Jolene Client-AI Packets home">
+        <span class="brand-mark" aria-hidden="true">J</span>
+        <span><strong>Jolene</strong><small>Control Center</small></span>
+      </a>
+      <div class="header-tools">
+        <nav class="product-nav" aria-label="Jolene control center">
+          <a href="/workflows">Work</a>
+          <a href="/projects">Projects</a>
+          <a href="/career-evidence">Evidence</a>
+          <a href="/public-evaluation">Evaluation</a>
+          <a href="/contacts">Contacts</a>
+          <a href="/memory">Memory</a>
+          <a href="/approvals">Approvals</a>
+          <a href="/client-ai" aria-current="page">Client AI</a>
+        </nav>
+        <div class="scope-button scope-readonly" aria-label="Fixed private owner scope">
+          <span>Private owner scope</span>
+          <strong id="scope-label">Loading…</strong>
+        </div>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="hero hero-client-ai" aria-labelledby="page-title">
+        <p class="eyebrow">Bounded coordination, reviewed by Carl</p>
+        <h1 id="page-title">Prepare the handoff before the conversation.</h1>
+        <p class="hero-copy">Package only approved context for Jenny or Maria, set a short turn budget, and keep every result visible for human review.</p>
+        <div class="hero-actions">
+          <button class="button button-primary" id="create-button" type="button">Create draft packet</button>
+          <span class="local-note"><span aria-hidden="true">●</span> Private review-only core</span>
+        </div>
+      </section>
+
+      <aside class="boundary-banner" aria-label="Client-AI execution boundary">
+        <span class="boundary-icon" aria-hidden="true">⏸</span>
+        <div>
+          <strong>Packets do not start a conversation.</strong>
+          <p>This screen cannot send to Slack, Jenny, or Maria; record transcript turns; consume message approval; call a model; or access private notes. Every future Jolene message still needs a separate exact-action approval.</p>
+        </div>
+      </aside>
+
+      <div class="notice" id="page-notice" role="status" aria-live="polite" hidden></div>
+
+      <section class="summary-grid summary-grid-four" aria-label="Packet summary">
+        <article><span>Drafts</span><strong id="count-draft">0</strong></article>
+        <article><span>In exchange</span><strong id="count-active">0</strong></article>
+        <article><span>Handoff review</span><strong id="count-handoff">0</strong></article>
+        <article><span>Closed</span><strong id="count-closed">0</strong></article>
+      </section>
+
+      <section class="panel" aria-labelledby="packet-list-title">
+        <div class="section-heading">
+          <div><p class="eyebrow">Owner control point</p><h2 id="packet-list-title">Coordination packets</h2></div>
+          <button class="button button-secondary" id="refresh-button" type="button">Refresh</button>
+        </div>
+        <div class="filter-row" role="group" aria-label="Filter client-AI packets">
+          <button class="filter is-active" type="button" data-packet-filter="all" aria-pressed="true">All</button>
+          <button class="filter" type="button" data-packet-filter="draft" aria-pressed="false">Drafts</button>
+          <button class="filter" type="button" data-packet-filter="approved" aria-pressed="false">Approved</button>
+          <button class="filter" type="button" data-packet-filter="active" aria-pressed="false">Active</button>
+          <button class="filter" type="button" data-packet-filter="handoff_required" aria-pressed="false">Handoff review</button>
+          <button class="filter" type="button" data-packet-filter="closed" aria-pressed="false">Closed</button>
+          <button class="filter" type="button" data-packet-filter="other" aria-pressed="false">Rejected / ended</button>
+        </div>
+        <div class="card-grid" id="packet-list" aria-live="polite"></div>
+      </section>
+    </main>
+
+    <dialog class="dialog-wide" id="create-dialog" aria-labelledby="create-title">
+      <form class="dialog-card dialog-card-wide" id="create-form">
+        <div class="dialog-heading">
+          <div><p class="eyebrow">Draft only</p><h2 id="create-title">Create a coordination packet</h2></div>
+          <button class="icon-button" type="button" data-close-dialog aria-label="Close packet creation">×</button>
+        </div>
+        <p class="supporting-copy">Choose an existing task and disclose only the context Jenny or Maria needs. You will review the exact fingerprint before approving the packet.</p>
+        <div class="form-grid">
+          <label class="field"><span>Owner task</span><select id="create-task" required><option value="">Choose a task</option></select></label>
+          <label class="field"><span>Registered recipient</span><select id="create-recipient" required><option value="">Choose a recipient</option></select></label>
+          <label class="field field-wide"><span>Purpose</span><input id="create-purpose" required maxlength="1000" placeholder="Clarify the client review handoff"></label>
+          <label class="field"><span>Jolene turn limit</span><select id="create-turn-limit"><option value="1">1 turn</option><option value="2">2 turns</option><option value="3" selected>3 turns</option><option value="4">4 turns</option><option value="5">5 turns</option></select></label>
+          <label class="field"><span>Packet expires</span><input id="create-expiry" type="datetime-local" required></label>
+        </div>
+
+        <fieldset class="packet-fieldset">
+          <legend>Approved context</legend>
+          <p>One to eight minimized items. Sensitive data is not permitted.</p>
+          <div id="context-items"></div>
+          <button class="button button-quiet button-small" id="add-context-button" type="button">Add context item</button>
+        </fieldset>
+
+        <label class="field"><span>Questions, one per line</span><textarea id="create-questions" rows="5" maxlength="4000" required placeholder="Which workflow step is blocked?&#10;What decision is needed from Carl?"></textarea></label>
+        <div class="inline-error" id="create-error" role="alert" hidden></div>
+        <div class="dialog-actions"><button class="button button-secondary" type="button" data-close-dialog>Cancel</button><button class="button button-primary" id="create-submit" type="submit">Create draft packet</button></div>
+      </form>
+    </dialog>
+
+    <dialog class="dialog-wide" id="decision-dialog" aria-labelledby="decision-title">
+      <form class="dialog-card dialog-card-wide" id="decision-form">
+        <div class="dialog-heading">
+          <div><p class="eyebrow">Exact packet review</p><h2 id="decision-title">Review this immutable draft</h2></div>
+          <button class="icon-button" type="button" data-close-dialog aria-label="Close packet review">×</button>
+        </div>
+        <p class="supporting-copy">Approval locks this exact recipient, purpose, context, questions, turn limit, and expiry. It still authorizes no message or delivery.</p>
+        <input id="decision-id" type="hidden">
+        <dl class="exact-review" id="decision-details"></dl>
+        <div class="inline-error" id="decision-error" role="alert" hidden></div>
+        <div class="dialog-actions"><button class="button button-secondary" id="decision-reject" type="button">Reject packet</button><button class="button button-primary" id="decision-approve" type="submit">Approve exact packet</button></div>
+      </form>
+    </dialog>
+
+    <dialog id="cancel-dialog" aria-labelledby="cancel-title">
+      <form class="dialog-card" id="cancel-form">
+        <div class="dialog-heading">
+          <div><p class="eyebrow eyebrow-danger">End coordination</p><h2 id="cancel-title">Cancel this packet?</h2></div>
+          <button class="icon-button" type="button" data-close-dialog aria-label="Close cancellation">×</button>
+        </div>
+        <p class="supporting-copy">The packet and its history remain visible, but it cannot accept more work. This does not retract anything already delivered outside this review-only build.</p>
+        <input id="cancel-id" type="hidden">
+        <div class="inline-error" id="cancel-error" role="alert" hidden></div>
+        <div class="dialog-actions"><button class="button button-secondary" type="button" data-close-dialog>Keep packet</button><button class="button button-danger" id="cancel-submit" type="submit">Cancel packet</button></div>
+      </form>
+    </dialog>
+
+    <dialog class="dialog-wide" id="handoff-dialog" aria-labelledby="handoff-title">
+      <form class="dialog-card dialog-card-wide" id="handoff-form">
+        <div class="dialog-heading">
+          <div><p class="eyebrow">Human handoff review</p><h2 id="handoff-title">Review the latest handoff</h2></div>
+          <button class="icon-button" type="button" data-close-dialog aria-label="Close handoff review">×</button>
+        </div>
+        <p class="supporting-copy">External AI output is untrusted input. Review the summary, decisions, open questions, and proposed next action before closing the packet.</p>
+        <input id="handoff-packet-id" type="hidden">
+        <input id="handoff-id" type="hidden">
+        <dl class="exact-review" id="handoff-details"></dl>
+        <fieldset class="choice-group">
+          <legend>Review decision</legend>
+          <label><input type="radio" name="handoff-decision" value="approved" checked> Approve handoff and close packet</label>
+          <label><input type="radio" name="handoff-decision" value="changes_requested"> Return for changes</label>
+        </fieldset>
+        <label class="field"><span>Review feedback</span><textarea id="handoff-feedback" rows="4" maxlength="2000" placeholder="Required when requesting changes"></textarea></label>
+        <div class="inline-error" id="handoff-error" role="alert" hidden></div>
+        <div class="dialog-actions"><button class="button button-secondary" type="button" data-close-dialog>Keep pending</button><button class="button button-primary" id="handoff-submit" type="submit">Record review</button></div>
+      </form>
+    </dialog>
+
+    <div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true" hidden></div>
+  </body>
+</html>

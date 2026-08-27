@@ -113,6 +113,8 @@ export class ClientAiTaskPacketService {
 
   recipients() { return listClientAiRecipients(); }
 
+  scope(): PrivateWorkScope { return { ...this.ownerScope }; }
+
   create(input: unknown): ClientAiTaskPacket {
     const request = createPacketSchema.parse(input);
     this.tasks.getTask(
