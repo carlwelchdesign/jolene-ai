@@ -3,6 +3,7 @@ const state = {
   sources: [],
   claims: [],
   conflicts: [],
+  relationshipCandidates: [],
   issues: [],
   selectedClaimIds: new Set(),
   expandedSourceIds: new Set(),
@@ -23,7 +24,9 @@ const ui = {
   internalCount: document.querySelector("#count-internal"),
   publicCount: document.querySelector("#count-public"),
   conflictCount: document.querySelector("#count-conflicts"),
+  relationshipReviewCount: document.querySelector("#count-relationship-review"),
   conflictList: document.querySelector("#conflict-list"),
+  relationshipList: document.querySelector("#relationship-list"),
   selectionStatus: document.querySelector("#selection-status"),
   selectionHelp: document.querySelector("#selection-help"),
   clearSelection: document.querySelector("#clear-selection"),
@@ -44,6 +47,8 @@ const ui = {
   publicConfirm: document.querySelector("#public-confirm"),
   conflictConfirmation: document.querySelector("#conflict-confirmation"),
   conflictConfirm: document.querySelector("#conflict-confirm"),
+  relationshipConfirmation: document.querySelector("#relationship-confirmation"),
+  relationshipConfirm: document.querySelector("#relationship-confirm"),
   decisionError: document.querySelector("#decision-error"),
   decisionSubmit: document.querySelector("#decision-submit"),
   toast: document.querySelector("#toast"),
@@ -96,16 +101,19 @@ async function refresh() {
   clearNotice();
   ui.list.setAttribute("aria-busy", "true");
   ui.conflictList.setAttribute("aria-busy", "true");
+  ui.relationshipList.setAttribute("aria-busy", "true");
   ui.list.replaceChildren(el("div", "loading-state", "Loading career evidence…"));
   ui.conflictList.replaceChildren(el("div", "loading-state", "Loading claim conflicts…"));
+  ui.relationshipList.replaceChildren(el("div", "loading-state", "Loading relationship suggestions…"));
   try {
     state.scope = await api("/v1/career-evidence/scope");
     ui.scopeChip.replaceChildren(el("span", "", "●"), document.createTextNode(`${state.scope.actorId} · ${state.scope.workspaceId}`));
     const query = `?actorId=${encodeURIComponent(state.scope.actorId)}&workspaceId=${encodeURIComponent(state.scope.workspaceId)}`;
-    [state.sources, state.claims, state.conflicts, state.issues] = await Promise.all([
+    [state.sources, state.claims, state.conflicts, state.relationshipCandidates, state.issues] = await Promise.all([
       api("/v1/career-evidence/sources" + query),
       api("/v1/career-evidence/claims" + query),
       api("/v1/career-evidence/conflicts" + query),
+      api("/v1/career-evidence/relationship-candidates" + query),
       api("/v1/career-evidence/validation" + query),
     ]);
     const selectableIds = new Set(state.claims
@@ -118,8 +126,10 @@ async function refresh() {
   } catch (error) {
     ui.list.setAttribute("aria-busy", "false");
     ui.conflictList.setAttribute("aria-busy", "false");
+    ui.relationshipList.setAttribute("aria-busy", "false");
     ui.list.replaceChildren(errorState(friendlyError(error)));
     ui.conflictList.replaceChildren(errorState(friendlyError(error)));
+    ui.relationshipList.replaceChildren(errorState(friendlyError(error)));
     showNotice(friendlyError(error), true);
   }
 }
@@ -127,8 +137,10 @@ async function refresh() {
 function render() {
   ui.list.setAttribute("aria-busy", "false");
   ui.conflictList.setAttribute("aria-busy", "false");
+  ui.relationshipList.setAttribute("aria-busy", "false");
   updateSummary();
   renderConflictReview();
+  renderRelationshipReview();
   const visibleSources = state.sources.filter((source) => sourceMatches(source));
   const totalPages = Math.max(1, Math.ceil(visibleSources.length / state.pageSize));
   state.page = Math.min(Math.max(state.page, 1), totalPages);
@@ -177,6 +189,7 @@ function updateSummary() {
   ui.internalCount.textContent = String(state.claims.filter((claim) => claim.state === "active" && claim.visibility === "internal_approved").length);
   ui.publicCount.textContent = String(state.claims.filter((claim) => claim.state === "active" && claim.visibility === "public_approved").length);
   ui.conflictCount.textContent = String(state.conflicts.filter((conflict) => conflict.state === "unresolved").length);
+  ui.relationshipReviewCount.textContent = String(state.relationshipCandidates.filter((candidate) => candidate.reviewState === "needs_review").length);
 }
 
 function renderConflictReview() {
@@ -258,6 +271,81 @@ function renderConflictGroup(conflict) {
     el("p", "conflict-meta", `Declared by ${conflict.reviewedBy}. Last updated ${formatDate(conflict.updatedAt)}.`),
   );
   return card;
+}
+
+function renderRelationshipReview() {
+  ui.relationshipList.replaceChildren();
+  if (state.relationshipCandidates.length === 0) {
+    ui.relationshipList.append(emptyState(
+      "No source-derived suggestions",
+      "Existing exact claim links are left alone. New suggestions appear only when an active claim and active source relationship share the same source.",
+    ));
+    return;
+  }
+  const ordered = [...state.relationshipCandidates].sort((left, right) =>
+    Number(left.reviewState !== "needs_review") - Number(right.reviewState !== "needs_review") ||
+    left.sourceId.localeCompare(right.sourceId) ||
+    left.claimId.localeCompare(right.claimId)
+  );
+  const visible = ordered.slice(0, 100);
+  visible.forEach((candidate) => ui.relationshipList.append(renderRelationshipCandidate(candidate)));
+  if (ordered.length > visible.length) {
+    ui.relationshipList.append(emptyState(
+      `${ordered.length - visible.length} more suggestions are not shown`,
+      "Review the pending suggestions shown here, then refresh to continue with the bounded queue.",
+    ));
+  }
+}
+
+function renderRelationshipCandidate(candidate) {
+  const claim = state.claims.find((entry) => entry.id === candidate.claimId);
+  const source = state.sources.find((entry) => entry.id === candidate.sourceId);
+  const card = el("article", "relationship-candidate");
+  const details = el("div");
+  const badges = el("div", "badge-row");
+  badges.append(badge(humanize(candidate.reviewState), badgeClass(candidate.reviewState)));
+  if (candidate.lastReview && !candidate.reviewIsCurrent) {
+    badges.append(badge("Prior decision stale", "badge-sensitive"));
+  }
+  details.append(
+    badges,
+    el("h3", "relationship-candidate-title", claim?.title || "Claim unavailable"),
+    el("p", "relationship-claim", claim?.proposition || "The claim is unavailable in this owner scope."),
+    el("code", "relationship-path", candidateRelationshipText(candidate)),
+    el("p", "relationship-meta", `${source?.title || "Source unavailable"} · Candidate ${shortenedFingerprint(candidate.fingerprint)}`),
+  );
+  if (candidate.lastReview) {
+    details.append(el(
+      "p",
+      "relationship-meta",
+      `${candidate.reviewIsCurrent ? "Current" : "Previous"} ${candidate.lastReview.decision} decision by ${candidate.lastReview.reviewedBy} · ${formatDate(candidate.lastReview.reviewedAt)}`,
+    ));
+  }
+  const actions = el("div", "relationship-actions");
+  if (candidate.reviewState !== "approved") {
+    actions.append(actionButton(
+      "Review approval",
+      "button button-primary button-small",
+      () => openConfirmation({ kind: "relationship_approve", candidate, claim, source }),
+    ));
+  }
+  if (candidate.reviewState !== "rejected") {
+    actions.append(actionButton(
+      candidate.reviewState === "approved" ? "Reject link" : "Review rejection",
+      "button button-secondary button-small",
+      () => openConfirmation({ kind: "relationship_reject", candidate, claim, source }),
+    ));
+  }
+  card.append(details, actions);
+  return card;
+}
+
+function candidateRelationshipText(candidate) {
+  return `${displayEntity(candidate.fromKind, candidate.fromId)} → ${humanize(candidate.relationship)} → ${displayEntity(candidate.toKind, candidate.toId)}`;
+}
+
+function displayEntity(kind, id) {
+  return id.startsWith(`${kind}:`) ? id : `${kind}:${id}`;
 }
 
 function toggleConflictSelection(claimId) {
@@ -419,16 +507,21 @@ function openConfirmation(decision) {
   ui.decisionError.hidden = true;
   ui.publicConfirm.checked = false;
   ui.conflictConfirm.checked = false;
+  ui.relationshipConfirm.checked = false;
   ui.decisionEvidence.replaceChildren();
   const isPublic = decision.kind === "claim_public";
   const isConflictDeclaration = decision.kind === "conflict_declare";
   const isConflictResolution = decision.kind === "conflict_resolve";
+  const isRelationship = decision.kind === "relationship_approve" || decision.kind === "relationship_reject";
   ui.publicConfirmation.hidden = !isPublic;
   ui.conflictConfirmation.hidden = !isConflictDeclaration;
+  ui.relationshipConfirmation.hidden = !isRelationship;
   ui.decisionEyebrow.textContent = isPublic
     ? "Public eligibility"
     : isConflictDeclaration || isConflictResolution
       ? "Human-reviewed evidence conflict"
+      : isRelationship
+        ? "Owner-reviewed graph enrichment"
       : "Destructive evidence decision";
   ui.decisionTitle.textContent = isPublic
     ? "Approve this exact public claim?"
@@ -436,6 +529,10 @@ function openConfirmation(decision) {
       ? "Declare these claims in conflict?"
       : isConflictResolution
         ? "Resolve this conflict group?"
+        : decision.kind === "relationship_approve"
+          ? "Approve this exact claim relationship?"
+          : decision.kind === "relationship_reject"
+            ? "Reject this exact claim relationship?"
         : decision.kind === "source_revoke"
           ? "Revoke this source?"
           : "Revoke this claim?";
@@ -445,6 +542,10 @@ function openConfirmation(decision) {
       ? "Jolene will withhold these propositions from public assertions until you explicitly resolve the group."
       : isConflictResolution
         ? "Resolution restores normal eligibility checks. It does not choose a winning claim, approve evidence, or publish anything."
+        : decision.kind === "relationship_approve"
+          ? "Approval copies this exact source relationship onto this exact claim. It does not infer other links or publish anything."
+          : decision.kind === "relationship_reject"
+            ? "Rejection records this exact candidate decision and creates no claim link. The review history remains."
         : "Revocation removes this evidence from eligible retrieval. The audit record remains.";
   if (isConflictDeclaration || isConflictResolution) {
     decision.claims.forEach((claim) => {
@@ -456,6 +557,13 @@ function openConfirmation(decision) {
       );
       ui.decisionEvidence.append(item);
     });
+  } else if (isRelationship) {
+    ui.decisionEvidence.append(
+      el("strong", "", decision.claim?.proposition || "Claim unavailable"),
+      el("code", "relationship-path", candidateRelationshipText(decision.candidate)),
+      el("span", "", `Source: ${decision.source?.title || "Unavailable"}`),
+      el("span", "", `Candidate fingerprint: ${decision.candidate.fingerprint}`),
+    );
   } else {
     const record = decision.claim || decision.source;
     ui.decisionEvidence.append(el("strong", "", record.proposition || record.title));
@@ -468,13 +576,18 @@ function openConfirmation(decision) {
       ? "Declare unresolved conflict"
       : isConflictResolution
         ? "Resolve conflict"
+        : decision.kind === "relationship_approve"
+          ? "Approve exact relationship"
+          : decision.kind === "relationship_reject"
+            ? "Reject exact relationship"
         : "Revoke evidence";
-  ui.decisionSubmit.className = isPublic || isConflictDeclaration
+  ui.decisionSubmit.className = isPublic || isConflictDeclaration || decision.kind === "relationship_approve"
     ? "button button-primary"
     : "button button-danger";
   ui.decisionDialog.showModal();
   if (isPublic) ui.publicConfirm.focus();
   else if (isConflictDeclaration) ui.conflictConfirm.focus();
+  else if (isRelationship) ui.relationshipConfirm.focus();
   else ui.decisionSubmit.focus();
 }
 
@@ -487,6 +600,13 @@ async function submitConfirmedDecision(event) {
   }
   if (state.pendingDecision.kind === "conflict_declare" && !ui.conflictConfirm.checked) {
     showInlineError("Confirm that the exact selected claims conflict before declaring the group.");
+    return;
+  }
+  if (
+    (state.pendingDecision.kind === "relationship_approve" || state.pendingDecision.kind === "relationship_reject") &&
+    !ui.relationshipConfirm.checked
+  ) {
+    showInlineError("Confirm the exact source-derived relationship decision before continuing.");
     return;
   }
   ui.decisionSubmit.disabled = true;
@@ -507,6 +627,16 @@ async function submitConfirmedDecision(event) {
         { reviewerId: state.scope.actorId },
       );
     }
+    if (state.pendingDecision.kind === "relationship_approve" || state.pendingDecision.kind === "relationship_reject") {
+      await mutate(
+        `/v1/career-evidence/relationship-candidates/${encodeURIComponent(state.pendingDecision.candidate.id)}/decision`,
+        {
+          fingerprint: state.pendingDecision.candidate.fingerprint,
+          decision: state.pendingDecision.kind === "relationship_approve" ? "approved" : "rejected",
+          reviewerId: state.scope.actorId,
+        },
+      );
+    }
     ui.decisionDialog.close();
     showToast(
       state.pendingDecision.kind === "claim_public"
@@ -515,6 +645,10 @@ async function submitConfirmedDecision(event) {
           ? "Conflict declared. Affected evidence is now withheld."
           : state.pendingDecision.kind === "conflict_resolve"
             ? "Conflict resolved. Normal eligibility checks now apply."
+            : state.pendingDecision.kind === "relationship_approve"
+              ? "Exact claim relationship approved."
+              : state.pendingDecision.kind === "relationship_reject"
+                ? "Relationship candidate rejected. No link was created."
             : "Evidence revoked.",
     );
     await refresh();

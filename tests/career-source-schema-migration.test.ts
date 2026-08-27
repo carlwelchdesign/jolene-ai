@@ -26,6 +26,7 @@ describe("career source schema migration", () => {
 
     const store = new SqliteCareerEvidenceStore(databasePath);
     let conflictId = "";
+    let candidateId = "";
     try {
       expect(store.listSources(scope)[0]).toMatchObject({
         id: "portfolio:project:sample",
@@ -69,6 +70,26 @@ describe("career source schema migration", () => {
         claimIds: [first.id, second.id],
         reviewerId: "carl",
       }).id;
+      store.upsertRelationship({
+        id: "source-relationship:migrated",
+        ...scope,
+        sourceId: "portfolio:project:sample",
+        claimId: null,
+        fromKind: "project",
+        fromId: "project:sample",
+        relationship: "uses_skill",
+        toKind: "skill",
+        toId: "skill:typescript",
+      });
+      const candidate = store.listRelationshipCandidates(scope)[0]!;
+      candidateId = candidate.id;
+      store.decideRelationshipCandidate({
+        ...scope,
+        id: candidate.id,
+        fingerprint: candidate.fingerprint,
+        decision: "rejected",
+        reviewerId: "carl",
+      });
     } finally {
       store.close();
     }
@@ -77,6 +98,13 @@ describe("career source schema migration", () => {
     try {
       expect(reopened.listClaimConflicts(scope)).toEqual([
         expect.objectContaining({ id: conflictId, state: "unresolved" }),
+      ]);
+      expect(reopened.listRelationshipReviews(scope)).toEqual([
+        expect.objectContaining({
+          candidateId,
+          decision: "rejected",
+          reviewedBy: "carl",
+        }),
       ]);
     } finally {
       reopened.close();
@@ -88,6 +116,9 @@ describe("career source schema migration", () => {
       expect(database.prepare(
         "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'career_claim_conflicts'",
       ).get()).toEqual({ name: "career_claim_conflicts" });
+      expect(database.prepare(
+        "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'career_relationship_reviews'",
+      ).get()).toEqual({ name: "career_relationship_reviews" });
     } finally {
       database.close();
     }

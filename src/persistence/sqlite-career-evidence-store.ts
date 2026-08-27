@@ -8,10 +8,14 @@ import {
   CareerEvidenceApprovalError,
   CareerEvidenceConflictError,
   CareerEvidenceNotFoundError,
+  careerRelationshipCandidateFingerprint,
+  careerRelationshipCandidateId,
   careerClaimConflictId,
   careerEntityKindSchema,
   careerMaturitySchema,
   careerRelationshipKindSchema,
+  careerRelationshipReviewDecisionSchema,
+  reviewedCareerRelationshipId,
   careerSourceTypeSchema,
   careerVisibilitySchema,
   type CareerClaim,
@@ -23,13 +27,17 @@ import {
   type CareerMaturity,
   type CareerRecordState,
   type CareerRelationship,
+  type CareerRelationshipCandidate,
   type CareerRelationshipKind,
+  type CareerRelationshipReview,
+  type CareerRelationshipReviewDecision,
   type CareerSource,
   type CareerSourceMetadata,
   type CareerSourceState,
   type CareerSourceType,
   type CareerVisibility,
   type DecideCareerClaimInput,
+  type DecideCareerRelationshipCandidateInput,
   type DecideCareerSourceInput,
   type DeclareCareerClaimConflictInput,
   type EvidenceReviewState,
@@ -106,6 +114,19 @@ interface ClaimConflictRow {
   readonly updated_at: string;
 }
 
+interface RelationshipReviewRow {
+  readonly id: string;
+  readonly actor_id: string;
+  readonly workspace_id: string;
+  readonly candidate_id: string;
+  readonly candidate_fingerprint: string;
+  readonly claim_id: string;
+  readonly source_relationship_id: string;
+  readonly decision: CareerRelationshipReviewDecision;
+  readonly reviewed_by: string;
+  readonly reviewed_at: string;
+}
+
 const REVIEW_MAX_AGE_DAYS = 180;
 
 export interface SqliteCareerEvidenceStoreOptions {
@@ -176,28 +197,36 @@ export class SqliteCareerEvidenceStore implements CareerEvidenceStore {
       JSON.stringify(current.metadata) !== metadataJson;
 
     if (changed || current.state === "missing") {
-      this.database.prepare(
-        `UPDATE career_sources
-         SET source_type = ?, title = ?, provenance_ref = ?, provenance_uri = ?,
-             source_hash = ?, captured_at = ?, metadata_json = ?,
-             review_state = 'needs_review', reviewed_by = NULL,
-             last_reviewed_at = NULL,
-             state = CASE WHEN state = 'missing' THEN 'active' ELSE state END,
-             updated_at = ?
-         WHERE id = ? AND actor_id = ? AND workspace_id = ?`,
-      ).run(
-        input.sourceType,
-        input.title,
-        input.provenanceRef,
-        input.provenanceUri,
-        input.sourceHash,
-        normalizeTimestamp(input.capturedAt, "capturedAt"),
-        metadataJson,
-        now,
-        input.id,
-        input.actorId,
-        input.workspaceId,
-      );
+      const update = this.database.transaction(() => {
+        this.database.prepare(
+          `UPDATE career_sources
+           SET source_type = ?, title = ?, provenance_ref = ?, provenance_uri = ?,
+               source_hash = ?, captured_at = ?, metadata_json = ?,
+               review_state = 'needs_review', reviewed_by = NULL,
+               last_reviewed_at = NULL,
+               state = CASE WHEN state = 'missing' THEN 'active' ELSE state END,
+               updated_at = ?
+           WHERE id = ? AND actor_id = ? AND workspace_id = ?`,
+        ).run(
+          input.sourceType,
+          input.title,
+          input.provenanceRef,
+          input.provenanceUri,
+          input.sourceHash,
+          normalizeTimestamp(input.capturedAt, "capturedAt"),
+          metadataJson,
+          now,
+          input.id,
+          input.actorId,
+          input.workspaceId,
+        );
+        this.revokeReviewedRelationshipsForSource(
+          input.id,
+          input,
+          now,
+        );
+      });
+      update();
     }
 
     return this.requireSource(input.id, input.actorId, input.workspaceId);
@@ -206,12 +235,17 @@ export class SqliteCareerEvidenceStore implements CareerEvidenceStore {
   markSourceMissing(id: string, scope: CareerEvidenceScope): CareerSource {
     const source = this.requireSource(id, scope.actorId, scope.workspaceId);
     if (source.state !== "active") return source;
-    this.database.prepare(
-      `UPDATE career_sources
-       SET state = 'missing', review_state = 'needs_review', reviewed_by = NULL,
-           last_reviewed_at = NULL, updated_at = ?
-       WHERE id = ? AND actor_id = ? AND workspace_id = ? AND state = 'active'`,
-    ).run(this.now().toISOString(), id, scope.actorId, scope.workspaceId);
+    const now = this.now().toISOString();
+    const update = this.database.transaction(() => {
+      this.database.prepare(
+        `UPDATE career_sources
+         SET state = 'missing', review_state = 'needs_review', reviewed_by = NULL,
+             last_reviewed_at = NULL, updated_at = ?
+         WHERE id = ? AND actor_id = ? AND workspace_id = ? AND state = 'active'`,
+      ).run(now, id, scope.actorId, scope.workspaceId);
+      this.revokeReviewedRelationshipsForSource(id, scope, now);
+    });
+    update();
     return this.requireSource(id, scope.actorId, scope.workspaceId);
   }
 
@@ -240,6 +274,7 @@ export class SqliteCareerEvidenceStore implements CareerEvidenceStore {
             scope.actorId,
             scope.workspaceId,
           ).changes;
+          this.revokeReviewedRelationshipsForClaim(claim.id, scope, now);
         }
       }
     });
@@ -256,7 +291,9 @@ export class SqliteCareerEvidenceStore implements CareerEvidenceStore {
     const activeIds = new Set(activeRelationshipIds);
     const relationships = this.listRelationships(scope).filter(
       (relationship) =>
-        relationship.sourceId === sourceId && relationship.state === "active",
+        relationship.sourceId === sourceId &&
+        relationship.claimId === null &&
+        relationship.state === "active",
     );
     const revoke = this.database.prepare(
       `UPDATE career_relationships SET state = 'revoked', updated_at = ?
@@ -273,6 +310,11 @@ export class SqliteCareerEvidenceStore implements CareerEvidenceStore {
             scope.actorId,
             scope.workspaceId,
           ).changes;
+          this.revokeReviewedRelationshipsForSourceRelationship(
+            relationship.id,
+            scope,
+            now,
+          );
         }
       }
     });
@@ -302,6 +344,7 @@ export class SqliteCareerEvidenceStore implements CareerEvidenceStore {
            SET state = 'superseded', updated_at = ?
            WHERE id = ? AND state = 'active'`,
         ).run(now, current.id);
+        this.revokeReviewedRelationshipsForClaim(current.id, input, now);
       }
       this.database.prepare(
         `INSERT INTO career_claims
@@ -410,10 +453,15 @@ export class SqliteCareerEvidenceStore implements CareerEvidenceStore {
   revokeSource(id: string, scope: CareerEvidenceScope): CareerSource {
     const source = this.requireSource(id, scope.actorId, scope.workspaceId);
     if (source.state === "revoked") return source;
-    this.database.prepare(
-      `UPDATE career_sources SET state = 'revoked', updated_at = ?
-       WHERE id = ? AND actor_id = ? AND workspace_id = ?`,
-    ).run(this.now().toISOString(), id, scope.actorId, scope.workspaceId);
+    const now = this.now().toISOString();
+    const revoke = this.database.transaction(() => {
+      this.database.prepare(
+        `UPDATE career_sources SET state = 'revoked', updated_at = ?
+         WHERE id = ? AND actor_id = ? AND workspace_id = ?`,
+      ).run(now, id, scope.actorId, scope.workspaceId);
+      this.revokeReviewedRelationshipsForSource(id, scope, now);
+    });
+    revoke();
     return this.requireSource(id, scope.actorId, scope.workspaceId);
   }
 
@@ -423,10 +471,15 @@ export class SqliteCareerEvidenceStore implements CareerEvidenceStore {
     if (claim.state === "superseded") {
       throw new CareerEvidenceConflictError("A superseded claim cannot be revoked as the current claim.");
     }
-    this.database.prepare(
-      `UPDATE career_claims SET state = 'revoked', updated_at = ?
-       WHERE id = ? AND actor_id = ? AND workspace_id = ?`,
-    ).run(this.now().toISOString(), id, scope.actorId, scope.workspaceId);
+    const now = this.now().toISOString();
+    const revoke = this.database.transaction(() => {
+      this.database.prepare(
+        `UPDATE career_claims SET state = 'revoked', updated_at = ?
+         WHERE id = ? AND actor_id = ? AND workspace_id = ?`,
+      ).run(now, id, scope.actorId, scope.workspaceId);
+      this.revokeReviewedRelationshipsForClaim(id, scope, now);
+    });
+    revoke();
     return this.requireClaim(id, scope.actorId, scope.workspaceId);
   }
 
@@ -437,7 +490,29 @@ export class SqliteCareerEvidenceStore implements CareerEvidenceStore {
       this.requireClaim(input.claimId, input.actorId, input.workspaceId);
     }
     const now = this.now().toISOString();
-    this.database.prepare(
+    const current = this.listRelationships(input).find(
+      (relationship) => relationship.id === input.id,
+    );
+    const changedSourceRelationship = current?.claimId === null &&
+      (
+        current.sourceId !== input.sourceId ||
+        input.claimId !== null ||
+        current.fromKind !== input.fromKind ||
+        current.fromId !== input.fromId ||
+        current.relationship !== input.relationship ||
+        current.toKind !== input.toKind ||
+        current.toId !== input.toId ||
+        current.state !== "active"
+      );
+    const upsert = this.database.transaction(() => {
+      if (changedSourceRelationship) {
+        this.revokeReviewedRelationshipsForSourceRelationship(
+          input.id,
+          input,
+          now,
+        );
+      }
+      this.database.prepare(
       `INSERT INTO career_relationships
         (id, actor_id, workspace_id, source_id, claim_id, from_kind, from_id,
          relationship, to_kind, to_id, state, created_at, updated_at)
@@ -453,21 +528,97 @@ export class SqliteCareerEvidenceStore implements CareerEvidenceStore {
          state = 'active',
          updated_at = excluded.updated_at
        WHERE actor_id = excluded.actor_id AND workspace_id = excluded.workspace_id`,
-    ).run(
-      input.id,
-      input.actorId,
-      input.workspaceId,
-      input.sourceId,
-      input.claimId,
-      input.fromKind,
-      input.fromId,
-      input.relationship,
-      input.toKind,
-      input.toId,
-      now,
-      now,
-    );
+      ).run(
+        input.id,
+        input.actorId,
+        input.workspaceId,
+        input.sourceId,
+        input.claimId,
+        input.fromKind,
+        input.fromId,
+        input.relationship,
+        input.toKind,
+        input.toId,
+        now,
+        now,
+      );
+    });
+    upsert();
     return this.requireRelationship(input.id, input.actorId, input.workspaceId);
+  }
+
+  decideRelationshipCandidate(
+    input: DecideCareerRelationshipCandidateInput,
+  ): CareerRelationshipCandidate {
+    requireText(input.id, "id");
+    requireText(input.fingerprint, "fingerprint");
+    const reviewerId = requireText(input.reviewerId, "reviewerId");
+    const decision = careerRelationshipReviewDecisionSchema.parse(input.decision);
+    const candidate = this.listRelationshipCandidates(input).find(
+      (entry) => entry.id === input.id,
+    );
+    if (!candidate || candidate.fingerprint !== input.fingerprint) {
+      throw new CareerEvidenceConflictError(
+        "The relationship candidate changed or is no longer active. Refresh before deciding.",
+      );
+    }
+
+    const reviewedAt = this.now().toISOString();
+    const linkedRelationshipId = reviewedCareerRelationshipId(candidate.id);
+    const decide = this.database.transaction(() => {
+      this.database.prepare(
+        `INSERT INTO career_relationship_reviews
+          (id, actor_id, workspace_id, candidate_id, candidate_fingerprint,
+           claim_id, source_relationship_id, decision, reviewed_by, reviewed_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      ).run(
+        randomUUID(),
+        input.actorId,
+        input.workspaceId,
+        candidate.id,
+        candidate.fingerprint,
+        candidate.claimId,
+        candidate.sourceRelationshipId,
+        decision,
+        reviewerId,
+        reviewedAt,
+      );
+      if (decision === "approved") {
+        this.upsertRelationship({
+          id: linkedRelationshipId,
+          actorId: input.actorId,
+          workspaceId: input.workspaceId,
+          sourceId: candidate.sourceId,
+          claimId: candidate.claimId,
+          fromKind: candidate.fromKind,
+          fromId: candidate.fromId,
+          relationship: candidate.relationship,
+          toKind: candidate.toKind,
+          toId: candidate.toId,
+        });
+      } else {
+        this.database.prepare(
+          `UPDATE career_relationships SET state = 'revoked', updated_at = ?
+           WHERE id = ? AND actor_id = ? AND workspace_id = ?`,
+        ).run(
+          reviewedAt,
+          linkedRelationshipId,
+          input.actorId,
+          input.workspaceId,
+        );
+      }
+    });
+    decide();
+
+    const updated = this.listRelationshipCandidates(input).find(
+      (entry) => entry.id === input.id,
+    );
+    if (!updated) {
+      throw new CareerEvidenceConflictError(
+        "The relationship candidate became unavailable after review.",
+      );
+    }
+    return updated;
   }
 
   declareClaimConflict(
@@ -572,6 +723,106 @@ export class SqliteCareerEvidenceStore implements CareerEvidenceStore {
       `SELECT * FROM career_relationships
        WHERE actor_id = ? AND workspace_id = ? ORDER BY created_at ASC, id ASC`,
     ).all(scope.actorId, scope.workspaceId) as RelationshipRow[]).map(mapRelationship);
+  }
+
+  listRelationshipReviews(
+    scope: CareerEvidenceScope,
+  ): readonly CareerRelationshipReview[] {
+    return (this.database.prepare(
+      `SELECT * FROM career_relationship_reviews
+       WHERE actor_id = ? AND workspace_id = ?
+       ORDER BY reviewed_at ASC, rowid ASC`,
+    ).all(scope.actorId, scope.workspaceId) as RelationshipReviewRow[])
+      .map(mapRelationshipReview);
+  }
+
+  listRelationshipCandidates(
+    scope: CareerEvidenceScope,
+  ): readonly CareerRelationshipCandidate[] {
+    const evidenceScope: CareerEvidenceScope = {
+      actorId: scope.actorId,
+      workspaceId: scope.workspaceId,
+    };
+    const sources = new Map(
+      this.listSources(scope)
+        .filter((source) => source.state === "active")
+        .map((source) => [source.id, source]),
+    );
+    const claims = this.listClaims(scope).filter(
+      (claim) => claim.state === "active" && sources.has(claim.sourceId),
+    );
+    const relationships = this.listRelationships(scope);
+    const sourceRelationships = relationships.filter(
+      (relationship) =>
+        relationship.state === "active" &&
+        relationship.claimId === null &&
+        sources.has(relationship.sourceId),
+    );
+    const latestReviews = new Map<string, CareerRelationshipReview>();
+    for (const review of this.listRelationshipReviews(scope)) {
+      latestReviews.set(review.candidateId, review);
+    }
+
+    const candidates: CareerRelationshipCandidate[] = [];
+    for (const claim of claims) {
+      const source = sources.get(claim.sourceId)!;
+      for (const relationship of sourceRelationships) {
+        if (relationship.sourceId !== claim.sourceId) continue;
+        const id = careerRelationshipCandidateId({
+          ...evidenceScope,
+          claimId: claim.id,
+          sourceRelationshipId: relationship.id,
+        });
+        const linkedRelationshipId = reviewedCareerRelationshipId(id);
+        const exactActiveRelationship = relationships.find((entry) =>
+          entry.state === "active" &&
+          entry.claimId === claim.id &&
+          entry.fromKind === relationship.fromKind &&
+          entry.fromId === relationship.fromId &&
+          entry.relationship === relationship.relationship &&
+          entry.toKind === relationship.toKind &&
+          entry.toId === relationship.toId
+        );
+        if (
+          exactActiveRelationship &&
+          exactActiveRelationship.id !== linkedRelationshipId
+        ) {
+          continue;
+        }
+        const fingerprint = careerRelationshipCandidateFingerprint({
+          candidateId: id,
+          sourceHash: source.sourceHash,
+          claim,
+          relationship,
+        });
+        const lastReview = latestReviews.get(id) ?? null;
+        const linked = exactActiveRelationship?.id === linkedRelationshipId;
+        const reviewIsCurrent = lastReview?.candidateFingerprint === fingerprint &&
+          (lastReview.decision === "rejected" || linked);
+        candidates.push({
+          id,
+          fingerprint,
+          ...evidenceScope,
+          sourceId: source.id,
+          claimId: claim.id,
+          sourceRelationshipId: relationship.id,
+          fromKind: relationship.fromKind,
+          fromId: relationship.fromId,
+          relationship: relationship.relationship,
+          toKind: relationship.toKind,
+          toId: relationship.toId,
+          reviewState: reviewIsCurrent ? lastReview!.decision : "needs_review",
+          lastReview,
+          reviewIsCurrent,
+          linkedRelationshipId: linked ? linkedRelationshipId : null,
+        });
+      }
+    }
+    return candidates.sort((left, right) =>
+      left.sourceId.localeCompare(right.sourceId) ||
+      left.claimId.localeCompare(right.claimId) ||
+      left.sourceRelationshipId.localeCompare(right.sourceRelationshipId)
+    );
   }
 
   listPublicClaims(scope: CareerEvidenceScope): readonly CareerClaim[] {
@@ -738,6 +989,68 @@ export class SqliteCareerEvidenceStore implements CareerEvidenceStore {
     return row ? mapClaimConflict(row) : null;
   }
 
+  private revokeReviewedRelationshipsForSource(
+    sourceId: string,
+    scope: CareerEvidenceScope,
+    updatedAt: string,
+  ): void {
+    const sourceRelationshipIds = this.listRelationships(scope)
+      .filter((relationship) =>
+        relationship.sourceId === sourceId && relationship.claimId === null
+      )
+      .map((relationship) => relationship.id);
+    for (const relationshipId of sourceRelationshipIds) {
+      this.revokeReviewedRelationshipsForSourceRelationship(
+        relationshipId,
+        scope,
+        updatedAt,
+      );
+    }
+  }
+
+  private revokeReviewedRelationshipsForClaim(
+    claimId: string,
+    scope: CareerEvidenceScope,
+    updatedAt: string,
+  ): void {
+    const reviewedIds = new Set(
+      this.listRelationshipReviews(scope)
+        .filter((review) =>
+          review.claimId === claimId && review.decision === "approved"
+        )
+        .map((review) => reviewedCareerRelationshipId(review.candidateId)),
+    );
+    const revoke = this.database.prepare(
+      `UPDATE career_relationships SET state = 'revoked', updated_at = ?
+       WHERE id = ? AND actor_id = ? AND workspace_id = ? AND state = 'active'`,
+    );
+    for (const reviewedId of reviewedIds) {
+      revoke.run(updatedAt, reviewedId, scope.actorId, scope.workspaceId);
+    }
+  }
+
+  private revokeReviewedRelationshipsForSourceRelationship(
+    sourceRelationshipId: string,
+    scope: CareerEvidenceScope,
+    updatedAt: string,
+  ): void {
+    const reviewedIds = new Set(
+      this.listRelationshipReviews(scope)
+        .filter((review) =>
+          review.sourceRelationshipId === sourceRelationshipId &&
+          review.decision === "approved"
+        )
+        .map((review) => reviewedCareerRelationshipId(review.candidateId)),
+    );
+    const revoke = this.database.prepare(
+      `UPDATE career_relationships SET state = 'revoked', updated_at = ?
+       WHERE id = ? AND actor_id = ? AND workspace_id = ? AND state = 'active'`,
+    );
+    for (const reviewedId of reviewedIds) {
+      revoke.run(updatedAt, reviewedId, scope.actorId, scope.workspaceId);
+    }
+  }
+
   private migrate(): void {
     this.database.exec(`
       CREATE TABLE IF NOT EXISTS career_sources (
@@ -838,6 +1151,24 @@ export class SqliteCareerEvidenceStore implements CareerEvidenceStore {
 
       CREATE INDEX IF NOT EXISTS career_relationships_scope
         ON career_relationships(actor_id, workspace_id, state, from_kind, from_id);
+
+      CREATE TABLE IF NOT EXISTS career_relationship_reviews (
+        id TEXT PRIMARY KEY,
+        actor_id TEXT NOT NULL,
+        workspace_id TEXT NOT NULL,
+        candidate_id TEXT NOT NULL,
+        candidate_fingerprint TEXT NOT NULL,
+        claim_id TEXT NOT NULL REFERENCES career_claims(id) ON DELETE RESTRICT,
+        source_relationship_id TEXT NOT NULL REFERENCES career_relationships(id) ON DELETE RESTRICT,
+        decision TEXT NOT NULL CHECK(decision IN ('approved', 'rejected')),
+        reviewed_by TEXT NOT NULL,
+        reviewed_at TEXT NOT NULL
+      );
+
+      CREATE INDEX IF NOT EXISTS career_relationship_reviews_scope_candidate
+        ON career_relationship_reviews(
+          actor_id, workspace_id, candidate_id, reviewed_at DESC, id DESC
+        );
     `);
     this.upgradeCareerSourceSchema();
   }
@@ -986,6 +1317,23 @@ function mapRelationship(row: RelationshipRow): CareerRelationship {
     state: row.state,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
+  };
+}
+
+function mapRelationshipReview(
+  row: RelationshipReviewRow,
+): CareerRelationshipReview {
+  return {
+    id: row.id,
+    actorId: row.actor_id,
+    workspaceId: row.workspace_id,
+    candidateId: row.candidate_id,
+    candidateFingerprint: row.candidate_fingerprint,
+    claimId: row.claim_id,
+    sourceRelationshipId: row.source_relationship_id,
+    decision: row.decision,
+    reviewedBy: row.reviewed_by,
+    reviewedAt: row.reviewed_at,
   };
 }
 

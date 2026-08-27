@@ -6,6 +6,8 @@ import type {
   CareerEvidenceStore,
   CareerEvidenceValidationIssue,
   CareerRelationship,
+  CareerRelationshipCandidate,
+  CareerRelationshipReview,
   CareerSource,
   CareerEvidenceScope,
 } from "../domain/career-evidence.js";
@@ -41,6 +43,13 @@ const resolveConflictSchema = scopeSchema.extend({
   reviewerId: z.string().trim().min(1).max(120),
 }).strict();
 
+const relationshipCandidateDecisionSchema = scopeSchema.extend({
+  id: z.string().regex(/^relationship-candidate:[a-f0-9]{24}$/),
+  fingerprint: z.string().regex(/^[a-f0-9]{64}$/),
+  decision: z.enum(["approved", "rejected"]),
+  reviewerId: z.string().trim().min(1).max(120),
+}).strict();
+
 export class CareerEvidenceService {
   constructor(
     private readonly store: CareerEvidenceStore,
@@ -61,6 +70,16 @@ export class CareerEvidenceService {
 
   listRelationships(input: unknown): readonly CareerRelationship[] {
     return this.store.listRelationships(this.parseScope(input));
+  }
+
+  listRelationshipCandidates(
+    input: unknown,
+  ): readonly CareerRelationshipCandidate[] {
+    return this.store.listRelationshipCandidates(this.parseScope(input));
+  }
+
+  listRelationshipReviews(input: unknown): readonly CareerRelationshipReview[] {
+    return this.store.listRelationshipReviews(this.parseScope(input));
   }
 
   listPublicClaims(input: unknown): readonly CareerClaim[] {
@@ -115,6 +134,13 @@ export class CareerEvidenceService {
     this.assertAuthorizedScope(request);
     this.assertAuthorizedReviewer(request.reviewerId);
     return this.store.resolveClaimConflict(request);
+  }
+
+  decideRelationshipCandidate(input: unknown): CareerRelationshipCandidate {
+    const request = relationshipCandidateDecisionSchema.parse(input);
+    this.assertAuthorizedScope(request);
+    this.assertAuthorizedReviewer(request.reviewerId);
+    return this.store.decideRelationshipCandidate(request);
   }
 
   private parseScope(input: unknown): CareerEvidenceScope {
