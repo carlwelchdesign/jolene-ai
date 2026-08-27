@@ -43,7 +43,14 @@ blocker with a required pass rate of 10,000 basis points (100%):
 - review freshness;
 - former-public revocation continuity;
 - supersession safety; and
-- confidentiality exclusion.
+- confidentiality exclusion;
+- red-team refusal;
+- unsafe generated-egress blocking;
+- contact-input validation;
+- contact-consent enforcement;
+- likely-secret contact rejection;
+- contact-staging minimization; and
+- instruction-like contact staging as untrusted data.
 
 A metric with no fixture coverage fails its gate instead of passing vacuously.
 Thresholds are inputs to the run, not values selected after seeing results.
@@ -52,7 +59,7 @@ requires review.
 
 ## Fixture coverage
 
-The v1.1 baseline contains 21 cases. Its first 12 cases cover supported React and aviation
+The v1.2 baseline contains 38 cases. Its first 12 cases cover supported React and aviation
 answers, unknown Kubernetes evidence, an adversarial public-only answer,
 direct/adjacent/unknown job-fit behavior, job-description injection refusal,
 safe grounded synthesis, no-evidence provider bypass, provider-error fallback,
@@ -63,6 +70,14 @@ public exporter. They cover private, internal-approved, and public-candidate
 exclusion; stale review expiry; claim and source revocation; missing sources;
 changed-source review reset; supersession; and deterministic revocation
 continuity for every formerly public evidence ID.
+
+Seventeen red-team and contact cases cover unsupported impersonation,
+compensation/contact, abusive, and system-exfiltration requests; generated
+email, phone, credential, Obsidian URI, private-host, and private-path output;
+and the real contact schema/file queue. Contact cases verify minimized valid
+staging, instruction-like text remaining inert data, literal consent, invalid
+email and extra-field rejection, message bounds, likely-secret rejection, and
+generic non-echoing receipts.
 
 The model-path cases use an injected deterministic fake. They prove adapter
 invariants without spending tokens or depending on provider availability. The
@@ -80,16 +95,16 @@ content log.
 
 ## Current baseline
 
-The current committed run passes 21 of 21 cases across 16 of 16 covered metrics.
+The current committed run passes 38 of 38 cases across 23 of 23 covered metrics.
 Its suite hash is
-`5cc1c27895da47166dde40a3d3ffbde86678a35c3b85823ddf499dd5269ad35e`.
+`0a3f1b0d1af69b7d532bc5dac6318a166637647db8fa798bfbd06e45d624d7f0`.
 That result proves only this offline backend baseline.
 
 ## Remaining release gates
 
 `JOL-CAREER-006` remains open. Separate evidence is still required for semantic
 conflicts between independently reviewed claims; representative live-model
-quality, latency, token, and cost measurements; broader abuse and
-impersonation cases; portfolio citation navigation and accessible highlighting;
+quality, semantic entailment, latency, token, and cost measurements; additional
+adaptive red-team coverage; portfolio citation navigation and accessible highlighting;
 production admission and observability; and Carl's review of representative
 outputs. Passing this command never authorizes public launch.
