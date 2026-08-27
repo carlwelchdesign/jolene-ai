@@ -63,7 +63,6 @@ export class DeterministicPublicJobFitService implements PublicJobFitComparer {
         "Which unknown requirement would you like Carl to clarify directly?",
       ],
       corpusVersion: artifact.manifest.corpusVersion,
-      ...(request.sessionToken ? { sessionToken: request.sessionToken } : {}),
     });
   }
 }

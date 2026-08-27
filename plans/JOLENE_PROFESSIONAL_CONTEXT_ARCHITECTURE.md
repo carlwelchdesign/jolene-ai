@@ -476,7 +476,7 @@ deployment path.
 - Compose configuration, diff hygiene, secret-pattern scanning, and the
   production dependency audit pass with zero reported vulnerabilities;
 - compiled fake-provider verification confirms model and exact deterministic
-  fallback paths while excluding the session token and citation link from the
+  fallback paths while excluding any continuity field and citation link from the
   provider input; and
 - no live provider request, key copy, public binding, CORS, portfolio
   integration, merge, or deployment was performed.

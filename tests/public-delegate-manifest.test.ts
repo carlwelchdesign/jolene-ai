@@ -5,6 +5,7 @@ import path from "node:path";
 
 import { afterEach, describe, expect, it } from "vitest";
 
+import type { PublicJoleneErrorCode } from "../src/domain/public-portfolio-contract.js";
 import { FilePublicArtifactSource } from "../src/public/public-artifact-source.js";
 import {
   DeterministicPublicAnswerService,
@@ -36,6 +37,7 @@ import {
 
 const temporaryDirectories: string[] = [];
 const openServers: ReturnType<typeof createPublicDelegateServer>[] = [];
+const testRequestId = "req:00000000000000000000000000000001" as const;
 
 afterEach(async () => {
   await Promise.all(openServers.splice(0).map((server) => close(server)));
@@ -190,10 +192,7 @@ describe("public delegate manifest boundary", () => {
     const response = await fetch(`${baseUrl}/health`);
 
     expect(response.status).toBe(503);
-    expect(await response.json()).toEqual({
-      status: "unavailable",
-      error: "public_delegate_disabled",
-    });
+    expect(await response.json()).toEqual(safeError("unavailable"));
     expect(response.headers.get("cache-control")).toBe("no-store");
     expect(response.headers.get("access-control-allow-origin")).toBeNull();
   });
@@ -212,7 +211,9 @@ describe("public delegate manifest boundary", () => {
     expect(response.status).toBe(429);
     expect(response.headers.get("retry-after")).toBe("60");
     expect(response.headers.get("cache-control")).toBe("no-store");
-    expect(await response.json()).toEqual({ error: "rate_limited" });
+    expect(await response.json()).toEqual(safeError("rate_limited", {
+      retryAfterSeconds: 60,
+    }));
   });
 
   it("audits admission and kill-switch outcomes without client identity", async () => {
@@ -254,7 +255,6 @@ describe("public delegate manifest boundary", () => {
       headers: { "content-type": "application/json" },
       body: JSON.stringify({
         question: "What React systems has Carl built?",
-        sessionToken: "test-session",
       }),
     });
     const body = await response.json() as Record<string, unknown>;
@@ -263,8 +263,8 @@ describe("public delegate manifest boundary", () => {
     expect(body).toMatchObject({
       schemaVersion: "1.0.0",
       corpusVersion: artifact.manifest.corpusVersion,
-      sessionToken: "test-session",
     });
+    expect(body).not.toHaveProperty("sessionToken");
     expect(body.claims).toEqual([artifact.evidence[0]?.claim]);
     expect(body.citations).toEqual([artifact.evidence[0]?.citation]);
     expect(body).not.toHaveProperty("question");
@@ -307,17 +307,15 @@ describe("public delegate manifest boundary", () => {
     await audits.initialize();
     const { baseUrl } = await start(await writeArtifact(artifact), { audits });
     const question = "What React systems has Carl built? private-query-marker";
-    const sessionToken = "private-session-marker";
 
     expect((await fetch(`${baseUrl}/v1/portfolio/answer`, {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ question, sessionToken }),
+      body: JSON.stringify({ question }),
     })).status).toBe(200);
 
     const stored = await readFile(auditPath, "utf8");
     expect(stored).not.toContain(question);
-    expect(stored).not.toContain(sessionToken);
     expect(stored).not.toContain(artifact.evidence[0]?.claim.text ?? "missing");
     expect(await audits.list()).toMatchObject([{
       operation: "answer",
@@ -409,10 +407,7 @@ describe("public delegate manifest boundary", () => {
     const responseText = await response.text();
 
     expect(response.status).toBe(503);
-    expect(JSON.parse(responseText)).toEqual({
-      status: "unavailable",
-      error: "public_response_blocked",
-    });
+    expect(JSON.parse(responseText)).toEqual(safeError("unavailable"));
     expect(responseText).not.toContain(unsafeValue);
     expect(response.headers.get("cache-control")).toBe("no-store");
     expect(await audits.list()).toMatchObject([{
@@ -488,7 +483,7 @@ describe("public delegate manifest boundary", () => {
       413,
       "payload_too_large",
     ],
-  ])("rejects %s", async (_name, contentType, body, status, code) => {
+  ])("rejects %s", async (_name, contentType, body, status, _code) => {
     const { baseUrl } = await start(
       path.join(await temporaryDirectory(), "missing.json"),
     );
@@ -500,7 +495,7 @@ describe("public delegate manifest boundary", () => {
     });
 
     expect(response.status).toBe(status);
-    expect(await response.json()).toEqual({ error: code });
+    expect(await response.json()).toEqual(safeError("invalid_request"));
   });
 
   it("fails closed when valid answer input has no valid artifact", async () => {
@@ -515,10 +510,7 @@ describe("public delegate manifest boundary", () => {
     });
 
     expect(response.status).toBe(503);
-    expect(await response.json()).toEqual({
-      status: "unavailable",
-      error: "public_evidence_unavailable",
-    });
+    expect(await response.json()).toEqual(safeError("unavailable"));
   });
 
   it("serves a conservative frozen-contract job-fit comparison", async () => {
@@ -533,7 +525,6 @@ describe("public delegate manifest boundary", () => {
           "Typed React product systems.",
           "Kubernetes operations.",
         ].join("\n"),
-        sessionToken: "test-session",
       }),
     });
     const body = await response.json() as Record<string, unknown>;
@@ -542,8 +533,8 @@ describe("public delegate manifest boundary", () => {
     expect(body).toMatchObject({
       schemaVersion: "1.0.0",
       corpusVersion: artifact.manifest.corpusVersion,
-      sessionToken: "test-session",
     });
+    expect(body).not.toHaveProperty("sessionToken");
     expect(body.requirements).toMatchObject([
       { assessment: "direct", evidenceIds: [artifact.evidence[0]?.evidenceId] },
       { assessment: "unknown", evidenceIds: [] },
@@ -628,7 +619,7 @@ describe("public delegate manifest boundary", () => {
     });
 
     expect(response.status).toBe(400);
-    expect(await response.json()).toEqual({ error: "invalid_request" });
+    expect(await response.json()).toEqual(safeError("invalid_request"));
   });
 
   it("fails closed without disclosing contact queue errors", async () => {
@@ -654,10 +645,7 @@ describe("public delegate manifest boundary", () => {
     });
 
     expect(response.status).toBe(503);
-    expect(await response.json()).toEqual({
-      status: "unavailable",
-      error: "contact_queue_unavailable",
-    });
+    expect(await response.json()).toEqual(safeError("unavailable"));
   });
 
   it.each([
@@ -679,7 +667,7 @@ describe("public delegate manifest boundary", () => {
       413,
       "payload_too_large",
     ],
-  ])("rejects %s", async (_name, body, status, code) => {
+  ])("rejects %s", async (_name, body, status, _code) => {
     const { baseUrl } = await start(
       path.join(await temporaryDirectory(), "missing.json"),
     );
@@ -690,7 +678,7 @@ describe("public delegate manifest boundary", () => {
     });
 
     expect(response.status).toBe(status);
-    expect(await response.json()).toEqual({ error: code });
+    expect(await response.json()).toEqual(safeError("invalid_request"));
   });
 
   it.each([
@@ -725,10 +713,13 @@ describe("public delegate manifest boundary", () => {
       const responseText = await response.text();
 
       expect(response.status).toBe(503);
-      expect(JSON.parse(responseText)).toEqual({
-        status: "unavailable",
-        error: "public_evidence_unavailable",
-      });
+      expect(JSON.parse(responseText)).toEqual(
+        scenario === "schema_mismatch"
+          ? safeError("version_mismatch", {
+              supportedSchemaVersions: ["1.0.0"],
+            })
+          : safeError("unavailable"),
+      );
       expect(responseText).not.toContain(artifactPath);
     },
   );
@@ -749,9 +740,9 @@ describe("public delegate manifest boundary", () => {
 
     expect(method.status).toBe(405);
     expect(method.headers.get("allow")).toBe("GET");
-    expect(await method.json()).toEqual({ error: "method_not_allowed" });
+    expect(await method.json()).toEqual(safeError("request_rejected"));
     expect(unknown.status).toBe(404);
-    expect(await unknown.json()).toEqual({ error: "not_found" });
+    expect(await unknown.json()).toEqual(safeError("request_rejected"));
     expect(answerMethod.status).toBe(405);
     expect(answerMethod.headers.get("allow")).toBe("POST");
     expect(jobFitMethod.status).toBe(405);
@@ -769,7 +760,7 @@ describe("public delegate manifest boundary", () => {
     const response = await fetch(`${baseUrl}/${"x".repeat(2_100)}`);
 
     expect(response.status).toBe(414);
-    expect(await response.json()).toEqual({ error: "uri_too_long" });
+    expect(await response.json()).toEqual(safeError("request_rejected"));
   });
 
   it("reloads and validates the artifact for each request", async () => {
@@ -782,10 +773,7 @@ describe("public delegate manifest boundary", () => {
 
     const response = await fetch(`${baseUrl}/health`);
     expect(response.status).toBe(503);
-    expect(await response.json()).toEqual({
-      status: "unavailable",
-      error: "public_evidence_unavailable",
-    });
+    expect(await response.json()).toEqual(safeError("unavailable"));
   });
 
   it("keeps the public entrypoint free of private runtime imports", async () => {
@@ -877,6 +865,7 @@ async function start(
       requestsPerWindow: 1_000,
       maxConcurrentRequests: 10,
     }),
+    requestId: () => testRequestId,
     ...(overrides.audits ? { audits: overrides.audits } : {}),
   });
   openServers.push(server);
@@ -896,4 +885,25 @@ async function close(server: ReturnType<typeof createPublicDelegateServer>) {
   if (!server.listening) return;
   server.close();
   await once(server, "close");
+}
+
+function safeError(
+  code: PublicJoleneErrorCode,
+  extras: Readonly<Record<string, unknown>> = {},
+) {
+  const messages: Readonly<Record<PublicJoleneErrorCode, string>> = {
+    invalid_request: "The request could not be accepted.",
+    unavailable: "Public Jolene is temporarily unavailable.",
+    rate_limited: "Too many requests. Please try again later.",
+    budget_exhausted: "The public response budget is temporarily exhausted.",
+    version_mismatch: "This public Jolene response version is not supported.",
+    request_rejected: "The requested operation is not available.",
+  };
+  return {
+    schemaVersion: "1.0.0",
+    code,
+    message: messages[code],
+    requestId: testRequestId,
+    ...extras,
+  };
 }

@@ -14,7 +14,6 @@ import {
 } from "../domain/public-career-evidence.js";
 import {
   containsForbiddenPublicText,
-  isPrivateHostname,
 } from "../domain/public-disclosure-policy.js";
 
 const PUBLIC_SOURCE_TYPES = new Set([
@@ -96,7 +95,7 @@ export class PublicCareerExportService {
       revokedEvidenceIds,
       conflicts,
     });
-    const reviewedAt = latestReview(evidence) ?? generatedAt;
+    const reviewedAt = latestReview(evidence);
 
     return publicCareerEvidenceArtifactSchema.parse({
       manifest: {
@@ -180,24 +179,11 @@ function requireSource(
 
 function requirePublicHref(value: string | null): string {
   if (!value) throw new PublicCareerExportPolicyError("public_href_missing");
-  if (value.startsWith("/") && !value.startsWith("//")) {
-    if (value.includes("\\") || decodedSegments(value).includes("..")) {
-      throw new PublicCareerExportPolicyError("public_href_invalid");
-    }
-    return value;
-  }
-
-  let parsed: URL;
-  try {
-    parsed = new URL(value);
-  } catch {
-    throw new PublicCareerExportPolicyError("public_href_invalid");
-  }
   if (
-    !["http:", "https:"].includes(parsed.protocol) ||
-    parsed.username ||
-    parsed.password ||
-    isPrivateHostname(parsed.hostname)
+    !value.startsWith("/") ||
+    value.startsWith("//") ||
+    value.includes("\\") ||
+    decodedSegments(value).includes("..")
   ) {
     throw new PublicCareerExportPolicyError("public_href_invalid");
   }

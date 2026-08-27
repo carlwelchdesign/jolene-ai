@@ -825,11 +825,11 @@ Public-delegate deterministic-answer checkpoint:
 | Branch | `codex/jol-career-005b-public-answer` |
 | Implementation commit | `710adba` (`JOL-CAREER-005B add public evidence answers`) |
 | Pull request | [#13](https://github.com/carlwelchdesign/jolene-ai/pull/13), stacked on #12 |
-| Contract evidence | Strict frozen v1 `POST /v1/portfolio/answer`; bounded question and optional opaque session token; at most five exact exported claims with resolving citations, preserved strength/maturity/limitations, corpus version, and explicit no-evidence state |
+| Contract evidence | Strict `POST /v1/portfolio/answer`; bounded question and at most five exact exported claims with resolving citations, preserved strength/maturity/limitations, corpus version, and explicit no-evidence state. The provisional optional token in this checkpoint was removed by JOL-CAREER-005J before v1 freeze. |
 | Retrieval evidence | Deterministic lexical overlap, Carl/Welch name suppression, stable evidence-ID tie-breaking, and fixed output bounds; no model, browse, private lookup, instruction execution, or unsupported synthesis |
 | Verification | Node 24 typecheck, 34 test files / 176 tests, production build, Compose configuration validation, staged secret scan, production dependency audit, and compiled live loopback checks passed with OpenAI and Slack credentials absent |
-| Live evidence | The valid empty corpus returned citation-free no-evidence responses for an ordinary career question and an injection-like private-memory request, preserved an opaque session token without storage, and rejected an extra field with `400` |
-| Safety evidence | Strict JSON/media/body/question/session bounds; per-request artifact validation and digest verification; no question echo; no durable session; no CORS, model, private data, job-fit, contact, public bind, container service, portfolio integration, or deployment |
+| Live evidence | The valid empty corpus returned citation-free no-evidence responses for an ordinary career question and an injection-like private-memory request; current v1 rejects session and other extra fields with `400` |
+| Safety evidence | Strict JSON/media/body/question bounds; per-request artifact validation and digest verification; no question echo or session continuity; no CORS, model, private data, job-fit, contact, public bind, container service, portfolio integration, or deployment |
 | Remaining boundary | `JOL-CAREER-005` and `PORT-DEP-002` remain incomplete; reviewed public evidence is still empty; model-quality evaluation, job fit, contact intent, rate/abuse/cost controls, public topology, integration, and production enablement remain pending |
 
 Public-delegate deterministic-job-fit checkpoint:
@@ -840,11 +840,11 @@ Public-delegate deterministic-job-fit checkpoint:
 | Branch | `codex/jol-career-005c-public-job-fit` |
 | Implementation commit | `5c5a417` (`JOL-CAREER-005C add public job fit comparison`) |
 | Pull request | [#14](https://github.com/carlwelchdesign/jolene-ai/pull/14), stacked on #13 |
-| Contract evidence | Strict frozen v1 `POST /v1/portfolio/job-fit`; bounded job description and optional opaque session token; at most 24 stable bounded requirements with resolving citations, limitations, caveats, follow-up questions, and corpus version |
+| Contract evidence | Strict `POST /v1/portfolio/job-fit`; bounded job description and at most 24 stable bounded requirements with resolving citations, limitations, caveats, follow-up questions, and corpus version. The provisional optional token in this checkpoint was removed by JOL-CAREER-005J before v1 freeze. |
 | Assessment evidence | Deterministic segmentation and lexical overlap over exact exported evidence; stable requirement hashes and evidence-ID ordering; conservative `direct`, `adjacent`, and `unknown` results; `missing` is never inferred from absent public evidence |
 | Verification | Node 24 typecheck, 35 test files / 185 tests, production build, Compose configuration validation, staged secret scan, production dependency audit, and compiled live loopback checks passed with OpenAI and Slack credentials absent |
-| Live evidence | The valid empty corpus returned citation-free `unknown` assessments for ordinary and injection-like job descriptions, preserved an opaque session token without storage, and rejected an extra field with `400` |
-| Safety evidence | Strict JSON/media/body/description/session bounds; per-request artifact validation and digest verification; ephemeral untrusted job-description input; no model, browse, private lookup, persistence, recommendation score, contact, CORS, public bind, container service, portfolio integration, or deployment |
+| Live evidence | The valid empty corpus returned citation-free `unknown` assessments for ordinary and injection-like job descriptions; current v1 rejects session and other extra fields with `400` |
+| Safety evidence | Strict JSON/media/body/description bounds; per-request artifact validation and digest verification; ephemeral untrusted job-description input with no session continuity; no model, browse, private lookup, persistence, recommendation score, contact, CORS, public bind, container service, portfolio integration, or deployment |
 | Remaining boundary | `JOL-CAREER-005` and `PORT-DEP-002` remain incomplete; reviewed public evidence is still empty; model-quality evaluation, contact intent, production-grade abuse/cost controls, public topology, integration, and production enablement remain pending |
 
 Public-delegate admission-control checkpoint:
@@ -885,10 +885,24 @@ Public-delegate grounded-answer checkpoint:
 | Implementation commit | `ba2946c` (`JOL-CAREER-005I add grounded OpenAI answers`) |
 | Configuration boundary | Deterministic by default; `openai` mode requires an explicit non-empty key in the separate `.env.public.local`; no private `.env.local` load or automatic key copy |
 | Grounding boundary | Deterministic evidence selection runs before the provider; no evidence bypasses the provider; input is limited to the visitor question plus selected public claim text, limitations, and citation title |
-| Output boundary | Responses API with `store: false`, no tools, bounded tokens and timeout, strict answer-only JSON, immutable deterministic claims/citations/limitations/follow-ups/corpus/session fields, exact deterministic fallback, and final disclosure-policy egress inspection |
+| Output boundary | Responses API with `store: false`, no tools, bounded tokens and timeout, strict answer-only JSON, immutable deterministic claims/citations/limitations/follow-ups/corpus fields, exact deterministic fallback, and final disclosure-policy egress inspection |
 | Verification | Node 24 typecheck, 43 test files / 270 tests, production build, Compose configuration validation, secret-pattern scan, zero production dependency vulnerabilities, and compiled fake-provider model/fallback checks passed |
 | Safety evidence | Fixed non-content `model_supported` / `model_fallback` audit outcomes; no live provider request, job-description model use, contact data, private retrieval, CORS, public bind, container service, portfolio integration, merge, or deployment |
 | Remaining boundary | `JOL-CAREER-005`, `JOL-CAREER-006`, and `PORT-DEP-002` remain incomplete; grounding evaluations, provider-policy review, production cost/abuse controls, public topology, integration, and production enablement remain pending |
+
+Public-delegate frozen-v1 alignment checkpoint:
+
+| Field | Evidence |
+|---|---|
+| Asana | [JOL-CAREER-005J](https://app.asana.com/1/9789386902387/project/1216473233375594/task/1217888122836212) — frozen portfolio v1 provider alignment |
+| Branch | `codex/jol-career-005j-contract-alignment` |
+| Implementation commit | `6445105` (`JOL-CAREER-005J align frozen public v1 contract`) |
+| Pull request | [jolene-ai #29](https://github.com/carlwelchdesign/jolene-ai/pull/29), stacked on the Docker cutover branch |
+| Contract boundary | Version 1 omits session continuity, bounds every response collection and string, requires site-relative citations, keeps `missing` and `unknown` citation-free, and uses one versioned safe error envelope with opaque request IDs |
+| Consumer evidence | Read-only compatibility review against `carl-welch-portfolio` PR #13 at commit `3e9e270` |
+| Verification | Node 24 typecheck, 45 test files / 293 tests, all 41 offline evaluation cases and 24 blocker metrics, production build, Compose validation, zero production dependency vulnerabilities, diff checks, and compiled HTTP contract smoke tests passed |
+| Safety evidence | Provider and filesystem failure names remain internal; no request content, private ID, path, evidence excerpt, or destination origin is added to errors; no public bind, deployment, or evidence approval |
+| Remaining boundary | Portfolio integration, authenticated production operations, live-model measurement, production telemetry/cost controls, deployment topology, human review, and launch approval remain separate gates |
 
 Public-delegate offline-evaluation checkpoint:
 

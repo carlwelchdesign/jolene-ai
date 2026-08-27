@@ -1,3 +1,4 @@
+import { randomBytes } from "node:crypto";
 import {
   createServer,
   type IncomingMessage,
@@ -5,13 +6,22 @@ import {
   type ServerResponse,
 } from "node:http";
 
-import type { PublicCareerEvidenceArtifact } from "../domain/public-career-evidence.js";
+import {
+  PUBLIC_CAREER_EVIDENCE_SCHEMA_VERSION,
+  type PublicCareerEvidenceArtifact,
+} from "../domain/public-career-evidence.js";
 import {
   contactIntentRequestSchema,
   portfolioAnswerRequestSchema,
   portfolioJobFitRequestSchema,
+  publicJoleneErrorResponseSchema,
+  type PublicJoleneErrorCode,
+  type PublicJoleneErrorResponse,
 } from "../domain/public-portfolio-contract.js";
-import type { PublicArtifactSource } from "./public-artifact-source.js";
+import {
+  PublicArtifactVersionMismatchError,
+  type PublicArtifactSource,
+} from "./public-artifact-source.js";
 import type { PublicPortfolioAnswerer } from "./public-answer-service.js";
 import type { PublicJobFitComparer } from "./public-job-fit-service.js";
 import {
@@ -47,6 +57,7 @@ export interface PublicDelegateServerOptions {
   readonly contactIntents: PublicContactIntentStager;
   readonly admissions: PublicRequestAdmissionController;
   readonly audits?: PublicAuditRecorder;
+  readonly requestId?: () => `req:${string}`;
 }
 
 export function createPublicDelegateServer(
@@ -55,12 +66,19 @@ export function createPublicDelegateServer(
   const server = createServer(
     { maxHeaderSize: 16_384 },
     async (request, response) => {
-      const respond = createAuditedResponder(request, response, options.audits);
+      const requestId = (options.requestId ?? createPublicRequestId)();
+      const respond = createAuditedResponder(
+        request,
+        response,
+        options.audits,
+        requestId,
+      );
       if (!options.enabled) {
-        await respond(503, {
-          status: "unavailable",
-          error: "public_delegate_disabled",
-        }, "disabled");
+        await respond(
+          503,
+          publicError("public_delegate_disabled", requestId),
+          "disabled",
+        );
         return;
       }
       const admission = options.admissions.acquire(
@@ -69,36 +87,48 @@ export function createPublicDelegateServer(
       if (!admission.accepted) {
         await respond(
           admission.status,
-          admission.status === 503
-            ? { status: "unavailable", error: admission.code }
-            : { error: admission.code },
+          publicError(
+            admission.code,
+            requestId,
+            admission.retryAfterSeconds,
+          ),
           admission.status === 503 ? "busy" : "rate_limited",
           { "retry-after": String(admission.retryAfterSeconds) },
         );
         return;
       }
       try {
-        await handleRequest(request, options, respond);
+        await handleRequest(request, options, respond, requestId);
       } catch (error) {
         if (error instanceof PublicRequestError) {
           await respond(
             error.status,
-            { error: error.code },
+            publicError(error.code, requestId),
             requestErrorOutcome(error.code),
           );
           return;
         }
-        if (error instanceof PublicContactQueueUnavailableError) {
-          await respond(503, {
-            status: "unavailable",
-            error: "contact_queue_unavailable",
-          }, "contact_queue_unavailable");
+        if (error instanceof PublicArtifactVersionMismatchError) {
+          await respond(
+            503,
+            publicError("version_mismatch", requestId),
+            "public_evidence_unavailable",
+          );
           return;
         }
-        await respond(503, {
-          status: "unavailable",
-          error: "public_evidence_unavailable",
-        }, "public_evidence_unavailable");
+        if (error instanceof PublicContactQueueUnavailableError) {
+          await respond(
+            503,
+            publicError("contact_queue_unavailable", requestId),
+            "contact_queue_unavailable",
+          );
+          return;
+        }
+        await respond(
+          503,
+          publicError("public_evidence_unavailable", requestId),
+          "public_evidence_unavailable",
+        );
       } finally {
         admission.release();
       }
@@ -116,10 +146,15 @@ async function handleRequest(
   request: IncomingMessage,
   options: PublicDelegateServerOptions,
   respond: PublicAuditedResponder,
+  requestId: `req:${string}`,
 ): Promise<void> {
   const rawUrl = request.url ?? "/";
   if (rawUrl.length > MAX_URL_CHARACTERS) {
-    await respond(414, { error: "uri_too_long" }, "uri_too_long");
+    await respond(
+      414,
+      publicError("uri_too_long", requestId),
+      "uri_too_long",
+    );
     return;
   }
   const pathname = new URL(rawUrl, "http://127.0.0.1").pathname;
@@ -135,14 +170,18 @@ async function handleRequest(
   if (expectedMethod && request.method !== expectedMethod) {
     await respond(
       405,
-      { error: "method_not_allowed" },
+      publicError("method_not_allowed", requestId),
       "method_not_allowed",
       { allow: expectedMethod },
     );
     return;
   }
   if (!expectedMethod) {
-    await respond(404, { error: "not_found" }, "not_found");
+    await respond(
+      404,
+      publicError("not_found", requestId),
+      "not_found",
+    );
     return;
   }
 
@@ -254,12 +293,20 @@ function createAuditedResponder(
   request: IncomingMessage,
   response: ServerResponse,
   audits: PublicAuditRecorder | undefined,
+  requestId: `req:${string}`,
 ): PublicAuditedResponder {
   const startedAt = Date.now();
   const operation = auditOperation(request.url ?? "/");
   const method = auditMethod(request.method);
   return async (status, body, outcome, headers = {}, details = {}) => {
-    const guarded = guardPublicResponse(status, body, outcome, headers, details);
+    const guarded = guardPublicResponse(
+      status,
+      body,
+      outcome,
+      headers,
+      details,
+      requestId,
+    );
     if (audits) {
       try {
         void audits.record({
@@ -284,6 +331,7 @@ function guardPublicResponse(
   outcome: PublicAuditOutcome,
   headers: Readonly<Record<string, string>>,
   details: PublicAuditDetails,
+  requestId: `req:${string}`,
 ) {
   try {
     assertPublicResponseDisclosureSafe(body);
@@ -291,7 +339,7 @@ function guardPublicResponse(
   } catch {
     return {
       status: 503,
-      body: { status: "unavailable", error: "public_response_blocked" },
+      body: publicError("public_response_blocked", requestId),
       outcome: "response_blocked" as const,
       headers: {},
       details: {},
@@ -367,3 +415,54 @@ class PublicRequestError extends Error {
     this.name = "PublicRequestError";
   }
 }
+
+function createPublicRequestId(): `req:${string}` {
+  return `req:${randomBytes(16).toString("hex")}`;
+}
+
+function publicError(
+  internalCode: string,
+  requestId: `req:${string}`,
+  retryAfterSeconds?: number,
+): PublicJoleneErrorResponse {
+  const code = publicErrorCode(internalCode);
+  return publicJoleneErrorResponseSchema.parse({
+    schemaVersion: PUBLIC_CAREER_EVIDENCE_SCHEMA_VERSION,
+    code,
+    message: PUBLIC_ERROR_MESSAGES[code],
+    requestId,
+    ...(retryAfterSeconds ? { retryAfterSeconds } : {}),
+    ...(code === "version_mismatch"
+      ? { supportedSchemaVersions: [PUBLIC_CAREER_EVIDENCE_SCHEMA_VERSION] }
+      : {}),
+  });
+}
+
+function publicErrorCode(internalCode: string): PublicJoleneErrorCode {
+  switch (internalCode) {
+    case "rate_limited":
+      return "rate_limited";
+    case "version_mismatch":
+      return "version_mismatch";
+    case "invalid_request":
+    case "invalid_json":
+    case "payload_too_large":
+    case "unsupported_media_type":
+      return "invalid_request";
+    case "method_not_allowed":
+    case "not_found":
+    case "uri_too_long":
+      return "request_rejected";
+    default:
+      return "unavailable";
+  }
+}
+
+const PUBLIC_ERROR_MESSAGES: Readonly<Record<PublicJoleneErrorCode, string>> = {
+  invalid_request: "The request could not be accepted.",
+  unavailable: "Public Jolene is temporarily unavailable.",
+  rate_limited: "Too many requests. Please try again later.",
+  budget_exhausted: "The public response budget is temporarily exhausted.",
+  version_mismatch: "This public Jolene response version is not supported.",
+  request_rejected: "The requested operation is not available.",
+};

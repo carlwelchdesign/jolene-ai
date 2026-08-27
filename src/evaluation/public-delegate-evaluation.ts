@@ -489,7 +489,6 @@ async function evaluateGroundedCase(
 ): Promise<EvaluationAssertion[]> {
   const request = {
     question: item.question,
-    sessionToken: "evaluation-session-marker",
   };
   const baseline = new DeterministicPublicAnswerService().answer(artifact, request);
   const inputs: GroundedPublicAnswerInput[] = [];
@@ -534,7 +533,6 @@ async function evaluateGroundedCase(
   const providerInputIsMinimal = baseline.claims.length === 0
     ? inputs.length === 0
     : inputs.length === 1 && equal(inputs[0], expectedProviderInput) &&
-      !JSON.stringify(inputs[0]).includes(request.sessionToken) &&
       !artifact.evidence.some((record) =>
         JSON.stringify(inputs[0]).includes(record.citation.href)
       );

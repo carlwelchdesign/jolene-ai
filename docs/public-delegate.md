@@ -66,12 +66,11 @@ After a production build, use `npm run start:public`.
   corpus version, and evidence count.
 - `GET /v1/public-evidence/manifest` returns the exact frozen v1 manifest.
 - `POST /v1/portfolio/answer` accepts strict JSON with a question of at most
-  800 characters and an optional session token of at most 256 characters. It
-  returns at most five exact exported claims and their citations.
+  800 characters. It returns at most five exact exported claims and their
+  site-relative citations.
 - `POST /v1/portfolio/job-fit` accepts strict JSON with a job description of at
-  most 12,000 characters and an optional session token of at most 256
-  characters. It returns at most 24 bounded requirements, conservative
-  assessments, and resolving public citations.
+  most 12,000 characters. It returns at most 24 bounded requirements,
+  conservative assessments, and resolving site-relative public citations.
 - `POST /v1/portfolio/contact-intent` accepts strict JSON with bounded name,
   email, optional organization, message, and literal `consent: true`. A valid
   request returns `202 pending_review` without echoing contact fields.
@@ -81,12 +80,19 @@ Missing, malformed, incompatible, internally inconsistent, or tampered
 artifacts fail closed with a non-disclosing `503` response. Responses use
 `no-store` and restrictive security headers. No CORS policy is enabled.
 
+All non-success responses use the frozen safe error envelope: schema version,
+one bounded public error code and message, and an opaque per-request ID. A
+retryable response may add `retryAfterSeconds`; an artifact schema mismatch
+adds the supported schema versions. Internal adapter, provider, filesystem,
+and policy failure names never cross the public boundary.
+
 Answers use deterministic lexical overlap with stable evidence-ID tie-breaking.
 Carl's name is treated as non-discriminating so it cannot pull unrelated records
 into a specific answer. Question text is never executed or copied into the
 response. When no reviewed public claim matches—including for unsupported or
-injection-like input—the service returns an explicit no-evidence response. An
-optional session token is echoed for adapter continuity but is not persisted.
+injection-like input—the service returns an explicit no-evidence response.
+Version 1 has no session field or transcript continuity; questions and job
+descriptions remain ephemeral inputs.
 
 ## Optional grounded answer synthesis
 
@@ -107,8 +113,8 @@ content, private memory, or private retrieval results.
 The adapter uses the Responses API with `store: false`, no tools, a bounded
 output budget, a bounded timeout, and a strict JSON schema containing only an
 answer string. The existing deterministic response owns every other field:
-claims, citations, limitations, follow-up questions, corpus version, and the
-optional session token cannot be replaced by model output. Provider failure,
+claims, citations, limitations, follow-up questions, and corpus version cannot
+be replaced by model output. Provider failure,
 timeout, refusal, malformed JSON, empty text, or oversized text returns the
 exact deterministic answer. The audit ledger records only fixed
 `model_supported` or `model_fallback` outcomes and never submitted or generated
@@ -135,6 +141,11 @@ are not a recommendation or blanket fit score. The job description is treated
 as untrusted ephemeral input: it is not logged, persisted, executed, sent to a
 model, or used to access private context. Instruction-like input fails to
 citation-free `unknown` results.
+
+Both `missing` and `unknown` assessments are contractually citation-free.
+`direct` and `adjacent` require resolving evidence. Citation destinations are
+site-relative so the portfolio, rather than the delegate, controls the approved
+browser origin.
 
 Contact intents are staged in a dedicated local queue, not Jolene's private
 database. The queue stores only the fields the visitor explicitly submitted,
@@ -178,8 +189,8 @@ credentials, email addresses, and phone numbers. Values are data only and are
 never treated as instructions.
 
 If a value violates the policy—or policy inspection itself fails—the delegate
-discards the entire candidate response and returns only a generic no-store
-`503 public_response_blocked` body. It does not disclose the matching value,
+discards the entire candidate response and returns only the generic no-store
+safe `503 unavailable` envelope. It does not disclose the matching value,
 field, rule, path, or stack trace. The audit ledger records only the fixed
 `response_blocked` outcome without corpus metadata or result counts. Existing
 valid manifest, answer, job-fit, contact-intent, admission, and error responses

@@ -6,12 +6,15 @@ import {
   careerEvidenceIdSchema,
   evidenceStrengthSchema,
   publicSourceTypeSchema,
+  siteRelativePublicHrefSchema,
 } from "./public-career-evidence.js";
 
 export const PUBLIC_PORTFOLIO_ANSWER_LIMITS = {
   questionCharacters: 800,
-  sessionTokenCharacters: 256,
+  answerCharacters: 4_000,
   responseItems: 5,
+  responseLimitations: 8,
+  claimLimitations: 8,
 } as const;
 
 export const PUBLIC_PORTFOLIO_JOB_FIT_LIMITS = {
@@ -20,7 +23,7 @@ export const PUBLIC_PORTFOLIO_JOB_FIT_LIMITS = {
   requirementCharacters: 600,
   evidencePerRequirement: 3,
   citations: 72,
-  sessionTokenCharacters: 256,
+  caveats: 8,
 } as const;
 
 export const PUBLIC_CONTACT_INTENT_LIMITS = {
@@ -30,13 +33,24 @@ export const PUBLIC_CONTACT_INTENT_LIMITS = {
   messageCharacters: 2_000,
 } as const;
 
+export const PUBLIC_JOLENE_ERROR_CODES = [
+  "invalid_request",
+  "unavailable",
+  "rate_limited",
+  "budget_exhausted",
+  "version_mismatch",
+  "request_rejected",
+] as const;
+
+export const PUBLIC_JOLENE_ERROR_LIMITS = {
+  messageCharacters: 240,
+  supportedSchemaVersions: 4,
+} as const;
+
 export const portfolioAnswerRequestSchema = z.object({
   question: z.string().trim().min(1).max(
     PUBLIC_PORTFOLIO_ANSWER_LIMITS.questionCharacters,
   ),
-  sessionToken: z.string().trim().min(1).max(
-    PUBLIC_PORTFOLIO_ANSWER_LIMITS.sessionTokenCharacters,
-  ).optional(),
 }).strict();
 
 const publicAnswerClaimSchema = z.object({
@@ -47,35 +61,38 @@ const publicAnswerClaimSchema = z.object({
   ),
   evidenceStrength: evidenceStrengthSchema,
   maturity: careerMaturitySchema,
-  limitations: z.array(z.string().trim().min(1).max(2_000)),
-});
+  limitations: z.array(z.string().trim().min(1).max(2_000)).max(
+    PUBLIC_PORTFOLIO_ANSWER_LIMITS.claimLimitations,
+  ),
+}).strict();
 
 export const publicEvidenceCitationSchema = z.object({
   evidenceId: careerEvidenceIdSchema,
   title: z.string().trim().min(1).max(240),
-  href: z.string().trim().min(1).max(2_000),
+  href: siteRelativePublicHrefSchema,
   sourceType: publicSourceTypeSchema,
   strength: evidenceStrengthSchema,
   maturity: careerMaturitySchema,
   lastReviewedAt: z.string().datetime({ offset: true }),
-});
+}).strict();
 
 export const portfolioAnswerResponseSchema = z.object({
   schemaVersion: z.literal(PUBLIC_CAREER_EVIDENCE_SCHEMA_VERSION),
-  answer: z.string().trim().min(1),
+  answer: z.string().trim().min(1).max(
+    PUBLIC_PORTFOLIO_ANSWER_LIMITS.answerCharacters,
+  ),
   claims: z.array(publicAnswerClaimSchema).max(
     PUBLIC_PORTFOLIO_ANSWER_LIMITS.responseItems,
   ),
   citations: z.array(publicEvidenceCitationSchema).max(
     PUBLIC_PORTFOLIO_ANSWER_LIMITS.responseItems,
   ),
-  limitations: z.array(z.string().trim().min(1).max(2_000)),
+  limitations: z.array(z.string().trim().min(1).max(2_000)).max(
+    PUBLIC_PORTFOLIO_ANSWER_LIMITS.responseLimitations,
+  ),
   suggestedFollowUpQuestions: z.array(z.string().trim().min(1).max(240)).max(4),
   corpusVersion: z.string().regex(/^career:[a-f0-9]{64}$/),
-  sessionToken: z.string().trim().min(1).max(
-    PUBLIC_PORTFOLIO_ANSWER_LIMITS.sessionTokenCharacters,
-  ).optional(),
-}).superRefine((response, context) => {
+}).strict().superRefine((response, context) => {
   const citationIds = new Set(
     response.citations.map((citation) => citation.evidenceId),
   );
@@ -102,9 +119,6 @@ export const portfolioJobFitRequestSchema = z.object({
   ).refine((value) => /[\p{L}\p{N}]/u.test(value), {
     message: "Job description must contain a letter or number.",
   }),
-  sessionToken: z.string().trim().min(1).max(
-    PUBLIC_PORTFOLIO_JOB_FIT_LIMITS.sessionTokenCharacters,
-  ).optional(),
 }).strict();
 
 export const jobFitAssessmentSchema = z.enum([
@@ -125,7 +139,7 @@ const jobRequirementResultSchema = z.object({
     PUBLIC_PORTFOLIO_JOB_FIT_LIMITS.evidencePerRequirement,
   ),
   limitations: z.array(z.string().trim().min(1).max(2_000)).max(4),
-}).superRefine((result, context) => {
+}).strict().superRefine((result, context) => {
   if (
     (result.assessment === "direct" || result.assessment === "adjacent") &&
     result.evidenceIds.length === 0
@@ -133,6 +147,16 @@ const jobRequirementResultSchema = z.object({
     context.addIssue({
       code: "custom",
       message: "Supported assessments require at least one evidence ID.",
+    });
+  }
+  if (
+    (result.assessment === "missing" || result.assessment === "unknown") &&
+    result.evidenceIds.length > 0
+  ) {
+    context.addIssue({
+      code: "custom",
+      path: ["evidenceIds"],
+      message: "Missing and unknown assessments cannot cite evidence.",
     });
   }
 });
@@ -145,13 +169,12 @@ export const portfolioJobFitResponseSchema = z.object({
   citations: z.array(publicEvidenceCitationSchema).max(
     PUBLIC_PORTFOLIO_JOB_FIT_LIMITS.citations,
   ),
-  caveats: z.array(z.string().trim().min(1).max(2_000)).min(1).max(8),
+  caveats: z.array(z.string().trim().min(1).max(2_000)).min(1).max(
+    PUBLIC_PORTFOLIO_JOB_FIT_LIMITS.caveats,
+  ),
   suggestedFollowUpQuestions: z.array(z.string().trim().min(1).max(240)).max(4),
   corpusVersion: z.string().regex(/^career:[a-f0-9]{64}$/),
-  sessionToken: z.string().trim().min(1).max(
-    PUBLIC_PORTFOLIO_JOB_FIT_LIMITS.sessionTokenCharacters,
-  ).optional(),
-}).superRefine((response, context) => {
+}).strict().superRefine((response, context) => {
   const citationIds = new Set(
     response.citations.map((citation) => citation.evidenceId),
   );
@@ -197,8 +220,36 @@ export const contactIntentResponseSchema = z.object({
   intentId: z.string().uuid(),
   status: z.literal("pending_review"),
   submittedAt: z.string().datetime({ offset: true }),
-  message: z.string().trim().min(1).max(240),
+  message: z.string().trim().min(1).max(1_000),
 }).strict();
+
+export const publicJoleneErrorResponseSchema = z.object({
+  schemaVersion: z.literal(PUBLIC_CAREER_EVIDENCE_SCHEMA_VERSION),
+  code: z.enum(PUBLIC_JOLENE_ERROR_CODES),
+  message: z.string().trim().min(1).max(
+    PUBLIC_JOLENE_ERROR_LIMITS.messageCharacters,
+  ),
+  requestId: z.string().regex(/^req:[a-f0-9]{32}$/),
+  retryAfterSeconds: z.number().int().positive().optional(),
+  supportedSchemaVersions: z.array(z.string().trim().min(1)).max(
+    PUBLIC_JOLENE_ERROR_LIMITS.supportedSchemaVersions,
+  ).refine((versions) => new Set(versions).size === versions.length, {
+    message: "Supported schema versions must be unique.",
+  }).optional(),
+}).strict().superRefine((response, context) => {
+  if (
+    response.code === "version_mismatch" &&
+    !response.supportedSchemaVersions?.includes(
+      PUBLIC_CAREER_EVIDENCE_SCHEMA_VERSION,
+    )
+  ) {
+    context.addIssue({
+      code: "custom",
+      path: ["supportedSchemaVersions"],
+      message: "Version mismatch errors must advertise the current schema.",
+    });
+  }
+});
 
 export type PortfolioAnswerRequest = z.infer<
   typeof portfolioAnswerRequestSchema
@@ -214,6 +265,10 @@ export type PortfolioJobFitResponse = z.infer<
 >;
 export type ContactIntentRequest = z.infer<typeof contactIntentRequestSchema>;
 export type ContactIntentResponse = z.infer<typeof contactIntentResponseSchema>;
+export type PublicJoleneErrorCode = typeof PUBLIC_JOLENE_ERROR_CODES[number];
+export type PublicJoleneErrorResponse = z.infer<
+  typeof publicJoleneErrorResponseSchema
+>;
 
 export function containsLikelySecret(value: string): boolean {
   return LIKELY_SECRET_PATTERNS.some((pattern) => pattern.test(value));

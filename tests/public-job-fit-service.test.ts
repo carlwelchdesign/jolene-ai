@@ -83,16 +83,15 @@ describe("DeterministicPublicJobFitService", () => {
     expect(JSON.stringify(result).toLowerCase()).not.toContain("secret value");
   });
 
-  it("handles an empty corpus and echoes but does not create session state", () => {
+  it("handles an empty corpus without creating session state", () => {
     const artifact = createPublicEvidenceArtifact([]);
     const result = service.compare(artifact, {
       jobDescription: "React product systems.",
-      sessionToken: "opaque-session-token",
     });
 
     expect(result.requirements[0]?.assessment).toBe("unknown");
     expect(result.citations).toEqual([]);
-    expect(result.sessionToken).toBe("opaque-session-token");
+    expect(result).not.toHaveProperty("sessionToken");
     expect(result.corpusVersion).toBe(artifact.manifest.corpusVersion);
   });
 
@@ -117,7 +116,7 @@ describe("DeterministicPublicJobFitService", () => {
     expect(result.caveats.join(" ")).toContain("unresolved conflict groups");
   });
 
-  it("strictly validates description, session, and extra-field limits", () => {
+  it("strictly validates description and rejects session or extra fields", () => {
     expect(() => portfolioJobFitRequestSchema.parse({ jobDescription: "" }))
       .toThrow();
     expect(() => portfolioJobFitRequestSchema.parse({ jobDescription: "-" }))
@@ -127,7 +126,7 @@ describe("DeterministicPublicJobFitService", () => {
     })).toThrow();
     expect(() => portfolioJobFitRequestSchema.parse({
       jobDescription: "React",
-      sessionToken: "x".repeat(257),
+      sessionToken: "not-part-of-v1",
     })).toThrow();
     expect(() => portfolioJobFitRequestSchema.parse({
       jobDescription: "React",
