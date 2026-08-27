@@ -27,9 +27,9 @@
           <a href="/memory">Memory</a>
           <a href="/approvals">Approvals</a>
         </nav>
-        <div class="read-only-chip" aria-label="Project Watch is read-only">
+        <div class="read-only-chip" aria-label="Project inspection is read-only">
           <span aria-hidden="true">●</span>
-          Read-only
+          Project read-only
         </div>
       </div>
     </header>
@@ -38,16 +38,16 @@
       <section class="hero hero-projects" aria-labelledby="page-title">
         <p class="eyebrow">Fresh evidence, no side effects</p>
         <h1 id="page-title">See what changed before anything changes.</h1>
-        <p class="hero-copy">Check whether a project, plan, or Git boundary needs attention. Explicitly enabled monitors can also record bounded, read-only checks on a local schedule.</p>
+        <p class="hero-copy">Check whether a project, plan, or Git boundary needs attention. Explicitly enabled monitors record bounded checks and can notify only your Slack owner DM when the alert state changes.</p>
         <div class="hero-actions">
           <button class="button button-primary" id="refresh-all" type="button">Check all projects</button>
-          <span class="local-note"><span aria-hidden="true">●</span> Local, bounded monitoring</span>
+          <span class="local-note"><span aria-hidden="true">●</span> Owner alerts on state changes only</span>
         </div>
       </section>
 
       <aside class="boundary-banner" aria-label="Project Watch boundary">
         <span class="boundary-icon" aria-hidden="true">✓</span>
-        <div><strong>Jolene only looks.</strong><p>Checks can be manual or explicitly scheduled. They cannot edit files, run a build, commit, push, deploy, publish, repair, or notify anyone.</p></div>
+        <div><strong>Jolene only looks at project state.</strong><p>Checks cannot edit files, run a build, commit, push, deploy, publish, or repair. When explicitly enabled, only alert transitions may go to the configured Slack owner DM—never a shared channel or arbitrary destination.</p></div>
       </aside>
 
       <div class="notice" id="page-notice" role="status" aria-live="polite" hidden></div>

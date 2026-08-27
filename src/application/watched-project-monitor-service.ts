@@ -5,6 +5,7 @@ import {
   type WatchedProjectMonitorState,
   type WatchedProjectMonitorStore,
 } from "../domain/watched-project.js";
+import { deriveWatchedProjectNotification } from "../domain/watched-project-notification.js";
 
 export class WatchedProjectMonitorConflictError extends Error {
   constructor(message: string) {
@@ -93,7 +94,16 @@ export class WatchedProjectMonitorService {
     }
     try {
       const snapshot = await this.inspector.inspect(project);
-      this.store.complete(run.id, this.now(), { snapshot });
+      this.store.complete(run.id, this.now(), {
+        snapshot,
+        notification: deriveWatchedProjectNotification(
+          run.previousSnapshot,
+          snapshot,
+          trigger,
+          project.monitoring.notifications,
+        ),
+        notificationMaxAttempts: project.monitoring.notifications.maxAttempts,
+      });
     } catch {
       this.store.complete(run.id, this.now(), { errorCode: "inspection_failed" });
     }

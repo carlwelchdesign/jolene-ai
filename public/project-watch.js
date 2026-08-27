@@ -204,6 +204,7 @@ function monitorPanel(project, monitor) {
     fact("Daily budget", monitor.runsToday + " / " + monitor.policy.maxRunsPerDay + " checks"),
     fact("Stop condition", monitor.runCount + " / " + monitor.policy.stopAfterRuns + " total checks"),
     fact("Next run", monitor.nextRunAt ? formatDate(monitor.nextRunAt) : "None scheduled"),
+    fact("Owner alerts", monitor.policy.notifications.enabled ? "Slack owner DM · state changes only" : "Disabled"),
   );
   panel.append(facts);
 
@@ -227,7 +228,35 @@ function monitorPanel(project, monitor) {
     history.append(list);
   }
   panel.append(history);
+
+  const notifications = el("div", "monitor-history notification-history");
+  notifications.append(el("strong", "", "Recent owner notifications"));
+  if (!monitor.policy.notifications.enabled) {
+    notifications.append(el("p", "monitor-empty", "Owner notifications are disabled in local configuration."));
+  } else if (monitor.notifications.length === 0) {
+    notifications.append(el("p", "monitor-empty", "No alert transition has needed a notification."));
+  } else {
+    const list = el("ol", "monitor-run-list notification-list");
+    monitor.notifications.slice(0, 5).forEach((notification) => {
+      const item = el("li");
+      item.append(
+        el("span", "", formatDate(notification.checkedAt)),
+        el("strong", "", humanize(notification.transition) + " · " + notificationStatus(notification)),
+      );
+      list.append(item);
+    });
+    notifications.append(list);
+  }
+  panel.append(notifications);
   return panel;
+}
+
+function notificationStatus(notification) {
+  if (notification.status === "delivered") return "delivered";
+  if (notification.status === "abandoned") return "delivery stopped after retry limit";
+  if (notification.status === "failed") return "retry scheduled";
+  if (notification.status === "sending") return "sending";
+  return "waiting for Slack";
 }
 
 async function monitorAction(project, action, buttonNode) {

@@ -15,6 +15,13 @@ export interface WatchedProjectMonitoringPolicy {
   readonly maxRunsPerDay: number;
   readonly stopAfterRuns: number;
   readonly historyLimit: number;
+  readonly notifications: WatchedProjectNotificationPolicy;
+}
+
+export interface WatchedProjectNotificationPolicy {
+  readonly enabled: boolean;
+  readonly destination: "slack_owner_dm";
+  readonly maxAttempts: number;
 }
 
 export interface WatchedProjectSummary {
@@ -81,6 +88,39 @@ export interface WatchedProjectMonitorRun {
   readonly errorCode: "inspection_failed" | null;
 }
 
+export interface WatchedProjectMonitorClaim extends WatchedProjectMonitorRun {
+  readonly previousSnapshot: WatchedProjectSnapshot | null;
+}
+
+export type WatchedProjectNotificationTransition =
+  | "attention_started"
+  | "attention_changed"
+  | "attention_resolved";
+
+export interface WatchedProjectNotificationIntent {
+  readonly transition: WatchedProjectNotificationTransition;
+  readonly alertCodes: readonly WatchedProjectAlert[];
+  readonly checkedAt: string;
+}
+
+export interface WatchedProjectNotification {
+  readonly id: string;
+  readonly projectId: string;
+  readonly runId: string;
+  readonly transition: WatchedProjectNotificationTransition;
+  readonly alertCodes: readonly WatchedProjectAlert[];
+  readonly checkedAt: string;
+  readonly status: "pending" | "sending" | "failed" | "delivered" | "abandoned";
+  readonly attempts: number;
+  readonly nextAttemptAt: string | null;
+  readonly deliveredAt: string | null;
+  readonly errorCode: string | null;
+}
+
+export interface WatchedProjectNotificationClaim extends WatchedProjectNotification {
+  readonly maxAttempts: number;
+}
+
 export interface WatchedProjectMonitorState {
   readonly projectId: string;
   readonly status: WatchedProjectMonitorStatus;
@@ -90,6 +130,7 @@ export interface WatchedProjectMonitorState {
   readonly runsToday: number;
   readonly policy: WatchedProjectMonitoringPolicy;
   readonly history: readonly WatchedProjectMonitorRun[];
+  readonly notifications: readonly WatchedProjectNotification[];
 }
 
 export interface WatchedProjectMonitorStore {
@@ -100,16 +141,26 @@ export interface WatchedProjectMonitorStore {
     project: WatchedProjectDefinition,
     trigger: "scheduled" | "manual",
     now: Date,
-  ): WatchedProjectMonitorRun | null;
+  ): WatchedProjectMonitorClaim | null;
   complete(
     runId: string,
     completedAt: Date,
     result:
-      | { readonly snapshot: WatchedProjectSnapshot }
+      | {
+          readonly snapshot: WatchedProjectSnapshot;
+          readonly notification: WatchedProjectNotificationIntent | null;
+          readonly notificationMaxAttempts: number;
+        }
       | { readonly errorCode: "inspection_failed" },
   ): void;
   prune(projectId: string, historyLimit: number): void;
   close(): void;
+}
+
+export interface WatchedProjectNotificationOutbox {
+  claimNotification(now: Date): WatchedProjectNotificationClaim | null;
+  completeNotification(id: string, deliveredAt: Date): void;
+  failNotification(id: string, failedAt: Date, errorCode: string): void;
 }
 
 export interface PrivateWatchedProjectSource {

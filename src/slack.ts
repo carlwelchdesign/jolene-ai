@@ -3,6 +3,7 @@ import { App, LogLevel } from "@slack/bolt";
 import { createApplication } from "./app.js";
 import { loadConfig } from "./config.js";
 import { handleSlackEvent } from "./slack/event-handler.js";
+import { createSlackOwnerNotificationPoster } from "./slack/project-watch-notifications.js";
 
 const config = loadConfig();
 if (
@@ -71,12 +72,40 @@ slack.error(async (error) => {
 await slack.start();
 process.stdout.write("Jolene is connected to Slack in Socket Mode.\n");
 
+const postProjectWatchNotification = createSlackOwnerNotificationPoster(
+  slack.client,
+  ownerUserId,
+);
+let notificationDrain: Promise<void> | null = null;
+function drainProjectWatchNotifications(): void {
+  if (notificationDrain) return;
+  notificationDrain = application.projectNotifications
+    .drainPending(postProjectWatchNotification)
+    .then(({ delivered, failed }) => {
+      if (delivered > 0 || failed > 0) {
+        process.stdout.write(
+          `Project Watch notifications handled: delivered=${delivered} failed=${failed}\n`,
+        );
+      }
+    })
+    .catch(() => {
+      process.stderr.write("Project Watch notification drain failed.\n");
+    })
+    .finally(() => { notificationDrain = null; });
+}
+drainProjectWatchNotifications();
+const notificationTimer = setInterval(drainProjectWatchNotifications, 30_000);
+
 let stopping = false;
 for (const signal of ["SIGINT", "SIGTERM"] as const) {
   process.on(signal, () => {
     if (stopping) return;
     stopping = true;
-    void slack.stop().finally(() => {
+    clearInterval(notificationTimer);
+    void (async () => {
+      await notificationDrain;
+      await slack.stop();
+    })().finally(() => {
       application.close();
       process.exit(0);
     });

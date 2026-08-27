@@ -38,4 +38,19 @@ describe("private runtime configuration", () => {
       ),
     ).toThrow();
   });
+
+  it("accepts one Slack owner member ID and rejects multi-user destinations", () => {
+    expect(parseConfig({
+      OPENAI_API_KEY: "test-key",
+      SLACK_OWNER_USER_ID: "U0BSN6JA3PC",
+    }).slackOwnerUserId).toBe("U0BSN6JA3PC");
+    expect(() => parseConfig({
+      OPENAI_API_KEY: "test-key",
+      SLACK_OWNER_USER_ID: "UOWNER,UOTHER",
+    })).toThrow();
+    expect(parseConfig({
+      OPENAI_API_KEY: "test-key",
+      SLACK_OWNER_USER_ID: "",
+    }).slackOwnerUserId).toBeUndefined();
+  });
 });

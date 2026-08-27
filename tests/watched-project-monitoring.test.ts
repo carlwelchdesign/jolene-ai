@@ -105,6 +105,11 @@ function project(overrides: Partial<WatchedProjectDefinition["monitoring"]> = {}
       maxRunsPerDay: 24,
       stopAfterRuns: 720,
       historyLimit: 100,
+      notifications: {
+        enabled: false,
+        destination: "slack_owner_dm",
+        maxAttempts: 5,
+      },
       ...overrides,
     },
   };

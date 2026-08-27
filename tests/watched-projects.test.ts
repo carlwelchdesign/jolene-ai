@@ -136,6 +136,13 @@ describe("watched projects", () => {
     expect(parsed[0]).toMatchObject({
       id: "carl-welch-portfolio",
       reviewWindowDays: 30,
+      monitoring: {
+        notifications: {
+          enabled: false,
+          destination: "slack_owner_dm",
+          maxAttempts: 5,
+        },
+      },
     });
     expect(() =>
       parseWatchedProjects(
@@ -147,6 +154,16 @@ describe("watched projects", () => {
             planFile: "../outside.md",
           },
         ]),
+      ),
+    ).toThrow();
+    expect(() =>
+      parseWatchedProjects(
+        JSON.stringify([{
+          id: "portfolio",
+          label: "Portfolio",
+          rootPath: "/tmp/portfolio",
+          monitoring: { notifications: { enabled: true, destination: "shared_channel" } },
+        }]),
       ),
     ).toThrow();
     expect(() =>
@@ -173,5 +190,10 @@ function monitoringPolicy() {
     maxRunsPerDay: 24,
     stopAfterRuns: 720,
     historyLimit: 100,
+    notifications: {
+      enabled: false,
+      destination: "slack_owner_dm",
+      maxAttempts: 5,
+    },
   } as const;
 }

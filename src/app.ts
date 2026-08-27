@@ -17,6 +17,7 @@ import { WorkContextService } from "./application/work-context-service.js";
 import { WorkStatusService } from "./application/work-status-service.js";
 import { WatchedProjectService } from "./application/watched-project-service.js";
 import { WatchedProjectMonitorService } from "./application/watched-project-monitor-service.js";
+import { WatchedProjectNotificationService } from "./application/watched-project-notification-service.js";
 import type { AppConfig } from "./config.js";
 import type { DeliveryStore } from "./domain/delivery.js";
 import { CanonicalPrivateWorkScopeResolver } from "./domain/private-work-scope.js";
@@ -55,6 +56,7 @@ export interface JoleneApplication {
   readonly workflows: PersonalWorkflowService;
   readonly watchedProjects: WatchedProjectService;
   readonly projectMonitoring: WatchedProjectMonitorService;
+  readonly projectNotifications: WatchedProjectNotificationService;
   readonly health: () => {
     readonly status: "ok";
     readonly knowledge: "configured" | "unavailable";
@@ -106,10 +108,15 @@ export async function createApplication(
   );
   const projectInspector = new LocalWatchedProjectInspector();
   const watchedProjects = new WatchedProjectService(config.watchedProjects, projectInspector);
+  const projectMonitorStore = new SqliteWatchedProjectMonitorStore(config.databasePath);
   const projectMonitoring = new WatchedProjectMonitorService(
     config.watchedProjects,
     projectInspector,
-    new SqliteWatchedProjectMonitorStore(config.databasePath),
+    projectMonitorStore,
+  );
+  const projectNotifications = new WatchedProjectNotificationService(
+    config.watchedProjects,
+    projectMonitorStore,
   );
   const ownerScope = {
     actorId: config.ownerActorId,
@@ -163,6 +170,7 @@ export async function createApplication(
     workflows: new PersonalWorkflowService(personalWorkflowStore, workStore),
     watchedProjects,
     projectMonitoring,
+    projectNotifications,
     health: () => ({
       status: "ok",
       knowledge: config.vaultRoot ? "configured" : "unavailable",

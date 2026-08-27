@@ -6,7 +6,7 @@ bounded, read-only monitoring history when the owner explicitly enables it.
 Configure the registry as a JSON array in `JOLENE_WATCHED_PROJECTS`:
 
 ```dotenv
-JOLENE_WATCHED_PROJECTS=[{"id":"portfolio","label":"Portfolio","rootPath":"/absolute/path/to/portfolio","planFile":"PORTFOLIO_SITE_PLAN.md","reviewWindowDays":30,"monitoring":{"enabled":true,"cadenceMinutes":60,"maxRunsPerDay":24,"stopAfterRuns":720,"historyLimit":100}}]
+JOLENE_WATCHED_PROJECTS=[{"id":"portfolio","label":"Portfolio","rootPath":"/absolute/path/to/portfolio","planFile":"PORTFOLIO_SITE_PLAN.md","reviewWindowDays":30,"monitoring":{"enabled":true,"cadenceMinutes":60,"maxRunsPerDay":24,"stopAfterRuns":720,"historyLimit":100,"notifications":{"enabled":true,"destination":"slack_owner_dm","maxAttempts":5}}}]
 ```
 
 For local development, the same JSON array may instead be stored in the ignored
@@ -21,7 +21,8 @@ Each entry has:
 - `planFile`: optional path inside the project root; and
 - `reviewWindowDays`: age after which the plan is reported as stale; and
 - `monitoring`: explicit enablement, cadence, daily run budget, terminal run
-  count, and retained-history limit. Omission keeps scheduling disabled.
+  count, retained-history limit, and an optional owner-notification policy.
+  Omission keeps scheduling and notifications disabled.
 
 ## Local API
 
@@ -43,7 +44,8 @@ project-specific check is approved and implemented.
 Open `http://127.0.0.1:8421/projects` for the graphical Project Watch screen.
 It checks every configured project on first load. **Record check** adds a
 durable manual result; explicitly enabled monitors also show pause/resume,
-cadence, budget, stop condition, next run, and recent history.
+cadence, budget, stop condition, next run, recent history, owner-notification
+policy, and content-minimized delivery state.
 
 The screen covers loading, empty registry, healthy, attention, partial-failure,
 and service-unavailable states. It displays no local root paths and exposes no
@@ -71,5 +73,23 @@ disabled. The worker claims one due check at a time, records failures without
 raw error content, and honors the configured cadence, daily budget, terminal
 run count, and retention limit.
 
-Build verification, external notifications, and authenticated remote
-administration remain unavailable.
+## Owner alert transitions
+
+An explicitly enabled `slack_owner_dm` policy can notify only the Slack member
+configured by `SLACK_OWNER_USER_ID`. A successful scheduled check creates an
+outbox item only when the alert set enters attention, materially changes, or
+fully clears. The first clear check, unchanged alert sets, manual checks, and
+inspection failures remain silent.
+
+The durable outbox is committed atomically with the successful monitor run.
+The Slack process claims one item at a time, retries classified failures on a
+bounded backoff, abandons an item at its configured attempt limit, and does not
+claim completed deliveries again after restart. Messages contain the project
+label, transition, bounded alert labels, check time, and local review URL—never
+root paths, plan contents, diffs, raw provider errors, credentials, private
+memory, Slack IDs, shared-channel destinations, or arbitrary message content.
+The owner ID accepts one Slack member identifier only, and project labels are
+escaped before Slack formatting so a label cannot create a mention.
+
+Build verification, email/shared-channel notifications, arbitrary messaging,
+and authenticated remote administration remain unavailable.
