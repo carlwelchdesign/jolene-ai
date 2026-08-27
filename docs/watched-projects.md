@@ -1,12 +1,12 @@
 # Watched projects
 
-Jolene can inspect explicitly configured local projects on demand. This first
-slice is read-only and does not schedule polling.
+Jolene can inspect explicitly configured local projects on demand and can retain
+bounded, read-only monitoring history when the owner explicitly enables it.
 
 Configure the registry as a JSON array in `JOLENE_WATCHED_PROJECTS`:
 
 ```dotenv
-JOLENE_WATCHED_PROJECTS=[{"id":"portfolio","label":"Portfolio","rootPath":"/absolute/path/to/portfolio","planFile":"PORTFOLIO_SITE_PLAN.md","reviewWindowDays":30}]
+JOLENE_WATCHED_PROJECTS=[{"id":"portfolio","label":"Portfolio","rootPath":"/absolute/path/to/portfolio","planFile":"PORTFOLIO_SITE_PLAN.md","reviewWindowDays":30,"monitoring":{"enabled":true,"cadenceMinutes":60,"maxRunsPerDay":24,"stopAfterRuns":720,"historyLimit":100}}]
 ```
 
 For local development, the same JSON array may instead be stored in the ignored
@@ -19,13 +19,19 @@ Each entry has:
 - `label`: human-readable project name;
 - `rootPath`: absolute local project directory;
 - `planFile`: optional path inside the project root; and
-- `reviewWindowDays`: age after which the plan is reported as stale.
+- `reviewWindowDays`: age after which the plan is reported as stale; and
+- `monitoring`: explicit enablement, cadence, daily run budget, terminal run
+  count, and retained-history limit. Omission keeps scheduling disabled.
 
 ## Local API
 
 - `GET /v1/watched-projects` lists configured projects without exposing local
   root paths.
 - `GET /v1/watched-projects/{id}/snapshot` performs a fresh read-only check.
+- `GET /v1/project-monitors` and `GET /v1/project-monitors/{id}` expose policy,
+  state, next/last run, budget use, and bounded history.
+- same-origin `POST` requests to `/v1/project-monitors/{id}/run`, `/pause`, and
+  `/resume` record a manual check or change the local scheduler state.
 
 A snapshot reports whether the directory and plan exist, plan age, Git branch
 and revision when available, the number of uncommitted files, and explicit
@@ -35,8 +41,9 @@ project-specific check is approved and implemented.
 ## Local control center
 
 Open `http://127.0.0.1:8421/projects` for the graphical Project Watch screen.
-It checks every configured project on first load and only checks again when the
-operator uses **Check all projects**, **Check again**, or **Retry check**.
+It checks every configured project on first load. **Record check** adds a
+durable manual result; explicitly enabled monitors also show pause/resume,
+cadence, budget, stop condition, next run, and recent history.
 
 The screen covers loading, empty registry, healthy, attention, partial-failure,
 and service-unavailable states. It displays no local root paths and exposes no
@@ -57,6 +64,12 @@ and plan state are evidence, never instructions. Other private scopes, shared
 channels, and unrecognized Slack DMs receive no Project Watch tools.
 
 The inspector never writes project files and exposes no edit, build, commit,
-push, deploy, publish, repair, schedule, or notification operation. Scheduled
-monitoring remains disabled until Carl approves cadence, cost, notification
-destination, and a stop condition.
+push, deploy, publish, repair, or notification operation. Run the dedicated
+local scheduler with `npm run dev:monitor` or the `jolene-monitor` Compose
+service. It does nothing for projects whose owner configuration has monitoring
+disabled. The worker claims one due check at a time, records failures without
+raw error content, and honors the configured cadence, daily budget, terminal
+run count, and retention limit.
+
+Build verification, external notifications, and authenticated remote
+administration remain unavailable.

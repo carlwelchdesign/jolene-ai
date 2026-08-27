@@ -38,16 +38,16 @@
       <section class="hero hero-projects" aria-labelledby="page-title">
         <p class="eyebrow">Fresh evidence, no side effects</p>
         <h1 id="page-title">See what changed before anything changes.</h1>
-        <p class="hero-copy">Check whether a project, plan, or Git boundary needs attention. Jolene inspects the current local state only when you ask.</p>
+        <p class="hero-copy">Check whether a project, plan, or Git boundary needs attention. Explicitly enabled monitors can also record bounded, read-only checks on a local schedule.</p>
         <div class="hero-actions">
           <button class="button button-primary" id="refresh-all" type="button">Check all projects</button>
-          <span class="local-note"><span aria-hidden="true">●</span> No scheduled polling</span>
+          <span class="local-note"><span aria-hidden="true">●</span> Local, bounded monitoring</span>
         </div>
       </section>
 
       <aside class="boundary-banner" aria-label="Project Watch boundary">
         <span class="boundary-icon" aria-hidden="true">✓</span>
-        <div><strong>Jolene only looks.</strong><p>This screen cannot edit files, run a build, commit, push, deploy, publish, or repair a project.</p></div>
+        <div><strong>Jolene only looks.</strong><p>Checks can be manual or explicitly scheduled. They cannot edit files, run a build, commit, push, deploy, publish, repair, or notify anyone.</p></div>
       </aside>
 
       <div class="notice" id="page-notice" role="status" aria-live="polite" hidden></div>
@@ -60,7 +60,7 @@
 
       <section class="panel" aria-labelledby="project-list-title">
         <div class="section-heading">
-          <div><p class="eyebrow">On-demand snapshots</p><h2 id="project-list-title">Watched projects</h2></div>
+          <div><p class="eyebrow">Snapshots and retained history</p><h2 id="project-list-title">Watched projects</h2></div>
           <p class="last-updated" id="last-updated">Not checked yet</p>
         </div>
         <div class="card-grid" id="project-list" aria-live="polite"></div>

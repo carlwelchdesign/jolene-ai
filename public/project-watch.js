@@ -1,6 +1,7 @@
 const state = {
   projects: [],
   snapshots: new Map(),
+  monitors: new Map(),
   failures: new Set(),
 };
 
@@ -39,7 +40,12 @@ async function refreshAll() {
   state.failures.clear();
 
   try {
-    state.projects = await api("/v1/watched-projects");
+    const [projects, monitors] = await Promise.all([
+      api("/v1/watched-projects"),
+      api("/v1/project-monitors"),
+    ]);
+    state.projects = projects;
+    state.monitors = new Map(monitors.map((monitor) => [monitor.projectId, monitor]));
   } catch (error) {
     state.projects = [];
     renderSummary();
@@ -160,6 +166,9 @@ function projectCard(project, snapshot) {
   );
   card.append(facts);
 
+  const monitor = state.monitors.get(project.id);
+  if (monitor) card.append(monitorPanel(project, monitor));
+
   if (snapshot.alerts.length > 0) {
     const alerts = el("div", "project-alerts");
     snapshot.alerts.forEach((alert) => alerts.append(el("p", "project-alert", alertCopy[alert] || humanize(alert))));
@@ -169,6 +178,90 @@ function projectCard(project, snapshot) {
   }
   card.append(el("div", "meta-list", "Checked " + formatDate(snapshot.checkedAt)));
   return card;
+}
+
+function monitorPanel(project, monitor) {
+  const panel = el("section", "monitor-panel");
+  const heading = el("div", "monitor-heading");
+  const title = el("div");
+  title.append(el("p", "eyebrow", "Durable local monitor"), el("h4", "", monitorTitle(monitor)));
+  const actions = el("div", "monitor-actions");
+  const record = button("Record check", "button button-secondary button-small");
+  record.addEventListener("click", () => monitorAction(project, "run", record));
+  actions.append(record);
+  if (monitor.policy.enabled && monitor.status !== "stopped") {
+    const action = monitor.status === "active" ? "pause" : "resume";
+    const toggle = button(action === "pause" ? "Pause" : "Resume", "button button-secondary button-small");
+    toggle.addEventListener("click", () => monitorAction(project, action, toggle));
+    actions.append(toggle);
+  }
+  heading.append(title, actions);
+  panel.append(heading);
+
+  const facts = el("div", "monitor-facts");
+  facts.append(
+    fact("Cadence", monitor.policy.enabled ? "Every " + cadenceLabel(monitor.policy.cadenceMinutes) : "Not enabled"),
+    fact("Daily budget", monitor.runsToday + " / " + monitor.policy.maxRunsPerDay + " checks"),
+    fact("Stop condition", monitor.runCount + " / " + monitor.policy.stopAfterRuns + " total checks"),
+    fact("Next run", monitor.nextRunAt ? formatDate(monitor.nextRunAt) : "None scheduled"),
+  );
+  panel.append(facts);
+
+  const history = el("div", "monitor-history");
+  history.append(el("strong", "", "Recent recorded checks"));
+  if (monitor.history.length === 0) {
+    history.append(el("p", "monitor-empty", "No checks have been recorded yet."));
+  } else {
+    const list = el("ol", "monitor-run-list");
+    monitor.history.slice(0, 5).forEach((run) => {
+      const item = el("li");
+      const result = run.status === "succeeded" && run.snapshot
+        ? run.snapshot.alerts.length + (run.snapshot.alerts.length === 1 ? " alert" : " alerts")
+        : run.status === "failed" ? "inspection failed" : "in progress";
+      item.append(
+        el("span", "", formatDate(run.startedAt)),
+        el("strong", "", humanize(run.trigger) + " · " + result),
+      );
+      list.append(item);
+    });
+    history.append(list);
+  }
+  panel.append(history);
+  return panel;
+}
+
+async function monitorAction(project, action, buttonNode) {
+  buttonNode.disabled = true;
+  clearNotice();
+  try {
+    const monitor = await api(
+      "/v1/project-monitors/" + encodeURIComponent(project.id) + "/" + action,
+      { method: "POST", headers: { "content-type": "application/json" }, body: "{}" },
+    );
+    state.monitors.set(project.id, monitor);
+    const latest = monitor.history.find((run) => run.status === "succeeded" && run.snapshot);
+    if (latest) state.snapshots.set(project.id, latest.snapshot);
+    renderSummary();
+    renderProjects();
+    showToast(action === "run" ? project.label + " check recorded." : "Monitor " + action + "d.");
+  } catch (error) {
+    showNotice(friendlyError(error), true);
+  }
+}
+
+function monitorTitle(monitor) {
+  if (!monitor.policy.enabled) return "Scheduling not enabled";
+  if (monitor.status === "active") return "Active and bounded";
+  if (monitor.status === "paused") return "Paused";
+  return "Stopped at configured limit";
+}
+
+function cadenceLabel(minutes) {
+  if (minutes % 60 === 0) {
+    const hours = minutes / 60;
+    return hours + (hours === 1 ? " hour" : " hours");
+  }
+  return minutes + " minutes";
 }
 
 function failedCard(project) {
@@ -228,8 +321,11 @@ function formatDate(value) {
     : new Intl.DateTimeFormat(undefined, { dateStyle: "medium", timeStyle: "short" }).format(date);
 }
 
-async function api(path) {
-  const response = await fetch(path, { headers: { accept: "application/json" } });
+async function api(path, options = {}) {
+  const response = await fetch(path, {
+    ...options,
+    headers: { accept: "application/json", ...(options.headers || {}) },
+  });
   let body;
   try { body = await response.json(); } catch { body = null; }
   if (!response.ok) {
@@ -242,6 +338,7 @@ async function api(path) {
 
 function friendlyError(error) {
   if (error && error.status === 404) return "That watched project is no longer configured. Refresh the project list.";
+  if (error && error.status === 409) return "That monitor is paused, busy, stopped, or at its configured run budget.";
   return "Jolene’s local Project Watch service is unavailable. Check that the local service is running, then retry.";
 }
 

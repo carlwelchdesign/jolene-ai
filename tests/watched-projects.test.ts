@@ -45,6 +45,7 @@ describe("watched projects", () => {
       rootPath,
       planFile: "PORTFOLIO_SITE_PLAN.md",
       reviewWindowDays: 14,
+      monitoring: monitoringPolicy(),
     });
 
     expect(snapshot).toMatchObject({
@@ -78,6 +79,7 @@ describe("watched projects", () => {
       rootPath: missingRoot,
       planFile: "PLAN.md",
       reviewWindowDays: 30,
+      monitoring: monitoringPolicy(),
     });
 
     expect(snapshot).toMatchObject({
@@ -98,6 +100,7 @@ describe("watched projects", () => {
           rootPath: "/private/local/path",
           planFile: "PLAN.md",
           reviewWindowDays: 30,
+          monitoring: monitoringPolicy(),
         },
       ],
       inspector,
@@ -109,6 +112,7 @@ describe("watched projects", () => {
         label: "Portfolio",
         planFile: "PLAN.md",
         reviewWindowDays: 30,
+        monitoring: monitoringPolicy(),
       },
     ]);
     expect(JSON.stringify(service.list())).not.toContain("/private/local/path");
@@ -160,4 +164,14 @@ async function createTemporaryDirectory(): Promise<string> {
   const directory = await fs.mkdtemp(path.join(os.tmpdir(), "jolene-watch-"));
   temporaryDirectories.push(directory);
   return directory;
+}
+
+function monitoringPolicy() {
+  return {
+    enabled: false,
+    cadenceMinutes: 60,
+    maxRunsPerDay: 24,
+    stopAfterRuns: 720,
+    historyLimit: 100,
+  } as const;
 }
