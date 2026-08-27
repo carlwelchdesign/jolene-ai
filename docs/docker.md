@@ -126,6 +126,28 @@ listener and decide whether its existing SQLite history should be migrated into
 the `jolene-data` volume. Running both listeners can duplicate Socket Mode
 delivery.
 
+## Private career MCP tool container
+
+The `jolene-career-mcp` tools-profile service exposes the canonical approved
+professional corpus over stdio to an explicitly launched local MCP host:
+
+```bash
+docker compose --profile tools build jolene-career-mcp
+docker compose --profile tools run --rm --no-deps -T jolene-career-mcp
+```
+
+It mounts only `jolene-data`, uses no network, publishes no port, receives no
+secret or `.env` file, and has no vault, portfolio, review-packet, or public
+state access. The service writes only derived retrieval state and
+content-minimizing access ledgers; it cannot change career evidence or approval
+state. Its provider-free lexical query path preserves any existing stored
+embeddings rather than purging or regenerating them.
+
+Running the tools-profile process does not restart the API, Slack, or monitor.
+MCP host registration, exact scope configuration, tool behavior, and audit
+inspection are documented in
+[Private professional-context MCP](private-career-mcp.md).
+
 ## Isolated public delegate container
 
 The public portfolio delegate has a separate Compose project and image. It does

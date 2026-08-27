@@ -26,7 +26,7 @@ chatbot.
 | Read-only Obsidian access | Implemented with path allowlists and exact note/heading citations |
 | Retrieval | Conversational Obsidian remains lexical; reviewed career evidence uses lexical/vector fusion with deterministic fallback |
 | Embedding RAG | Implemented for 143 approved private-career claims; the live pilot has 152 lexical-only chunks and zero vectors, while embeddings require exact opt-in |
-| MCP | Not implemented |
+| MCP | First private read-only stdio slice implemented for approved professional evidence; remote transport and write/proposal tools remain absent |
 | Graph database / GraphRAG | Not implemented |
 | Durable private memory | Implemented through explicit proposals and approval |
 | Public portfolio evidence boundary | Versioned deny-by-default export plus isolated loopback contracts and disabled-by-default grounded OpenAI answer synthesis implemented; local portfolio integration is verified, while public activation and deployment remain disabled |
@@ -785,10 +785,28 @@ and private API/Slack continuity checks pass.
 
 ### JOL-CAREER-007 — Private MCP adapter
 
-- Add only after the evidence service contract is stable.
-- Authenticate clients and scope every tool to actor, workspace, visibility,
-  and audit identity.
-- Keep all side-effecting operations proposal-only.
+- Implementation commit: `f23f630` (`JOL-CAREER-007A add private career MCP`).
+- The stable evidence contract now supports `JOL-CAREER-007A`, a local stdio
+  adapter with approved career search, evidence inspection/freshness, and
+  conservative job-description comparison.
+- The MCP host must explicitly configure actor, workspace, and stable client
+  identity. The operating-system process launch is the local trust boundary;
+  no remote transport or network authentication is implied.
+- The canonical tools-profile container receives only `jolene-data`, has no
+  network, ports, credentials, vault, public artifact, or private-memory mount,
+  and makes no provider request.
+- Every handled call has a separate content-minimizing audit record containing
+  scope/client/tool/fingerprint/outcome/count/evidence IDs without raw inputs or
+  evidence prose.
+- Node 24 verification passes 68 test files and 393 tests, typecheck, production
+  build, both Compose boundaries, a zero-vulnerability production dependency
+  audit, and the unchanged 41-case/24-blocker public suite. An official MCP
+  client negotiated with the fresh network-disabled canonical container,
+  returned all three read-only tools and approved evidence, and produced a
+  fingerprint-only audit event with no raw query.
+- All side-effecting operations remain absent. A later proposal tool requires
+  a separate approval contract; remote MCP requires real client authentication,
+  transport security, rate limits, and deployment review.
 
 ### JOL-CAREER-008 — Relationship retrieval evaluation
 
