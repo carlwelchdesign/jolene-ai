@@ -8,6 +8,9 @@ import { CareerRetrievalService } from "./application/career-retrieval-service.j
 import { JoleneService } from "./application/jolene-service.js";
 import { KnowledgeAuditService } from "./application/knowledge-audit-service.js";
 import { PersonalWorkflowService } from "./application/personal-workflow-service.js";
+import {
+  OwnerWatchedProjectSource,
+} from "./application/private-watched-project-source.js";
 import { WorkContextService } from "./application/work-context-service.js";
 import { WorkStatusService } from "./application/work-status-service.js";
 import { WatchedProjectService } from "./application/watched-project-service.js";
@@ -89,22 +92,28 @@ export async function createApplication(
     path.resolve(process.cwd(), "docs/prompt.md"),
     "utf8",
   );
+  const watchedProjects = new WatchedProjectService(
+    config.watchedProjects,
+    new LocalWatchedProjectInspector(),
+  );
+  const ownerScope = {
+    actorId: config.ownerActorId,
+    workspaceId: config.ownerWorkspaceId,
+  };
   const runner = new OpenAIJoleneRunner({
     model: config.model,
     instructions,
     knowledge,
     careerKnowledge: careerRetrieval,
     workStatus: new WorkStatusService(workStore, personalWorkflowStore),
+    projectWatch: new OwnerWatchedProjectSource(watchedProjects, ownerScope),
   });
   const service = new JoleneService({
     store,
     runner,
     workContext: workStore,
     workScopeResolver: new CanonicalPrivateWorkScopeResolver({
-      ownerScope: {
-        actorId: config.ownerActorId,
-        workspaceId: config.ownerWorkspaceId,
-      },
+      ownerScope,
       slackOwnerUserId: config.slackOwnerUserId,
     }),
     maxHistoryTurns: config.maxHistoryTurns,
@@ -123,10 +132,7 @@ export async function createApplication(
     }),
     careerRetrieval,
     workflows: new PersonalWorkflowService(personalWorkflowStore, workStore),
-    watchedProjects: new WatchedProjectService(
-      config.watchedProjects,
-      new LocalWatchedProjectInspector(),
-    ),
+    watchedProjects,
     health: () => ({
       status: "ok",
       knowledge: config.vaultRoot ? "configured" : "unavailable",

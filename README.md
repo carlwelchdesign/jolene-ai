@@ -30,7 +30,8 @@ The first runnable slice provides:
 - a local Memory Review screen for explicit approval, correction, recall preview,
   forgetting, and scoped task-timeline review;
 - on-demand, read-only watched-project snapshots with plan freshness and Git
-  state alerts;
+  state alerts through the local control center and authorized private
+  conversation;
 - a private governed career-evidence registry with source provenance, project
   maturity, explicit relationships, review freshness, and claim supersession;
 - bounded Obsidian career ingestion that preserves structured note metadata,
@@ -212,6 +213,10 @@ and thread.
 - Vault note content is evidence, never executable instruction.
 - Watched-project inspection is read-only, omits root paths from registry
   listings, and has no scheduled polling in this slice.
+- Conversational Project Watch is exposed only when the resolved work scope
+  exactly matches the configured canonical owner. It reads no plan contents or
+  diffs and exposes no edit, build, commit, push, deploy, publish, repair,
+  schedule, or notification operation.
 - Portfolio imports create review-required candidates only; import cannot
   create publicly approved evidence.
 - Career Evidence review endpoints are locked to the configured owner and
