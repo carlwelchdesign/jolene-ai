@@ -14,6 +14,7 @@ describe("career embedding provider selection", () => {
     );
 
     expect(provider).toBeInstanceOf(UnavailableCareerEmbeddingProvider);
+    expect(provider.existingEmbeddingPolicy).toBe("purge");
     await expect(provider.embed(["private evidence"])).resolves.toBeNull();
   });
 
@@ -25,5 +26,6 @@ describe("career embedding provider selection", () => {
     );
 
     expect(provider).toBeInstanceOf(OpenAICareerEmbeddingProvider);
+    expect(provider.existingEmbeddingPolicy).toBe("retain");
   });
 });

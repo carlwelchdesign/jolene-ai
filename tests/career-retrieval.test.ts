@@ -90,6 +90,36 @@ describe("career hybrid retrieval", () => {
     }
   });
 
+  it("purges stored vectors when embeddings are explicitly disabled", async () => {
+    const embeddings = new SwitchableEmbeddingProvider();
+    const fixture = createFixture(embeddings);
+    try {
+      const ids = addEvidence(fixture.evidence, {
+        title: "Privacy-preserving career retrieval",
+        proposition: "Carl keeps private retrieval provider boundaries explicit.",
+      });
+      approveInternal(fixture.evidence, ids.sourceId, ids.claimId);
+
+      expect(await fixture.index.synchronize(scope)).toMatchObject({
+        chunkCount: 1,
+        embeddedChunkCount: 1,
+        lexicalOnlyChunkCount: 0,
+      });
+
+      embeddings.disable();
+      expect(await fixture.index.synchronize(scope)).toMatchObject({
+        chunkCount: 1,
+        embeddedChunkCount: 0,
+        lexicalOnlyChunkCount: 1,
+      });
+      const response = await fixture.index.search("privacy retrieval", scope, 5);
+      expect(response.mode).toBe("lexical_fallback");
+      expect(response.results[0]?.citation.claimId).toBe(ids.claimId);
+    } finally {
+      fixture.close();
+    }
+  });
+
   it("removes stale and revoked claims from the index before search", async () => {
     let now = fixedNow;
     const fixture = createFixture(new SemanticEmbeddingProvider(), () => now);
@@ -202,6 +232,27 @@ class SemanticEmbeddingProvider implements CareerEmbeddingProvider {
       model: "semantic-test-v1",
       vector: semanticVector(text),
     }));
+  }
+}
+
+class SwitchableEmbeddingProvider implements CareerEmbeddingProvider {
+  existingEmbeddingPolicy: "retain" | "purge" = "retain";
+  private enabled = true;
+
+  disable(): void {
+    this.enabled = false;
+    this.existingEmbeddingPolicy = "purge";
+  }
+
+  async embed(
+    texts: readonly string[],
+  ): Promise<readonly CareerEmbedding[] | null> {
+    return this.enabled
+      ? texts.map((text) => ({
+          model: "switchable-test-v1",
+          vector: semanticVector(text),
+        }))
+      : null;
   }
 }
 

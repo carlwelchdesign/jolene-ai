@@ -11,6 +11,9 @@ const publicCompose = readFileSync(
   "utf8",
 );
 const dockerignore = readFileSync(resolve(projectRoot, ".dockerignore"), "utf8");
+const packageJson = JSON.parse(
+  readFileSync(resolve(projectRoot, "package.json"), "utf8"),
+) as { readonly scripts: Readonly<Record<string, string>> };
 
 describe("Docker runtime boundary", () => {
   it("builds on Node 22 and runs as an unprivileged user", () => {
@@ -47,6 +50,12 @@ describe("Docker runtime boundary", () => {
     expect(compose).toContain('["node", "dist/slack.js"]');
     expect(compose).toMatch(
       /jolene-slack:\n(?:.*\n)*?\s+healthcheck:\n\s+disable: true/,
+    );
+  });
+
+  it("packages a network-free lexical career-index operation", () => {
+    expect(packageJson.scripts["start:career-index:lexical"]).toBe(
+      "node dist/career-index.js",
     );
   });
 

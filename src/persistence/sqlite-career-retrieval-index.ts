@@ -124,7 +124,9 @@ export class SqliteCareerRetrievalIndex implements CareerRetrievalIndex {
       for (const chunk of desiredChunks) {
         const current = existing.get(chunk.id);
         const generated = embeddings.get(chunk.id);
-        const reusable = current?.contentHash === chunk.contentHash
+        const reusable =
+          this.embeddings.existingEmbeddingPolicy !== "purge" &&
+            current?.contentHash === chunk.contentHash
           ? current
           : null;
         const embeddingModel = generated?.model ?? reusable?.embeddingModel ?? null;
