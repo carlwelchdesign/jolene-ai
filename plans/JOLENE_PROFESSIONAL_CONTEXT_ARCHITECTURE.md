@@ -884,6 +884,27 @@ and private API/Slack continuity checks pass.
   approval, private-preview rehearsal, and explicit public-Jolene activation
   remain separate gates.
 
+### JOL-PLATFORM-003 — Hosted delegate deployment preflight
+
+- A compiled, provider-neutral preflight now verifies the exact candidate
+  origin before portfolio configuration: public HTTPS root URL, bounded
+  no-redirect requests, health/manifest schema compatibility, reviewed corpus
+  continuity, bearer enforcement for missing and invalid credentials,
+  restrictive headers, and absent browser CORS permission.
+- An explicit IP-loopback override supports local container rehearsal without
+  weakening hosted-origin validation. The override defaults off.
+- The content-minimized report contains only the public origin, check time,
+  corpus version/hash, evidence and revocation counts, and fixed pass states.
+  Tokens and submitted or returned prose are never reported.
+- Node 24 verification passes 85 test files and 496 tests, typecheck,
+  production build, public Compose validation, zero-vulnerability production
+  dependency audit, and a fresh hardened container rehearsal against the exact
+  reviewed 41-claim/zero-revocation corpus.
+- This is release evidence, not a deployment mechanism or launch approval.
+  Hosting, managed secrets and rotation, distributed edge admission,
+  telemetry/alerts, retention approval, rollback rehearsal, portfolio cutover,
+  and explicit public activation remain open.
+
 ## Acceptance criteria
 
 - Docker images and build context contain no credentials, databases, vault
