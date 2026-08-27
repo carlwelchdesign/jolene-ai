@@ -85,12 +85,21 @@ export class DeterministicPublicAnswerService
         selected.some((record) => record.evidenceId === evidenceId)
       )
     );
+    const relationshipFact = exactRecommendationRelationship(
+      request.question,
+      selected,
+    );
 
     return conflict
       ? conflictResponse(artifact)
       : selected.length === 0
       ? noEvidenceResponse(artifact)
-      : supportedResponse(artifact, selected, hiringValueQuestion);
+      : supportedResponse(
+        artifact,
+        selected,
+        hiringValueQuestion,
+        relationshipFact,
+      );
   }
 }
 
@@ -118,8 +127,18 @@ export class GroundedPublicAnswerService implements PublicPortfolioAnswerer {
     artifact: PublicCareerEvidenceArtifact,
     request: PortfolioAnswerRequest,
   ): Promise<PublicAnswerExecution> {
-    let baseline = this.#baseline.answer(artifact, request);
-    if (this.#retriever) {
+    const exactRelationshipEvidence = selectRecommendationRelationshipEvidence(
+      artifact.evidence,
+      request.question,
+    );
+    let baseline = exactRelationshipEvidence.length > 0
+      ? this.#baseline.answerFromSelected(
+        artifact,
+        request,
+        exactRelationshipEvidence,
+      )
+      : this.#baseline.answer(artifact, request);
+    if (this.#retriever && exactRelationshipEvidence.length === 0) {
       try {
         baseline = this.#baseline.answerFromSelected(
           artifact,
@@ -131,6 +150,9 @@ export class GroundedPublicAnswerService implements PublicPortfolioAnswerer {
       }
     }
     if (baseline.claims.length === 0) {
+      return { response: baseline, mode: "deterministic" };
+    }
+    if (exactRelationshipEvidence.length > 0) {
       return { response: baseline, mode: "deterministic" };
     }
     if (this.#budget) {
@@ -168,6 +190,11 @@ export function selectDeterministicPublicEvidence(
   artifact: PublicCareerEvidenceArtifact,
   request: PortfolioAnswerRequest,
 ): PublicCareerEvidenceRecord[] {
+  const relationshipEvidence = selectRecommendationRelationshipEvidence(
+    artifact.evidence,
+    request.question,
+  );
+  if (relationshipEvidence.length > 0) return relationshipEvidence;
   if (isHiringValueQuestion(request.question)) {
     return selectHiringValueEvidence(artifact.evidence);
   }
@@ -176,6 +203,63 @@ export function selectDeterministicPublicEvidence(
   );
   return selectLexicalEvidence(artifact.evidence, queryTerms);
 }
+
+interface RecommendationRelationshipFact {
+  readonly subject: string;
+  readonly relationship: string;
+  readonly record: PublicCareerEvidenceRecord;
+}
+
+function selectRecommendationRelationshipEvidence(
+  evidence: readonly PublicCareerEvidenceRecord[],
+  question: string,
+): PublicCareerEvidenceRecord[] {
+  if (!RECOMMENDATION_RELATIONSHIP_QUESTION.test(normalizeLookup(question))) {
+    return [];
+  }
+  const normalizedQuestion = normalizeLookup(question);
+  const match = evidence.find((record) => {
+    const fact = recommendationRelationshipFact(record);
+    return fact !== null && normalizedQuestion.includes(normalizeLookup(fact.subject));
+  });
+  return match ? [match] : [];
+}
+
+function exactRecommendationRelationship(
+  question: string,
+  evidence: readonly PublicCareerEvidenceRecord[],
+): RecommendationRelationshipFact | null {
+  const selected = selectRecommendationRelationshipEvidence(evidence, question)[0];
+  return selected ? recommendationRelationshipFact(selected) : null;
+}
+
+function recommendationRelationshipFact(
+  record: PublicCareerEvidenceRecord,
+): RecommendationRelationshipFact | null {
+  if (!record.citation.title.startsWith("Recommendation from ")) return null;
+  const subject = record.citation.title.slice("Recommendation from ".length).trim();
+  const limitation = record.claim.limitations.find((candidate) =>
+    candidate.startsWith("Contribution boundary: Third-party statement attributed to ")
+  );
+  const match = limitation?.match(
+    /^Contribution boundary: Third-party statement attributed to .+? \((.+?)\);/u,
+  );
+  if (!subject || !match?.[1]) return null;
+  const firstName = subject.split(/\s+/u)[0] ?? subject;
+  const relationship = match[1].startsWith(`${firstName} `)
+    ? `${subject}${match[1].slice(firstName.length)}`
+    : match[1];
+  return { subject, relationship, record };
+}
+
+function normalizeLookup(value: string): string {
+  return value.toLocaleLowerCase("en-US").normalize("NFKC")
+    .replace(/[^a-z0-9]+/gu, " ")
+    .trim();
+}
+
+const RECOMMENDATION_RELATIONSHIP_QUESTION =
+  /\b(?:relationship|employer|client|boss|supervisor|manager|worked for|worked with)\b/u;
 
 const PUBLIC_QUERY_STOP_WORDS = new Set([
   "carl",
@@ -350,10 +434,13 @@ function supportedResponse(
   artifact: PublicCareerEvidenceArtifact,
   selected: readonly PublicCareerEvidenceRecord[],
   hiringValueQuestion = false,
+  relationshipFact: RecommendationRelationshipFact | null = null,
 ): PortfolioAnswerResponse {
   return portfolioAnswerResponseSchema.parse({
     schemaVersion: PUBLIC_CAREER_EVIDENCE_SCHEMA_VERSION,
-    answer: hiringValueQuestion
+    answer: relationshipFact
+      ? boundedRelationshipAnswer(relationshipFact)
+      : hiringValueQuestion
       ? boundedHiringValueAnswer(selected)
       : boundedSupportedAnswer(selected),
     claims: selected.map((record) => record.claim),
@@ -362,7 +449,12 @@ function supportedResponse(
       ? ["A hiring decision should still be based on the role, interviews, and direct references."]
       : selected.flatMap((record) => record.claim.limitations))
       .slice(0, PUBLIC_PORTFOLIO_ANSWER_LIMITS.responseLimitations),
-    suggestedFollowUpQuestions: hiringValueQuestion
+    suggestedFollowUpQuestions: relationshipFact
+      ? [
+        `Would you like to read ${relationshipFact.subject}’s full recommendation?`,
+        "Would you like to ask about another professional relationship?",
+      ]
+      : hiringValueQuestion
       ? [
         "Would you like to compare Carl's evidence with a specific job description?",
         "Which leadership, product, or technical example should we examine more closely?",
@@ -373,6 +465,15 @@ function supportedResponse(
       ],
     corpusVersion: artifact.manifest.corpusVersion,
   });
+}
+
+function boundedRelationshipAnswer(fact: RecommendationRelationshipFact): string {
+  const relationship = `${fact.relationship.replace(/[.!?]+$/u, "")}.`;
+  const prefix = `${relationship} The supporting recommendation says: “`;
+  const suffix = "”";
+  const available = PUBLIC_PORTFOLIO_ANSWER_LIMITS.answerCharacters -
+    prefix.length - suffix.length;
+  return `${prefix}${fact.record.claim.text.slice(0, available).trimEnd()}${suffix}`;
 }
 
 function noEvidenceResponse(

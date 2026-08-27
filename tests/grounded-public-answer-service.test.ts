@@ -5,7 +5,10 @@ import {
   GroundedPublicAnswerService,
   type GroundedPublicAnswerInput,
 } from "../src/public/public-answer-service.js";
-import { createPublicEvidenceArtifact } from "./helpers/public-evidence-fixture.js";
+import {
+  createPublicEvidenceArtifact,
+  createPublicEvidenceRecord,
+} from "./helpers/public-evidence-fixture.js";
 
 describe("grounded public answer service", () => {
   it("replaces only answer prose and sends only selected public grounding", async () => {
@@ -83,6 +86,42 @@ describe("grounded public answer service", () => {
         citationTitle: selected.citation.title,
       }],
     });
+  });
+
+  it("keeps exact recommendation relationships deterministic and bypasses broad retrieval", async () => {
+    const david = createPublicEvidenceRecord(1, {
+      text: "Carl did great work for us in web design and multimedia production. Super good guy to work with.",
+      title: "Recommendation from David Allen",
+      href: "/recommendations",
+      limitations: [
+        "Contribution boundary: Third-party statement attributed to David Allen (David was Carl’s employer); exact wording and publication rights require reconciliation.",
+      ],
+    });
+    const unrelatedClient = createPublicEvidenceRecord(2, {
+      text: "Carl provided our clients with forward-thinking designs.",
+      title: "Recommendation from Another Person",
+      href: "/recommendations",
+      limitations: [
+        "Contribution boundary: Third-party statement attributed to Another Person (Another was Carl’s client); exact wording and publication rights require reconciliation.",
+      ],
+    });
+    const generate = vi.fn(async () => "The model called him a client.");
+    const retrieve = vi.fn(async () => [unrelatedClient, david]);
+
+    const execution = await new GroundedPublicAnswerService(
+      { generate },
+      { retriever: { retrieve } },
+    ).execute(createPublicEvidenceArtifact([unrelatedClient, david]), {
+      question: "What was David Allen’s relationship to Carl?",
+    });
+
+    expect(execution.mode).toBe("deterministic");
+    expect(execution.response.answer).toContain("David Allen was Carl’s employer.");
+    expect(execution.response.claims).toEqual([david.claim]);
+    expect(JSON.stringify(execution.response).toLocaleLowerCase("en-US"))
+      .not.toContain("client");
+    expect(retrieve).not.toHaveBeenCalled();
+    expect(generate).not.toHaveBeenCalled();
   });
 
   it.each([
