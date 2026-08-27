@@ -54,6 +54,9 @@ describe("Docker runtime boundary", () => {
     expect(publicCompose).toContain("target: /public-data/public-career-evidence.json");
     expect(publicCompose).toContain("create_host_path: false");
     expect(publicCompose).toContain("jolene-public-state");
+    expect(publicCompose).toContain(
+      "JOLENE_PUBLIC_OPENAI_BUDGET_PATH: /public-state/model-budget.json",
+    );
     expect(publicCompose).toContain("read_only: true");
     expect(publicCompose).toContain("no-new-privileges:true");
     expect(publicCompose).toContain("127.0.0.1:${JOLENE_PUBLIC_HOST_PORT:-8431}:8431");

@@ -12,6 +12,7 @@ import {
   type PortfolioAnswerRequest,
   type PortfolioAnswerResponse,
 } from "../domain/public-portfolio-contract.js";
+import type { PublicModelRequestBudget } from "./public-model-request-budget.js";
 
 export interface PublicPortfolioAnswerer {
   execute(
@@ -22,7 +23,7 @@ export interface PublicPortfolioAnswerer {
 
 export interface PublicAnswerExecution {
   readonly response: PortfolioAnswerResponse;
-  readonly mode: "deterministic" | "model" | "fallback";
+  readonly mode: "deterministic" | "model" | "fallback" | "budget_fallback";
 }
 
 export interface GroundedPublicAnswerInput {
@@ -81,18 +82,36 @@ export class DeterministicPublicAnswerService
 const generatedAnswerSchema = z.string().trim().min(1).max(2_000);
 
 export class GroundedPublicAnswerService implements PublicPortfolioAnswerer {
+  readonly #baseline: DeterministicPublicAnswerService;
+  readonly #budget: PublicModelRequestBudget | undefined;
+
   constructor(
     private readonly generator: PublicAnswerTextGenerator,
-    private readonly baseline = new DeterministicPublicAnswerService(),
-  ) {}
+    options: {
+      readonly baseline?: DeterministicPublicAnswerService;
+      readonly budget?: PublicModelRequestBudget;
+    } = {},
+  ) {
+    this.#baseline = options.baseline ?? new DeterministicPublicAnswerService();
+    this.#budget = options.budget;
+  }
 
   async execute(
     artifact: PublicCareerEvidenceArtifact,
     request: PortfolioAnswerRequest,
   ): Promise<PublicAnswerExecution> {
-    const baseline = this.baseline.answer(artifact, request);
+    const baseline = this.#baseline.answer(artifact, request);
     if (baseline.claims.length === 0) {
       return { response: baseline, mode: "deterministic" };
+    }
+    if (this.#budget) {
+      try {
+        if (!await this.#budget.reserve()) {
+          return { response: baseline, mode: "budget_fallback" };
+        }
+      } catch {
+        return { response: baseline, mode: "budget_fallback" };
+      }
     }
     try {
       const answer = generatedAnswerSchema.parse(await this.generator.generate({

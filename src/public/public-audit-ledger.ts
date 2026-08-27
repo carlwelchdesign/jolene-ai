@@ -32,6 +32,7 @@ export const publicAuditEventSchema = z.object({
     "supported",
     "model_supported",
     "model_fallback",
+    "model_budget_fallback",
     "no_evidence",
     "compared",
     "accepted",

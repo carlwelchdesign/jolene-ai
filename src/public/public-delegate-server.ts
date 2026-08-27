@@ -238,9 +238,11 @@ async function handleRequest(
         ? "no_evidence"
         : execution.mode === "model"
           ? "model_supported"
-          : execution.mode === "fallback"
-            ? "model_fallback"
-            : "supported",
+          : execution.mode === "budget_fallback"
+            ? "model_budget_fallback"
+            : execution.mode === "fallback"
+              ? "model_fallback"
+              : "supported",
       undefined,
       {
         corpusVersion: result.corpusVersion,

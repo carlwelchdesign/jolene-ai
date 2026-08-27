@@ -1033,3 +1033,13 @@ Isolated public-container checkpoint:
 | Process boundary | Non-root, read-only root filesystem, dropped capabilities, no privilege escalation, bounded tmpfs, explicit container-mode bind guard, and deterministic default |
 | Activation boundary | Local integration testing only; no public hostname, reverse proxy, CORS, portfolio cutover, deployment, or launch authorization |
 | Verification | Healthy schema `1.0.0` / 41-claim runtime; deterministic 3-claim/3-citation answer without session state; private route `404`; missing artifact `503`; Node 24 with 46 test files / 303 tests; frozen suite 41/41 cases and 24/24 metrics; fresh image, build, both Compose definitions, audit, diff, mount/environment, and private-runtime continuity checks pass |
+
+Public-model budget checkpoint:
+
+| Field | Evidence |
+|---|---|
+| Asana | [JOL-CAREER-005L](https://app.asana.com/1/9789386902387/project/1216473233375594/task/1217888844493767) |
+| Admission boundary | Budget reservation happens only after supported deterministic evidence selection and before provider execution; failed attempts remain counted |
+| Persistence boundary | Strict content-free state contains only schema version, fixed-window start, and aggregate request count in the dedicated public-state volume |
+| Failure boundary | Exhausted, malformed, or unavailable budget state bypasses generation and returns the unchanged deterministic response with `model_budget_fallback` audit outcome |
+| Non-goals | No token/cost reconciliation, provider activation, pricing approval, distributed quota, public deployment, or launch authorization |

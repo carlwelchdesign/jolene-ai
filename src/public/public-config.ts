@@ -36,6 +36,10 @@ const publicEnvSchema = z.object({
   JOLENE_PUBLIC_OPENAI_MODEL: z.string().trim().min(1).default("gpt-5.6-terra"),
   JOLENE_PUBLIC_OPENAI_TIMEOUT_MS: z.coerce.number().int().min(1_000).max(30_000)
     .default(8_000),
+  JOLENE_PUBLIC_OPENAI_BUDGET_PATH: z.string().trim().min(1)
+    .default(".jolene/public/model-budget.json"),
+  JOLENE_PUBLIC_OPENAI_REQUESTS_PER_DAY: z.coerce.number().int().min(1)
+    .max(10_000).default(100),
   OPENAI_API_KEY: z.preprocess(
     (value) => typeof value === "string" && value.trim() === ""
       ? undefined
@@ -78,6 +82,8 @@ export interface PublicDelegateConfig {
   readonly answerMode: "deterministic" | "openai";
   readonly openaiModel: string;
   readonly openaiTimeoutMilliseconds: number;
+  readonly openaiBudgetPath: string;
+  readonly openaiRequestsPerDay: number;
   readonly openaiApiKey: string | undefined;
 }
 
@@ -115,6 +121,11 @@ export function parsePublicDelegateConfig(
     answerMode: parsed.JOLENE_PUBLIC_ANSWER_MODE,
     openaiModel: parsed.JOLENE_PUBLIC_OPENAI_MODEL,
     openaiTimeoutMilliseconds: parsed.JOLENE_PUBLIC_OPENAI_TIMEOUT_MS,
+    openaiBudgetPath: path.resolve(
+      process.cwd(),
+      parsed.JOLENE_PUBLIC_OPENAI_BUDGET_PATH,
+    ),
+    openaiRequestsPerDay: parsed.JOLENE_PUBLIC_OPENAI_REQUESTS_PER_DAY,
     openaiApiKey: parsed.OPENAI_API_KEY,
   };
 }

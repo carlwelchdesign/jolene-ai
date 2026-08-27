@@ -47,12 +47,35 @@ describe("grounded public answer service", () => {
 
   it("does not call the generator when deterministic selection has no evidence", async () => {
     const generate = vi.fn(async () => "must not run");
+    const reserve = vi.fn(async () => true);
     const artifact = createPublicEvidenceArtifact([]);
-    const execution = await new GroundedPublicAnswerService({ generate })
+    const execution = await new GroundedPublicAnswerService(
+      { generate },
+      { budget: { reserve } },
+    )
       .execute(artifact, { question: "What Kubernetes systems did Carl operate?" });
 
     expect(execution.mode).toBe("deterministic");
     expect(execution.response.claims).toEqual([]);
+    expect(generate).not.toHaveBeenCalled();
+    expect(reserve).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    ["exhausted", async () => false],
+    ["unavailable", async () => { throw new Error("unavailable"); }],
+  ])("falls back without provider use when the budget is %s", async (_name, reserve) => {
+    const artifact = createPublicEvidenceArtifact();
+    const request = { question: "What React systems has Carl built?" };
+    const baseline = new DeterministicPublicAnswerService().answer(artifact, request);
+    const generate = vi.fn(async () => "must not run");
+
+    const execution = await new GroundedPublicAnswerService(
+      { generate },
+      { budget: { reserve } },
+    ).execute(artifact, request);
+
+    expect(execution).toEqual({ mode: "budget_fallback", response: baseline });
     expect(generate).not.toHaveBeenCalled();
   });
 

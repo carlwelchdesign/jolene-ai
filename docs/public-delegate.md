@@ -32,6 +32,8 @@ JOLENE_PUBLIC_MAX_CONCURRENT_REQUESTS=8
 JOLENE_PUBLIC_ANSWER_MODE=deterministic
 JOLENE_PUBLIC_OPENAI_MODEL=gpt-5.6-terra
 JOLENE_PUBLIC_OPENAI_TIMEOUT_MS=8000
+JOLENE_PUBLIC_OPENAI_BUDGET_PATH=.jolene/public/model-budget.json
+JOLENE_PUBLIC_OPENAI_REQUESTS_PER_DAY=100
 OPENAI_API_KEY=
 ```
 
@@ -138,6 +140,17 @@ provider's processing or retention. Visitor questions remain untrusted external
 data. Model mode therefore remains a local evaluation feature until provider
 terms, prompt-injection and grounding evaluations, cost controls, and the public
 deployment topology are reviewed.
+
+Model mode also requires a content-free persistent request budget. The budget
+stores only its schema version, window start, and aggregate request count. It is
+consulted only after deterministic evidence selection finds support, so
+no-evidence requests consume no budget and never call the provider. Each
+admitted provider attempt is counted before generation, including failures.
+Exhausted, corrupt, or unavailable budget state bypasses the provider and
+returns the exact deterministic answer with the fixed
+`model_budget_fallback` audit outcome. The default cap is 100 attempts per
+fixed 24-hour window; changing it is an operational decision, not permission
+to enable model mode.
 
 The first offline backend evaluation baseline is documented in
 [Public delegate offline evaluation](public-delegate-evaluation.md). It uses

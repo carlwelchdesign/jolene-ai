@@ -12,14 +12,38 @@ import { FixedWindowPublicRequestAdmission } from "./public/public-request-admis
 import { FilePublicContactIntentQueue } from "./public/public-contact-intent-queue.js";
 import { FilePublicAuditLedger } from "./public/public-audit-ledger.js";
 import { OpenAIPublicAnswerGenerator } from "./public/openai-public-answer-generator.js";
+import {
+  FilePublicModelRequestBudget,
+} from "./public/public-model-request-budget.js";
 
 const config = loadPublicDelegateConfig();
+const modelBudget = config.answerMode === "openai"
+  ? new FilePublicModelRequestBudget({
+      filePath: config.openaiBudgetPath,
+      maxRequestsPerWindow: config.openaiRequestsPerDay,
+      windowMilliseconds: 24 * 60 * 60 * 1_000,
+    })
+  : undefined;
+let modelBudgetAvailable = true;
+if (config.enabled && modelBudget) {
+  await modelBudget.initialize().catch(() => {
+    modelBudgetAvailable = false;
+    process.stderr.write(
+      "Jolene public model budget is unavailable; model generation is disabled.\n",
+    );
+  });
+}
+const activeModelBudget = modelBudget && modelBudgetAvailable
+  ? modelBudget
+  : { reserve: async () => false };
 const answers = config.answerMode === "openai"
   ? new GroundedPublicAnswerService(new OpenAIPublicAnswerGenerator({
       client: new OpenAI({ apiKey: requireOpenAIApiKey(config.openaiApiKey) }),
       model: config.openaiModel,
       timeoutMilliseconds: config.openaiTimeoutMilliseconds,
-    }))
+    }), {
+      budget: activeModelBudget,
+    })
   : new DeterministicPublicAnswerService();
 const contactIntents = new FilePublicContactIntentQueue({
   filePath: config.contactQueuePath,
