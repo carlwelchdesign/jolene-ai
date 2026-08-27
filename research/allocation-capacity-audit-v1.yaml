@@ -1,0 +1,144 @@
+schema_version: personality-allocation-capacity-audit-v1
+status: blocked-pending-protocol-and-register-repair
+audited_at: 2026-08-27T09:58:00Z
+source_register_fingerprint: sha256:b17ed2346343313d1940071177573c95a7ecaf5bcc273e1da09b3592639d1db1
+failed_sampling_plan_fingerprint: sha256:94b07d436aa053801e8ea1de484035635bb9d19bb10c78d4ace5531dd21c5c3f
+source_content_stored: false
+selection_performed: false
+ledgers_created: 0
+observations_created: 0
+capacity_policy:
+  target_speaker_attribution: explicit-only
+  ambiguous_capacity: zero
+  high_risk_counts: conservative-screen-not-selection
+  outcome_based_reallocation: prohibited
+sources:
+  - source_register_id: S02
+    source_event_id: E002
+    content_fingerprint: sha256:1c46f426b7df309ac2e2257556ae345b8bdfe6324d2961a8168493be071811c1
+    segmentation_rule: paragraph-speaker-blocks-v1
+    result: sufficient-under-frozen-rule
+    input_segment_count: 257
+    boundary_unit_count: 257
+    target_eligible_count: 43
+    target_labeled_upper_bound: 43
+    high_risk_candidate_union_lower_bound: 36
+    rule_gaps: []
+  - source_register_id: S03
+    source_event_id: E003
+    content_fingerprint: sha256:61a049d29ada1bb6aae3a0700336bb11a1f4ba151139c1db0e12032d5ea4931b
+    segmentation_rule: cnn-speaker-label-blocks-v1
+    result: sufficient-under-frozen-rule
+    input_segment_count: 721
+    boundary_unit_count: 543
+    target_eligible_count: 270
+    target_labeled_upper_bound: 270
+    high_risk_candidate_union_lower_bound: 166
+    rule_gaps: []
+  - source_register_id: S04
+    source_event_id: E004
+    content_fingerprint: sha256:7f7db3b1766d2656041cbbe6bfdf5df3c2f3342bf4904a4be94027260a018cc5
+    segmentation_rule: pdf-speaker-label-blocks-v1
+    result: indeterminate-rule-insufficient
+    input_segment_count: null
+    boundary_unit_count: null
+    target_eligible_count: null
+    target_labeled_upper_bound: 49
+    high_risk_candidate_union_lower_bound: null
+    rule_gaps: [pdf-extractor-unspecified, page-furniture-handling-unspecified, fragment-threshold-unspecified, mixed-content-handling-unspecified]
+  - source_register_id: S05
+    source_event_id: E005
+    content_fingerprint: sha256:9c0e43d1f051e69bd26feb9a18da6d2ea1c8151660b94dfd7b9c72982e3edd1b
+    segmentation_rule: paragraph-speaker-blocks-v1
+    result: sufficient-under-frozen-rule
+    input_segment_count: 72
+    boundary_unit_count: 72
+    target_eligible_count: 29
+    target_labeled_upper_bound: 29
+    high_risk_candidate_union_lower_bound: 17
+    rule_gaps: []
+  - source_register_id: S07
+    source_event_id: E006
+    content_fingerprint: sha256:eb393e89afa6c8ac0fc322b4226426be1975be6ad1491cb1041c386241736f37
+    segmentation_rule: paragraph-speaker-blocks-v1
+    result: zero-under-frozen-rule
+    input_segment_count: 21
+    boundary_unit_count: 21
+    target_eligible_count: 0
+    target_labeled_upper_bound: 0
+    high_risk_candidate_union_lower_bound: 0
+    rule_gaps: [explicit-speaker-label-unavailable]
+  - source_register_id: S08
+    source_event_id: E007
+    content_fingerprint: sha256:13f4a6112aa8ef9f9f552e0fc52df3f3bcb527d6e8817caed77e3d32ef974321
+    segmentation_rule: pdf-speaker-label-blocks-v1
+    result: indeterminate-rule-insufficient
+    input_segment_count: null
+    boundary_unit_count: null
+    target_eligible_count: null
+    target_labeled_upper_bound: 96
+    high_risk_candidate_union_lower_bound: null
+    rule_gaps: [pdf-extractor-unspecified, page-furniture-handling-unspecified, fragment-threshold-unspecified, mixed-content-handling-unspecified]
+  - source_register_id: S09
+    source_event_id: E008
+    content_fingerprint: sha256:f98b081573e5fdd39450e030f87a2630a52a1bc652e231239f4561f12a429976
+    segmentation_rule: pdf-speaker-label-blocks-v1
+    result: limited-under-frozen-rule
+    input_segment_count: 11
+    boundary_unit_count: 11
+    target_eligible_count: 5
+    target_labeled_upper_bound: 5
+    high_risk_candidate_union_lower_bound: 5
+    rule_gaps: []
+  - source_register_id: S13
+    source_event_id: E010
+    content_fingerprint: sha256:9d0476cf1ddd59b79fa088b823e695bb3498474730855fbdc1f12b1514bd06f4
+    segmentation_rule: paragraph-speaker-blocks-v1
+    result: sufficient-under-frozen-rule
+    input_segment_count: 61
+    boundary_unit_count: 61
+    target_eligible_count: 23
+    target_labeled_upper_bound: 23
+    high_risk_candidate_union_lower_bound: 19
+    rule_gaps: []
+  - source_register_id: S16
+    source_event_id: E012
+    content_fingerprint: sha256:3ff1e5d22aff8bd4cd13a4ea360fe621920ae239fd9d2691cb4ac0b7d31c543e
+    segmentation_rule: paragraph-speaker-blocks-v1
+    result: zero-under-frozen-rule
+    input_segment_count: 20
+    boundary_unit_count: 20
+    target_eligible_count: 0
+    target_labeled_upper_bound: 0
+    high_risk_candidate_union_lower_bound: 0
+    rule_gaps: [explicit-speaker-label-unavailable]
+  - source_register_id: S17
+    source_event_id: E013
+    content_fingerprint: sha256:464aee6623679f8c2e860c51156d2cc5fb0d0773ec5f3addcff15da7ac9a8a3c
+    segmentation_rule: indexed-caption-speaker-blocks-v1
+    result: zero-under-frozen-rule
+    input_segment_count: 210
+    boundary_unit_count: null
+    target_eligible_count: 0
+    target_labeled_upper_bound: 0
+    high_risk_candidate_union_lower_bound: 0
+    rule_gaps: [speaker-transition-map-unavailable]
+  - source_register_id: S18
+    source_event_id: E014
+    content_fingerprint: sha256:84a71eb6ff4ad76c571cceb1ba2517857bf1226971585dcbf0915d1f6ef32666
+    segmentation_rule: pdf-attributed-statement-blocks-v1
+    result: indeterminate-rule-insufficient
+    input_segment_count: null
+    boundary_unit_count: null
+    target_eligible_count: 2
+    target_labeled_upper_bound: 2
+    high_risk_candidate_union_lower_bound: null
+    rule_gaps: [pdf-extractor-unspecified, paragraph-reconstruction-unspecified, page-furniture-handling-unspecified]
+required_repairs:
+  - freeze-source-specific-extraction-and-boundary-rules
+  - freeze-fragment-and-mixed-content-adjudication
+  - freeze-reproducible-high-risk-tagging-protocol
+  - reconcile-coding-ready-status-for-zero-capacity-sources
+  - rerun-capacity-audit-before-v4
+next_action: prospective-protocol-and-source-register-repair
+runtime_activation: prohibited
