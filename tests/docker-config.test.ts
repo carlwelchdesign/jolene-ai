@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
 import { describe, expect, it } from "vitest";
+import { parse } from "yaml";
 
 const projectRoot = resolve(import.meta.dirname, "..");
 const dockerfile = readFileSync(resolve(projectRoot, "Dockerfile"), "utf8");
@@ -14,6 +15,18 @@ const dockerignore = readFileSync(resolve(projectRoot, ".dockerignore"), "utf8")
 const packageJson = JSON.parse(
   readFileSync(resolve(projectRoot, "package.json"), "utf8"),
 ) as { readonly scripts: Readonly<Record<string, string>> };
+const parsedCompose = parse(compose) as {
+  readonly services: Readonly<Record<string, {
+    readonly command?: readonly string[];
+    readonly environment?: Readonly<Record<string, string>>;
+    readonly network_mode?: string;
+    readonly profiles?: readonly string[];
+    readonly volumes?: readonly (string | {
+      readonly source?: string;
+      readonly target?: string;
+    })[];
+  }>>;
+};
 
 describe("Docker runtime boundary", () => {
   it("builds on Node 22 and runs as an unprivileged user", () => {
@@ -64,6 +77,45 @@ describe("Docker runtime boundary", () => {
   it("packages a network-free lexical career-index operation", () => {
     expect(packageJson.scripts["start:career-index:lexical"]).toBe(
       "node dist/career-index.js",
+    );
+  });
+
+  it("exports public career evidence from the canonical volume without private credentials", () => {
+    expect(packageJson.scripts["career:export-public"]).toBe(
+      "docker compose --profile tools run --rm --build jolene-career-export",
+    );
+    expect(packageJson.scripts["start:career-export"]).toBe(
+      "node dist/career-export.js",
+    );
+
+    const exporter = parsedCompose.services["jolene-career-export"];
+    expect(exporter).toBeDefined();
+    expect(exporter?.command).toEqual(["node", "dist/career-export.js"]);
+    expect(exporter?.profiles).toEqual(["tools"]);
+    expect(exporter?.network_mode).toBe("none");
+    expect(exporter?.environment).toEqual({
+      JOLENE_DATABASE_PATH: "/data/jolene.sqlite",
+      JOLENE_PUBLIC_CAREER_EXPORT_PATH: "/exports/public-career-evidence.json",
+      JOLENE_OWNER_ACTOR_ID: "${JOLENE_OWNER_ACTOR_ID:-carl}",
+      JOLENE_CAREER_WORKSPACE_ID:
+        "${JOLENE_CAREER_WORKSPACE_ID:-professional}",
+    });
+    expect(exporter?.volumes).toEqual([
+      "jolene-data:/data",
+      {
+        type: "bind",
+        source: "./.jolene/exports",
+        target: "/exports",
+      },
+    ]);
+    expect(Object.keys(exporter?.environment ?? {})).not.toEqual(
+      expect.arrayContaining([
+        "OPENAI_API_KEY",
+        "SLACK_APP_TOKEN",
+        "SLACK_BOT_TOKEN",
+        "JOLENE_OBSIDIAN_VAULT_ROOT",
+        "JOLENE_PORTFOLIO_ROOT",
+      ]),
     );
   });
 

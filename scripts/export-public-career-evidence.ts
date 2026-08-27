@@ -2,12 +2,7 @@ import path from "node:path";
 
 import dotenv from "dotenv";
 
-import { PublicCareerExportService } from "../src/application/public-career-export-service.js";
-import { SqliteCareerEvidenceStore } from "../src/persistence/sqlite-career-evidence-store.js";
-import {
-  readPublicCareerArtifact,
-  writePublicCareerArtifact,
-} from "../src/publication/public-career-artifact-writer.js";
+import { runPublicCareerExport } from "../src/application/public-career-export-runner.js";
 
 dotenv.config({ path: path.resolve(process.cwd(), ".env.local"), quiet: true });
 
@@ -25,15 +20,9 @@ const scope = {
   workspaceId: process.env.JOLENE_CAREER_WORKSPACE_ID ?? "professional",
 };
 
-const store = new SqliteCareerEvidenceStore(databasePath);
-try {
-  const previous = await readPublicCareerArtifact(outputPath);
-  const artifact = new PublicCareerExportService(store).generate(scope, previous);
-  await writePublicCareerArtifact(outputPath, artifact);
-  process.stdout.write(`${JSON.stringify({
-    outputPath,
-    ...artifact.manifest,
-  }, null, 2)}\n`);
-} finally {
-  store.close();
-}
+const result = await runPublicCareerExport({
+  databasePath,
+  outputPath,
+  ...scope,
+});
+process.stdout.write(`${JSON.stringify(result, null, 2)}\n`);

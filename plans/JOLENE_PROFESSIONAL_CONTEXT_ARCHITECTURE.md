@@ -698,6 +698,34 @@ suite passes 41 of 41 cases and 24 of 24 blocker metrics, and build, Compose,
 production dependency audit, diff, artifact-integrity, citation, and disclosure
 checks pass. The existing private API and Slack containers remained running.
 
+`JOL-CAREER-004B` canonical-runtime export checkpoint:
+
+- the main `career:export-public` command now builds and runs a one-shot
+  `jolene-career-export` service against the same named data volume as the
+  private review UI instead of reading the stale host development database;
+- the export connection is query-only and requires an existing registry, while
+  prior-artifact validation, revocation continuity, deterministic hashing,
+  disclosure policy, atomic replacement, and owner-only file permissions remain
+  unchanged;
+- the job has no network, ports, dependencies, `.env.local`, credentials,
+  Obsidian/portfolio/review mounts, private API, Slack process, or public
+  delegate; and
+- a fresh image generated schema `1.0.0`, corpus
+  `career:3d3b0d7361be5cfae3c634013bc48b73983388d3207d8f9b7bb1aaf50fa5c5de`,
+  41 public claims, and zero revocations at `2026-08-27T04:30:02.751Z` from
+  evidence reviewed through `2026-08-27T00:38:07.748Z`.
+
+Node 24 passes 64 test files and 378 tests. The production build, fresh image,
+private/tools and public Compose validation, zero-vulnerability production
+dependency audit, frozen 41/41 public suite with all 24 blocker metrics,
+artifact schema/digest/citation/file-mode checks, ignored-output check,
+credential-absence runtime inspection, diff hygiene, and continued API/Slack/
+monitor liveness all pass.
+
+This repairs an operational source-of-truth defect; it does not copy the
+artifact into the portfolio, activate an endpoint, deploy, publish, or authorize
+launch.
+
 `JOL-CAREER-005K` isolated-container boundary:
 
 - implementation commit: `3db8b16` (`JOL-CAREER-005K isolate public delegate

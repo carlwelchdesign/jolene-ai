@@ -78,5 +78,33 @@ services:
       jolene-api:
         condition: service_healthy
 
+  jolene-career-export:
+    build:
+      context: .
+      target: runtime
+    image: jolene-ai:local
+    command: ["node", "dist/career-export.js"]
+    profiles: ["tools"]
+    environment:
+      JOLENE_DATABASE_PATH: /data/jolene.sqlite
+      JOLENE_PUBLIC_CAREER_EXPORT_PATH: /exports/public-career-evidence.json
+      JOLENE_OWNER_ACTOR_ID: ${JOLENE_OWNER_ACTOR_ID:-carl}
+      JOLENE_CAREER_WORKSPACE_ID: ${JOLENE_CAREER_WORKSPACE_ID:-professional}
+    volumes:
+      - jolene-data:/data
+      - type: bind
+        source: ./.jolene/exports
+        target: /exports
+    init: true
+    read_only: true
+    network_mode: none
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    restart: "no"
+    healthcheck:
+      disable: true
+
 volumes:
   jolene-data:

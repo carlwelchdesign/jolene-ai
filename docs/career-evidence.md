@@ -234,6 +234,17 @@ Generate the private handoff artifact locally:
 npm run career:export-public
 ```
 
+The canonical command builds a one-shot `jolene-career-export` container and
+reads the same named data volume used by the private review UI. The job has no
+network, ports, dependencies, `.env.local`, OpenAI or Slack credentials,
+Obsidian mount, portfolio mount, or private-review packet mount. Its SQLite
+connection is query-only and refuses a missing database. This prevents a stale
+host development database from silently replacing the reviewed runtime state.
+
+`npm run career:export-public:host` remains available for explicit development
+fixtures and migrations. It reads the configured host database and must not be
+used as evidence of the canonical review state.
+
 The default output is
 `.jolene/exports/public-career-evidence.json`, which is ignored by Git and
 written through an owner-only temporary file plus atomic rename. The command
@@ -275,10 +286,11 @@ Evidence strength is conservatively `limited` until the private registry gains
 an explicit human-reviewed strength field. The exporter does not infer strength
 from source type, wording, or maturity.
 
-The canonical August 26, 2026 run produced a valid empty artifact with zero
-evidence and zero revoked IDs because Carl has not publicly approved any claim.
-Its deterministic empty-corpus hash is
-`sha256:f218a8e06d12d725399b23539c03a8cd0ca4803e98f85e62421b65bf3ff87c7b`.
-The schema and empty fixture live under `contracts/`. Publication, file transfer
-to a public runtime, public API activation, and deployment remain separate
-approval gates.
+The current canonical August 26, 2026 owner-reviewed registry exports 41 public
+claims and zero revoked IDs under schema `1.0.0`. Its content-derived corpus is
+`career:3d3b0d7361be5cfae3c634013bc48b73983388d3207d8f9b7bb1aaf50fa5c5de`;
+the artifact generated at `2026-08-27T04:30:02.751Z` records evidence reviewed
+through `2026-08-27T00:38:07.748Z`. The deterministic empty-corpus fixture and
+hash remain under `contracts/` for regression coverage, not as current runtime
+state. Publication, file transfer to a public runtime, public API activation,
+portfolio integration, deployment, and launch remain separate approval gates.
