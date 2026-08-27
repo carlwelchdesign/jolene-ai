@@ -733,7 +733,7 @@ Review-only client-AI packet checkpoint:
 |---|---|
 | Asana | [JOL-ARCH-011A](https://app.asana.com/1/9789386902387/project/1216473233375594/task/1217890582155151) |
 | Branch | `codex/jol-arch-011a-client-ai-packets` |
-| Implementation commit | Pending delivery commit |
+| Implementation commit | `f0819a7` (`JOL-ARCH-011A add review-only client AI packets`) |
 | Recipient boundary | Only Jenny (`matchmaker-ai`, `client_ai:jenny`) and Maria (`inner-avatar-ai`, `client_ai:maria`) are registered; callers cannot provide arbitrary project or sender identities. |
 | Packet boundary | An owner-owned task, allowlisted context source/data class, purpose, questions, one-to-five Jolene turns, no-more-than-24-hour expiry, and canonical payload fingerprint are durable and reviewable. Sensitive context is excluded. |
 | Exchange boundary | Transcript turns alternate exact identities, are append-only and request-id idempotent across connections, and stop at the approved limit. Every Jolene outbound turn separately consumes an existing exact-action approval for the task, recipient, content, data class, purpose, owner scope, and request ID. |
