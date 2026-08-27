@@ -1,6 +1,6 @@
 # Jolene Personality Research and Specification Plan
 
-**Status:** Phase 1 technical pilot complete and independently reconciled; full corpus, Carl relevance approval, formal specification, and personality evaluation remain open
+**Status:** Phase 1 technical pilot, local relevance control, and non-activating render contract complete; full corpus, Carl relevance approval, formal specification, broader evaluation, and text pilot remain open
 **Owner:** Carl Welch
 **Planning date:** 2026-08-25
 **Target review gate:** 2026-09-11
@@ -744,6 +744,7 @@ Recommended defaults:
 | 2026-08-25 | Research before personality implementation | Carl | Approved by request |
 | 2026-08-25 | Save the canonical plan in this repository and capture durable decisions in Obsidian | Carl | Approved by request |
 | 2026-08-25 | Jolene works for Carl first; client and client-AI coordination is secondary | Carl | Approved by request |
+| 2026-08-27 | Build a non-activating structured render contract and factual-invariance harness while continuing development | Carl | Implemented in JOL-PER-004C; no runtime activation |
 | Pending | Approve central proposition, behavioral defaults, and Phase 1 relevance | Carl | Open; exact research snapshot is reviewable at `/personality-review` |
 | Pending | Begin personality implementation | Carl | Not authorized by this plan |
 | Pending | Explore an original voice | Carl | Not authorized by this plan |
@@ -759,6 +760,7 @@ Recommended defaults:
 - [x] Standalone architecture and earlier-Jolene reuse boundaries are stated.
 - [ ] Carl approves the plan and tuning defaults.
 - [x] Phase 1 pilot corpus is coded and independently reconciled.
+- [x] Non-activating structured render contract and paired factual-invariance harness are implemented.
 - [ ] Full 100–150-turn research corpus is coded.
 - [ ] Personality specification is implemented.
 - [ ] Text pilot is run.
