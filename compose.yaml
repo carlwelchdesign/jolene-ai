@@ -38,6 +38,8 @@ services:
   jolene-slack:
     <<: *jolene-runtime
     command: ["node", "dist/slack.js"]
+    healthcheck:
+      disable: true
     depends_on:
       jolene-api:
         condition: service_healthy
