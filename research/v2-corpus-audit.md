@@ -213,3 +213,33 @@ turns, below the planned eight. No ledger was committed, no observation was crea
 replacement or resampling occurred. `research/sampling-plan-v2-outcome.yaml` binds this
 fail-closed result to the exact plan and source-register fingerprints. Work must return to a
 prospective source-register repair and a separately versioned sampling plan.
+
+## JOL-PER-005B4 target-speaker eligibility repair
+
+The repair preserves the failed v2 plan as historical evidence and changes the source register
+prospectively. S10 remains registered with its official caption-byte fingerprint, but its
+access state is now `excluded`: all 380 timed cues lack explicit speaker labels or voice tags,
+so no target-speaker turn can be attributed without guessing. The live-verification policy no
+longer treats that non-codable caption boundary as a coding-ready source.
+
+S18 adds the Dollywood Foundation and Imagination Library's first-party March 30, 2020
+`Goodnight With Dolly` press release. Live retrieval returned HTTP 200 with no redirects,
+`application/pdf`, 482,899 exact response bytes, four visually reviewable and text-extractable
+pages, and fingerprint
+`sha256:84a71eb6ff4ad76c571cceb1ba2517857bf1226971585dcbf0915d1f6ef32666`.
+Page two contains two publisher-attributed speaker statement blocks: one names the speaker
+directly and the immediately following block uses an unambiguous grammatical continuation.
+The source is classified by taxonomy priority as `first-person-statement`, not public service,
+because the codable boundary is a speaker-controlled statement rather than an interview.
+
+The repaired register fingerprint is
+`sha256:b17ed2346343313d1940071177573c95a7ecaf5bcc273e1da09b3592639d1db1`.
+It contains 14 registered events, 11 coding-ready events, nine coding-ready publisher families,
+eight coding-ready setting families, and all four time bands. Live verification reproduced all
+11 required coding-ready fingerprints, including S18, with zero redirects. The old sampling
+plan now reports `superseded-after-recorded-failure`; it remains audit-valid only because its
+recorded outcome matches the old plan and source fingerprints. Audit mode does not return an
+executable plan or recompute historical publisher, setting, or time-band metrics from the
+current register. The current-plan loader rejects the stale fingerprint, and the selector
+rejects any non-current snapshot before ledger validation. No selection ledger, observation,
+trait admission, owner approval, or runtime activation was created by this repair.

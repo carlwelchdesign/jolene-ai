@@ -48,27 +48,28 @@ describe("personality source register v2", () => {
   it("preserves every v1 source and closes the precommitted diversity gate", async () => {
     await expect(validatePersonalitySourcesV2()).resolves.toMatchObject({
       schemaVersion: "jolene.personality-source-register.v2",
-      registeredEvents: 13,
+      registeredEvents: 14,
       legacyNormalizedEvents: 11,
-      newlyRegisteredEvents: 2,
-      registeredPublisherFamilies: 10,
+      newlyRegisteredEvents: 3,
+      registeredPublisherFamilies: 11,
       registeredSettingFamilies: 10,
       codingReadyEvents: 11,
-      codingReadyPublisherFamilies: 8,
+      codingReadyPublisherFamilies: 9,
       codingReadySettingFamilies: 8,
       codingReadyTimeBands: 4,
       metadataOnlyEvents: 1,
       unavailableEvents: 1,
-      excludedEvents: 0,
+      excludedEvents: 1,
       liveFingerprintPolicy: {
         requiredSourceIds: [
-          "S02", "S03", "S04", "S05", "S07", "S08", "S09", "S10", "S13", "S16", "S17",
+          "S02", "S03", "S04", "S05", "S07", "S08", "S09", "S13", "S16", "S17", "S18",
         ],
         allowedOrigins: [
           "https://freshairarchive.org", "https://transcripts.cnn.com",
           "https://www.press.org", "https://www.wfae.org", "https://www.wprl.org",
-          "https://danratherjournalist.org", "https://www.loc.gov", "https://tile.loc.gov",
-          "https://www.ted.com", "https://blankonblank.org", "https://www.wired.com",
+          "https://danratherjournalist.org", "https://www.loc.gov", "https://www.ted.com",
+          "https://blankonblank.org", "https://www.wired.com",
+          "https://cdn.imaginationlibrary.com",
         ],
         timeoutMs: 15000,
         maximumResponseBytes: 2500000,
@@ -115,6 +116,25 @@ describe("personality source register v2", () => {
         accessState: "coding-ready",
       },
     ]);
+  });
+
+  it("excludes unattributed S10 captions and admits the first-party S18 statement", async () => {
+    const snapshot = await loadPersonalitySourceRegisterV2();
+    expect(snapshot.events.find((source) => source.sourceRegisterId === "S10")).toMatchObject({
+      accessState: "excluded",
+      fingerprintMethod: "raw-vtt-bytes-v1",
+      contentBoundaryVerified: true,
+    });
+    expect(snapshot.events.find((source) => source.sourceRegisterId === "S18")).toMatchObject({
+      sourceEventId: "E014",
+      publisherFamilyId: "dollywood-foundation",
+      settingFamily: "first-person-statement",
+      transcriptProvenance: "first-party-statement",
+      accessState: "coding-ready",
+      fingerprintMethod: "raw-pdf-bytes-v1",
+      sourceContentFingerprint:
+        "sha256:84a71eb6ff4ad76c571cceb1ba2517857bf1226971585dcbf0915d1f6ef32666",
+    });
   });
 
   it("keeps ABC metadata-only until timed captions pass audiovisual review", async () => {

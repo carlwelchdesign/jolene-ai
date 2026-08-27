@@ -1,5 +1,10 @@
 # Personality v2 precommitted sampling plan
 
+> Historical checkpoint: this exact plan failed before selection or coding and is now
+> superseded by the prospective JOL-PER-005B4 source-register repair. The validator retains
+> it only because `sampling-plan-v2-outcome.yaml` binds the failure to both frozen
+> fingerprints. It must not be used to select or replace turns.
+
 **Status:** frozen before v2 observation coding
 
 **Runtime status:** prohibited

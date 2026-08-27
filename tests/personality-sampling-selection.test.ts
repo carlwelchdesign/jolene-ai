@@ -9,6 +9,8 @@ import type { SourceSelectionLedger } from
   "../src/personality/personality-sampling-selection.js";
 import type { PersonalitySamplingPlan } from
   "../src/personality/personality-sampling-plan.js";
+import type { PersonalitySamplingPlanSnapshot } from
+  "../src/personality/personality-sampling-plan.js";
 
 const hash = (value: number) => `sha256:${String(value).padStart(64, "0")}`;
 
@@ -25,7 +27,7 @@ describe("personality sampling selection", () => {
   });
 
   it("selects systematic units and deterministic first remaining high-risk matches", () => {
-    const result = validateAndSelectPersonalityLedgerSource(plan(), planFingerprint, ledger());
+    const result = validateAndSelectPersonalityLedgerSource(snapshot(), ledger());
     expect(result).toMatchObject({
       eligibleUnits: 8,
       excludedRanges: 2,
@@ -47,34 +49,66 @@ describe("personality sampling selection", () => {
   it("fails incomplete or overlapping source-boundary coverage", () => {
     const missing = ledger();
     missing.excludedUnits = missing.excludedUnits.slice(0, 1);
-    expect(() => validateAndSelectPersonalityLedgerSource(plan(), planFingerprint, missing))
+    expect(() => validateAndSelectPersonalityLedgerSource(snapshot(), missing))
       .toThrow("coverage is missing or overlapping");
     const overlap = ledger();
     overlap.excludedUnits[1]!.sourceUnitStart = 8;
-    expect(() => validateAndSelectPersonalityLedgerSource(plan(), planFingerprint, overlap))
+    expect(() => validateAndSelectPersonalityLedgerSource(snapshot(), overlap))
       .toThrow("coverage is missing or overlapping");
   });
 
   it("fails when predeclared high-risk strata cannot fill the allocation", () => {
     const noRisk = ledger();
     noRisk.eligibleUnits = noRisk.eligibleUnits.map((unit) => ({ ...unit, highRiskStrata: [] }));
-    expect(() => validateAndSelectPersonalityLedgerSource(plan(), planFingerprint, noRisk))
+    expect(() => validateAndSelectPersonalityLedgerSource(snapshot(), noRisk))
       .toThrow("cannot satisfy");
   });
 
   it("binds entry IDs and locator kinds to the allocated source", () => {
     const wrongId = ledger();
     wrongId.eligibleUnits[0]!.universeEntryId = "U-S99-0001";
-    expect(() => validateAndSelectPersonalityLedgerSource(plan(), planFingerprint, wrongId))
+    expect(() => validateAndSelectPersonalityLedgerSource(snapshot(), wrongId))
       .toThrow("ID prefix mismatch");
     const wrongLocator = ledger();
     wrongLocator.eligibleUnits[0]!.locator.kind = "section-index";
-    expect(() => validateAndSelectPersonalityLedgerSource(plan(), planFingerprint, wrongLocator))
+    expect(() => validateAndSelectPersonalityLedgerSource(snapshot(), wrongLocator))
       .toThrow("locator kind mismatch");
+  });
+
+  it("rejects a superseded plan before it can drive S10 selection", () => {
+    const failedPlan = snapshot();
+    const first = failedPlan.plan.source_allocations[0];
+    if (!first) throw new Error("Missing failed-plan allocation fixture");
+    first.source_register_id = "S10";
+    first.source_event_id = "E009";
+    first.locator_unit = "timestamp";
+    first.segmentation_rule = "vtt-speaker-cue-blocks-v1";
+    expect(() => validateAndSelectPersonalityLedgerSource({
+      ...failedPlan, sourceRegisterState: "superseded-after-recorded-failure",
+    }, ledger())).toThrow("Superseded sampling plan cannot drive selection");
   });
 });
 
 const planFingerprint = hash(900);
+
+function snapshot(): PersonalitySamplingPlanSnapshot {
+  return {
+    schemaVersion: "jolene.personality-sampling-plan.v2",
+    planFingerprint,
+    createdAt: "2026-08-27T09:00:00.000Z",
+    sourceRegisterFingerprint: hash(901),
+    sourceRegisterState: "current",
+    targetAtomicTurns: 120,
+    systematicTurns: 96,
+    purposiveHighRiskTurns: 24,
+    sourceEvents: 11,
+    publisherFamilies: 8,
+    settingFamilies: 8,
+    timeBands: 4,
+    runtimeActivation: "prohibited",
+    plan: plan(),
+  };
+}
 
 function plan(): PersonalitySamplingPlan {
   return {

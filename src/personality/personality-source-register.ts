@@ -271,7 +271,7 @@ export async function loadPersonalitySourceRegisterV2(
 }
 
 const requiredLiveSourceIds = [
-  "S02", "S03", "S04", "S05", "S07", "S08", "S09", "S10", "S13", "S16", "S17",
+  "S02", "S03", "S04", "S05", "S07", "S08", "S09", "S13", "S16", "S17", "S18",
 ] as const;
 const requiredLiveSourceOrigins = [
   "https://freshairarchive.org",
@@ -281,10 +281,10 @@ const requiredLiveSourceOrigins = [
   "https://www.wprl.org",
   "https://danratherjournalist.org",
   "https://www.loc.gov",
-  "https://tile.loc.gov",
   "https://www.ted.com",
   "https://blankonblank.org",
   "https://www.wired.com",
+  "https://cdn.imaginationlibrary.com",
 ] as const;
 const requiredLiveSourceMethods = [
   "fresh-air-transcript-paragraphs-v1",
@@ -294,10 +294,10 @@ const requiredLiveSourceMethods = [
   "npr-station-article-body-paragraphs-v1",
   "raw-pdf-bytes-v1",
   "raw-pdf-bytes-v1",
-  "raw-vtt-bytes-v1",
   "ted-next-data-transcript-segments-v1",
   "blank-on-blank-transcript-paragraphs-v1",
   "wired-indexed-transcript-captions-v1",
+  "raw-pdf-bytes-v1",
 ] as const;
 
 function assertLiveFingerprintPolicy(

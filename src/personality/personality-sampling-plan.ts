@@ -129,6 +129,7 @@ export interface PersonalitySamplingPlanSnapshot {
   readonly planFingerprint: string;
   readonly createdAt: string;
   readonly sourceRegisterFingerprint: string;
+  readonly sourceRegisterState: "current" | "superseded-after-recorded-failure";
   readonly targetAtomicTurns: number;
   readonly systematicTurns: number;
   readonly purposiveHighRiskTurns: number;
@@ -138,6 +139,20 @@ export interface PersonalitySamplingPlanSnapshot {
   readonly timeBands: number;
   readonly runtimeActivation: "prohibited";
   readonly plan: PersonalitySamplingPlan;
+}
+
+export interface PersonalitySamplingPlanAudit {
+  readonly schemaVersion: "jolene.personality-sampling-plan.v2";
+  readonly planFingerprint: string;
+  readonly createdAt: string;
+  readonly sourceRegisterFingerprint: string;
+  readonly sourceRegisterState: "superseded-after-recorded-failure";
+  readonly targetAtomicTurns: number;
+  readonly systematicTurns: number;
+  readonly purposiveHighRiskTurns: number;
+  readonly sourceEvents: number;
+  readonly historicalDiversityMetricsRecomputed: false;
+  readonly runtimeActivation: "prohibited";
 }
 
 const samplingOutcomeSchema = z.object({
@@ -165,13 +180,13 @@ export type PersonalitySamplingOutcome = z.infer<typeof samplingOutcomeSchema>;
 export async function loadPersonalitySamplingPlanV2(
   projectRoot = process.cwd(),
 ): Promise<PersonalitySamplingPlanSnapshot> {
-  const planText = await readFile(
-    path.resolve(projectRoot, "research", "sampling-plan-v2.yaml"), "utf8",
-  );
+  const planPath = path.resolve(projectRoot, "research", "sampling-plan-v2.yaml");
+  const planText = await readFile(planPath, "utf8");
   const plan = samplingPlanSchema.parse(parse(planText));
   const register = await loadPersonalitySourceRegisterV2(projectRoot);
-  if (plan.source_register.fingerprint !== register.registerFingerprint ||
-      plan.source_register.reviewed_at !== register.reviewedAt) {
+  const registerIsCurrent = plan.source_register.fingerprint === register.registerFingerprint &&
+    plan.source_register.reviewed_at === register.reviewedAt;
+  if (!registerIsCurrent) {
     throw new Error("Sampling plan source-register snapshot is stale");
   }
   if (Date.parse(plan.created_at) < Date.parse(plan.source_register.reviewed_at)) {
@@ -229,6 +244,7 @@ export async function loadPersonalitySamplingPlanV2(
     planFingerprint: digest(planText),
     createdAt: plan.created_at,
     sourceRegisterFingerprint: plan.source_register.fingerprint,
+    sourceRegisterState: "current",
     targetAtomicTurns: plan.target_atomic_turns,
     systematicTurns: plan.selection_rules.systematic.target_turns,
     purposiveHighRiskTurns: plan.selection_rules.purposive_high_risk.target_turns,
@@ -244,19 +260,59 @@ export async function loadPersonalitySamplingPlanV2(
 export async function loadPersonalitySamplingOutcomeV2(
   projectRoot = process.cwd(),
 ): Promise<PersonalitySamplingOutcome> {
-  const [outcomeText, plan] = await Promise.all([
+  const [outcomeText, planText] = await Promise.all([
     readFile(path.resolve(projectRoot, "research", "sampling-plan-v2-outcome.yaml"), "utf8"),
-    loadPersonalitySamplingPlanV2(projectRoot),
+    readFile(path.resolve(projectRoot, "research", "sampling-plan-v2.yaml"), "utf8"),
   ]);
   const outcome = samplingOutcomeSchema.parse(parse(outcomeText));
-  if (outcome.sampling_plan_fingerprint !== plan.planFingerprint ||
-      outcome.source_register_fingerprint !== plan.sourceRegisterFingerprint) {
+  const rawPlan = samplingPlanSchema.parse(parse(planText));
+  if (outcome.sampling_plan_fingerprint !== digest(planText) ||
+      outcome.source_register_fingerprint !== rawPlan.source_register.fingerprint) {
     throw new Error("Sampling outcome does not match the frozen plan snapshot");
   }
-  if (Date.parse(outcome.evaluated_at) < Date.parse(plan.createdAt)) {
+  if (Date.parse(outcome.evaluated_at) < Date.parse(rawPlan.created_at)) {
     throw new Error("Sampling outcome predates the frozen plan");
   }
   return outcome;
+}
+
+export async function loadPersonalitySamplingAuditV2(
+  projectRoot = process.cwd(),
+): Promise<PersonalitySamplingPlanAudit> {
+  const planText = await readFile(
+    path.resolve(projectRoot, "research", "sampling-plan-v2.yaml"), "utf8",
+  );
+  const plan = samplingPlanSchema.parse(parse(planText));
+  await loadPersonalitySamplingOutcomeV2(projectRoot);
+  assertUnique(plan.source_allocations.map((allocation) => allocation.source_register_id),
+    "sampling source register ID");
+  assertUnique(plan.source_allocations.map((allocation) => allocation.source_event_id),
+    "sampling source event ID");
+  assertUnique(plan.selection_rules.purposive_high_risk.strata_priority,
+    "high-risk stratum priority");
+  assertUnique(plan.exclusion_reasons, "sampling exclusion reason");
+  assertSum(plan.source_allocations.map((allocation) => allocation.target_turns),
+    plan.target_atomic_turns, "target turn allocation");
+  assertSum(plan.source_allocations.map((allocation) => allocation.systematic_turns),
+    plan.selection_rules.systematic.target_turns, "systematic allocation");
+  assertSum(plan.source_allocations.map((allocation) => allocation.purposive_high_risk_turns),
+    plan.selection_rules.purposive_high_risk.target_turns, "high-risk allocation");
+  if (Date.parse(plan.created_at) < Date.parse(plan.source_register.reviewed_at)) {
+    throw new Error("Sampling plan predates its source-register snapshot");
+  }
+  return {
+    schemaVersion: "jolene.personality-sampling-plan.v2",
+    planFingerprint: digest(planText),
+    createdAt: plan.created_at,
+    sourceRegisterFingerprint: plan.source_register.fingerprint,
+    sourceRegisterState: "superseded-after-recorded-failure",
+    targetAtomicTurns: plan.target_atomic_turns,
+    systematicTurns: plan.selection_rules.systematic.target_turns,
+    purposiveHighRiskTurns: plan.selection_rules.purposive_high_risk.target_turns,
+    sourceEvents: plan.source_allocations.length,
+    historicalDiversityMetricsRecomputed: false,
+    runtimeActivation: plan.runtime_activation,
+  };
 }
 
 function assertSum(values: readonly number[], expected: number, label: string) {
