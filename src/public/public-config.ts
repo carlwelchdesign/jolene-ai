@@ -20,6 +20,12 @@ const publicEnvSchema = z.object({
     .default(30),
   JOLENE_PUBLIC_CONTACT_QUEUE_MAX_ENTRIES: z.coerce.number().int().min(1)
     .max(1_000).default(500),
+  JOLENE_PUBLIC_AUDIT_PATH: z.string().trim().min(1)
+    .default(".jolene/public/audit.json"),
+  JOLENE_PUBLIC_AUDIT_RETENTION_DAYS: z.coerce.number().int().min(1).max(90)
+    .default(30),
+  JOLENE_PUBLIC_AUDIT_MAX_ENTRIES: z.coerce.number().int().min(1).max(10_000)
+    .default(5_000),
   JOLENE_PUBLIC_REQUESTS_PER_MINUTE: z.coerce.number().int().min(1).max(600)
     .default(60),
   JOLENE_PUBLIC_MAX_CONCURRENT_REQUESTS: z.coerce.number().int().min(1).max(64)
@@ -34,6 +40,9 @@ export interface PublicDelegateConfig {
   readonly contactQueuePath: string;
   readonly contactRetentionDays: number;
   readonly contactQueueMaxEntries: number;
+  readonly auditPath: string;
+  readonly auditRetentionDays: number;
+  readonly auditMaxEntries: number;
   readonly requestsPerMinute: number;
   readonly maxConcurrentRequests: number;
 }
@@ -64,6 +73,9 @@ export function parsePublicDelegateConfig(
     ),
     contactRetentionDays: parsed.JOLENE_PUBLIC_CONTACT_RETENTION_DAYS,
     contactQueueMaxEntries: parsed.JOLENE_PUBLIC_CONTACT_QUEUE_MAX_ENTRIES,
+    auditPath: path.resolve(process.cwd(), parsed.JOLENE_PUBLIC_AUDIT_PATH),
+    auditRetentionDays: parsed.JOLENE_PUBLIC_AUDIT_RETENTION_DAYS,
+    auditMaxEntries: parsed.JOLENE_PUBLIC_AUDIT_MAX_ENTRIES,
     requestsPerMinute: parsed.JOLENE_PUBLIC_REQUESTS_PER_MINUTE,
     maxConcurrentRequests: parsed.JOLENE_PUBLIC_MAX_CONCURRENT_REQUESTS,
   };
