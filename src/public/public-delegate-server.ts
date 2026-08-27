@@ -2,6 +2,7 @@ import { createHash, randomBytes, timingSafeEqual } from "node:crypto";
 import {
   createServer,
   type IncomingMessage,
+  type RequestListener,
   type Server,
   type ServerResponse,
 } from "node:http";
@@ -63,6 +64,7 @@ export interface PublicDelegateServerOptions {
   readonly audits?: PublicAuditRecorder;
   readonly telemetry?: PublicOperationalTelemetry;
   readonly apiToken?: string;
+  readonly clientKey?: (request: IncomingMessage) => string;
   readonly requestId?: () => `req:${string}`;
 }
 
@@ -71,7 +73,20 @@ export function createPublicDelegateServer(
 ): Server {
   const server = createServer(
     { maxHeaderSize: 16_384 },
-    async (request, response) => {
+    createPublicDelegateRequestHandler(options),
+  );
+  server.headersTimeout = 5_000;
+  server.requestTimeout = 10_000;
+  server.keepAliveTimeout = 5_000;
+  server.maxHeadersCount = 64;
+  server.maxRequestsPerSocket = 100;
+  return server;
+}
+
+export function createPublicDelegateRequestHandler(
+  options: PublicDelegateServerOptions,
+): RequestListener {
+  return async (request, response) => {
       const requestId = (options.requestId ?? createPublicRequestId)();
       const measurement = options.telemetry?.begin({
         operation: auditOperation(request.url ?? "/"),
@@ -111,7 +126,7 @@ export function createPublicDelegateServer(
         return;
       }
       const admission = options.admissions.acquire(
-        request.socket.remoteAddress ?? "unknown",
+        (options.clientKey ?? socketClientKey)(request),
       );
       if (!admission.accepted) {
         await respond(
@@ -161,20 +176,17 @@ export function createPublicDelegateServer(
       } finally {
         admission.release();
       }
-    },
-  );
-  server.headersTimeout = 5_000;
-  server.requestTimeout = 10_000;
-  server.keepAliveTimeout = 5_000;
-  server.maxHeadersCount = 64;
-  server.maxRequestsPerSocket = 100;
-  return server;
+    };
+}
+
+function socketClientKey(request: IncomingMessage): string {
+  return request.socket.remoteAddress ?? "unknown";
 }
 
 function requiresAuthorization(rawUrl: string | undefined): boolean {
   if (!rawUrl || rawUrl.length > MAX_URL_CHARACTERS) return false;
   try {
-    return new URL(rawUrl, "http://127.0.0.1").pathname.startsWith("/v1/");
+    return publicPathname(rawUrl).startsWith("/v1/");
   } catch {
     return false;
   }
@@ -205,7 +217,7 @@ async function handleRequest(
     );
     return;
   }
-  const pathname = new URL(rawUrl, "http://127.0.0.1").pathname;
+  const pathname = publicPathname(rawUrl);
   const expectedMethod = pathname === "/health" ||
       pathname === "/v1/public-evidence/manifest"
     ? "GET"
@@ -405,7 +417,7 @@ function guardPublicResponse(
 function auditOperation(rawUrl: string): PublicAuditOperation {
   if (rawUrl.length > MAX_URL_CHARACTERS) return "unknown";
   try {
-    const pathname = new URL(rawUrl, "http://127.0.0.1").pathname;
+    const pathname = publicPathname(rawUrl);
     if (pathname === "/health") return "health";
     if (pathname === "/v1/public-evidence/manifest") return "manifest";
     if (pathname === "/v1/portfolio/answer") return "answer";
@@ -415,6 +427,15 @@ function auditOperation(rawUrl: string): PublicAuditOperation {
   } catch {
     return "unknown";
   }
+}
+
+function publicPathname(rawUrl: string): string {
+  const pathname = new URL(rawUrl, "http://127.0.0.1").pathname;
+  return pathname === "/api"
+    ? "/"
+    : pathname.startsWith("/api/")
+      ? pathname.slice(4)
+      : pathname;
 }
 
 function auditMethod(method: string | undefined): PublicAuditMethod {

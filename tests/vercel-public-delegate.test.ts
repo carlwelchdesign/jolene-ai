@@ -1,0 +1,85 @@
+import { once } from "node:events";
+import { createServer, type Server } from "node:http";
+
+import { afterEach, describe, expect, it, vi } from "vitest";
+
+import { createVercelPublicDelegateHandler } from "../src/public/vercel-public-delegate.js";
+import { createPublicEvidenceArtifact } from "./helpers/public-evidence-fixture.js";
+
+const openServers: Server[] = [];
+const nativeFetch = globalThis.fetch.bind(globalThis);
+
+afterEach(async () => {
+  vi.unstubAllGlobals();
+  await Promise.all(openServers.splice(0).map((server) => close(server)));
+});
+
+describe("Vercel public delegate adapter", () => {
+  it("fails closed unless HTTPS evidence and bearer authentication are configured", () => {
+    expect(() => createVercelPublicDelegateHandler({
+      JOLENE_PUBLIC_ENABLED: "true",
+      JOLENE_PUBLIC_AUTH_MODE: "disabled",
+    })).toThrow();
+  });
+
+  it("serves the root API contract through Vercel's /api function prefix", async () => {
+    const artifact = createPublicEvidenceArtifact();
+    vi.stubGlobal("fetch", vi.fn(async () => new Response(
+      JSON.stringify(artifact),
+      { headers: { "content-type": "application/json" } },
+    )));
+    const token = "test-token-with-at-least-thirty-two-characters";
+    const handler = createVercelPublicDelegateHandler({
+      JOLENE_PUBLIC_ENABLED: "true",
+      JOLENE_PUBLIC_AUTH_MODE: "bearer",
+      JOLENE_PUBLIC_API_TOKEN: token,
+      JOLENE_PUBLIC_ARTIFACT_URL: "https://example.test/public-career-evidence.json",
+      JOLENE_PUBLIC_EXPECTED_CORPUS_VERSION: artifact.manifest.corpusVersion,
+    });
+    const server = createServer(handler);
+    openServers.push(server);
+    server.listen(0, "127.0.0.1");
+    await once(server, "listening");
+    const address = server.address();
+    if (!address || typeof address === "string") throw new Error("Missing port.");
+    const origin = `http://127.0.0.1:${address.port}`;
+
+    const health = await nativeFetch(`${origin}/api/health`);
+    expect(health.status).toBe(200);
+    await expect(health.json()).resolves.toMatchObject({
+      status: "ok",
+      corpusVersion: artifact.manifest.corpusVersion,
+    });
+
+    const unauthorized = await nativeFetch(`${origin}/api/v1/public-evidence/manifest`);
+    expect(unauthorized.status).toBe(401);
+
+    const manifest = await nativeFetch(
+      `${origin}/api/v1/public-evidence/manifest`,
+      { headers: { authorization: `Bearer ${token}` } },
+    );
+    expect(manifest.status).toBe(200);
+    await expect(manifest.json()).resolves.toEqual(artifact.manifest);
+
+    const contact = await nativeFetch(`${origin}/api/v1/portfolio/contact-intent`, {
+      method: "POST",
+      headers: {
+        authorization: `Bearer ${token}`,
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        name: "Recruiter",
+        email: "recruiter@example.com",
+        message: "Please contact me about a role.",
+        consent: true,
+      }),
+    });
+    expect(contact.status).toBe(503);
+  });
+});
+
+async function close(server: Server): Promise<void> {
+  if (!server.listening) return;
+  server.close();
+  await once(server, "close");
+}

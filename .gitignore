@@ -10,3 +10,4 @@ dist/
 node_modules/
 evals/results/*.json
 !evals/results/.gitignore
+.vercel

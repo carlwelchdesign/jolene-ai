@@ -159,6 +159,27 @@ provision or rotate secrets, configure an edge firewall or distributed rate
 limits, validate telemetry and alerts, approve retention, activate the
 portfolio, or authorize public launch.
 
+## Hosted Vercel adapter
+
+The Vercel deployment is an isolated, stateless adapter defined by the fixed
+functions in `api/` and `vercel.json`. The framework preset is explicitly
+`null` so Vercel does not detect or deploy Jolene's private root application.
+Only `/health`, the three reviewed `/v1/` read/assessment operations, the
+disabled contact-intent boundary, and the approved public evidence JSON are
+deployed. Private operations, approvals, Obsidian access, SQLite, Slack, MCP,
+memory, model mode, audit files, and local contact queues are not initialized.
+
+Production requires `JOLENE_PUBLIC_ENABLED=true`, bearer authentication, an
+HTTPS artifact URL, and the exact expected corpus version. The public artifact
+is schema- and digest-validated on every request. Contact intent deliberately
+returns the normal unavailable envelope until durable managed storage,
+retention, deletion, and review operations are approved and implemented.
+
+The bearer token is server-to-server only. It belongs in the portfolio BFF's
+server environment and must never use a browser-visible prefix, appear in
+client code, or be logged. Vercel's per-instance admission controller is a
+defense-in-depth bound, not a distributed edge rate limiter.
+
 ## Routes
 
 - `GET /health` reports only public corpus availability, schema version,
