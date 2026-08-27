@@ -10,7 +10,7 @@ const reviewerIdSchema = z.string().regex(/^[a-z0-9][a-z0-9-]{2,63}$/);
 export const samplingSegmentationRuleSchema = z.enum([
   "cnn-speaker-label-blocks-v1", "indexed-caption-speaker-blocks-v1",
   "paragraph-speaker-blocks-v1", "pdf-speaker-label-blocks-v1",
-  "vtt-speaker-cue-blocks-v1",
+  "pdf-attributed-statement-blocks-v1", "vtt-speaker-cue-blocks-v1",
 ]);
 export const samplingHighRiskStratumSchema = z.enum([
   "belief", "biography", "boundary", "contradiction", "grief-or-hurt", "humor",

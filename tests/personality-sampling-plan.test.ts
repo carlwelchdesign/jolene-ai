@@ -8,7 +8,11 @@ import { describe, expect, it } from "vitest";
 
 import { validatePersonalitySamplingPlan } from
   "../scripts/validate-personality-sampling-plan.js";
+import { validatePersonalitySamplingPlanV3 } from
+  "../scripts/validate-personality-sampling-plan-v3.js";
 import { loadPersonalitySamplingPlanV2 } from
+  "../src/personality/personality-sampling-plan.js";
+import { loadPersonalitySamplingPlanV3 } from
   "../src/personality/personality-sampling-plan.js";
 import { loadPersonalitySamplingOutcomeV2 } from
   "../src/personality/personality-sampling-plan.js";
@@ -42,6 +46,38 @@ describe("personality sampling plan v2", () => {
   it("keeps the superseded plan unavailable to the current-plan loader", async () => {
     await expect(loadPersonalitySamplingPlanV2())
       .rejects.toThrow("Sampling plan source-register snapshot is stale");
+  });
+
+  it("freezes a current prospective v3 plan against the repaired register", async () => {
+    await expect(validatePersonalitySamplingPlanV3()).resolves.toMatchObject({
+      schemaVersion: "jolene.personality-sampling-plan.v3",
+      planFingerprint: "sha256:94b07d436aa053801e8ea1de484035635bb9d19bb10c78d4ace5531dd21c5c3f",
+      sourceRegisterFingerprint:
+        "sha256:b17ed2346343313d1940071177573c95a7ecaf5bcc273e1da09b3592639d1db1",
+      sourceRegisterState: "current",
+      targetAtomicTurns: 120,
+      systematicTurns: 96,
+      purposiveHighRiskTurns: 24,
+      sourceEvents: 11,
+      publisherFamilies: 9,
+      settingFamilies: 8,
+      timeBands: 4,
+      runtimeActivation: "prohibited",
+    });
+    const snapshot = await loadPersonalitySamplingPlanV3();
+    expect(snapshot.plan.source_allocations.some(
+      (allocation) => allocation.source_register_id === "S10",
+    )).toBe(false);
+    expect(snapshot.plan.source_allocations.find(
+      (allocation) => allocation.source_register_id === "S18",
+    )).toMatchObject({
+      source_event_id: "E014",
+      target_turns: 2,
+      systematic_turns: 2,
+      purposive_high_risk_turns: 0,
+      locator_unit: "paragraph-index",
+      segmentation_rule: "pdf-attributed-statement-blocks-v1",
+    });
   });
 
   it("pins the plan to the exact source-register snapshot", async () => {

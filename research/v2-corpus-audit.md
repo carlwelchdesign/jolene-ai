@@ -243,3 +243,21 @@ executable plan or recompute historical publisher, setting, or time-band metrics
 current register. The current-plan loader rejects the stale fingerprint, and the selector
 rejects any non-current snapshot before ledger validation. No selection ledger, observation,
 trait admission, owner approval, or runtime activation was created by this repair.
+
+## JOL-PER-005C prospective v3 sampling precommit
+
+Before any v3 selection ledger or observation was created, `research/sampling-plan-v3.yaml`
+froze a replacement 120-turn allocation against repaired-register fingerprint
+`sha256:b17ed2346343313d1940071177573c95a7ecaf5bcc273e1da09b3592639d1db1`.
+Plan fingerprint
+`sha256:94b07d436aa053801e8ea1de484035635bb9d19bb10c78d4ace5531dd21c5c3f`
+binds 96 systematic and 24 purposive high-risk turns across all 11 current coding-ready
+sources. S10 is absent. S18 contributes its two attributable statement blocks to systematic
+coverage and no high-risk quota, avoiding an outcome-driven sensitive tag.
+
+The plan covers nine publisher families, eight setting families, and all four time bands.
+Maximum shares meet the frozen caps: S16 and S17 each reach but do not exceed the 15% source
+limit, NPR reaches but does not exceed the 20% publisher limit, and every time band remains
+below 40%. Independent precommit review found no P1/P2 issue and confirmed that no v3 ledger or
+observation exists. Runtime activation, trait admission, owner approval, and any personality
+prompting remain prohibited.

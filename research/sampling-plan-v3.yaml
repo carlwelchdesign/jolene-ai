@@ -1,0 +1,102 @@
+schema_version: personality-sampling-plan-v3
+status: precommitted
+runtime_activation: prohibited
+created_at: 2026-08-27T09:40:00Z
+source_register:
+  schema_version: jolene.personality-source-register.v2
+  fingerprint: sha256:b17ed2346343313d1940071177573c95a7ecaf5bcc273e1da09b3592639d1db1
+  reviewed_at: 2026-08-27T09:24:00Z
+target_atomic_turns: 120
+selection_rules:
+  systematic:
+    rule_id: SAM-001
+    target_turns: 96
+    algorithm: eligible-target-speaker-universe-even-midpoint-v1
+    source_order: publisher-boundary-order
+    blind_to_trait_outcomes: true
+  purposive_high_risk:
+    rule_id: SAM-002
+    target_turns: 24
+    algorithm: remaining-eligible-source-order-first-match-v1
+    strata_priority:
+      - boundary
+      - contradiction
+      - grief-or-hurt
+      - humor
+      - workplace-sexual-boundary
+      - voice-adjacent
+      - identity-trait
+      - politics
+      - belief
+      - biography
+    blind_to_fame_and_quotability: true
+  selected_ids_immutable_after_ledger_freeze: true
+  outcome_based_replacement: prohibited
+  failed_post_selection_gate: requires-new-prospective-plan-version
+stratum_definitions:
+  belief: explicit religion spirituality or moral-conviction discussion
+  biography: personal history family health relationship or career-history account
+  boundary: explicit refusal limit condition correction or protected line
+  contradiction: explicit tension change counterevidence or competing claim
+  grief-or-hurt: loss injury shame failure grief or described emotional pain
+  humor: observable joke wordplay self-deprecation comic reversal or laughter cue
+  identity-trait: explicit self-description as a type of person or stable attribute
+  politics: policy elected office civic controversy or partisan positioning
+  voice-adjacent: accent singing vocal sound or voice-performance discussion
+  workplace-sexual-boundary: workplace conduct harassment sexualized treatment or appearance boundary
+eligibility:
+  target_speaker_only: true
+  atomic_turn_required: true
+  coding_ready_source_required: true
+  stable_locator_required: true
+  source_segment_fingerprint_required: true
+exclusion_reasons:
+  - advertisement-or-promotion
+  - duplicate-or-overlap
+  - interviewer-or-other-speaker
+  - lyric-or-performance
+  - non-verbal
+  - not-atomic
+  - speaker-attribution-unclear
+  - too-fragmentary
+  - unreviewable-boundary
+balance_guards:
+  minimum_source_events: 10
+  minimum_publisher_families: 8
+  minimum_setting_families: 8
+  minimum_time_bands: 4
+  maximum_source_share: 0.15
+  maximum_publisher_share: 0.20
+  maximum_time_band_share: 0.40
+post_selection_acceptance:
+  minimum_research_contexts: 8
+  minimum_turns_per_context: 5
+  minimum_sources_per_context: 2
+  minimum_rejected_trait_evidence_turns: 24
+  minimum_rejected_adaptation_turns: 24
+source_allocations:
+  - { source_register_id: S02, source_event_id: E002, target_turns: 8, systematic_turns: 6, purposive_high_risk_turns: 2, locator_unit: paragraph-index, segmentation_rule: paragraph-speaker-blocks-v1 }
+  - { source_register_id: S03, source_event_id: E003, target_turns: 12, systematic_turns: 10, purposive_high_risk_turns: 2, locator_unit: section-index, segmentation_rule: cnn-speaker-label-blocks-v1 }
+  - { source_register_id: S04, source_event_id: E004, target_turns: 14, systematic_turns: 12, purposive_high_risk_turns: 2, locator_unit: section-index, segmentation_rule: pdf-speaker-label-blocks-v1 }
+  - { source_register_id: S05, source_event_id: E005, target_turns: 8, systematic_turns: 6, purposive_high_risk_turns: 2, locator_unit: paragraph-index, segmentation_rule: paragraph-speaker-blocks-v1 }
+  - { source_register_id: S07, source_event_id: E006, target_turns: 8, systematic_turns: 6, purposive_high_risk_turns: 2, locator_unit: paragraph-index, segmentation_rule: paragraph-speaker-blocks-v1 }
+  - { source_register_id: S08, source_event_id: E007, target_turns: 12, systematic_turns: 10, purposive_high_risk_turns: 2, locator_unit: section-index, segmentation_rule: pdf-speaker-label-blocks-v1 }
+  - { source_register_id: S09, source_event_id: E008, target_turns: 8, systematic_turns: 6, purposive_high_risk_turns: 2, locator_unit: section-index, segmentation_rule: pdf-speaker-label-blocks-v1 }
+  - { source_register_id: S13, source_event_id: E010, target_turns: 12, systematic_turns: 10, purposive_high_risk_turns: 2, locator_unit: paragraph-index, segmentation_rule: paragraph-speaker-blocks-v1 }
+  - { source_register_id: S16, source_event_id: E012, target_turns: 18, systematic_turns: 12, purposive_high_risk_turns: 6, locator_unit: paragraph-index, segmentation_rule: paragraph-speaker-blocks-v1 }
+  - { source_register_id: S17, source_event_id: E013, target_turns: 18, systematic_turns: 16, purposive_high_risk_turns: 2, locator_unit: caption-index, segmentation_rule: indexed-caption-speaker-blocks-v1 }
+  - { source_register_id: S18, source_event_id: E014, target_turns: 2, systematic_turns: 2, purposive_high_risk_turns: 0, locator_unit: paragraph-index, segmentation_rule: pdf-attributed-statement-blocks-v1 }
+rights:
+  repository_storage: metadata-and-paraphrase-only
+  excerpts: prohibited
+  lyrics: prohibited
+  transcript_audio_video_storage: prohibited
+  recognizable_expression: prohibited
+  biography_or_belief_transfer: prohibited
+  dialect_imitation: prohibited
+  default_intimacy: prohibited
+  voice_imitation: prohibited
+next_stage:
+  independent_review: required-separate-ticket
+  trait_admission: prohibited
+  owner_decision: not-requested

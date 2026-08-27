@@ -28,7 +28,7 @@ const sourceAllocationSchema = z.object({
   segmentation_rule: z.enum([
     "cnn-speaker-label-blocks-v1", "indexed-caption-speaker-blocks-v1",
     "paragraph-speaker-blocks-v1", "pdf-speaker-label-blocks-v1",
-    "vtt-speaker-cue-blocks-v1",
+    "pdf-attributed-statement-blocks-v1", "vtt-speaker-cue-blocks-v1",
   ]),
 }).superRefine((allocation, context) => {
   if (allocation.systematic_turns + allocation.purposive_high_risk_turns !==
@@ -38,7 +38,7 @@ const sourceAllocationSchema = z.object({
 });
 
 const samplingPlanSchema = z.object({
-  schema_version: z.literal("personality-sampling-plan-v2"),
+  schema_version: z.enum(["personality-sampling-plan-v2", "personality-sampling-plan-v3"]),
   status: z.literal("precommitted"),
   runtime_activation: z.literal("prohibited"),
   created_at: z.string().datetime(),
@@ -125,7 +125,9 @@ const samplingPlanSchema = z.object({
 export type PersonalitySamplingPlan = z.infer<typeof samplingPlanSchema>;
 
 export interface PersonalitySamplingPlanSnapshot {
-  readonly schemaVersion: "jolene.personality-sampling-plan.v2";
+  readonly schemaVersion:
+    | "jolene.personality-sampling-plan.v2"
+    | "jolene.personality-sampling-plan.v3";
   readonly planFingerprint: string;
   readonly createdAt: string;
   readonly sourceRegisterFingerprint: string;
@@ -180,9 +182,28 @@ export type PersonalitySamplingOutcome = z.infer<typeof samplingOutcomeSchema>;
 export async function loadPersonalitySamplingPlanV2(
   projectRoot = process.cwd(),
 ): Promise<PersonalitySamplingPlanSnapshot> {
+  return loadCurrentPersonalitySamplingPlan(projectRoot, 2);
+}
+
+export async function loadPersonalitySamplingPlanV3(
+  projectRoot = process.cwd(),
+): Promise<PersonalitySamplingPlanSnapshot> {
+  return loadCurrentPersonalitySamplingPlan(projectRoot, 3);
+}
+
+async function loadCurrentPersonalitySamplingPlan(
+  projectRoot: string,
+  version: 2 | 3,
+): Promise<PersonalitySamplingPlanSnapshot> {
   const planPath = path.resolve(projectRoot, "research", "sampling-plan-v2.yaml");
-  const planText = await readFile(planPath, "utf8");
+  const versionedPlanPath = version === 2 ? planPath : path.resolve(
+    projectRoot, "research", "sampling-plan-v3.yaml",
+  );
+  const planText = await readFile(versionedPlanPath, "utf8");
   const plan = samplingPlanSchema.parse(parse(planText));
+  if (plan.schema_version !== `personality-sampling-plan-v${version}`) {
+    throw new Error(`Sampling plan file does not contain v${version}`);
+  }
   const register = await loadPersonalitySourceRegisterV2(projectRoot);
   const registerIsCurrent = plan.source_register.fingerprint === register.registerFingerprint &&
     plan.source_register.reviewed_at === register.reviewedAt;
@@ -240,7 +261,7 @@ export async function loadPersonalitySamplingPlanV2(
     "planned setting families");
   assertMinimum(timeBands, plan.balance_guards.minimum_time_bands, "planned time bands");
   return {
-    schemaVersion: "jolene.personality-sampling-plan.v2",
+    schemaVersion: `jolene.personality-sampling-plan.v${version}`,
     planFingerprint: digest(planText),
     createdAt: plan.created_at,
     sourceRegisterFingerprint: plan.source_register.fingerprint,
