@@ -68,3 +68,41 @@ imitation, and runtime activation.
 5. `JOL-PER-005E` — rights, contradiction, anti-caricature, and trait-admission audit.
 
 None of these tickets activates the renderer, model, Slack adapter, public delegate, or voice.
+
+## JOL-PER-005B normalized source checkpoint
+
+The machine-readable `research/source-events-v2.yaml` register now maps every v1 source
+exactly once into a stable event identity, conservative editorial family, program and
+distribution host, event date/time band, controlled setting, medium, content provenance,
+access state, retrieval result, content boundary, editorial treatment, delivery structure,
+promotional purpose, rights basis, and fingerprint metadata.
+
+Current validated inventory:
+
+| Measure | Coding-ready | V2 minimum | Gap |
+|---|---:|---:|---:|
+| Source events | 9 | 10 | 1 |
+| Publisher families | 6 | 8 | 2 |
+| Setting families | 6 | 8 | 2 |
+| Time bands | 3 | 4 | 1 |
+
+Editorial lineage is conservative:
+
+- Fresh Air, NPR Tell Me More via WFAE, and NPR highlights via WPRL count as one NPR
+  publisher family, while remaining separate events/programs.
+- The two Library of Congress sources count as one publisher family.
+- Rebroadcasts and archive-page publication dates do not create new source events.
+
+Eight transcript or transcript-like boundaries and the Library of Congress timed-caption
+boundary are coding-ready. The [1977 ABC News video](https://abcnews.com/video/66760052/)
+remains metadata-only because it has no stable transcript or reviewed timestamp map. The
+[2018 Library of Congress interview](https://www.loc.gov/item/2021690731/) is coding-ready
+through the official timed captions exposed by the catalog record, with its date corrected
+to February 28, 2018. The S15 official-site statement remains unavailable because its exact
+article URL redirects to the homepage.
+
+The register stores SHA-256 values only, never source text, transcripts, lyrics, audio, or
+video. Retrieved HTML hashes record the exact response bytes observed during normalization.
+They are historical retrieval fingerprints, not live freshness checks; canonical retrieval
+and comparison semantics must be added before validation can detect source drift. No v2 turns
+have been sampled or coded.

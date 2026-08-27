@@ -5,15 +5,23 @@ import path from "node:path";
 import { parse } from "yaml";
 import { z } from "zod";
 
+import {
+  personalitySourceEventSchema,
+  settingFamilySchema,
+  timeBandSchema,
+} from "./personality-source-register.js";
+import type { PersonalitySourceEvent } from "./personality-source-register.js";
+
+export {
+  personalitySourceEventSchema,
+  settingFamilySchema,
+  timeBandSchema,
+} from "./personality-source-register.js";
+export type { PersonalitySourceEvent } from "./personality-source-register.js";
+
 const sha256Schema = z.string().regex(/^sha256:[a-f0-9]{64}$/);
 const reviewerIdSchema = z.string().regex(/^[a-z0-9][a-z0-9-]{2,63}$/);
 
-export const timeBandSchema = z.enum(["pre-2000", "2000s", "2010s", "2020s"]);
-export const settingFamilySchema = z.enum([
-  "adversarial-interview", "archival-interview", "first-person-statement",
-  "formal-qa", "long-form-audio", "long-form-video", "public-service",
-  "workplace-interview",
-]);
 export const researchContextSchema = z.enum([
   "attribution", "boundaries", "care", "humor", "leadership", "recovery",
   "uncertainty", "work-practice",
@@ -27,29 +35,6 @@ const sensitiveStratumSchema = z.enum([
   "belief", "biography", "boundary", "contradiction", "grief-or-hurt", "humor",
   "identity-trait", "politics", "voice-adjacent", "workplace-sexual-boundary",
 ]);
-
-export const personalitySourceEventSchema = z.object({
-  sourceEventId: z.string().regex(/^E\d{3}$/),
-  sourceRegisterId: z.string().regex(/^S\d{2}$/),
-  publisherFamilyId: z.string().regex(/^[a-z0-9][a-z0-9-]{2,63}$/),
-  publisher: z.string().min(1),
-  title: z.string().min(1),
-  url: z.string().url(),
-  date: z.string().regex(/^\d{4}(?:-\d{2}-\d{2})?$/),
-  timeBand: timeBandSchema,
-  settingFamily: settingFamilySchema,
-  medium: z.enum(["audio", "text", "video"]),
-  transcriptProvenance: z.enum([
-    "edited-primary-highlights", "first-party-statement", "official-archive-transcript",
-    "publisher-transcript",
-  ]),
-  accessState: z.enum(["coding-ready", "excluded", "metadata-only", "unavailable"]),
-  retrievedAt: z.string().datetime(),
-  primarySourceVerified: z.literal(true),
-  scriptedOrPromotional: z.enum(["edited", "scripted", "unknown", "unscripted"]),
-  rightsBasis: z.literal("metadata-and-paraphrase-only"),
-  sourceContentFingerprint: sha256Schema,
-});
 
 const categoricalCodingSchema = z.object({
   speechAct: z.enum([
@@ -173,7 +158,6 @@ const policySchema = z.object({
   }),
 });
 
-export type PersonalitySourceEvent = z.infer<typeof personalitySourceEventSchema>;
 export type PersonalityTurn = z.infer<typeof personalityTurnSchema>;
 export type IndependentReview = z.infer<typeof independentReviewSchema>;
 export type TraitAdmission = z.infer<typeof traitAdmissionSchema>;
@@ -227,7 +211,10 @@ export function validatePersonalityCorpusV2(
   assertUnique(sources.map((source) => source.sourceEventId), "source event");
   assertUnique(sources.map((source) => source.sourceRegisterId), "source register ID");
   assertUnique(sources.map((source) => source.url), "source URL");
-  assertUnique(sources.map((source) => source.sourceContentFingerprint), "source content fingerprint");
+  assertUnique(
+    sources.flatMap((source) => source.sourceContentFingerprint ?? []),
+    "source content fingerprint",
+  );
   assertUnique(turns.map((turn) => turn.observationId), "observation");
   assertUnique(turns.map((turn) => turn.segmentFingerprint), "segment fingerprint");
   assertUnique(turns.map((turn) => normalizeParaphrase(turn.paraphrase)), "normalized paraphrase");
@@ -236,11 +223,6 @@ export function validatePersonalityCorpusV2(
 
   const sourceById = new Map(sources.map((source) => [source.sourceEventId, source]));
   const turnById = new Map(turns.map((turn) => [turn.observationId, turn]));
-  for (const source of sources) {
-    if (source.timeBand !== timeBandForDate(source.date)) {
-      throw new Error(`Source time-band mismatch for ${source.sourceEventId}`);
-    }
-  }
   for (const turn of turns) {
     const source = sourceById.get(turn.sourceEventId);
     if (!source || source.accessState !== "coding-ready") {
@@ -450,12 +432,4 @@ function fingerprint(value: unknown) {
 
 function normalizeParaphrase(value: string) {
   return value.toLocaleLowerCase("en-US").replace(/[^a-z0-9]+/g, " ").trim();
-}
-
-function timeBandForDate(date: string): z.infer<typeof timeBandSchema> {
-  const year = Number.parseInt(date.slice(0, 4), 10);
-  if (year < 2000) return "pre-2000";
-  if (year < 2010) return "2000s";
-  if (year < 2020) return "2010s";
-  return "2020s";
 }

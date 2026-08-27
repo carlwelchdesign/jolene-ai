@@ -28,6 +28,7 @@
     "mcp:career:audit": "tsx scripts/inspect-private-career-mcp-audit.ts",
     "mcp:career:dev": "tsx src/private-career-mcp.ts",
     "research:personality:validate": "tsx scripts/validate-personality-research.ts",
+    "research:personality:sources:v2": "tsx scripts/validate-personality-sources-v2.ts",
     "secrets:migrate-compose": "tsx scripts/migrate-compose-secrets.ts",
     "slack": "tsx src/slack.ts",
     "start": "node dist/server.js",
