@@ -702,12 +702,14 @@ Owner-only Project-Watch notification checkpoint:
 |---|---|
 | Asana | [JOL-ARCH-010E](https://app.asana.com/1/9789386902387/project/1216473233375594/task/1217890347173841) |
 | Branch | `codex/jol-arch-010e-owner-alerts` |
+| Implementation commit | `9ac2f0b` (`JOL-ARCH-010E add owner-only project alerts`) |
+| Pull request | [#41](https://github.com/carlwelchdesign/jolene-ai/pull/41) |
 | Scope | An explicitly enabled watched project can create a durable notification only when a successful scheduled snapshot enters, changes, or clears an alert state. The destination is fixed to the configured Slack owner DM. |
 | Safety evidence | First-clear, unchanged, manual, and failed inspections remain silent. Messages are deterministic and contain only a Slack-escaped project label, transition, bounded alert labels, ISO check time, and the loopback review URL; no paths, plan content, diffs, raw errors, private memory, credentials, Slack IDs, shared channels, or arbitrary text enter the outbox. Configuration accepts one Slack member ID rather than a multi-user destination. |
 | Delivery evidence | SQLite commits the notification intent atomically with the completed run. The Slack process claims one item at a time, retries classified failures with bounded backoff and attempt count, suppresses completed replays across restart, and waits for an active drain before shutdown. |
 | Verification | Node 24 typecheck, 58 test files / 352 tests, production build, private/public Compose validation, fresh ARM64 image build, disposable API + monitor runtime smoke, built Slack-adapter smoke with a fake exact-owner client, production dependency audit, diff hygiene, desktop browser review, 390px no-overflow behavior, and clean browser console passed. The real portfolio's first clean scheduled snapshot created no notification, as designed. |
 | Runtime evidence | A disposable local UI showed the exact-owner destination and empty transition history without exposing a Slack ID. A disposable container stack recorded the real portfolio branch, revision, clean worktree, current plan, zero alerts, and zero notification items; the worker remained running and the containers/network/volume were removed afterward. |
-| Remaining boundary | Commit, PR, and live owner-DM operational evidence are pending. Shared-channel/email notifications, arbitrary messaging, build execution, authenticated remote administration, and production hosting remain absent. |
+| Remaining boundary | Live owner-DM operational evidence awaits a genuine alert transition. Shared-channel/email notifications, arbitrary messaging, build execution, authenticated remote administration, and production hosting remain absent. |
 
 ## Architecture tickets
 
