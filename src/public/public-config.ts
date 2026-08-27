@@ -6,8 +6,9 @@ import { z } from "zod";
 const publicEnvSchema = z.object({
   JOLENE_PUBLIC_ENABLED: z.enum(["true", "false"]).default("true"),
   JOLENE_PUBLIC_HOST: z
-    .enum(["127.0.0.1", "::1", "localhost"])
+    .enum(["127.0.0.1", "::1", "localhost", "0.0.0.0"])
     .default("127.0.0.1"),
+  JOLENE_PUBLIC_CONTAINER_MODE: z.enum(["true", "false"]).default("false"),
   JOLENE_PUBLIC_PORT: z.coerce.number().int().min(1).max(65_535).default(8431),
   JOLENE_PUBLIC_ARTIFACT_PATH: z
     .string()
@@ -42,6 +43,16 @@ const publicEnvSchema = z.object({
     z.string().trim().min(1).optional(),
   ),
 }).superRefine((environment, context) => {
+  if (
+    environment.JOLENE_PUBLIC_HOST === "0.0.0.0" &&
+    environment.JOLENE_PUBLIC_CONTAINER_MODE !== "true"
+  ) {
+    context.addIssue({
+      code: "custom",
+      path: ["JOLENE_PUBLIC_HOST"],
+      message: "0.0.0.0 is allowed only inside the isolated public container.",
+    });
+  }
   if (environment.JOLENE_PUBLIC_ANSWER_MODE === "openai" && !environment.OPENAI_API_KEY) {
     context.addIssue({
       code: "custom",

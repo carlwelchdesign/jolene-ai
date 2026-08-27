@@ -58,6 +58,10 @@ describe("public delegate manifest boundary", () => {
     expect(() => parsePublicDelegateConfig({
       JOLENE_PUBLIC_HOST: "0.0.0.0",
     })).toThrow();
+    expect(parsePublicDelegateConfig({
+      JOLENE_PUBLIC_HOST: "0.0.0.0",
+      JOLENE_PUBLIC_CONTAINER_MODE: "true",
+    }).host).toBe("0.0.0.0");
 
     expect(config).toEqual({
       enabled: true,
@@ -118,6 +122,9 @@ describe("public delegate manifest boundary", () => {
     });
     expect(() => parsePublicDelegateConfig({
       JOLENE_PUBLIC_ENABLED: "yes",
+    })).toThrow();
+    expect(() => parsePublicDelegateConfig({
+      JOLENE_PUBLIC_CONTAINER_MODE: "yes",
     })).toThrow();
     expect(() => parsePublicDelegateConfig({
       JOLENE_PUBLIC_REQUESTS_PER_MINUTE: "0",

@@ -59,6 +59,12 @@ public-approved claims with zero revocations. It lives only at the ignored
 generation is not portfolio integration, endpoint activation, deployment, or
 launch approval.
 
+For reproducible loopback integration testing, the delegate can also run in
+the separate `compose.public.yaml` project. That project mounts only this
+artifact read-only and a dedicated public-state volume; it does not share the
+private Compose environment, database, vault, Slack configuration, or memory.
+See [Docker runtime](docker.md#isolated-public-delegate-container).
+
 Then start the reference process:
 
 ```bash
@@ -234,6 +240,6 @@ A content-minimizing local audit ledger exists, but the
 deterministic job-fit baseline still requires integration and evaluation before
 any public use. Authenticated audit access, production aggregation and
 monitoring, provider-specific redaction, cost controls, and distributed abuse
-controls remain open. Adding a production bind address, container service,
-public hostname, reverse proxy, CORS policy, or deployment requires explicit
-approval and a reviewed deployment topology.
+controls remain open. The isolated loopback container is implemented, but
+adding a production bind address, public hostname, reverse proxy, CORS policy,
+or deployment requires explicit approval and a reviewed deployment topology.
