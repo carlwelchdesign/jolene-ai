@@ -1,14 +1,14 @@
 import { resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 
-import { loadPersonalitySamplingPlanV2 } from
+import { loadPersonalitySamplingAuditV2 } from
   "../src/personality/personality-sampling-plan.js";
 import { loadPersonalitySamplingOutcomeV2 } from
   "../src/personality/personality-sampling-plan.js";
 
 export async function validatePersonalitySamplingPlan(projectRoot = process.cwd()) {
   const [snapshot, outcome] = await Promise.all([
-    loadPersonalitySamplingPlanV2(projectRoot),
+    loadPersonalitySamplingAuditV2(projectRoot),
     loadPersonalitySamplingOutcomeV2(projectRoot),
   ]);
   return {
@@ -16,13 +16,12 @@ export async function validatePersonalitySamplingPlan(projectRoot = process.cwd(
     planFingerprint: snapshot.planFingerprint,
     createdAt: snapshot.createdAt,
     sourceRegisterFingerprint: snapshot.sourceRegisterFingerprint,
+    sourceRegisterState: snapshot.sourceRegisterState,
     targetAtomicTurns: snapshot.targetAtomicTurns,
     systematicTurns: snapshot.systematicTurns,
     purposiveHighRiskTurns: snapshot.purposiveHighRiskTurns,
     sourceEvents: snapshot.sourceEvents,
-    publisherFamilies: snapshot.publisherFamilies,
-    settingFamilies: snapshot.settingFamilies,
-    timeBands: snapshot.timeBands,
+    historicalDiversityMetricsRecomputed: snapshot.historicalDiversityMetricsRecomputed,
     runtimeActivation: snapshot.runtimeActivation,
     outcome: {
       status: outcome.status,

@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { mkdtemp, mkdir, readFile, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
@@ -19,13 +20,12 @@ describe("personality sampling plan v2", () => {
     await expect(validatePersonalitySamplingPlan()).resolves.toMatchObject({
       schemaVersion: "jolene.personality-sampling-plan.v2",
       planFingerprint: expect.stringMatching(/^sha256:[a-f0-9]{64}$/),
+      sourceRegisterState: "superseded-after-recorded-failure",
       targetAtomicTurns: 120,
       systematicTurns: 96,
       purposiveHighRiskTurns: 24,
       sourceEvents: 11,
-      publisherFamilies: 8,
-      settingFamilies: 8,
-      timeBands: 4,
+      historicalDiversityMetricsRecomputed: false,
       runtimeActivation: "prohibited",
       outcome: {
         status: "failed-before-selection-and-coding",
@@ -37,6 +37,11 @@ describe("personality sampling plan v2", () => {
         replacementOrResamplingPerformed: false,
       },
     });
+  });
+
+  it("keeps the superseded plan unavailable to the current-plan loader", async () => {
+    await expect(loadPersonalitySamplingPlanV2())
+      .rejects.toThrow("Sampling plan source-register snapshot is stale");
   });
 
   it("pins the plan to the exact source-register snapshot", async () => {
@@ -53,8 +58,8 @@ describe("personality sampling plan v2", () => {
       if (!first) throw new Error("Missing fixture allocation");
       first.target_turns = 9;
       first.systematic_turns = 7;
-    });
-    await expect(loadPersonalitySamplingPlanV2(root))
+    }, true);
+    await expect(validatePersonalitySamplingPlan(root))
       .rejects.toThrow("Invalid target turn allocation");
   });
 
@@ -75,29 +80,45 @@ describe("personality sampling plan v2", () => {
   });
 });
 
-async function fixtureRoot(change: (plan: PersonalitySamplingPlan) => void): Promise<string> {
+async function fixtureRoot(
+  change: (plan: PersonalitySamplingPlan) => void,
+  withMatchingFailureOutcome = false,
+): Promise<string> {
   const root = await mkdtemp(path.join(tmpdir(), "jolene-sampling-plan-"));
   const research = path.join(root, "research");
   await mkdir(research);
   const projectRoot = process.cwd();
-  const [planText, sourceEvents, legacySources] = await Promise.all([
+  const [planText, outcomeText, sourceEvents, legacySources] = await Promise.all([
     readFile(path.join(projectRoot, "research", "sampling-plan-v2.yaml"), "utf8"),
+    readFile(path.join(projectRoot, "research", "sampling-plan-v2-outcome.yaml"), "utf8"),
     readFile(path.join(projectRoot, "research", "source-events-v2.yaml"), "utf8"),
     readFile(path.join(projectRoot, "research", "sources.yaml"), "utf8"),
   ]);
   const plan = parse(planText) as PersonalitySamplingPlan;
   change(plan);
-  await Promise.all([
-    writeFile(path.join(research, "sampling-plan-v2.yaml"), stringify(plan), "utf8"),
+  const changedPlanText = stringify(plan);
+  const writes = [
+    writeFile(path.join(research, "sampling-plan-v2.yaml"), changedPlanText, "utf8"),
     writeFile(path.join(research, "source-events-v2.yaml"), sourceEvents, "utf8"),
     writeFile(path.join(research, "sources.yaml"), legacySources, "utf8"),
-  ]);
+  ];
+  if (withMatchingFailureOutcome) {
+    const outcome = parse(outcomeText) as OutcomeFixture;
+    outcome.sampling_plan_fingerprint = `sha256:${createHash("sha256")
+      .update(changedPlanText, "utf8").digest("hex")}`;
+    outcome.source_register_fingerprint = plan.source_register.fingerprint;
+    writes.push(writeFile(
+      path.join(research, "sampling-plan-v2-outcome.yaml"), stringify(outcome), "utf8",
+    ));
+  }
+  await Promise.all(writes);
   return root;
 }
 
 interface OutcomeFixture {
   evaluated_at: string;
   sampling_plan_fingerprint: string;
+  source_register_fingerprint: string;
 }
 
 async function outcomeFixtureRoot(change: (outcome: OutcomeFixture) => void): Promise<string> {

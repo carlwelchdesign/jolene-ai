@@ -2,7 +2,7 @@ import { createHash } from "node:crypto";
 
 import { z } from "zod";
 
-import type { PersonalitySamplingPlan } from "./personality-sampling-plan.js";
+import type { PersonalitySamplingPlanSnapshot } from "./personality-sampling-plan.js";
 
 const sha256Schema = z.string().regex(/^sha256:[a-f0-9]{64}$/);
 const reviewerIdSchema = z.string().regex(/^[a-z0-9][a-z0-9-]{2,63}$/);
@@ -120,10 +120,13 @@ export function fingerprintSamplingUnitSegments(segments: readonly string[]): st
 }
 
 export function validateAndSelectPersonalityLedgerSource(
-  plan: PersonalitySamplingPlan,
-  planFingerprint: string,
+  snapshot: PersonalitySamplingPlanSnapshot,
   ledgerInput: SourceSelectionLedger,
 ): SourceSelectionResult {
+  if (snapshot.sourceRegisterState !== "current") {
+    throw new Error("Superseded sampling plan cannot drive selection");
+  }
+  const plan = snapshot.plan;
   const ledger = sourceSelectionLedgerSchema.parse(ledgerInput);
   const allocation = plan.source_allocations.find(
     (candidate) => candidate.source_register_id === ledger.sourceRegisterId,
@@ -131,7 +134,7 @@ export function validateAndSelectPersonalityLedgerSource(
   if (!allocation || allocation.source_event_id !== ledger.sourceEventId) {
     throw new Error(`Selection ledger is not allocated for ${ledger.sourceRegisterId}`);
   }
-  if (ledger.samplingPlanFingerprint !== planFingerprint ||
+  if (ledger.samplingPlanFingerprint !== snapshot.planFingerprint ||
       ledger.sourceRegisterFingerprint !== plan.source_register.fingerprint) {
     throw new Error(`${ledger.sourceRegisterId} selection ledger snapshot is stale`);
   }

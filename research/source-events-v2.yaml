@@ -1,6 +1,6 @@
 schema_version: personality-source-register-v2
 status: normalized-non-activating
-reviewed_at: 2026-08-27T08:42:18Z
+reviewed_at: 2026-08-27T09:24:00Z
 rights_policy:
   repository_storage: metadata-and-paraphrase-only
   transcript_storage: prohibited
@@ -8,7 +8,7 @@ rights_policy:
   audio_video_storage: prohibited
   content_fingerprint_storage: sha256-only
 live_fingerprint_verification:
-  required_source_ids: [S02, S03, S04, S05, S07, S08, S09, S10, S13, S16, S17]
+  required_source_ids: [S02, S03, S04, S05, S07, S08, S09, S13, S16, S17, S18]
   allowed_origins:
     - https://freshairarchive.org
     - https://transcripts.cnn.com
@@ -17,10 +17,10 @@ live_fingerprint_verification:
     - https://www.wprl.org
     - https://danratherjournalist.org
     - https://www.loc.gov
-    - https://tile.loc.gov
     - https://www.ted.com
     - https://blankonblank.org
     - https://www.wired.com
+    - https://cdn.imaginationlibrary.com
   timeout_ms: 15000
   maximum_response_bytes: 2500000
   maximum_redirects: 2
@@ -65,6 +65,10 @@ publisher_families:
     label: WIRED
     distribution_hosts: [wired.com]
     independence_note: WIRED is the originating editorial family and current transcript host for its structured prompt interview.
+  - id: dollywood-foundation
+    label: The Dollywood Foundation and Imagination Library
+    distribution_hosts: [cdn.imaginationlibrary.com]
+    independence_note: The first-party foundation announcement is treated as one speaker-controlled institutional publisher family.
 setting_families:
   - id: first-person-statement
     classification_priority: 1
@@ -406,8 +410,8 @@ events:
     settingFamily: public-service
     medium: video
     transcriptProvenance: official-archive-transcript
-    accessState: coding-ready
-    accessReason: The official catalog JSON exposes a stable timed VTT and fulltext boundary even though the HTML item route returned 403.
+    accessState: excluded
+    accessReason: The official VTT has 380 timed cues but no explicit speaker labels or voice tags, so target-speaker attribution is unavailable.
     retrievalStatus: retrieved
     retrievedAt: 2026-08-27T07:58:01Z
     retrievalHttpStatus: 200
@@ -561,3 +565,38 @@ events:
     fingerprintBasis: normalized-transcript-segments
     fingerprintMethod: wired-indexed-transcript-captions-v1
     sourceContentFingerprint: sha256:464aee6623679f8c2e860c51156d2cc5fb0d0773ec5f3addcff15da7ac9a8a3c
+
+  - sourceEventId: E014
+    sourceRegisterId: S18
+    eventIdentity: imagination-library-goodnight-with-dolly-2020-03-30-statement
+    publisherFamilyId: dollywood-foundation
+    editorialProgramId: goodnight-with-dolly
+    distributionHost: cdn.imaginationlibrary.com
+    isRebroadcast: false
+    lineageNote: The Dollywood Foundation issued the first-party program announcement and hosts the exact press-release boundary on its Imagination Library CDN.
+    eventDateNote: The first page dates the publisher announcement March 30, 2020 and identifies the April 2 program launch.
+    publisher: The Dollywood Foundation and Imagination Library
+    title: Goodnight With Dolly press release
+    url: https://cdn.imaginationlibrary.com/ilData/usrFiles/2020/04/06152352/GoodnightWithDolly_PressRelease.pdf
+    effectiveUrl: https://cdn.imaginationlibrary.com/ilData/usrFiles/2020/04/06152352/GoodnightWithDolly_PressRelease.pdf
+    contentBoundaryUrl: https://cdn.imaginationlibrary.com/ilData/usrFiles/2020/04/06152352/GoodnightWithDolly_PressRelease.pdf
+    date: 2020-03-30
+    timeBand: 2020s
+    settingFamily: first-person-statement
+    medium: text
+    transcriptProvenance: first-party-statement
+    accessState: coding-ready
+    accessReason: The stable four-page first-party PDF contains two publisher-attributed speaker statement blocks with an exact page boundary.
+    retrievalStatus: retrieved
+    retrievedAt: 2026-08-27T09:24:00Z
+    retrievalHttpStatus: 200
+    retrievalContentType: application/pdf
+    primarySourceVerified: true
+    contentBoundaryVerified: true
+    editorialTreatment: edited
+    deliveryStructure: scripted
+    promotionalPurpose: mixed
+    rightsBasis: metadata-and-paraphrase-only
+    fingerprintBasis: retrieved-response-bytes
+    fingerprintMethod: raw-pdf-bytes-v1
+    sourceContentFingerprint: sha256:84a71eb6ff4ad76c571cceb1ba2517857bf1226971585dcbf0915d1f6ef32666
