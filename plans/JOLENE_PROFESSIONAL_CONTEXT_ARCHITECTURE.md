@@ -785,6 +785,7 @@ and private API/Slack continuity checks pass.
 
 ### JOL-CAREER-007 — Private MCP adapter
 
+- Implementation commit: `f23f630` (`JOL-CAREER-007A add private career MCP`).
 - The stable evidence contract now supports `JOL-CAREER-007A`, a local stdio
   adapter with approved career search, evidence inspection/freshness, and
   conservative job-description comparison.

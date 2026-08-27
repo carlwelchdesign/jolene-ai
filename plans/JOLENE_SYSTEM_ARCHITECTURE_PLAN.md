@@ -855,6 +855,7 @@ Private professional-context MCP checkpoint:
 |---|---|
 | Asana | [JOL-CAREER-007A](https://app.asana.com/1/9789386902387/project/1216473233375594/task/1217891421524660) |
 | Branch | `codex/jol-career-007a-private-mcp` |
+| Implementation commit | `f23f630` (`JOL-CAREER-007A add private career MCP`) |
 | Transport | Official MCP TypeScript SDK v2 stdio only; no HTTP listener, CORS, public route, or remote transport |
 | Tool boundary | Three read-only tools: approved career search, current evidence inspection, and conservative job-description comparison; no evidence mutation, approval, messaging, private-memory, or raw-vault tool |
 | Scope and audit | Exact configured actor/workspace/stable-client process scope; durable process-keyed fingerprints, fixed outcomes/counts, and approved evidence IDs without raw queries, job text, evidence prose, paths, credentials, or provider errors |
