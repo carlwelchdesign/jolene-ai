@@ -700,6 +700,9 @@ checks pass. The existing private API and Slack containers remained running.
 
 `JOL-CAREER-004B` canonical-runtime export checkpoint:
 
+- branch: `codex/jol-career-004b-runtime-export`;
+- implementation commit: `e8f92de` (`JOL-CAREER-004B export canonical public
+  corpus`);
 - the main `career:export-public` command now builds and runs a one-shot
   `jolene-career-export` service against the same named data volume as the
   private review UI instead of reading the stale host development database;

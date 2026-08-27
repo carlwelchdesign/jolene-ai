@@ -1114,6 +1114,7 @@ Canonical runtime-export checkpoint:
 | Field | Evidence |
 |---|---|
 | Asana | [JOL-CAREER-004B](https://app.asana.com/1/9789386902387/project/1216473233375594/task/1217890909226575) |
+| Delivery | Branch `codex/jol-career-004b-runtime-export`; implementation `e8f92de` (`JOL-CAREER-004B export canonical public corpus`) |
 | Source-of-truth repair | `career:export-public` now runs a compiled one-shot exporter against the canonical private Docker data volume; the host-only command is explicitly development-scoped |
 | Isolation | Network disabled; no ports, dependencies, `.env.local`, OpenAI/Slack credentials, vault, portfolio, review-packet mount, private server, or public delegate |
 | Read boundary | Existing SQLite database required and opened query-only; prior-artifact validation, revocation continuity, leak rejection, atomic replacement, and owner-only output retained |
