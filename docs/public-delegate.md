@@ -111,7 +111,7 @@ npm run career:export-public
 ```
 
 The currently reviewed local artifact uses schema `1.0.0` and contains 41
-public-approved claims with zero revocations. It lives only at the ignored
+public-approved claims with one supersession revocation. It lives only at the ignored
 `.jolene/exports/public-career-evidence.json` handoff boundary. The remaining
 102 approved claims are private/internal and are not included. Artifact
 generation is not portfolio integration, endpoint activation, deployment, or
