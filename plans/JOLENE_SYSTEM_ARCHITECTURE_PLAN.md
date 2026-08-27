@@ -483,6 +483,7 @@ Private capability-registry checkpoint:
 |---|---|
 | Asana | [JOL-ARCH-001A](https://app.asana.com/1/9789386902387/project/1216473233375594/task/1217891589216822) |
 | Branch | `codex/jol-arch-001a-capability-registry` |
+| Implementation commit | `793fc95` (`JOL-ARCH-001A complete private capability registry`) |
 | Inventory | Five current private read-only model tools and one proposal-only external-message capability; no new authority or execution |
 | Contract | Immutable definitions bind Carl as owner, data classes, risk, private context, approval, runtime, model tool name, versioned input/output contract, and audit mechanisms |
 | Enforcement | Exact model exposure derives from registry policy plus existing career/work/project availability; shared channels resolve to no private model tools |
