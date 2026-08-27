@@ -3,9 +3,14 @@ import { pathToFileURL } from "node:url";
 
 import { loadPersonalitySamplingPlanV2 } from
   "../src/personality/personality-sampling-plan.js";
+import { loadPersonalitySamplingOutcomeV2 } from
+  "../src/personality/personality-sampling-plan.js";
 
 export async function validatePersonalitySamplingPlan(projectRoot = process.cwd()) {
-  const snapshot = await loadPersonalitySamplingPlanV2(projectRoot);
+  const [snapshot, outcome] = await Promise.all([
+    loadPersonalitySamplingPlanV2(projectRoot),
+    loadPersonalitySamplingOutcomeV2(projectRoot),
+  ]);
   return {
     schemaVersion: snapshot.schemaVersion,
     planFingerprint: snapshot.planFingerprint,
@@ -19,6 +24,15 @@ export async function validatePersonalitySamplingPlan(projectRoot = process.cwd(
     settingFamilies: snapshot.settingFamilies,
     timeBands: snapshot.timeBands,
     runtimeActivation: snapshot.runtimeActivation,
+    outcome: {
+      status: outcome.status,
+      failureCode: outcome.failure.code,
+      failureSourceId: outcome.failure.source_register_id,
+      boundaryUnitsReviewed: outcome.failure.boundary_units_reviewed,
+      explicitlyAttributedTargetTurns: outcome.failure.explicitly_attributed_target_turns,
+      observationsCreated: outcome.observations_created,
+      replacementOrResamplingPerformed: outcome.replacement_or_resampling_performed,
+    },
   };
 }
 

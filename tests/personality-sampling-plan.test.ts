@@ -9,6 +9,8 @@ import { validatePersonalitySamplingPlan } from
   "../scripts/validate-personality-sampling-plan.js";
 import { loadPersonalitySamplingPlanV2 } from
   "../src/personality/personality-sampling-plan.js";
+import { loadPersonalitySamplingOutcomeV2 } from
+  "../src/personality/personality-sampling-plan.js";
 import type { PersonalitySamplingPlan } from
   "../src/personality/personality-sampling-plan.js";
 
@@ -25,6 +27,15 @@ describe("personality sampling plan v2", () => {
       settingFamilies: 8,
       timeBands: 4,
       runtimeActivation: "prohibited",
+      outcome: {
+        status: "failed-before-selection-and-coding",
+        failureCode: "explicit-speaker-attribution-unavailable",
+        failureSourceId: "S10",
+        boundaryUnitsReviewed: 380,
+        explicitlyAttributedTargetTurns: 0,
+        observationsCreated: 0,
+        replacementOrResamplingPerformed: false,
+      },
     });
   });
 
@@ -46,6 +57,22 @@ describe("personality sampling plan v2", () => {
     await expect(loadPersonalitySamplingPlanV2(root))
       .rejects.toThrow("Invalid target turn allocation");
   });
+
+  it("rejects a failure outcome for a different frozen plan", async () => {
+    const root = await outcomeFixtureRoot((outcome) => {
+      outcome.sampling_plan_fingerprint = `sha256:${"0".repeat(64)}`;
+    });
+    await expect(loadPersonalitySamplingOutcomeV2(root))
+      .rejects.toThrow("Sampling outcome does not match the frozen plan snapshot");
+  });
+
+  it("rejects a failure outcome recorded before the plan was frozen", async () => {
+    const root = await outcomeFixtureRoot((outcome) => {
+      outcome.evaluated_at = "2026-08-27T08:59:59Z";
+    });
+    await expect(loadPersonalitySamplingOutcomeV2(root))
+      .rejects.toThrow("Sampling outcome predates the frozen plan");
+  });
 });
 
 async function fixtureRoot(change: (plan: PersonalitySamplingPlan) => void): Promise<string> {
@@ -62,6 +89,33 @@ async function fixtureRoot(change: (plan: PersonalitySamplingPlan) => void): Pro
   change(plan);
   await Promise.all([
     writeFile(path.join(research, "sampling-plan-v2.yaml"), stringify(plan), "utf8"),
+    writeFile(path.join(research, "source-events-v2.yaml"), sourceEvents, "utf8"),
+    writeFile(path.join(research, "sources.yaml"), legacySources, "utf8"),
+  ]);
+  return root;
+}
+
+interface OutcomeFixture {
+  evaluated_at: string;
+  sampling_plan_fingerprint: string;
+}
+
+async function outcomeFixtureRoot(change: (outcome: OutcomeFixture) => void): Promise<string> {
+  const root = await mkdtemp(path.join(tmpdir(), "jolene-sampling-outcome-"));
+  const research = path.join(root, "research");
+  await mkdir(research);
+  const projectRoot = process.cwd();
+  const [planText, outcomeText, sourceEvents, legacySources] = await Promise.all([
+    readFile(path.join(projectRoot, "research", "sampling-plan-v2.yaml"), "utf8"),
+    readFile(path.join(projectRoot, "research", "sampling-plan-v2-outcome.yaml"), "utf8"),
+    readFile(path.join(projectRoot, "research", "source-events-v2.yaml"), "utf8"),
+    readFile(path.join(projectRoot, "research", "sources.yaml"), "utf8"),
+  ]);
+  const outcome = parse(outcomeText) as OutcomeFixture;
+  change(outcome);
+  await Promise.all([
+    writeFile(path.join(research, "sampling-plan-v2.yaml"), planText, "utf8"),
+    writeFile(path.join(research, "sampling-plan-v2-outcome.yaml"), stringify(outcome), "utf8"),
     writeFile(path.join(research, "source-events-v2.yaml"), sourceEvents, "utf8"),
     writeFile(path.join(research, "sources.yaml"), legacySources, "utf8"),
   ]);

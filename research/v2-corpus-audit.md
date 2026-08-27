@@ -205,3 +205,11 @@ and prohibited runtime activation. The companion guide defines the eligible-univ
 systematic midpoint formula, deterministic high-risk priority walk, controlled exclusions,
 negative/counterexample minimums, later independent-review boundary, and non-goals. This
 checkpoint freezes the method only; no v2 turn has yet been sampled or coded.
+
+The frozen v2 plan then failed before ledger selection or observation coding. A complete audit
+of S10's official VTT found 380 timed cues but zero explicit speaker labels or voice tags. The
+precommitted `vtt-speaker-cue-blocks-v1` rule therefore yields zero attributable target-speaker
+turns, below the planned eight. No ledger was committed, no observation was created, and no
+replacement or resampling occurred. `research/sampling-plan-v2-outcome.yaml` binds this
+fail-closed result to the exact plan and source-register fingerprints. Work must return to a
+prospective source-register repair and a separately versioned sampling plan.

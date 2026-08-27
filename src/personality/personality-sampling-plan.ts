@@ -140,6 +140,28 @@ export interface PersonalitySamplingPlanSnapshot {
   readonly plan: PersonalitySamplingPlan;
 }
 
+const samplingOutcomeSchema = z.object({
+  schema_version: z.literal("personality-sampling-outcome-v2"),
+  status: z.literal("failed-before-selection-and-coding"),
+  evaluated_at: z.string().datetime(),
+  sampling_plan_fingerprint: sha256Schema,
+  source_register_fingerprint: sha256Schema,
+  failure: z.object({
+    source_register_id: z.literal("S10"),
+    source_event_id: z.literal("E009"),
+    boundary_units_reviewed: z.literal(380),
+    explicitly_attributed_target_turns: z.literal(0),
+    code: z.literal("explicit-speaker-attribution-unavailable"),
+  }),
+  committed_selection_ledgers: z.literal(0),
+  observations_created: z.literal(0),
+  replacement_or_resampling_performed: z.literal(false),
+  required_next_action: z.literal("new-prospective-source-register-and-sampling-plan-version"),
+  runtime_activation: z.literal("prohibited"),
+});
+
+export type PersonalitySamplingOutcome = z.infer<typeof samplingOutcomeSchema>;
+
 export async function loadPersonalitySamplingPlanV2(
   projectRoot = process.cwd(),
 ): Promise<PersonalitySamplingPlanSnapshot> {
@@ -217,6 +239,24 @@ export async function loadPersonalitySamplingPlanV2(
     runtimeActivation: plan.runtime_activation,
     plan,
   };
+}
+
+export async function loadPersonalitySamplingOutcomeV2(
+  projectRoot = process.cwd(),
+): Promise<PersonalitySamplingOutcome> {
+  const [outcomeText, plan] = await Promise.all([
+    readFile(path.resolve(projectRoot, "research", "sampling-plan-v2-outcome.yaml"), "utf8"),
+    loadPersonalitySamplingPlanV2(projectRoot),
+  ]);
+  const outcome = samplingOutcomeSchema.parse(parse(outcomeText));
+  if (outcome.sampling_plan_fingerprint !== plan.planFingerprint ||
+      outcome.source_register_fingerprint !== plan.sourceRegisterFingerprint) {
+    throw new Error("Sampling outcome does not match the frozen plan snapshot");
+  }
+  if (Date.parse(outcome.evaluated_at) < Date.parse(plan.createdAt)) {
+    throw new Error("Sampling outcome predates the frozen plan");
+  }
+  return outcome;
 }
 
 function assertSum(values: readonly number[], expected: number, label: string) {
