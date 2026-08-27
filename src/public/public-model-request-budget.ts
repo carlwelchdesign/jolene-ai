@@ -13,6 +13,60 @@ export interface PublicModelRequestBudget {
   reserve(): Promise<boolean>;
 }
 
+export interface InMemoryPublicModelRequestBudgetOptions {
+  readonly maxRequestsPerWindow: number;
+  readonly windowMilliseconds: number;
+  readonly now?: () => Date;
+}
+
+/**
+ * A best-effort per-runtime budget for ephemeral serverless processes.
+ *
+ * This is deliberately not represented as a global quota: every warm runtime
+ * owns its own window. The authenticated BFF and delegate admission controls
+ * remain the outer abuse boundary, while this budget prevents one warm
+ * instance from issuing unbounded model requests.
+ */
+export class InMemoryPublicModelRequestBudget
+  implements PublicModelRequestBudget
+{
+  readonly #maxRequestsPerWindow: number;
+  readonly #windowMilliseconds: number;
+  readonly #now: () => Date;
+  #windowStartedAt: number;
+  #requestCount = 0;
+
+  constructor(options: InMemoryPublicModelRequestBudgetOptions) {
+    if (
+      !Number.isInteger(options.maxRequestsPerWindow) ||
+      options.maxRequestsPerWindow < 1
+    ) {
+      throw new Error("Public model request limit must be a positive integer.");
+    }
+    if (
+      !Number.isInteger(options.windowMilliseconds) ||
+      options.windowMilliseconds < 1
+    ) {
+      throw new Error("Public model budget window must be a positive integer.");
+    }
+    this.#maxRequestsPerWindow = options.maxRequestsPerWindow;
+    this.#windowMilliseconds = options.windowMilliseconds;
+    this.#now = options.now ?? (() => new Date());
+    this.#windowStartedAt = this.#now().getTime();
+  }
+
+  async reserve(): Promise<boolean> {
+    const now = this.#now().getTime();
+    if (now - this.#windowStartedAt >= this.#windowMilliseconds) {
+      this.#windowStartedAt = now;
+      this.#requestCount = 0;
+    }
+    if (this.#requestCount >= this.#maxRequestsPerWindow) return false;
+    this.#requestCount += 1;
+    return true;
+  }
+}
+
 export interface FilePublicModelRequestBudgetOptions {
   readonly filePath: string;
   readonly maxRequestsPerWindow: number;
