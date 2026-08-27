@@ -63,9 +63,11 @@ imitation, and runtime activation.
 
 1. `JOL-PER-005A` — v2 contract and validator gates.
 2. `JOL-PER-005B` — normalized source provenance and editorial lineage.
-3. `JOL-PER-005C` — precommitted sampling and 100–150-turn coding.
-4. `JOL-PER-005D` — stratified independent review and reconciliation.
-5. `JOL-PER-005E` — rights, contradiction, anti-caricature, and trait-admission audit.
+3. `JOL-PER-005B2` — source-diversity and missing-period gate closure.
+4. `JOL-PER-005B3` — reproducible source drift verification.
+5. `JOL-PER-005C` — precommitted sampling and 100–150-turn coding.
+6. `JOL-PER-005D` — stratified independent review and reconciliation.
+7. `JOL-PER-005E` — rights, contradiction, anti-caricature, and trait-admission audit.
 
 None of these tickets activates the renderer, model, Slack adapter, public delegate, or voice.
 
@@ -77,7 +79,7 @@ distribution host, event date/time band, controlled setting, medium, content pro
 access state, retrieval result, content boundary, editorial treatment, delivery structure,
 promotional purpose, rights basis, and fingerprint metadata.
 
-Current validated inventory:
+Validated inventory at completion of JOL-PER-005B:
 
 | Measure | Coding-ready | V2 minimum | Gap |
 |---|---:|---:|---:|
@@ -106,3 +108,51 @@ video. Retrieved HTML hashes record the exact response bytes observed during nor
 They are historical retrieval fingerprints, not live freshness checks; canonical retrieval
 and comparison semantics must be added before validation can detect source drift. No v2 turns
 have been sampled or coded.
+
+## JOL-PER-005B2 source-diversity gate closure
+
+The register now adds two independently published, coding-ready events without changing the
+v1 pilot or creating v2 observations:
+
+- A March 13, 1978 Playboy interview preserved by Blank on Blank as a dated first-hand
+  recording with an animated transcript boundary. It contributes the independently counted
+  `playboy-blank-on-blank` publisher family, `informal-candid-interview` setting, and
+  pre-2000 time band.
+- WIRED's October 5, 2020 Autocomplete Interview, with its publisher-hosted complete
+  transcript. It contributes the independent `wired` publisher family and
+  `structured-prompt-interview` setting.
+
+ABC's media delivery exposes an official VOD subtitle manifest resolving 145 timed-caption
+segments, but sampled captions are not reliably speaker-attributed and have not passed a
+complete audiovisual quality review. The 1977 event therefore remains metadata-only and does
+not contribute to the gate counts.
+
+Current validated inventory:
+
+| Measure | Coding-ready | V2 minimum | Gap |
+|---|---:|---:|---:|
+| Source events | 11 | 10 | 0 |
+| Publisher families | 8 | 8 | 0 |
+| Setting families | 8 | 8 | 0 |
+| Time bands | 4 | 4 | 0 |
+
+All 11 legacy source leads remain normalized exactly once, with two new register events kept
+outside the immutable v1 source file. The original official-site birthday statement remains
+unavailable because the URL redirects to the current homepage. Source diversity is now an
+eligible input to precommitted sampling; it is not evidence that sampling, coding,
+reconciliation, trait admission, owner approval, or runtime activation has occurred.
+
+The ten-setting taxonomy is frozen in the register with ordered definitions and
+distinguishing rules. `informal-candid-interview` describes a contemporaneous open-ended
+editorial conversation; `archival-interview` requires that preservation or historical
+documentation was the original commissioning purpose. Later archive hosting alone cannot
+change the original setting classification.
+
+S16 and S17 use source-specific normalized transcript fingerprints rather than dynamic page
+shell hashes. The validator extracts transcript paragraphs or explicitly indexed caption
+segments, normalizes visible text, length-prefixes each UTF-8 segment, and hashes the ordered
+sequence without retaining or printing source content. Live verification covers these two
+new boundaries and fails closed unless both IDs are present with their required methods.
+Network retrieval is HTTPS-only, origin-allowlisted across redirects, time-bounded, and
+limited to 2.5 MB per response. Generalized drift verification for the older register remains
+JOL-PER-005B3.

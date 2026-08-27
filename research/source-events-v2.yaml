@@ -1,12 +1,18 @@
 schema_version: personality-source-register-v2
 status: normalized-non-activating
-reviewed_at: 2026-08-27T07:58:01Z
+reviewed_at: 2026-08-27T08:18:30Z
 rights_policy:
   repository_storage: metadata-and-paraphrase-only
   transcript_storage: prohibited
   lyrics_storage: prohibited
   audio_video_storage: prohibited
   content_fingerprint_storage: sha256-only
+live_fingerprint_verification:
+  required_source_ids: [S16, S17]
+  allowed_origins: [https://blankonblank.org, https://www.wired.com]
+  timeout_ms: 15000
+  maximum_response_bytes: 2500000
+  maximum_redirects: 2
 publisher_families:
   - id: abc-news
     label: ABC News
@@ -40,6 +46,55 @@ publisher_families:
     label: Dolly Parton official site
     distribution_hosts: [dollyparton.com]
     independence_note: The first-party site is a distinct source family but its registered article is currently unavailable.
+  - id: playboy-blank-on-blank
+    label: Playboy interview archived by Blank on Blank
+    distribution_hosts: [blankonblank.org]
+    independence_note: The 1978 Playboy editorial event is counted once through the current first-hand recording and transcript archive.
+  - id: wired
+    label: WIRED
+    distribution_hosts: [wired.com]
+    independence_note: WIRED is the originating editorial family and current transcript host for its structured prompt interview.
+setting_families:
+  - id: first-person-statement
+    classification_priority: 1
+    definition: An authored or directly attributed public statement delivered without interviewer turns.
+    distinguishing_rule: Use only when the source boundary is a speaker-controlled statement rather than any question-and-answer exchange.
+  - id: adversarial-interview
+    classification_priority: 2
+    definition: An interview organized around repeated direct challenges to identity, credibility, conduct, or contested choices.
+    distinguishing_rule: A difficult isolated question is insufficient; sustained challenge must shape the interaction.
+  - id: public-service
+    classification_priority: 3
+    definition: A communication centered on a named civic, educational, philanthropic, or public-benefit program.
+    distinguishing_rule: Program mechanics and beneficiaries must dominate over general career or promotional discussion.
+  - id: workplace-interview
+    classification_priority: 4
+    definition: An interview centered on management, labor, organizational decisions, or professional operating practice.
+    distinguishing_rule: Workplace decision-making must be the primary frame rather than incidental career discussion.
+  - id: structured-prompt-interview
+    classification_priority: 5
+    definition: A publisher-defined repeatable format using standardized prompts, cards, searches, or rapid discrete questions.
+    distinguishing_rule: The repeatable prompt mechanism must determine turn structure, not merely provide an interview title.
+  - id: formal-qa
+    classification_priority: 6
+    definition: An institutionally moderated public address, press event, or luncheon followed by formal questions and answers.
+    distinguishing_rule: A moderator and public-event protocol distinguish this setting from ordinary editorial interviews.
+  - id: informal-candid-interview
+    classification_priority: 7
+    definition: A contemporaneous editorial interview conducted as an open-ended personal conversation outside a staged program format.
+    distinguishing_rule: Original conversational purpose controls; later archival republication does not turn it into an archival interview.
+  - id: archival-interview
+    classification_priority: 8
+    definition: A retrospective interview commissioned by a preservation or archive institution to document historical experience.
+    distinguishing_rule: The original interview purpose must be preservation or documentation, not merely later archive hosting.
+  - id: long-form-audio
+    classification_priority: 9
+    definition: An extended broadcast or podcast audio interview not matched by a more specific controlled setting.
+    distinguishing_rule: Use as the audio-format fallback only after applying priorities one through eight.
+  - id: long-form-video
+    classification_priority: 10
+    definition: An extended broadcast or publisher video interview not matched by a more specific controlled setting.
+    distinguishing_rule: Use as the video-format fallback only after applying priorities one through nine.
 events:
   - sourceEventId: E001
     sourceRegisterId: S01
@@ -61,7 +116,7 @@ events:
     medium: video
     transcriptProvenance: metadata-only
     accessState: metadata-only
-    accessReason: The official video page is reachable, but no stable transcript or reviewed timestamp map establishes atomic turns.
+    accessReason: Official timed captions exist, but their segment content lacks reliable speaker attribution and has not passed audiovisual review.
     retrievalStatus: retrieved
     retrievedAt: 2026-08-27T07:58:01Z
     retrievalHttpStatus: 200
@@ -73,6 +128,7 @@ events:
     promotionalPurpose: mixed
     rightsBasis: metadata-and-paraphrase-only
     fingerprintBasis: retrieved-response-bytes
+    fingerprintMethod: raw-content-boundary-bytes-v1
     sourceContentFingerprint: sha256:fdf3212a1865bee419c9dec2bc30bcbb4b5c0d97cbc6b25121127e2aec2a0c6f
 
   - sourceEventId: E002
@@ -107,6 +163,7 @@ events:
     promotionalPurpose: mixed
     rightsBasis: metadata-and-paraphrase-only
     fingerprintBasis: retrieved-response-bytes
+    fingerprintMethod: raw-content-boundary-bytes-v1
     sourceContentFingerprint: sha256:d8beb73f1e4b63396bbe4eb433d968ef1e1904ac4d96578d9483f9aad710f0b9
 
   - sourceEventId: E003
@@ -141,6 +198,7 @@ events:
     promotionalPurpose: mixed
     rightsBasis: metadata-and-paraphrase-only
     fingerprintBasis: retrieved-response-bytes
+    fingerprintMethod: raw-content-boundary-bytes-v1
     sourceContentFingerprint: sha256:a2d7118119be5ff74eb384e7f5bfda09cbdb64ddd8e326378ae6bdeea1bde0cb
 
   - sourceEventId: E004
@@ -175,6 +233,7 @@ events:
     promotionalPurpose: mixed
     rightsBasis: metadata-and-paraphrase-only
     fingerprintBasis: retrieved-response-bytes
+    fingerprintMethod: raw-content-boundary-bytes-v1
     sourceContentFingerprint: sha256:7f7db3b1766d2656041cbbe6bfdf5df3c2f3342bf4904a4be94027260a018cc5
 
   - sourceEventId: E005
@@ -209,6 +268,7 @@ events:
     promotionalPurpose: mixed
     rightsBasis: metadata-and-paraphrase-only
     fingerprintBasis: retrieved-response-bytes
+    fingerprintMethod: raw-content-boundary-bytes-v1
     sourceContentFingerprint: sha256:2c2d6219d196620ec90c2e6c6af9badf447d00ce298ad305157baf9510e02dc4
 
   - sourceEventId: E006
@@ -243,6 +303,7 @@ events:
     promotionalPurpose: yes
     rightsBasis: metadata-and-paraphrase-only
     fingerprintBasis: retrieved-response-bytes
+    fingerprintMethod: raw-content-boundary-bytes-v1
     sourceContentFingerprint: sha256:001442e77643063257933026054596fbce149281fe47afeb9a33d28de02077d2
 
   - sourceEventId: E007
@@ -277,6 +338,7 @@ events:
     promotionalPurpose: yes
     rightsBasis: metadata-and-paraphrase-only
     fingerprintBasis: retrieved-response-bytes
+    fingerprintMethod: raw-content-boundary-bytes-v1
     sourceContentFingerprint: sha256:13f4a6112aa8ef9f9f552e0fc52df3f3bcb527d6e8817caed77e3d32ef974321
 
   - sourceEventId: E008
@@ -311,6 +373,7 @@ events:
     promotionalPurpose: no
     rightsBasis: metadata-and-paraphrase-only
     fingerprintBasis: retrieved-response-bytes
+    fingerprintMethod: raw-content-boundary-bytes-v1
     sourceContentFingerprint: sha256:f98b081573e5fdd39450e030f87a2630a52a1bc652e231239f4561f12a429976
 
   - sourceEventId: E009
@@ -345,6 +408,7 @@ events:
     promotionalPurpose: mixed
     rightsBasis: metadata-and-paraphrase-only
     fingerprintBasis: official-caption-bytes
+    fingerprintMethod: raw-content-boundary-bytes-v1
     sourceContentFingerprint: sha256:d3815a8e5fe3f536f65e43d8724e9b3f9e376365f876f9dab683865b81f51104
 
   - sourceEventId: E010
@@ -379,6 +443,7 @@ events:
     promotionalPurpose: mixed
     rightsBasis: metadata-and-paraphrase-only
     fingerprintBasis: retrieved-response-bytes
+    fingerprintMethod: raw-content-boundary-bytes-v1
     sourceContentFingerprint: sha256:623ebc2f7a50409d3e5bc12026a3fc02c83ea59af6544fe2a85de4dd4f9f4736
 
   - sourceEventId: E011
@@ -413,4 +478,75 @@ events:
     promotionalPurpose: yes
     rightsBasis: metadata-and-paraphrase-only
     fingerprintBasis: none
+    fingerprintMethod: none
     sourceContentFingerprint: null
+
+  - sourceEventId: E012
+    sourceRegisterId: S16
+    eventIdentity: playboy-blank-on-blank-1978-03-13-interview
+    publisherFamilyId: playboy-blank-on-blank
+    editorialProgramId: playboy-interview
+    distributionHost: blankonblank.org
+    isRebroadcast: false
+    lineageNote: Blank on Blank hosts the first-hand recording and animated transcript from Lawrence Grobel's 1978 Playboy interview.
+    eventDateNote: The archive identifies the conversation as recorded on March 13, 1978 for the later Playboy profile.
+    publisher: Blank on Blank archive of Playboy interview
+    title: Dolly Parton on Getting Dirty
+    url: https://blankonblank.org/interviews/dolly-parton-on-getting-dirty-childhood-family/
+    effectiveUrl: https://blankonblank.org/interviews/dolly-parton-on-getting-dirty-childhood-family/
+    contentBoundaryUrl: https://blankonblank.org/interviews/dolly-parton-on-getting-dirty-childhood-family/
+    date: 1978-03-13
+    timeBand: pre-2000
+    settingFamily: informal-candid-interview
+    medium: audio
+    transcriptProvenance: official-archive-transcript
+    accessState: coding-ready
+    accessReason: The archive exposes a stable transcript-like boundary tied to the dated first-hand recording and original interviewer.
+    retrievalStatus: retrieved
+    retrievedAt: 2026-08-27T08:17:23Z
+    retrievalHttpStatus: 200
+    retrievalContentType: text/html; charset=UTF-8
+    primarySourceVerified: true
+    contentBoundaryVerified: true
+    editorialTreatment: edited-highlights
+    deliveryStructure: unscripted
+    promotionalPurpose: mixed
+    rightsBasis: metadata-and-paraphrase-only
+    fingerprintBasis: normalized-transcript-segments
+    fingerprintMethod: blank-on-blank-transcript-paragraphs-v1
+    sourceContentFingerprint: sha256:3ff1e5d22aff8bd4cd13a4ea360fe621920ae239fd9d2691cb4ac0b7d31c543e
+
+  - sourceEventId: E013
+    sourceRegisterId: S17
+    eventIdentity: wired-autocomplete-2020-10-05
+    publisherFamilyId: wired
+    editorialProgramId: autocomplete-interview
+    distributionHost: wired.com
+    isRebroadcast: false
+    lineageNote: WIRED is both the originating editorial family and the current host of its video transcript boundary.
+    eventDateNote: The publisher page identifies the interview release date as October 5, 2020.
+    publisher: WIRED
+    title: Dolly Parton Answers the Web's Most Searched Questions
+    url: https://www.wired.com/video/watch/dolly-parton-answers-the-webs-most-searched-questions
+    effectiveUrl: https://www.wired.com/video/watch/dolly-parton-answers-the-webs-most-searched-questions
+    contentBoundaryUrl: https://www.wired.com/video/watch/dolly-parton-answers-the-webs-most-searched-questions
+    date: 2020-10-05
+    timeBand: 2020s
+    settingFamily: structured-prompt-interview
+    medium: video
+    transcriptProvenance: publisher-transcript
+    accessState: coding-ready
+    accessReason: The publisher page exposes a complete transcript with stable line-addressable answers to structured prompts.
+    retrievalStatus: retrieved
+    retrievedAt: 2026-08-27T08:17:23Z
+    retrievalHttpStatus: 200
+    retrievalContentType: text/html; charset=utf-8
+    primarySourceVerified: true
+    contentBoundaryVerified: true
+    editorialTreatment: edited
+    deliveryStructure: unscripted
+    promotionalPurpose: yes
+    rightsBasis: metadata-and-paraphrase-only
+    fingerprintBasis: normalized-transcript-segments
+    fingerprintMethod: wired-indexed-transcript-captions-v1
+    sourceContentFingerprint: sha256:464aee6623679f8c2e860c51156d2cc5fb0d0773ec5f3addcff15da7ac9a8a3c

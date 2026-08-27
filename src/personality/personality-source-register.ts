@@ -6,17 +6,18 @@ import { parse } from "yaml";
 import { z } from "zod";
 
 const sha256Schema = z.string().regex(/^sha256:[a-f0-9]{64}$/);
+const sourceRegisterIdSchema = z.string().regex(/^S\d{2}$/);
 
 export const timeBandSchema = z.enum(["pre-2000", "2000s", "2010s", "2020s"]);
 export const settingFamilySchema = z.enum([
   "adversarial-interview", "archival-interview", "first-person-statement",
-  "formal-qa", "long-form-audio", "long-form-video", "public-service",
-  "workplace-interview",
+  "formal-qa", "informal-candid-interview", "long-form-audio", "long-form-video",
+  "public-service", "structured-prompt-interview", "workplace-interview",
 ]);
 
 export const personalitySourceEventSchema = z.object({
   sourceEventId: z.string().regex(/^E\d{3}$/),
-  sourceRegisterId: z.string().regex(/^S\d{2}$/),
+  sourceRegisterId: sourceRegisterIdSchema,
   eventIdentity: z.string().regex(/^[a-z0-9][a-z0-9-]{5,127}$/),
   publisherFamilyId: z.string().regex(/^[a-z0-9][a-z0-9-]{2,63}$/),
   editorialProgramId: z.string().regex(/^[a-z0-9][a-z0-9-]{2,63}$/).nullable(),
@@ -35,7 +36,7 @@ export const personalitySourceEventSchema = z.object({
   medium: z.enum(["audio", "text", "video"]),
   transcriptProvenance: z.enum([
     "edited-primary-highlights", "first-party-statement", "metadata-only",
-    "official-archive-transcript", "publisher-transcript",
+    "official-archive-transcript", "official-caption-track", "publisher-transcript",
   ]),
   accessState: z.enum(["coding-ready", "excluded", "metadata-only", "unavailable"]),
   accessReason: z.string().min(20),
@@ -49,7 +50,15 @@ export const personalitySourceEventSchema = z.object({
   deliveryStructure: z.enum(["mixed", "scripted", "unknown", "unscripted"]),
   promotionalPurpose: z.enum(["mixed", "no", "unknown", "yes"]),
   rightsBasis: z.literal("metadata-and-paraphrase-only"),
-  fingerprintBasis: z.enum(["none", "official-caption-bytes", "retrieved-response-bytes"]),
+  fingerprintBasis: z.enum([
+    "none", "normalized-transcript-segments", "official-caption-bytes",
+    "retrieved-response-bytes",
+  ]),
+  fingerprintMethod: z.enum([
+    "none", "raw-content-boundary-bytes-v1",
+    "blank-on-blank-transcript-paragraphs-v1",
+    "wired-indexed-transcript-captions-v1",
+  ]),
   sourceContentFingerprint: sha256Schema.nullable(),
 }).superRefine((source, context) => {
   if (source.timeBand !== timeBandForDate(source.date)) {
@@ -85,6 +94,20 @@ export const personalitySourceEventSchema = z.object({
   if ((source.fingerprintBasis === "none") !== (source.sourceContentFingerprint === null)) {
     context.addIssue({ code: "custom", message: "Source fingerprint and basis disagree" });
   }
+  if ((source.fingerprintMethod === "none") !== (source.sourceContentFingerprint === null)) {
+    context.addIssue({ code: "custom", message: "Source fingerprint and method disagree" });
+  }
+  const normalizedMethods = new Set([
+    "blank-on-blank-transcript-paragraphs-v1",
+    "wired-indexed-transcript-captions-v1",
+  ]);
+  if ((source.fingerprintBasis === "normalized-transcript-segments") !==
+      normalizedMethods.has(source.fingerprintMethod)) {
+    context.addIssue({
+      code: "custom",
+      message: "Normalized transcript fingerprint basis and method disagree",
+    });
+  }
 });
 
 const sourceRegisterV2Schema = z.object({
@@ -98,11 +121,24 @@ const sourceRegisterV2Schema = z.object({
     audio_video_storage: z.literal("prohibited"),
     content_fingerprint_storage: z.literal("sha256-only"),
   }),
+  live_fingerprint_verification: z.object({
+    required_source_ids: z.array(sourceRegisterIdSchema).min(1),
+    allowed_origins: z.array(z.string().url()).min(1),
+    timeout_ms: z.number().int().min(1_000).max(30_000),
+    maximum_response_bytes: z.number().int().min(1_024).max(5_000_000),
+    maximum_redirects: z.number().int().min(0).max(5),
+  }),
   publisher_families: z.array(z.object({
     id: z.string().regex(/^[a-z0-9][a-z0-9-]{2,63}$/),
     label: z.string().min(1),
     distribution_hosts: z.array(z.string().min(1)).min(1),
     independence_note: z.string().min(20),
+  })).min(1),
+  setting_families: z.array(z.object({
+    id: settingFamilySchema,
+    classification_priority: z.number().int().positive(),
+    definition: z.string().min(20),
+    distinguishing_rule: z.string().min(20),
   })).min(1),
   events: z.array(personalitySourceEventSchema).min(1),
 });
@@ -122,7 +158,10 @@ export interface PersonalitySourceRegisterSnapshot {
   readonly registerFingerprint: string;
   readonly reviewedAt: string;
   readonly registeredEvents: number;
+  readonly legacyNormalizedEvents: number;
+  readonly newlyRegisteredEvents: number;
   readonly registeredPublisherFamilies: number;
+  readonly registeredSettingFamilies: number;
   readonly codingReadyEvents: number;
   readonly codingReadyPublisherFamilies: number;
   readonly codingReadySettingFamilies: number;
@@ -130,6 +169,13 @@ export interface PersonalitySourceRegisterSnapshot {
   readonly metadataOnlyEvents: number;
   readonly unavailableEvents: number;
   readonly excludedEvents: number;
+  readonly liveFingerprintPolicy: {
+    readonly requiredSourceIds: readonly string[];
+    readonly allowedOrigins: readonly string[];
+    readonly timeoutMs: number;
+    readonly maximumResponseBytes: number;
+    readonly maximumRedirects: number;
+  };
   readonly gateGaps: {
     readonly sourceEvents: number;
     readonly publisherFamilies: number;
@@ -160,13 +206,25 @@ export async function loadPersonalitySourceRegisterV2(
   assertUnique(register.events.map((source) => source.sourceRegisterId), "source register ID");
   assertUnique(register.events.map((source) => source.eventIdentity), "event identity");
   assertUnique(register.events.map((source) => source.url), "source URL");
+  assertUnique(
+    register.live_fingerprint_verification.required_source_ids,
+    "live fingerprint source ID",
+  );
+  assertUnique(register.live_fingerprint_verification.allowed_origins, "allowed content origin");
   assertUnique(register.publisher_families.map((family) => family.id), "publisher family ID");
+  assertUnique(register.setting_families.map((family) => family.id), "setting family ID");
+  assertUnique(
+    register.setting_families.map((family) => String(family.classification_priority)),
+    "setting classification priority",
+  );
   assertUnique(
     register.events.flatMap((source) => source.sourceContentFingerprint ?? []),
     "source content fingerprint",
   );
   assertLegacyCoverage(register.events, legacy.sources);
   assertPublisherLineage(register.events, register.publisher_families);
+  assertSettingTaxonomy(register.events, register.setting_families);
+  assertLiveFingerprintPolicy(register.events, register.live_fingerprint_verification);
   const ready = register.events.filter((source) => source.accessState === "coding-ready");
   const publishers = new Set(ready.map((source) => source.publisherFamilyId));
   const settings = new Set(ready.map((source) => source.settingFamily));
@@ -176,7 +234,10 @@ export async function loadPersonalitySourceRegisterV2(
     registerFingerprint: digest(v2Text),
     reviewedAt: register.reviewed_at,
     registeredEvents: register.events.length,
+    legacyNormalizedEvents: legacy.sources.length,
+    newlyRegisteredEvents: register.events.length - legacy.sources.length,
     registeredPublisherFamilies: register.publisher_families.length,
+    registeredSettingFamilies: register.setting_families.length,
     codingReadyEvents: ready.length,
     codingReadyPublisherFamilies: publishers.size,
     codingReadySettingFamilies: settings.size,
@@ -184,6 +245,13 @@ export async function loadPersonalitySourceRegisterV2(
     metadataOnlyEvents: register.events.filter((source) => source.accessState === "metadata-only").length,
     unavailableEvents: register.events.filter((source) => source.accessState === "unavailable").length,
     excludedEvents: register.events.filter((source) => source.accessState === "excluded").length,
+    liveFingerprintPolicy: {
+      requiredSourceIds: register.live_fingerprint_verification.required_source_ids,
+      allowedOrigins: register.live_fingerprint_verification.allowed_origins,
+      timeoutMs: register.live_fingerprint_verification.timeout_ms,
+      maximumResponseBytes: register.live_fingerprint_verification.maximum_response_bytes,
+      maximumRedirects: register.live_fingerprint_verification.maximum_redirects,
+    },
     gateGaps: {
       sourceEvents: gap(corpusMinimums.sourceEvents, ready.length),
       publisherFamilies: gap(corpusMinimums.publisherFamilies, publishers.size),
@@ -192,6 +260,58 @@ export async function loadPersonalitySourceRegisterV2(
     },
     events: register.events,
   };
+}
+
+const requiredNormalizedSourceIds = ["S16", "S17"] as const;
+const requiredNormalizedSourceOrigins = [
+  "https://blankonblank.org",
+  "https://www.wired.com",
+] as const;
+
+function assertLiveFingerprintPolicy(
+  events: readonly PersonalitySourceEvent[],
+  policy: {
+    readonly required_source_ids: readonly string[];
+    readonly allowed_origins: readonly string[];
+  },
+) {
+  if (policy.required_source_ids.length !== requiredNormalizedSourceIds.length ||
+      requiredNormalizedSourceIds.some((id) => !policy.required_source_ids.includes(id))) {
+    throw new Error("Live fingerprint policy must require S16 and S17 exactly");
+  }
+  if (policy.allowed_origins.length !== requiredNormalizedSourceOrigins.length ||
+      requiredNormalizedSourceOrigins.some((origin) => !policy.allowed_origins.includes(origin))) {
+    throw new Error("Live fingerprint policy must allow only the S16 and S17 content origins");
+  }
+  for (const origin of policy.allowed_origins) {
+    const parsed = new URL(origin);
+    if (parsed.protocol !== "https:" || parsed.origin !== origin) {
+      throw new Error(`Allowed content origin must be an exact HTTPS origin: ${origin}`);
+    }
+  }
+  const byId = new Map(events.map((source) => [source.sourceRegisterId, source]));
+  for (const id of policy.required_source_ids) {
+    const source = byId.get(id);
+    if (!source || source.fingerprintBasis !== "normalized-transcript-segments") {
+      throw new Error(`${id} must use normalized transcript fingerprinting`);
+    }
+  }
+}
+
+function assertSettingTaxonomy(
+  events: readonly PersonalitySourceEvent[],
+  families: readonly { readonly id: z.infer<typeof settingFamilySchema> }[],
+) {
+  const registered = new Set(families.map((family) => family.id));
+  const expected = new Set(settingFamilySchema.options);
+  if (registered.size !== expected.size || [...expected].some((id) => !registered.has(id))) {
+    throw new Error("Setting taxonomy must define every controlled setting family exactly once");
+  }
+  for (const source of events) {
+    if (!registered.has(source.settingFamily)) {
+      throw new Error(`Unknown setting family ${source.settingFamily}`);
+    }
+  }
 }
 
 function assertPublisherLineage(
@@ -226,8 +346,8 @@ function assertLegacyCoverage(
   legacySources: readonly { readonly id: string; readonly url: string }[],
 ) {
   const normalized = new Map(events.map((source) => [source.sourceRegisterId, source.url]));
-  if (events.length !== legacySources.length) {
-    throw new Error("V2 source register must normalize every legacy source exactly once");
+  if (events.length < legacySources.length) {
+    throw new Error("V2 source register cannot contain fewer events than the legacy register");
   }
   for (const source of legacySources) {
     if (normalized.get(source.id) !== source.url) {

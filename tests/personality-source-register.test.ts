@@ -4,6 +4,8 @@ import { validatePersonalitySourcesV2 } from
   "../scripts/validate-personality-sources-v2.js";
 import { personalitySourceEventSchema } from
   "../src/personality/personality-source-register.js";
+import { loadPersonalitySourceRegisterV2 } from
+  "../src/personality/personality-source-register.js";
 
 const validSource = {
   sourceEventId: "E001",
@@ -38,27 +40,38 @@ const validSource = {
   promotionalPurpose: "no",
   rightsBasis: "metadata-and-paraphrase-only",
   fingerprintBasis: "retrieved-response-bytes",
+  fingerprintMethod: "raw-content-boundary-bytes-v1",
   sourceContentFingerprint: `sha256:${"1".repeat(64)}`,
 } as const;
 
 describe("personality source register v2", () => {
-  it("normalizes every v1 source and reports the honest coding-ready gaps", async () => {
+  it("preserves every v1 source and closes the precommitted diversity gate", async () => {
     await expect(validatePersonalitySourcesV2()).resolves.toMatchObject({
       schemaVersion: "jolene.personality-source-register.v2",
-      registeredEvents: 11,
-      registeredPublisherFamilies: 8,
-      codingReadyEvents: 9,
-      codingReadyPublisherFamilies: 6,
-      codingReadySettingFamilies: 6,
-      codingReadyTimeBands: 3,
+      registeredEvents: 13,
+      legacyNormalizedEvents: 11,
+      newlyRegisteredEvents: 2,
+      registeredPublisherFamilies: 10,
+      registeredSettingFamilies: 10,
+      codingReadyEvents: 11,
+      codingReadyPublisherFamilies: 8,
+      codingReadySettingFamilies: 8,
+      codingReadyTimeBands: 4,
       metadataOnlyEvents: 1,
       unavailableEvents: 1,
       excludedEvents: 0,
+      liveFingerprintPolicy: {
+        requiredSourceIds: ["S16", "S17"],
+        allowedOrigins: ["https://blankonblank.org", "https://www.wired.com"],
+        timeoutMs: 15000,
+        maximumResponseBytes: 2500000,
+        maximumRedirects: 2,
+      },
       gateGaps: {
-        sourceEvents: 1,
-        publisherFamilies: 2,
-        settingFamilies: 2,
-        timeBands: 1,
+        sourceEvents: 0,
+        publisherFamilies: 0,
+        settingFamilies: 0,
+        timeBands: 0,
       },
     });
   });
@@ -70,11 +83,51 @@ describe("personality source register v2", () => {
     expect(second.registerFingerprint).toBe(first.registerFingerprint);
   });
 
+  it("registers the two independently published gate-closing events", async () => {
+    const snapshot = await loadPersonalitySourceRegisterV2();
+    expect(snapshot.events.filter((source) => source.sourceRegisterId === "S16" ||
+      source.sourceRegisterId === "S17").map((source) => ({
+      sourceRegisterId: source.sourceRegisterId,
+      publisherFamilyId: source.publisherFamilyId,
+      settingFamily: source.settingFamily,
+      timeBand: source.timeBand,
+      accessState: source.accessState,
+    }))).toEqual([
+      {
+        sourceRegisterId: "S16",
+        publisherFamilyId: "playboy-blank-on-blank",
+        settingFamily: "informal-candid-interview",
+        timeBand: "pre-2000",
+        accessState: "coding-ready",
+      },
+      {
+        sourceRegisterId: "S17",
+        publisherFamilyId: "wired",
+        settingFamily: "structured-prompt-interview",
+        timeBand: "2020s",
+        accessState: "coding-ready",
+      },
+    ]);
+  });
+
+  it("keeps ABC metadata-only until timed captions pass audiovisual review", async () => {
+    const snapshot = await loadPersonalitySourceRegisterV2();
+    expect(snapshot.events.find((source) => source.sourceRegisterId === "S01")).toMatchObject({
+      accessState: "metadata-only",
+      transcriptProvenance: "metadata-only",
+      fingerprintBasis: "retrieved-response-bytes",
+      contentBoundaryVerified: false,
+      sourceContentFingerprint:
+        "sha256:fdf3212a1865bee419c9dec2bc30bcbb4b5c0d97cbc6b25121127e2aec2a0c6f",
+    });
+  });
+
   it("rejects coding-ready status without a verified fingerprinted boundary", () => {
     const result = personalitySourceEventSchema.safeParse({
       ...validSource,
       contentBoundaryVerified: false,
       fingerprintBasis: "none",
+      fingerprintMethod: "none",
       sourceContentFingerprint: null,
     });
     expect(result.success).toBe(false);
