@@ -178,6 +178,7 @@ export async function loadPersonalitySamplingBoundaryProtocolV1(projectRoot = pr
     schemaVersion: "jolene.personality-sampling-boundary-protocol.v1" as const,
     protocolFingerprint: digest(protocolText),
     status: protocol.status,
+    createdAt: protocol.created_at,
     pdfProtocolId: protocol.pdf_protocol.id,
     reproducedPdfCapacity: protocol.pdf_protocol.reproduced_capacity,
     audiovisualMapSources: Object.keys(protocol.av_protocols),
