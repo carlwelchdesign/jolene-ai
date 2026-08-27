@@ -16,6 +16,12 @@ const envSchema = z.object({
     .trim()
     .min(1)
     .default(".jolene/jolene.sqlite"),
+  JOLENE_PUBLIC_CONTACT_QUEUE_PATH: z.string().trim().min(1)
+    .default(".jolene/public/contact-intents.json"),
+  JOLENE_PUBLIC_CONTACT_RETENTION_DAYS: z.coerce.number().int().min(1).max(90)
+    .default(30),
+  JOLENE_PUBLIC_CONTACT_QUEUE_MAX_ENTRIES: z.coerce.number().int().min(1)
+    .max(1_000).default(500),
   JOLENE_OBSIDIAN_VAULT_ROOT: z.string().trim().optional(),
   JOLENE_OBSIDIAN_ALLOWLIST: z.string().default(""),
   JOLENE_CAREER_OBSIDIAN_ALLOWLIST: z.string().default(""),
@@ -36,6 +42,9 @@ export interface AppConfig {
   readonly host: string;
   readonly port: number;
   readonly databasePath: string;
+  readonly contactQueuePath: string;
+  readonly contactRetentionDays: number;
+  readonly contactQueueMaxEntries: number;
   readonly vaultRoot: string | undefined;
   readonly vaultAllowlist: readonly string[];
   readonly careerVaultAllowlist: readonly string[];
@@ -65,6 +74,12 @@ export function loadConfig(): AppConfig {
     host: env.JOLENE_HOST,
     port: env.JOLENE_PORT,
     databasePath: path.resolve(process.cwd(), env.JOLENE_DATABASE_PATH),
+    contactQueuePath: path.resolve(
+      process.cwd(),
+      env.JOLENE_PUBLIC_CONTACT_QUEUE_PATH,
+    ),
+    contactRetentionDays: env.JOLENE_PUBLIC_CONTACT_RETENTION_DAYS,
+    contactQueueMaxEntries: env.JOLENE_PUBLIC_CONTACT_QUEUE_MAX_ENTRIES,
     vaultRoot: emptyToUndefined(env.JOLENE_OBSIDIAN_VAULT_ROOT),
     vaultAllowlist: env.JOLENE_OBSIDIAN_ALLOWLIST.split(",")
       .map((value) => value.trim())

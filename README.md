@@ -50,6 +50,8 @@ The first runnable slice provides:
   citation-complete public-evidence answers and conservative job-description
   comparisons, plus consented local contact-intent staging, a runtime kill
   switch, and bounded local admission;
+- a private owner-scoped Contacts screen that can review or delete staged
+  requests and save inert local reply drafts without sending anything;
 - contract tests that do not call OpenAI.
 
 The Slack adapter is active for a local pilot, with live mention-and-reply behavior verified. Scheduled work, specialist agents, client-AI workflows, always-on hosting, and voice remain later gates.
@@ -62,8 +64,9 @@ loopback-only reference process can serve its validated manifest and bounded
 deterministic answers and job-fit comparisons from exact exported claims.
 Job-fit results distinguish unknown public evidence from missing experience and
 are not recommendations or blanket fit scores. Consented contact requests can
-be staged in a separate owner-only, retention-bounded local queue, but no
-outbound contact or public queue review is implemented. Model-generated
+be staged in a separate owner-only, retention-bounded local queue and reviewed
+through the private local service. Reply drafts remain inert in that queue; no
+outbound contact is implemented. Model-generated
 answers, CORS, public hosting, and portfolio integration are not implemented.
 MCP interoperability is also not implemented. See the
 [professional context architecture](plans/JOLENE_PROFESSIONAL_CONTEXT_ARCHITECTURE.md).
@@ -121,6 +124,12 @@ Prerequisite: Node.js 22 or newer.
    Open [http://127.0.0.1:8421/approvals](http://127.0.0.1:8421/approvals)
    to stage and review exact external-message proposals. Approval remains local
    and inert; the screen exposes no send or execution control.
+
+   Open [http://127.0.0.1:8421/contacts](http://127.0.0.1:8421/contacts)
+   to review consented portfolio contact requests, mark them reviewed, save a
+   local reply draft, or permanently delete them after explicit confirmation.
+   Visitor text is treated as untrusted data. This screen cannot send email,
+   post to Slack, schedule a meeting, or authorize any external action.
 
    Open [http://127.0.0.1:8421/workflows](http://127.0.0.1:8421/workflows)
    to start task-bound work, record exact step evidence, request revisions,

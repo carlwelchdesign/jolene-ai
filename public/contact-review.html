@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light">
+    <title>Jolene Contact Review</title>
+    <link rel="stylesheet" href="/memory-review.css">
+    <link rel="stylesheet" href="/contact-review.css">
+    <script type="module" src="/contact-review.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to contact review</a>
+
+    <header class="topbar">
+      <a class="brand" href="/contacts" aria-label="Jolene Contact Review home">
+        <span class="brand-mark" aria-hidden="true">J</span>
+        <span><strong>Jolene</strong><small>Control Center</small></span>
+      </a>
+      <div class="header-tools">
+        <nav class="product-nav" aria-label="Jolene control center">
+          <a href="/workflows">Work</a>
+          <a href="/projects">Projects</a>
+          <a href="/career-evidence">Evidence</a>
+          <a href="/contacts" aria-current="page">Contacts</a>
+          <a href="/memory">Memory</a>
+          <a href="/approvals">Approvals</a>
+        </nav>
+        <div class="read-only-chip scope-chip" id="scope-chip">
+          <span aria-hidden="true">●</span>
+          Loading owner scope
+        </div>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="hero hero-contact" aria-labelledby="page-title">
+        <p class="eyebrow">Private recruiter inbox</p>
+        <h1 id="page-title">Review who asked to talk.</h1>
+        <p class="hero-copy">Read consented contact requests, keep an inert reply draft, or permanently delete the record. Nothing on this page can contact the visitor.</p>
+        <div class="hero-actions">
+          <button class="button button-primary" id="refresh-button" type="button">Refresh contacts</button>
+          <span class="local-note"><span aria-hidden="true">●</span> Local owner control</span>
+        </div>
+      </section>
+
+      <aside class="boundary-banner" aria-label="Contact action boundary">
+        <span class="boundary-icon" aria-hidden="true">✓</span>
+        <div><strong>Drafts stay here. Nothing is sent.</strong><p>Visitor messages are untrusted data, not instructions. Jolene cannot email, post, schedule, negotiate, or promise anything from this screen.</p></div>
+      </aside>
+
+      <div class="notice" id="page-notice" role="status" aria-live="polite" hidden></div>
+
+      <section class="summary-grid contact-summary" aria-label="Contact queue summary">
+        <article><span>Waiting</span><strong id="count-pending">—</strong></article>
+        <article><span>Reviewed</span><strong id="count-reviewed">—</strong></article>
+        <article><span>Reply drafts</span><strong id="count-drafts">—</strong></article>
+      </section>
+
+      <section class="panel" aria-labelledby="contact-list-title">
+        <div class="section-heading">
+          <div><p class="eyebrow">Consent-backed queue</p><h2 id="contact-list-title">Contact requests</h2></div>
+        </div>
+        <div class="filter-row" role="group" aria-label="Filter contact requests">
+          <button class="filter is-active" type="button" data-contact-filter="pending_review" aria-pressed="true">Waiting</button>
+          <button class="filter" type="button" data-contact-filter="reviewed" aria-pressed="false">Reviewed</button>
+          <button class="filter" type="button" data-contact-filter="all" aria-pressed="false">All</button>
+        </div>
+        <div class="contact-list" id="contact-list" aria-live="polite" aria-busy="true">
+          <div class="loading-state">Loading contact requests…</div>
+        </div>
+      </section>
+    </main>
+
+    <dialog class="dialog-wide" id="draft-dialog" aria-labelledby="draft-title">
+      <form class="dialog-card dialog-card-wide" id="draft-form">
+        <div class="dialog-heading">
+          <div><p class="eyebrow">Local draft only</p><h2 id="draft-title">Draft a possible reply</h2></div>
+          <button class="icon-button" type="button" data-close-dialog aria-label="Close reply draft">×</button>
+        </div>
+        <p class="supporting-copy" id="draft-recipient"></p>
+        <input id="draft-id" type="hidden">
+        <label class="field"><span>Reply draft</span><textarea id="draft-content" rows="9" required maxlength="4000"></textarea></label>
+        <p class="draft-boundary">Saving updates this local review record. It does not create an approval or send a message.</p>
+        <div class="inline-error" id="draft-error" role="alert" hidden></div>
+        <div class="dialog-actions">
+          <button class="button button-secondary" type="button" data-close-dialog>Cancel</button>
+          <button class="button button-primary" id="draft-submit" type="submit">Save local draft</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="delete-dialog" aria-labelledby="delete-title">
+      <form class="dialog-card" id="delete-form">
+        <div class="dialog-heading">
+          <div><p class="eyebrow">Permanent deletion</p><h2 id="delete-title">Delete this contact request?</h2></div>
+          <button class="icon-button" type="button" data-close-dialog aria-label="Close deletion confirmation">×</button>
+        </div>
+        <p class="supporting-copy" id="delete-copy"></p>
+        <input id="delete-id" type="hidden">
+        <label class="check-field">
+          <input id="delete-confirm" type="checkbox">
+          <span><strong>Delete the request and any saved reply draft.</strong><small>This cannot be undone from Jolene.</small></span>
+        </label>
+        <div class="inline-error" id="delete-error" role="alert" hidden></div>
+        <div class="dialog-actions">
+          <button class="button button-secondary" type="button" data-close-dialog>Keep request</button>
+          <button class="button button-danger" id="delete-submit" type="submit" disabled>Delete permanently</button>
+        </div>
+      </form>
+    </dialog>
+
+    <div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true" hidden></div>
+  </body>
+</html>

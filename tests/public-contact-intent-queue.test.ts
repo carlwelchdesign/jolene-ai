@@ -73,6 +73,46 @@ describe("FilePublicContactIntentQueue", () => {
     ]);
   });
 
+  it("persists review state and inert reply drafts across restart", async () => {
+    const filePath = await queuePath();
+    const queue = createQueue(filePath);
+    const staged = await queue.stage(validRequest());
+    const reviewed = await queue.markReviewed(
+      staged.intentId,
+      "2026-08-26T18:00:00.000Z",
+    );
+    expect(reviewed).toMatchObject({
+      status: "reviewed",
+      reviewedAt: "2026-08-26T18:00:00.000Z",
+    });
+    await queue.saveReplyDraft(
+      staged.intentId,
+      "Thank you. I would be glad to discuss the role.",
+      "2026-08-26T18:05:00.000Z",
+    );
+
+    const restarted = createQueue(filePath);
+    const [intent] = await restarted.list();
+    expect(intent).toMatchObject({
+      intentId: staged.intentId,
+      status: "reviewed",
+      replyDraft: "Thank you. I would be glad to discuss the role.",
+      replyDraftUpdatedAt: "2026-08-26T18:05:00.000Z",
+    });
+  });
+
+  it("deletes only an exact existing intent", async () => {
+    const filePath = await queuePath();
+    const queue = createQueue(filePath);
+    const staged = await queue.stage(validRequest());
+
+    await queue.delete(staged.intentId);
+    expect(await queue.list()).toEqual([]);
+    await expect(queue.delete(staged.intentId)).rejects.toMatchObject({
+      name: "PublicContactIntentNotFoundError",
+    });
+  });
+
   it("enforces retention and queue-size bounds", async () => {
     const filePath = await queuePath();
     let now = Date.parse("2026-08-26T17:00:00.000Z");

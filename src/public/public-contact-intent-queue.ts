@@ -14,10 +14,15 @@ import {
 
 const storedContactIntentSchema = contactIntentRequestSchema.extend({
   intentId: z.string().uuid(),
-  status: z.literal("pending_review"),
+  status: z.enum(["pending_review", "reviewed"]),
   submittedAt: z.string().datetime({ offset: true }),
   expiresAt: z.string().datetime({ offset: true }),
+  reviewedAt: z.string().datetime({ offset: true }).nullable().optional(),
+  replyDraft: z.string().trim().min(1).max(4_000).nullable().optional(),
+  replyDraftUpdatedAt: z.string().datetime({ offset: true }).nullable().optional(),
 });
+
+export type StoredPublicContactIntent = z.infer<typeof storedContactIntentSchema>;
 
 export const publicContactIntentQueueFileSchema = z.object({
   schemaVersion: z.literal(PUBLIC_CAREER_EVIDENCE_SCHEMA_VERSION),
@@ -28,6 +33,17 @@ export interface PublicContactIntentStager {
   stage(request: ContactIntentRequest): Promise<ContactIntentResponse>;
 }
 
+export interface PublicContactIntentReviewStore {
+  list(): Promise<readonly StoredPublicContactIntent[]>;
+  markReviewed(intentId: string, reviewedAt: string): Promise<StoredPublicContactIntent>;
+  saveReplyDraft(
+    intentId: string,
+    draft: string,
+    updatedAt: string,
+  ): Promise<StoredPublicContactIntent>;
+  delete(intentId: string): Promise<void>;
+}
+
 export interface FilePublicContactIntentQueueOptions {
   readonly filePath: string;
   readonly maxEntries: number;
@@ -36,7 +52,9 @@ export interface FilePublicContactIntentQueueOptions {
   readonly createId?: () => string;
 }
 
-export class FilePublicContactIntentQueue implements PublicContactIntentStager {
+export class FilePublicContactIntentQueue
+  implements PublicContactIntentStager, PublicContactIntentReviewStore
+{
   readonly #filePath: string;
   readonly #maxEntries: number;
   readonly #retentionMilliseconds: number;
@@ -105,10 +123,80 @@ export class FilePublicContactIntentQueue implements PublicContactIntentStager {
     });
   }
 
+  list(): Promise<readonly StoredPublicContactIntent[]> {
+    return this.#serialize(async () => {
+      const loaded = await this.#read();
+      const retained = this.#retained(loaded.intents, this.#now()).slice(
+        -this.#maxEntries,
+      );
+      if (retained.length !== loaded.intents.length) {
+        await this.#write(retained);
+      }
+      return [...retained].reverse();
+    });
+  }
+
+  markReviewed(
+    intentId: string,
+    reviewedAt: string,
+  ): Promise<StoredPublicContactIntent> {
+    return this.#update(intentId, (intent) => ({
+      ...intent,
+      status: "reviewed",
+      reviewedAt,
+    }));
+  }
+
+  saveReplyDraft(
+    intentId: string,
+    draft: string,
+    updatedAt: string,
+  ): Promise<StoredPublicContactIntent> {
+    return this.#update(intentId, (intent) => ({
+      ...intent,
+      status: "reviewed",
+      reviewedAt: intent.reviewedAt ?? updatedAt,
+      replyDraft: draft,
+      replyDraftUpdatedAt: updatedAt,
+    }));
+  }
+
+  delete(intentId: string): Promise<void> {
+    return this.#serialize(async () => {
+      const loaded = await this.#read();
+      const retained = this.#retained(loaded.intents, this.#now());
+      if (!retained.some((intent) => intent.intentId === intentId)) {
+        throw new PublicContactIntentNotFoundError();
+      }
+      await this.#write(
+        retained.filter((intent) => intent.intentId !== intentId),
+      );
+    });
+  }
+
   #serialize<T>(operation: () => Promise<T>): Promise<T> {
     const result = this.#pendingWrite.then(operation, operation);
     this.#pendingWrite = result.then(() => undefined, () => undefined);
     return result;
+  }
+
+  #update(
+    intentId: string,
+    update: (intent: StoredPublicContactIntent) => StoredPublicContactIntent,
+  ): Promise<StoredPublicContactIntent> {
+    return this.#serialize(async () => {
+      const loaded = await this.#read();
+      const retained = this.#retained(loaded.intents, this.#now());
+      const index = retained.findIndex((intent) => intent.intentId === intentId);
+      if (index < 0) throw new PublicContactIntentNotFoundError();
+      const current = retained[index];
+      if (!current) throw new PublicContactIntentNotFoundError();
+      const updated = storedContactIntentSchema.parse(update(current));
+      const next = [...retained];
+      next[index] = updated;
+      await this.#write(next);
+      return updated;
+    });
   }
 
   async #read(): Promise<z.infer<typeof publicContactIntentQueueFileSchema>> {
@@ -162,6 +250,13 @@ export class PublicContactQueueUnavailableError extends Error {
   constructor() {
     super("Public contact queue is unavailable.");
     this.name = "PublicContactQueueUnavailableError";
+  }
+}
+
+export class PublicContactIntentNotFoundError extends Error {
+  constructor() {
+    super("Public contact intent was not found.");
+    this.name = "PublicContactIntentNotFoundError";
   }
 }
 

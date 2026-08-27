@@ -4,6 +4,7 @@ import path from "node:path";
 import { OpenAIJoleneRunner } from "./agent/agent-runner.js";
 import { ActionApprovalService } from "./application/action-approval-service.js";
 import { CareerEvidenceService } from "./application/career-evidence-service.js";
+import { ContactIntentReviewService } from "./application/contact-intent-review-service.js";
 import { CareerRetrievalService } from "./application/career-retrieval-service.js";
 import { JoleneService } from "./application/jolene-service.js";
 import { KnowledgeAuditService } from "./application/knowledge-audit-service.js";
@@ -35,6 +36,7 @@ import { SqliteKnowledgeAccessStore } from "./persistence/sqlite-knowledge-acces
 import { SqlitePersonalWorkflowStore } from "./persistence/sqlite-personal-workflow-store.js";
 import { SqliteWorkContextStore } from "./persistence/sqlite-work-context-store.js";
 import { LocalWatchedProjectInspector } from "./projects/local-watched-project-inspector.js";
+import { FilePublicContactIntentQueue } from "./public/public-contact-intent-queue.js";
 
 export interface JoleneApplication {
   readonly service: JoleneService;
@@ -44,6 +46,7 @@ export interface JoleneApplication {
   readonly actionApprovals: ActionApprovalService;
   readonly careerEvidence: CareerEvidenceService;
   readonly careerRetrieval: CareerRetrievalService;
+  readonly contactIntents: ContactIntentReviewService;
   readonly workflows: PersonalWorkflowService;
   readonly watchedProjects: WatchedProjectService;
   readonly health: () => {
@@ -100,6 +103,12 @@ export async function createApplication(
     actorId: config.ownerActorId,
     workspaceId: config.ownerWorkspaceId,
   };
+  const contactQueue = new FilePublicContactIntentQueue({
+    filePath: config.contactQueuePath,
+    maxEntries: config.contactQueueMaxEntries,
+    retentionMilliseconds: config.contactRetentionDays * 24 * 60 * 60 * 1_000,
+  });
+  await contactQueue.initialize();
   const runner = new OpenAIJoleneRunner({
     model: config.model,
     instructions,
@@ -131,6 +140,7 @@ export async function createApplication(
       workspaceId: config.careerWorkspaceId,
     }),
     careerRetrieval,
+    contactIntents: new ContactIntentReviewService(contactQueue, ownerScope),
     workflows: new PersonalWorkflowService(personalWorkflowStore, workStore),
     watchedProjects,
     health: () => ({

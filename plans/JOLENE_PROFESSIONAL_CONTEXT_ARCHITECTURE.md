@@ -1,8 +1,8 @@
 # Jolene Professional Context Architecture
 
-**Date:** 2026-08-25
+**Date:** 2026-08-26
 
-**Status:** Docker API, governed career ingestion, private hybrid retrieval, public export, and loopback manifest/deterministic-answer/job-fit/contact-staging/admission boundaries implemented; model-backed public answers and deployment pending
+**Status:** Docker API, governed career ingestion, private hybrid retrieval, public export, loopback manifest/deterministic-answer/job-fit/contact-staging/admission boundaries, and private contact review implemented; model-backed public answers and deployment pending
 
 ## Product outcome
 
@@ -368,14 +368,33 @@ Verification checkpoint:
 - Minimized consented contact-intent staging is implemented in
   `JOL-CAREER-005E`; requests enter a dedicated owner-only, retention-bounded
   local review queue and cannot trigger outbound action.
+- Private contact review is implemented in `JOL-CAREER-005F`; the exact owner
+  scope can list, mark reviewed, save an inert reply draft, and explicitly
+  delete queue records without copying PII into private SQLite or exposing a
+  send operation.
 - Integrate the isolated Jolene public service through the portfolio adapter.
 - Use only the public evidence export.
 - Add rate limits, cost ceilings, input limits, redaction, and a kill switch.
 
-`JOL-CAREER-005A/B/C/D/E` do not complete this ticket: there is no model-backed
-answer generation, private owner review/deletion/reply control, CORS, public
-binding, container service, portfolio integration, production-grade abuse
-controls, audit pipeline, or deployment path.
+`JOL-CAREER-005A/B/C/D/E/F` do not complete this ticket: there is no
+model-backed answer generation, outbound reply control, authenticated
+production owner surface, CORS, public binding, container service, portfolio
+integration, production-grade abuse controls, audit pipeline, or deployment
+path.
+
+`JOL-CAREER-005F` verification checkpoint:
+
+- implementation commit: `1d1a4d9` (`JOL-CAREER-005F add private contact review`);
+- 39 test files and 218 tests pass on Node 24.18.0, alongside TypeScript
+  validation and the production build;
+- Compose configuration and the production dependency audit pass, with zero
+  reported production vulnerabilities;
+- live API verification confirms exact owner access, wrong-scope and
+  cross-origin refusal, exact deletion confirmation, and the absence of a send
+  route; and
+- desktop and 390 px reduced-motion browser verification confirms the contact
+  list, local draft dialog, focus placement, deletion flow, empty state, and no
+  horizontal overflow.
 
 ### JOL-CAREER-006 — Evaluation and launch gates
 
