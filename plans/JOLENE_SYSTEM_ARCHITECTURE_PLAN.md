@@ -845,4 +845,18 @@ Public-delegate deterministic-job-fit checkpoint:
 | Verification | Node 24 typecheck, 35 test files / 185 tests, production build, Compose configuration validation, staged secret scan, production dependency audit, and compiled live loopback checks passed with OpenAI and Slack credentials absent |
 | Live evidence | The valid empty corpus returned citation-free `unknown` assessments for ordinary and injection-like job descriptions, preserved an opaque session token without storage, and rejected an extra field with `400` |
 | Safety evidence | Strict JSON/media/body/description/session bounds; per-request artifact validation and digest verification; ephemeral untrusted job-description input; no model, browse, private lookup, persistence, recommendation score, contact, CORS, public bind, container service, portfolio integration, or deployment |
-| Remaining boundary | `JOL-CAREER-005` and `PORT-DEP-002` remain incomplete; reviewed public evidence is still empty; model-quality evaluation, contact intent, rate/abuse/cost controls, public topology, integration, and production enablement remain pending |
+| Remaining boundary | `JOL-CAREER-005` and `PORT-DEP-002` remain incomplete; reviewed public evidence is still empty; model-quality evaluation, contact intent, production-grade abuse/cost controls, public topology, integration, and production enablement remain pending |
+
+Public-delegate admission-control checkpoint:
+
+| Field | Evidence |
+|---|---|
+| Asana | [JOL-CAREER-005D](https://app.asana.com/1/9789386902387/project/1216473233375594/task/1217875810262904) |
+| Branch | `codex/jol-career-005d-public-admission-controls` |
+| Implementation commit | `0a403c1` (`JOL-CAREER-005D add public admission controls`) |
+| Pull request | [#15](https://github.com/carlwelchdesign/jolene-ai/pull/15), stacked on #14 |
+| Control evidence | Fail-closed runtime kill switch; bounded fixed-window requests per socket source address; global in-flight concurrency ceiling; deterministic injected controller; non-disclosing `429`/`503` responses with `Retry-After` and restrictive security headers |
+| Verification | Node 24 typecheck, 36 test files / 192 tests, production build, Compose configuration validation, staged secret scan, production dependency audit, and compiled live loopback checks passed with OpenAI and Slack credentials absent |
+| Live evidence | An enabled valid-empty-corpus process returned `200`, then `429` with `Retry-After: 60`; a disabled process returned `503 public_delegate_disabled` before attempting to read a deliberately missing artifact |
+| Safety evidence | No payload logging, model, private lookup, contact handling, CORS, public bind, container service, portfolio integration, or deployment; controls are explicitly documented as in-memory loopback safeguards rather than production edge admission |
+| Remaining boundary | `JOL-CAREER-005` and `PORT-DEP-002` remain incomplete; contact intent, audit/redaction policy, cost controls, distributed abuse controls, public topology, integration, evaluation, and production enablement remain pending |

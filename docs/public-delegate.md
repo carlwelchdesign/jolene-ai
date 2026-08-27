@@ -16,14 +16,24 @@ Copy `.env.public.example` to `.env.public.local` if overrides are needed. The
 process reads `.env.public.local`, not `.env.local`. All settings are optional:
 
 ```dotenv
+JOLENE_PUBLIC_ENABLED=true
 JOLENE_PUBLIC_HOST=127.0.0.1
 JOLENE_PUBLIC_PORT=8431
 JOLENE_PUBLIC_ARTIFACT_PATH=.jolene/exports/public-career-evidence.json
+JOLENE_PUBLIC_REQUESTS_PER_MINUTE=60
+JOLENE_PUBLIC_MAX_CONCURRENT_REQUESTS=8
 ```
 
 Only `127.0.0.1`, `::1`, and `localhost` are accepted as hosts in this slice.
 The artifact path must point to the generated public export, never the private
 SQLite database or vault.
+
+Set `JOLENE_PUBLIC_ENABLED=false` to fail closed before artifact access. The
+local process then returns only a non-disclosing `503` response. The admission
+controller also limits each socket source address to the configured requests
+per fixed one-minute window and caps global in-flight requests. Rejections use
+`429` or `503`, include `Retry-After`, preserve restrictive security headers,
+and do not read or log request bodies.
 
 Generate the local artifact first:
 
@@ -76,13 +86,20 @@ citation-free `unknown` results.
 
 All other routes return `404`; unsupported methods on known routes return
 `405`. The server bounds header size, header count, request time, keep-alive
-requests, and URL length.
+requests, URL length, per-client request rate, and global concurrency.
+
+These controls are appropriate for the current loopback reference process,
+not a public deployment. They are in-memory and source-address based, so they
+reset on restart and are not a substitute for authenticated edge admission,
+distributed rate limiting, or portfolio BFF controls.
 
 ## Remaining boundary
 
 `JOL-CAREER-005` remains incomplete. Model-backed answer quality and
 contact-intent behavior still require separate contract, privacy, abuse, cost,
 evaluation, and human-approval gates. The deterministic job-fit baseline also
-requires integration and evaluation before any public use. Adding a production bind address,
-container service, public hostname, reverse proxy, CORS policy, or deployment
-requires explicit approval and a reviewed deployment topology.
+requires integration and evaluation before any public use. Audit-event design,
+redaction policy, contact retention, and production-grade distributed abuse
+controls remain open. Adding a production bind address, container service,
+public hostname, reverse proxy, CORS policy, or deployment requires explicit
+approval and a reviewed deployment topology.

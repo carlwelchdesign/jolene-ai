@@ -2,7 +2,7 @@
 
 **Date:** 2026-08-25
 
-**Status:** Docker API, governed career ingestion, private hybrid retrieval, public export, and loopback manifest/deterministic-answer/job-fit boundaries implemented; model-backed public answers and deployment pending
+**Status:** Docker API, governed career ingestion, private hybrid retrieval, public export, and loopback manifest/deterministic-answer/job-fit/admission boundaries implemented; model-backed public answers and deployment pending
 
 ## Product outcome
 
@@ -362,13 +362,17 @@ Verification checkpoint:
 - Deterministic public job-description comparison is implemented in
   `JOL-CAREER-005C`; it emits direct, adjacent, or unknown results and never
   treats absent public evidence as proof of missing experience.
+- Loopback runtime admission and a fail-closed kill switch are implemented in
+  `JOL-CAREER-005D`; production-grade edge, distributed abuse, audit, redaction,
+  and cost controls remain separate gates.
 - Integrate the isolated Jolene public service through the portfolio adapter.
 - Use only the public evidence export.
 - Add rate limits, cost ceilings, input limits, redaction, and a kill switch.
 
-`JOL-CAREER-005A/B/C` do not complete this ticket: there is no model-backed
+`JOL-CAREER-005A/B/C/D` do not complete this ticket: there is no model-backed
 answer generation, contact intent, CORS, public binding, container service,
-portfolio integration, rate/abuse controls, or deployment path.
+portfolio integration, production-grade abuse controls, audit pipeline, or
+deployment path.
 
 ### JOL-CAREER-006 — Evaluation and launch gates
 

@@ -13,6 +13,7 @@ import {
 import type { PublicArtifactSource } from "./public-artifact-source.js";
 import type { PublicPortfolioAnswerer } from "./public-answer-service.js";
 import type { PublicJobFitComparer } from "./public-job-fit-service.js";
+import type { PublicRequestAdmissionController } from "./public-request-admission.js";
 
 const MAX_URL_CHARACTERS = 2_048;
 const MAX_BODY_BYTES = 98_304;
@@ -24,9 +25,11 @@ const SECURITY_HEADERS = {
 } as const;
 
 export interface PublicDelegateServerOptions {
+  readonly enabled: boolean;
   readonly artifacts: PublicArtifactSource;
   readonly answers: PublicPortfolioAnswerer;
   readonly jobFit: PublicJobFitComparer;
+  readonly admissions: PublicRequestAdmissionController;
 }
 
 export function createPublicDelegateServer(
@@ -35,6 +38,27 @@ export function createPublicDelegateServer(
   const server = createServer(
     { maxHeaderSize: 16_384 },
     async (request, response) => {
+      if (!options.enabled) {
+        sendJson(response, 503, {
+          status: "unavailable",
+          error: "public_delegate_disabled",
+        });
+        return;
+      }
+      const admission = options.admissions.acquire(
+        request.socket.remoteAddress ?? "unknown",
+      );
+      if (!admission.accepted) {
+        sendJson(
+          response,
+          admission.status,
+          admission.status === 503
+            ? { status: "unavailable", error: admission.code }
+            : { error: admission.code },
+          { "retry-after": String(admission.retryAfterSeconds) },
+        );
+        return;
+      }
       try {
         await handleRequest(request, response, options);
       } catch (error) {
@@ -46,6 +70,8 @@ export function createPublicDelegateServer(
           status: "unavailable",
           error: "public_evidence_unavailable",
         });
+      } finally {
+        admission.release();
       }
     },
   );
@@ -135,9 +161,11 @@ function sendJson(
   response: ServerResponse,
   status: number,
   body: unknown,
+  headers: Readonly<Record<string, string>> = {},
 ): void {
   response.writeHead(status, {
     ...SECURITY_HEADERS,
+    ...headers,
     "content-type": "application/json; charset=utf-8",
   });
   response.end(`${JSON.stringify(body)}\n`);
