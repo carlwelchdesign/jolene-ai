@@ -1,3 +1,7 @@
+import { mkdtempSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import path from "node:path";
+
 import { describe, expect, it } from "vitest";
 
 import { parseConfig } from "../src/config.js";
@@ -52,6 +56,49 @@ describe("private runtime configuration", () => {
       OPENAI_API_KEY: "test-key",
       SLACK_OWNER_USER_ID: "",
     }).slackOwnerUserId).toBeUndefined();
+  });
+
+  it("loads private credentials from one-line secret files", () => {
+    const root = mkdtempSync(path.join(tmpdir(), "jolene-secret-config-"));
+    writeFileSync(path.join(root, "openai"), "file-openai-key\n", { mode: 0o600 });
+    writeFileSync(path.join(root, "slack-bot"), "file-bot-token\n", { mode: 0o600 });
+    writeFileSync(path.join(root, "slack-app"), "file-app-token\n", { mode: 0o600 });
+
+    const config = parseConfig({
+      OPENAI_API_KEY_FILE: "openai",
+      SLACK_BOT_TOKEN_FILE: "slack-bot",
+      SLACK_APP_TOKEN_FILE: "slack-app",
+    }, root);
+
+    expect(config.slackBotToken).toBe("file-bot-token");
+    expect(config.slackAppToken).toBe("file-app-token");
+  });
+
+  it("fails closed on ambiguous or malformed secret-file configuration", () => {
+    const root = mkdtempSync(path.join(tmpdir(), "jolene-secret-config-"));
+    writeFileSync(path.join(root, "valid"), "file-key\n", { mode: 0o600 });
+    writeFileSync(path.join(root, "multiline"), "first\nsecond\n", { mode: 0o600 });
+    writeFileSync(path.join(root, "empty"), "\n", { mode: 0o600 });
+    writeFileSync(path.join(root, "oversized"), "x".repeat(16 * 1024 + 1), {
+      mode: 0o600,
+    });
+
+    expect(() => parseConfig({
+      OPENAI_API_KEY: "direct-key",
+      OPENAI_API_KEY_FILE: "valid",
+    }, root)).toThrow(/either a direct value or a secret file/i);
+    expect(() => parseConfig({ OPENAI_API_KEY_FILE: "missing" }, root))
+      .toThrow("OPENAI_API_KEY secret file is unavailable.");
+    expect(() => parseConfig({ OPENAI_API_KEY_FILE: "multiline" }, root))
+      .toThrow(/one nonempty line/i);
+    expect(() => parseConfig({ OPENAI_API_KEY_FILE: "empty" }, root))
+      .toThrow(/one nonempty line/i);
+    expect(() => parseConfig({ OPENAI_API_KEY_FILE: "oversized" }, root))
+      .toThrow(/too large/i);
+    expect(() => parseConfig({ OPENAI_API_KEY: "first\nsecond" }, root))
+      .toThrow(/direct value must contain one nonempty line/i);
+    expect(() => parseConfig({ OPENAI_API_KEY: ` ${"x".repeat(16 * 1024)}` }, root))
+      .toThrow(/direct value is too large/i);
   });
 
   it("keeps private briefings disabled by default and validates owner schedules", () => {

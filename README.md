@@ -90,7 +90,9 @@ be staged in a separate owner-only, retention-bounded local queue and reviewed
 through the private local service. Reply drafts remain inert in that queue; no
 outbound contact is implemented. Model-generated answer synthesis is available
 only as a disabled local evaluation mode; CORS, public hosting, and portfolio
-integration are not implemented.
+production enablement are not implemented. The portfolio's disabled same-origin
+adapter has been contract-tested against the loopback delegate; that local
+integration does not constitute deployment or launch.
 MCP interoperability is also not implemented. See the
 [professional context architecture](plans/JOLENE_PROFESSIONAL_CONTEXT_ARCHITECTURE.md).
 
@@ -125,6 +127,16 @@ Prerequisite: Node.js 22 or newer.
 
    For the containerized API and Slack runtime, follow
    [Docker runtime](docs/docker.md).
+
+   Before starting the private Compose stack, split the configured credentials
+   into ignored file-mounted secrets and a non-secret runtime environment:
+
+   ```bash
+   npm run secrets:migrate-compose
+   ```
+
+   The command prints secret names only. It never prints their values and is
+   safe to rerun when the source and generated files are unchanged.
 
 4. Run a private CLI turn:
 
@@ -274,7 +286,10 @@ and thread.
 
 ## Security boundary
 
-- `.env.local`, the SQLite database, and generated evaluation results are ignored.
+- `.env.local`, `.env.runtime.local`, `.jolene/secrets`, the SQLite database,
+  and generated evaluation results are ignored. Private Compose services use
+  file-mounted secrets; rendered Compose configuration contains paths, not
+  credential values.
 - The isolated public audit ledger records only fixed operations, outcomes,
   timing, corpus version, and counts; it never stores request bodies, visitor
   identity, session tokens, source addresses, citations, or response text.

@@ -15,12 +15,17 @@ const dockerignore = readFileSync(resolve(projectRoot, ".dockerignore"), "utf8")
 const packageJson = JSON.parse(
   readFileSync(resolve(projectRoot, "package.json"), "utf8"),
 ) as { readonly scripts: Readonly<Record<string, string>> };
-const parsedCompose = parse(compose) as {
+const parsedCompose = parse(compose, { merge: true }) as {
+  readonly secrets?: Readonly<Record<string, { readonly file?: string }>>;
+  readonly "x-jolene-runtime"?: {
+    readonly secrets?: readonly string[];
+  };
   readonly services: Readonly<Record<string, {
     readonly command?: readonly string[];
     readonly environment?: Readonly<Record<string, string>>;
     readonly network_mode?: string;
     readonly profiles?: readonly string[];
+    readonly secrets?: readonly (string | { readonly source?: string })[];
     readonly volumes?: readonly (string | {
       readonly source?: string;
       readonly target?: string;
@@ -72,6 +77,35 @@ describe("Docker runtime boundary", () => {
     expect(compose).toMatch(
       /jolene-slack:\n(?:.*\n)*?\s+healthcheck:\n\s+disable: true/,
     );
+  });
+
+  it("injects least-privilege private secret files instead of loading .env.local", () => {
+    expect(compose).not.toContain("- .env.local");
+    expect(compose).toContain("path: .env.runtime.local");
+    expect(compose).toContain("required: false");
+    expect(parsedCompose.secrets).toEqual({
+      openai_api_key: { file: "./.jolene/secrets/openai-api-key" },
+      slack_app_token: { file: "./.jolene/secrets/slack-app-token" },
+      slack_bot_token: { file: "./.jolene/secrets/slack-bot-token" },
+    });
+    expect(parsedCompose["x-jolene-runtime"]?.secrets).toEqual([
+      "openai_api_key",
+    ]);
+    expect(parsedCompose.services["jolene-slack"]?.secrets).toEqual([
+      "openai_api_key",
+      "slack_app_token",
+      "slack_bot_token",
+    ]);
+    expect(parsedCompose.services["jolene-career-export"]?.secrets).toBeUndefined();
+    expect(parsedCompose.services["jolene-slack"]?.environment).toMatchObject({
+      OPENAI_API_KEY_FILE: "/run/secrets/openai_api_key",
+      JOLENE_DATABASE_PATH: "/data/jolene.sqlite",
+      JOLENE_OBSIDIAN_VAULT_ROOT: "/vault",
+      SLACK_APP_TOKEN_FILE: "/run/secrets/slack_app_token",
+      SLACK_BOT_TOKEN_FILE: "/run/secrets/slack_bot_token",
+    });
+    expect(compose).not.toMatch(/^\s+OPENAI_API_KEY:/m);
+    expect(compose).not.toMatch(/^\s+SLACK_(?:APP|BOT)_TOKEN:/m);
   });
 
   it("packages a network-free lexical career-index operation", () => {

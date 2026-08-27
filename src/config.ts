@@ -4,6 +4,7 @@ import path from "node:path";
 import dotenv from "dotenv";
 import { z } from "zod";
 
+import { resolveSecretValue } from "./config-secret-files.js";
 import type { WatchedProjectDefinition } from "./domain/watched-project.js";
 import type { PrivateBriefingPolicy } from "./domain/private-briefing.js";
 
@@ -87,7 +88,27 @@ export function parseConfig(
   environment: Record<string, string | undefined>,
   workingDirectory = process.cwd(),
 ): AppConfig {
-  const env = envSchema.parse(environment);
+  const env = envSchema.parse({
+    ...environment,
+    OPENAI_API_KEY: resolveSecretValue(
+      environment,
+      "OPENAI_API_KEY",
+      "OPENAI_API_KEY_FILE",
+      { required: true, workingDirectory },
+    ),
+    SLACK_BOT_TOKEN: resolveSecretValue(
+      environment,
+      "SLACK_BOT_TOKEN",
+      "SLACK_BOT_TOKEN_FILE",
+      { required: false, workingDirectory },
+    ),
+    SLACK_APP_TOKEN: resolveSecretValue(
+      environment,
+      "SLACK_APP_TOKEN",
+      "SLACK_APP_TOKEN_FILE",
+      { required: false, workingDirectory },
+    ),
+  });
 
   return {
     model: env.JOLENE_MODEL,

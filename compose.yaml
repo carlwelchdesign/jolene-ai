@@ -6,8 +6,10 @@ x-jolene-runtime: &jolene-runtime
     target: runtime
   image: jolene-ai:local
   env_file:
-    - .env.local
-  environment:
+    - path: .env.runtime.local
+      required: false
+  environment: &jolene-environment
+    OPENAI_API_KEY_FILE: /run/secrets/openai_api_key
     JOLENE_DATABASE_PATH: /data/jolene.sqlite
     JOLENE_HOST: 0.0.0.0
     JOLENE_OBSIDIAN_VAULT_ROOT: /vault
@@ -29,6 +31,8 @@ x-jolene-runtime: &jolene-runtime
       source: ${JOLENE_PORTFOLIO_ROOT:-../carl-welch-portfolio}
       target: /watched/carl-welch-portfolio
       read_only: true
+  secrets:
+    - openai_api_key
   init: true
   read_only: true
   tmpfs:
@@ -63,6 +67,14 @@ services:
   jolene-slack:
     <<: *jolene-runtime
     command: ["node", "dist/slack.js"]
+    environment:
+      <<: *jolene-environment
+      SLACK_APP_TOKEN_FILE: /run/secrets/slack_app_token
+      SLACK_BOT_TOKEN_FILE: /run/secrets/slack_bot_token
+    secrets:
+      - openai_api_key
+      - slack_app_token
+      - slack_bot_token
     healthcheck:
       disable: true
     depends_on:
@@ -108,3 +120,11 @@ services:
 
 volumes:
   jolene-data:
+
+secrets:
+  openai_api_key:
+    file: ./.jolene/secrets/openai-api-key
+  slack_app_token:
+    file: ./.jolene/secrets/slack-app-token
+  slack_bot_token:
+    file: ./.jolene/secrets/slack-bot-token
