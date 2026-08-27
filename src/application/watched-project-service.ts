@@ -23,6 +23,7 @@ export class WatchedProjectService implements WatchedProjectDirectory {
       label: project.label,
       planFile: project.planFile,
       reviewWindowDays: project.reviewWindowDays,
+      monitoring: project.monitoring,
     }));
   }
 

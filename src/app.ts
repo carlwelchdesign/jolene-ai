@@ -16,6 +16,7 @@ import {
 import { WorkContextService } from "./application/work-context-service.js";
 import { WorkStatusService } from "./application/work-status-service.js";
 import { WatchedProjectService } from "./application/watched-project-service.js";
+import { WatchedProjectMonitorService } from "./application/watched-project-monitor-service.js";
 import type { AppConfig } from "./config.js";
 import type { DeliveryStore } from "./domain/delivery.js";
 import { CanonicalPrivateWorkScopeResolver } from "./domain/private-work-scope.js";
@@ -36,6 +37,7 @@ import { SqliteCareerRetrievalIndex } from "./persistence/sqlite-career-retrieva
 import { SqliteKnowledgeAccessStore } from "./persistence/sqlite-knowledge-access-store.js";
 import { SqlitePersonalWorkflowStore } from "./persistence/sqlite-personal-workflow-store.js";
 import { SqliteWorkContextStore } from "./persistence/sqlite-work-context-store.js";
+import { SqliteWatchedProjectMonitorStore } from "./persistence/sqlite-watched-project-monitor-store.js";
 import { FilePublicLiveModelReviewStore } from "./persistence/file-public-live-model-review-store.js";
 import { LocalWatchedProjectInspector } from "./projects/local-watched-project-inspector.js";
 import { FilePublicContactIntentQueue } from "./public/public-contact-intent-queue.js";
@@ -52,6 +54,7 @@ export interface JoleneApplication {
   readonly publicLiveModelReview: PublicLiveModelReviewService;
   readonly workflows: PersonalWorkflowService;
   readonly watchedProjects: WatchedProjectService;
+  readonly projectMonitoring: WatchedProjectMonitorService;
   readonly health: () => {
     readonly status: "ok";
     readonly knowledge: "configured" | "unavailable";
@@ -101,9 +104,12 @@ export async function createApplication(
     path.resolve(process.cwd(), "docs/prompt.md"),
     "utf8",
   );
-  const watchedProjects = new WatchedProjectService(
+  const projectInspector = new LocalWatchedProjectInspector();
+  const watchedProjects = new WatchedProjectService(config.watchedProjects, projectInspector);
+  const projectMonitoring = new WatchedProjectMonitorService(
     config.watchedProjects,
-    new LocalWatchedProjectInspector(),
+    projectInspector,
+    new SqliteWatchedProjectMonitorStore(config.databasePath),
   );
   const ownerScope = {
     actorId: config.ownerActorId,
@@ -156,6 +162,7 @@ export async function createApplication(
     ),
     workflows: new PersonalWorkflowService(personalWorkflowStore, workStore),
     watchedProjects,
+    projectMonitoring,
     health: () => ({
       status: "ok",
       knowledge: config.vaultRoot ? "configured" : "unavailable",
@@ -171,6 +178,7 @@ export async function createApplication(
       careerRetrievalIndex.close();
       careerRetrievalAuditStore.close();
       personalWorkflowStore.close();
+      projectMonitoring.close();
     },
   };
 }

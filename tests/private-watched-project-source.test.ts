@@ -34,6 +34,13 @@ describe("OwnerWatchedProjectSource", () => {
       label: "Portfolio",
       planFile: "PLAN.md",
       reviewWindowDays: 30,
+      monitoring: {
+        enabled: false,
+        cadenceMinutes: 60,
+        maxRunsPerDay: 24,
+        stopAfterRuns: 720,
+        historyLimit: 100,
+      },
     }]);
     expect(JSON.stringify(projects)).not.toContain("/private/project/root");
     expect(snapshot).toMatchObject({
@@ -81,6 +88,13 @@ function createSource(): {
       rootPath: "/private/project/root",
       planFile: "PLAN.md",
       reviewWindowDays: 30,
+      monitoring: {
+        enabled: false,
+        cadenceMinutes: 60,
+        maxRunsPerDay: 24,
+        stopAfterRuns: 720,
+        historyLimit: 100,
+      },
     }],
     { inspect },
   );

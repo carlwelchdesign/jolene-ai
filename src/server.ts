@@ -33,6 +33,7 @@ import {
   WorkTaskNotFoundError,
 } from "./domain/work-context.js";
 import { WatchedProjectNotFoundError } from "./domain/watched-project.js";
+import { WatchedProjectMonitorConflictError } from "./application/watched-project-monitor-service.js";
 import {
   CareerEvidenceApprovalError,
   CareerEvidenceConflictError,
@@ -210,6 +211,31 @@ async function handleRequest(
 
   if (request.method === "GET" && url.pathname === "/v1/watched-projects") {
     sendJson(response, 200, application.watchedProjects.list());
+    return;
+  }
+
+  if (request.method === "GET" && url.pathname === "/v1/project-monitors") {
+    sendJson(response, 200, application.projectMonitoring.list());
+    return;
+  }
+
+  const projectMonitorMatch = url.pathname.match(
+    /^\/v1\/project-monitors\/([^/]+)(?:\/(run|pause|resume))?$/,
+  );
+  if (request.method === "GET" && projectMonitorMatch?.[1] && !projectMonitorMatch[2]) {
+    sendJson(response, 200, application.projectMonitoring.get(projectMonitorMatch[1]));
+    return;
+  }
+  if (request.method === "POST" && projectMonitorMatch?.[1] && projectMonitorMatch[2]) {
+    assertSameOrigin(request.headers);
+    const projectId = projectMonitorMatch[1];
+    const action = projectMonitorMatch[2];
+    const result = action === "run"
+      ? await application.projectMonitoring.runNow(projectId)
+      : action === "pause"
+        ? application.projectMonitoring.pause(projectId)
+        : application.projectMonitoring.resume(projectId);
+    sendJson(response, 200, result);
     return;
   }
 
@@ -725,6 +751,7 @@ function handleError(error: unknown, response: ServerResponse): void {
     error instanceof ActionProposalConflictError ||
     error instanceof ActionPayloadMismatchError ||
     error instanceof PersonalWorkflowConflictError
+    || error instanceof WatchedProjectMonitorConflictError
   ) {
     sendJson(response, 409, { error: "action_conflict" });
     return;

@@ -12,6 +12,8 @@ x-jolene-runtime: &jolene-runtime
     JOLENE_HOST: 0.0.0.0
     JOLENE_OBSIDIAN_VAULT_ROOT: /vault
     JOLENE_PORT: 8421
+    JOLENE_WATCHED_PROJECTS: >-
+      [{"id":"carl-welch-portfolio","label":"Carl Welch Portfolio","rootPath":"/watched/carl-welch-portfolio","planFile":"PORTFOLIO_SITE_PLAN.md","reviewWindowDays":30,"monitoring":{"enabled":true,"cadenceMinutes":60,"maxRunsPerDay":24,"stopAfterRuns":720,"historyLimit":100}}]
     JOLENE_CAREER_EMBEDDINGS_ENABLED: ${JOLENE_CAREER_EMBEDDINGS_ENABLED:-false}
     JOLENE_PUBLIC_LIVE_REVIEW_PACKET_PATH: /review/public-live-model-review.json
     JOLENE_PUBLIC_LIVE_REVIEW_DECISION_PATH: /data/evaluations/public-live-model-decision.json
@@ -20,6 +22,10 @@ x-jolene-runtime: &jolene-runtime
     - type: bind
       source: ${JOLENE_OBSIDIAN_VAULT_HOST_PATH:?Set JOLENE_OBSIDIAN_VAULT_HOST_PATH in the ignored .env file}
       target: /vault
+      read_only: true
+    - type: bind
+      source: ${JOLENE_PORTFOLIO_ROOT:-../carl-welch-portfolio}
+      target: /watched/carl-welch-portfolio
       read_only: true
   init: true
   read_only: true
@@ -45,12 +51,25 @@ services:
         source: ./.jolene/evaluations
         target: /review
         read_only: true
+      - type: bind
+        source: ${JOLENE_PORTFOLIO_ROOT:-../carl-welch-portfolio}
+        target: /watched/carl-welch-portfolio
+        read_only: true
     ports:
       - "127.0.0.1:${JOLENE_HOST_PORT:-8421}:8421"
 
   jolene-slack:
     <<: *jolene-runtime
     command: ["node", "dist/slack.js"]
+    healthcheck:
+      disable: true
+    depends_on:
+      jolene-api:
+        condition: service_healthy
+
+  jolene-monitor:
+    <<: *jolene-runtime
+    command: ["node", "dist/project-monitor.js"]
     healthcheck:
       disable: true
     depends_on:

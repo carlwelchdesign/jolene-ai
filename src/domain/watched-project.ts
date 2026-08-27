@@ -6,6 +6,15 @@ export interface WatchedProjectDefinition {
   readonly rootPath: string;
   readonly planFile: string | null;
   readonly reviewWindowDays: number;
+  readonly monitoring: WatchedProjectMonitoringPolicy;
+}
+
+export interface WatchedProjectMonitoringPolicy {
+  readonly enabled: boolean;
+  readonly cadenceMinutes: number;
+  readonly maxRunsPerDay: number;
+  readonly stopAfterRuns: number;
+  readonly historyLimit: number;
 }
 
 export interface WatchedProjectSummary {
@@ -13,6 +22,7 @@ export interface WatchedProjectSummary {
   readonly label: string;
   readonly planFile: string | null;
   readonly reviewWindowDays: number;
+  readonly monitoring: WatchedProjectMonitoringPolicy;
 }
 
 export type WatchedProjectAlert =
@@ -56,6 +66,50 @@ export interface WatchedProjectInspector {
 export interface WatchedProjectDirectory {
   list(): readonly WatchedProjectSummary[];
   snapshot(id: string): Promise<WatchedProjectSnapshot>;
+}
+
+export type WatchedProjectMonitorStatus = "active" | "paused" | "stopped";
+
+export interface WatchedProjectMonitorRun {
+  readonly id: string;
+  readonly projectId: string;
+  readonly trigger: "scheduled" | "manual";
+  readonly status: "running" | "succeeded" | "failed";
+  readonly startedAt: string;
+  readonly completedAt: string | null;
+  readonly snapshot: WatchedProjectSnapshot | null;
+  readonly errorCode: "inspection_failed" | null;
+}
+
+export interface WatchedProjectMonitorState {
+  readonly projectId: string;
+  readonly status: WatchedProjectMonitorStatus;
+  readonly nextRunAt: string | null;
+  readonly lastRunAt: string | null;
+  readonly runCount: number;
+  readonly runsToday: number;
+  readonly policy: WatchedProjectMonitoringPolicy;
+  readonly history: readonly WatchedProjectMonitorRun[];
+}
+
+export interface WatchedProjectMonitorStore {
+  reconcile(project: WatchedProjectDefinition): void;
+  get(projectId: string, historyLimit: number): WatchedProjectMonitorState | null;
+  setStatus(projectId: string, status: "active" | "paused", now: Date): void;
+  claim(
+    project: WatchedProjectDefinition,
+    trigger: "scheduled" | "manual",
+    now: Date,
+  ): WatchedProjectMonitorRun | null;
+  complete(
+    runId: string,
+    completedAt: Date,
+    result:
+      | { readonly snapshot: WatchedProjectSnapshot }
+      | { readonly errorCode: "inspection_failed" },
+  ): void;
+  prune(projectId: string, historyLimit: number): void;
+  close(): void;
 }
 
 export interface PrivateWatchedProjectSource {

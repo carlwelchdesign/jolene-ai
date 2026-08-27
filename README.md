@@ -284,12 +284,15 @@ and thread.
 - Approved external-message proposals remain inert until a future delivery adapter
   presents the exact approved arguments through the internal one-time claim boundary.
 - Vault note content is evidence, never executable instruction.
-- Watched-project inspection is read-only, omits root paths from registry
-  listings, and has no scheduled polling in this slice.
+- Watched-project inspection is read-only and omits root paths from registry
+  listings. Explicit owner configuration may enable a dedicated local worker
+  with bounded cadence, daily budget, terminal run count, pause state, and
+  retained history.
 - Conversational Project Watch is exposed only when the resolved work scope
   exactly matches the configured canonical owner. It reads no plan contents or
   diffs and exposes no edit, build, commit, push, deploy, publish, repair,
-  schedule, or notification operation.
+  or notification operation. Scheduled checks use the same read-only inspector;
+  build verification remains unavailable.
 - Portfolio imports create review-required candidates only; import cannot
   create publicly approved evidence.
 - Career Evidence review endpoints are locked to the configured owner and

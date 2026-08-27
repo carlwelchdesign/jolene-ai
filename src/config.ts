@@ -135,6 +135,19 @@ const watchedProjectConfigSchema = z.array(
     rootPath: z.string().trim().min(1),
     planFile: z.string().trim().min(1).nullable().default(null),
     reviewWindowDays: z.number().int().min(1).max(365).default(30),
+    monitoring: z.object({
+      enabled: z.boolean().default(false),
+      cadenceMinutes: z.number().int().min(5).max(1_440).default(60),
+      maxRunsPerDay: z.number().int().min(1).max(288).default(24),
+      stopAfterRuns: z.number().int().min(1).max(100_000).default(720),
+      historyLimit: z.number().int().min(1).max(500).default(100),
+    }).default({
+      enabled: false,
+      cadenceMinutes: 60,
+      maxRunsPerDay: 24,
+      stopAfterRuns: 720,
+      historyLimit: 100,
+    }),
   }),
 ).superRefine((projects, context) => {
   const ids = new Set<string>();
