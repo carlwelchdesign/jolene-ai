@@ -21,6 +21,7 @@
     "dev:public": "tsx watch src/public-server.ts",
     "eval:public": "tsx scripts/evaluate-public-delegate.ts",
     "eval:public:live": "tsx scripts/evaluate-public-live-model.ts",
+    "research:personality:validate": "tsx scripts/validate-personality-research.ts",
     "slack": "tsx src/slack.ts",
     "start": "node dist/server.js",
     "start:career-index:lexical": "node dist/career-index.js",
@@ -43,6 +44,7 @@
     "@types/node": "^20.19.25",
     "tsx": "^4.23.12",
     "typescript": "^5.9.3",
-    "vitest": "^4.1.11"
+    "vitest": "^4.1.11",
+    "yaml": "^2.8.1"
   }
 }

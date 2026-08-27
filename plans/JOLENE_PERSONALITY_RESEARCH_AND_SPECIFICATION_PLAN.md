@@ -1,6 +1,6 @@
 # Jolene Personality Research and Specification Plan
 
-**Status:** Planning complete; initial runtime prompt integrated; formal corpus coding and personality evaluation have not started
+**Status:** Phase 1 technical pilot complete and independently reconciled; full corpus, Carl relevance approval, formal specification, and personality evaluation remain open
 **Owner:** Carl Welch
 **Planning date:** 2026-08-25
 **Target review gate:** 2026-09-11
@@ -474,14 +474,16 @@ The fixture set must include:
 
 ## Planned artifacts
 
-The runtime scaffold at `docs/prompt.md` exists. The research and evaluation artifacts below have not yet been produced.
+The runtime scaffold at `docs/prompt.md` exists. The Phase 1 research artifacts marked
+complete below are research inputs only; they do not activate a personality renderer.
 
 ```text
 research/
-  sources.yaml                 # source register and rights/context metadata
-  coding-schema.yaml           # observation schema and allowed values
-  observations.jsonl           # short excerpts, paraphrases, codes, confidence
-  rejection-log.md             # excluded traits, phrases, and reasons
+  sources.yaml                 # complete: 11-source rights/context register
+  coding-schema.yaml           # complete: validated observation schema
+  observations.jsonl           # complete: 25 paraphrase-only pilot segments
+  rejection-log.md             # complete: excluded traits, phrases, and reasons
+  pilot-character-hypotheses.md # complete: provisional, contradiction-aware hypotheses
 
 personality/
   identity.md                  # stable original character proposition and boundaries
@@ -511,6 +513,12 @@ evals/personality/
 **Owner:** Research lead; Carl consulted
 **Deliverables:** source register, coding schema, 25-segment pilot, rejection log, transcript-verification notes.
 **Exit gate:** two reviewers reconcile the shared sample; no unclear copyright storage practice; Carl confirms that the emerging dimensions feel relevant.
+
+**2026-08-26 checkpoint:** Technical deliverables are complete. Eleven primary sources are
+registered, 25 segments from five sources are paraphrased without retained excerpts, and an
+independent reviewer reconciled seven segments (28%). The reconciliation corrected two
+material readings and separated observed behavior, inferred traits, and designed adaptations.
+Carl's relevance confirmation remains open, so the Phase 1 product gate is not closed.
 
 ### Phase 2 — Full coding and character graph
 
@@ -547,7 +555,7 @@ evals/personality/
 | JOL-PER-001 | Approve character proposition and non-goals | Carl | None | Written decision on inspiration strength, wit, intimacy, faith language, and exact-voice prohibition. |
 | JOL-PER-002 | Build source register | Research | 001 | At least ten qualified sources with date, setting, URL, transcript state, and weight. |
 | JOL-PER-003 | Define coding schema and reviewer guide | Research | 002 | Schema covers function, humor, pivot, boundary, uncertainty, action, credit, confidence, and alternative interpretation. |
-| JOL-PER-004 | Run double-coded pilot | Two reviewers | 003 | At least 25 segments independently coded; disagreements reconciled and schema revised. |
+| JOL-PER-004 | Run double-coded pilot | Two reviewers | 003 | At least 25 segments coded; at least 25% independently reviewed; disagreements reconciled and schema revised. |
 | JOL-PER-005 | Code complete corpus | Research | 004 | 100–150 turns across required contexts; no raw transcript archive. |
 | JOL-PER-006 | Build character graph and contradiction map | AI architecture | 005 | All nodes trace to evidence or are labeled designed; contradictions and rejected patterns remain visible. |
 | JOL-PER-007 | Draft identity and behavior specification | Product/AI | 006 | Rules cover normal, sensitive, urgent, public, private, error, and conflict contexts. |
@@ -726,7 +734,7 @@ Recommended defaults:
 | 2026-08-25 | Research before personality implementation | Carl | Approved by request |
 | 2026-08-25 | Save the canonical plan in this repository and capture durable decisions in Obsidian | Carl | Approved by request |
 | 2026-08-25 | Jolene works for Carl first; client and client-AI coordination is secondary | Carl | Approved by request |
-| Pending | Approve central proposition, behavioral defaults, and Phase 1 corpus | Carl | Open |
+| Pending | Approve central proposition, behavioral defaults, and Phase 1 relevance | Carl | Open; technical corpus pilot is reviewable |
 | Pending | Begin personality implementation | Carl | Not authorized by this plan |
 | Pending | Explore an original voice | Carl | Not authorized by this plan |
 
@@ -740,7 +748,8 @@ Recommended defaults:
 - [x] Phases, owners, dates, gates, work items, RACI, and risks are recorded.
 - [x] Standalone architecture and earlier-Jolene reuse boundaries are stated.
 - [ ] Carl approves the plan and tuning defaults.
-- [ ] Research corpus is coded.
+- [x] Phase 1 pilot corpus is coded and independently reconciled.
+- [ ] Full 100–150-turn research corpus is coded.
 - [ ] Personality specification is implemented.
 - [ ] Text pilot is run.
 - [ ] Voice work is authorized.

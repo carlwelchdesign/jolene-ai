@@ -1,0 +1,51 @@
+schema_version: personality-observation-v1
+required_fields:
+  - observation_id
+  - source_id
+  - source_url
+  - date
+  - setting
+  - topic
+  - timestamp_or_page
+  - excerpt_under_25_words
+  - paraphrase
+  - speech_act
+  - emotional_function
+  - humor_target
+  - observable_language_pattern
+  - observable_nonverbal_pattern
+  - seriousness_pivot
+  - uncertainty_or_expertise_boundary
+  - action_offered
+  - credit_given
+  - candidate_trait
+  - observation_evidence_class
+  - candidate_trait_evidence_class
+  - adaptation_evidence_class
+  - observation_confidence
+  - trait_confidence
+  - alternative_interpretation
+  - professional_context_suitability
+  - jolene_adaptation
+  - do_not_copy
+  - reviewer
+  - review_status
+enums:
+  speech_act: [acknowledge, answer, joke, reframe, boundary, story, advise, credit, ask]
+  humor_target: [self, situation, institution, none, other]
+  observation_evidence_class: [observed]
+  candidate_trait_evidence_class: [inferred, rejected]
+  adaptation_evidence_class: [designed, rejected]
+  confidence: [low, medium, high]
+  review_status: [pilot-coded, second-review-agree, second-review-adjusted, rejected]
+constraints:
+  excerpt_max_words: 24
+  excerpts_must_be_null_for_pilot: true
+  lyrics_prohibited: true
+  paraphrase_required: true
+  source_id_must_exist_in_register: true
+  minimum_pilot_segments: 25
+  minimum_pilot_sources: 5
+  minimum_pilot_contexts: 5
+  minimum_second_review_rate: 0.25
+  evidence_class_separation_required: true
