@@ -49,6 +49,9 @@ The first runnable slice provides:
   deterministic lexical fallback;
 - a content-minimizing career-retrieval audit ledger that retains query
   fingerprints and citation IDs but not queries or evidence excerpts;
+- an immutable typed registry for Jolene's five current private model tools and
+  inert external-message proposal boundary, with registry-derived context
+  enforcement and a durable content-minimizing invocation ledger;
 - a local read-only professional-context MCP stdio adapter with exact
   actor/workspace/client scope, approved-evidence search and inspection,
   conservative private job comparison, and its own content-minimizing audit
@@ -101,6 +104,8 @@ The first private MCP interoperability slice is implemented as a local stdio
 adapter over approved professional evidence. It is not a remote service and has
 no write tools. See [Private professional-context MCP](docs/private-career-mcp.md)
 and the [professional context architecture](plans/JOLENE_PROFESSIONAL_CONTEXT_ARCHITECTURE.md).
+The [private capability registry](docs/capability-registry.md) documents the
+current model-tool inventory, approval behavior, and invocation audit boundary.
 
 ## Setup
 

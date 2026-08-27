@@ -31,15 +31,20 @@ afterEach(async () => {
 
 describe("exact action approvals", () => {
   it("registers external messaging as proposal-only exact approval", () => {
-    expect(listCapabilities()).toEqual([{
+    expect(listCapabilities()).toContainEqual({
       id: "external_message.send",
       label: "Send a message to an external recipient",
+      owner: "carl",
+      dataClasses: ["general", "private", "restricted", "sensitive"],
       baseRisk: "external_write",
       allowedContexts: ["private"],
       approval: "exact_arguments_required",
-      audit: "required",
+      audit: ["action_approval"],
       runtime: "proposal_only",
-    }]);
+      modelToolName: null,
+      inputContract: "external_message.send.proposal.input.v1",
+      outputContract: "external_message.send.proposal.output.v1",
+    });
   });
 
   it("creates a task-bound sensitive proposal only from private context", () => {

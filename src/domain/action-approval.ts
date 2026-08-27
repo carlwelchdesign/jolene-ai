@@ -1,10 +1,13 @@
 import { createHash } from "node:crypto";
 
 import type { ChannelKind } from "./conversation.js";
-import type { CapabilityId } from "./capability-registry.js";
+import type {
+  CapabilityDataClass,
+  CapabilityId,
+} from "./capability-registry.js";
 import type { CapabilityRisk } from "./policy.js";
 
-export type ActionDataClass = "general" | "private" | "restricted" | "sensitive";
+export type ActionDataClass = CapabilityDataClass;
 export type ActionDestinationKind = "slack_user" | "slack_channel" | "client_ai";
 export type ActionDecision = "approved" | "rejected";
 export type ActionProposalStatus =

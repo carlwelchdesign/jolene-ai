@@ -236,6 +236,18 @@ async function handleRequest(
     return;
   }
 
+  if (
+    request.method === "GET" &&
+    url.pathname === "/v1/capability-invocations"
+  ) {
+    sendJson(response, 200, application.capabilityInvocations.list({
+      ...scopeFrom(url),
+      eventId: url.searchParams.get("eventId") ?? undefined,
+      limit: url.searchParams.get("limit") ?? undefined,
+    }));
+    return;
+  }
+
   if (request.method === "GET" && url.pathname === "/v1/client-ai-recipients") {
     sendJson(response, 200, application.clientAiPackets.recipients());
     return;
