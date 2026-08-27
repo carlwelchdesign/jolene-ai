@@ -1,0 +1,46 @@
+name: jolene
+
+x-jolene-runtime: &jolene-runtime
+  build:
+    context: .
+    target: runtime
+  image: jolene-ai:local
+  env_file:
+    - .env.local
+  environment:
+    JOLENE_DATABASE_PATH: /data/jolene.sqlite
+    JOLENE_HOST: 0.0.0.0
+    JOLENE_OBSIDIAN_VAULT_ROOT: /vault
+    JOLENE_PORT: 8421
+  volumes:
+    - jolene-data:/data
+    - type: bind
+      source: ${JOLENE_OBSIDIAN_VAULT_HOST_PATH:?Set JOLENE_OBSIDIAN_VAULT_HOST_PATH in the ignored .env file}
+      target: /vault
+      read_only: true
+  init: true
+  read_only: true
+  tmpfs:
+    - /tmp:size=64m,mode=1777
+  cap_drop:
+    - ALL
+  security_opt:
+    - no-new-privileges:true
+  restart: unless-stopped
+
+services:
+  jolene-api:
+    <<: *jolene-runtime
+    command: ["node", "dist/server.js"]
+    ports:
+      - "127.0.0.1:${JOLENE_HOST_PORT:-8421}:8421"
+
+  jolene-slack:
+    <<: *jolene-runtime
+    command: ["node", "dist/slack.js"]
+    depends_on:
+      jolene-api:
+        condition: service_healthy
+
+volumes:
+  jolene-data:
