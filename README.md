@@ -293,6 +293,11 @@ and thread.
   diffs and exposes no edit, build, commit, push, deploy, publish, repair,
   or notification operation. Scheduled checks use the same read-only inspector;
   build verification remains unavailable.
+- Project Watch notifications are separately disabled by default and, when
+  explicitly enabled, can address only the configured Slack owner DM. Only
+  scheduled alert-set transitions create durable outbox items; unchanged and
+  manual checks stay silent, and messages omit project paths, contents, diffs,
+  raw errors, credentials, private memory, and arbitrary destinations.
 - Portfolio imports create review-required candidates only; import cannot
   create publicly approved evidence.
 - Career Evidence review endpoints are locked to the configured owner and

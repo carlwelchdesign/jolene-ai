@@ -40,6 +40,11 @@ describe("OwnerWatchedProjectSource", () => {
         maxRunsPerDay: 24,
         stopAfterRuns: 720,
         historyLimit: 100,
+        notifications: {
+          enabled: false,
+          destination: "slack_owner_dm",
+          maxAttempts: 5,
+        },
       },
     }]);
     expect(JSON.stringify(projects)).not.toContain("/private/project/root");
@@ -94,6 +99,11 @@ function createSource(): {
         maxRunsPerDay: 24,
         stopAfterRuns: 720,
         historyLimit: 100,
+        notifications: {
+          enabled: false,
+          destination: "slack_owner_dm",
+          maxAttempts: 5,
+        },
       },
     }],
     { inspect },

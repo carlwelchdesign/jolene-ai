@@ -39,7 +39,9 @@ const envSchema = z.object({
   JOLENE_WATCHED_PROJECTS: z.string().optional(),
   SLACK_BOT_TOKEN: z.string().trim().optional(),
   SLACK_APP_TOKEN: z.string().trim().optional(),
-  SLACK_OWNER_USER_ID: z.string().trim().optional(),
+  SLACK_OWNER_USER_ID: z.string().trim().regex(/^[UW][A-Z0-9]+$/)
+    .or(z.literal(""))
+    .optional(),
 });
 
 export interface AppConfig {
@@ -141,12 +143,26 @@ const watchedProjectConfigSchema = z.array(
       maxRunsPerDay: z.number().int().min(1).max(288).default(24),
       stopAfterRuns: z.number().int().min(1).max(100_000).default(720),
       historyLimit: z.number().int().min(1).max(500).default(100),
+      notifications: z.object({
+        enabled: z.boolean().default(false),
+        destination: z.literal("slack_owner_dm").default("slack_owner_dm"),
+        maxAttempts: z.number().int().min(1).max(10).default(5),
+      }).default({
+        enabled: false,
+        destination: "slack_owner_dm",
+        maxAttempts: 5,
+      }),
     }).default({
       enabled: false,
       cadenceMinutes: 60,
       maxRunsPerDay: 24,
       stopAfterRuns: 720,
       historyLimit: 100,
+      notifications: {
+        enabled: false,
+        destination: "slack_owner_dm",
+        maxAttempts: 5,
+      },
     }),
   }),
 ).superRefine((projects, context) => {

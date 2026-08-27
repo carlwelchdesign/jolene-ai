@@ -121,7 +121,7 @@
 .monitor-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
 .monitor-heading h4 { margin: 5px 0 0; font-size: 18px; }
 .monitor-actions { display: flex; flex-wrap: wrap; gap: 8px; }
-.monitor-facts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; margin-top: 15px; overflow: hidden; background: #cbd8cc; border: 1px solid #cbd8cc; border-radius: 10px; }
+.monitor-facts { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 1px; margin-top: 15px; overflow: hidden; background: #cbd8cc; border: 1px solid #cbd8cc; border-radius: 10px; }
 .monitor-facts .project-fact { background: white; }
 .monitor-history { margin-top: 16px; }
 .monitor-history > strong { font-size: 13px; }
@@ -129,6 +129,8 @@
 .monitor-run-list { display: grid; gap: 7px; margin: 10px 0 0; padding: 0; list-style: none; }
 .monitor-run-list li { display: flex; justify-content: space-between; gap: 14px; padding: 9px 11px; background: white; border: 1px solid #dce3dc; border-radius: 8px; font-size: 12px; }
 .monitor-run-list span { color: var(--muted); }
+.notification-history { padding-top: 15px; border-top: 1px solid #d5dfd5; }
+.notification-list strong { color: #365741; }
 
 @media (max-width: 720px) {
   .summary-grid, .project-facts, .monitor-facts { grid-template-columns: 1fr; }

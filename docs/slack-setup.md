@@ -43,6 +43,12 @@ Then:
 
 Jolene replies in the originating thread. A durable delivery ledger suppresses completed replays. If Slack explicitly rejects a post, a replay reuses the stored answer and retries delivery without another model call.
 
+When a watched project explicitly enables `slack_owner_dm` notifications, the
+same Slack process also drains Project Watch's durable transition outbox. These
+messages can address only `SLACK_OWNER_USER_ID`; unchanged scheduled checks and
+manual checks do not send anything. This is separate from conversational reply
+delivery and does not authorize shared-channel or arbitrary outbound messages.
+
 ## Privacy behavior
 
 - Only direct messages from `SLACK_OWNER_USER_ID` are considered private and may use allowlisted Obsidian knowledge.

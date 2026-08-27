@@ -7,9 +7,14 @@ import Database from "better-sqlite3";
 import type {
   WatchedProjectDefinition,
   WatchedProjectMonitorRun,
+  WatchedProjectMonitorClaim,
   WatchedProjectMonitorState,
   WatchedProjectMonitorStatus,
   WatchedProjectMonitorStore,
+  WatchedProjectNotification,
+  WatchedProjectNotificationClaim,
+  WatchedProjectNotificationIntent,
+  WatchedProjectNotificationOutbox,
   WatchedProjectSnapshot,
 } from "../domain/watched-project.js";
 
@@ -35,7 +40,24 @@ interface RunRow {
   error_code: "inspection_failed" | null;
 }
 
-export class SqliteWatchedProjectMonitorStore implements WatchedProjectMonitorStore {
+interface NotificationRow {
+  id: string;
+  project_id: string;
+  run_id: string;
+  transition: WatchedProjectNotification["transition"];
+  alert_codes_json: string;
+  checked_at: string;
+  status: WatchedProjectNotification["status"];
+  attempts: number;
+  max_attempts: number;
+  next_attempt_at: string | null;
+  delivered_at: string | null;
+  error_code: string | null;
+  updated_at: string;
+}
+
+export class SqliteWatchedProjectMonitorStore
+  implements WatchedProjectMonitorStore, WatchedProjectNotificationOutbox {
   private readonly database: Database.Database;
 
   constructor(
@@ -86,6 +108,13 @@ export class SqliteWatchedProjectMonitorStore implements WatchedProjectMonitorSt
        error_code = 'inspection_failed' WHERE project_id = ? AND status = 'running'
        AND started_at <= ?`,
     ).run(now, project.id, staleBefore);
+    this.database.prepare(
+      `UPDATE watched_project_notifications SET
+       status = CASE WHEN attempts >= max_attempts THEN 'abandoned' ELSE 'failed' END,
+       next_attempt_at = CASE WHEN attempts >= max_attempts THEN NULL ELSE ? END,
+       error_code = 'delivery_interrupted', updated_at = ?
+       WHERE project_id = ? AND status = 'sending' AND updated_at <= ?`,
+    ).run(now, now, project.id, staleBefore);
   }
 
   get(projectId: string, historyLimit: number): WatchedProjectMonitorState | null {
@@ -97,6 +126,10 @@ export class SqliteWatchedProjectMonitorStore implements WatchedProjectMonitorSt
       `SELECT * FROM watched_project_monitor_runs WHERE project_id = ?
        ORDER BY started_at DESC LIMIT ?`,
     ).all(projectId, historyLimit) as RunRow[];
+    const notifications = this.database.prepare(
+      `SELECT * FROM watched_project_notifications WHERE project_id = ?
+       ORDER BY checked_at DESC LIMIT ?`,
+    ).all(projectId, historyLimit) as NotificationRow[];
     return {
       projectId,
       status: row.status,
@@ -106,6 +139,7 @@ export class SqliteWatchedProjectMonitorStore implements WatchedProjectMonitorSt
       runsToday: row.budget_date === utcDate(this.now()) ? row.budget_run_count : 0,
       policy: JSON.parse(row.policy_json) as WatchedProjectDefinition["monitoring"],
       history: runs.map(mapRun),
+      notifications: notifications.map(mapNotification),
     };
   }
 
@@ -122,7 +156,7 @@ export class SqliteWatchedProjectMonitorStore implements WatchedProjectMonitorSt
     project: WatchedProjectDefinition,
     trigger: "scheduled" | "manual",
     now: Date,
-  ): WatchedProjectMonitorRun | null {
+  ): WatchedProjectMonitorClaim | null {
     return this.database.transaction(() => {
       const row = this.database.prepare(
         "SELECT * FROM watched_project_monitors WHERE project_id = ?",
@@ -141,6 +175,12 @@ export class SqliteWatchedProjectMonitorStore implements WatchedProjectMonitorSt
          WHERE project_id = ? AND status = 'running' LIMIT 1`,
       ).get(project.id);
       if (running) return null;
+
+      const previous = this.database.prepare(
+        `SELECT snapshot_json FROM watched_project_monitor_runs
+         WHERE project_id = ? AND status = 'succeeded' AND snapshot_json IS NOT NULL
+         ORDER BY started_at DESC LIMIT 1`,
+      ).get(project.id) as { snapshot_json: string } | undefined;
 
       const id = randomUUID();
       const startedAt = now.toISOString();
@@ -177,6 +217,9 @@ export class SqliteWatchedProjectMonitorStore implements WatchedProjectMonitorSt
         completedAt: null,
         snapshot: null,
         errorCode: null,
+        previousSnapshot: previous
+          ? JSON.parse(previous.snapshot_json) as WatchedProjectSnapshot
+          : null,
       };
     })();
   }
@@ -184,19 +227,99 @@ export class SqliteWatchedProjectMonitorStore implements WatchedProjectMonitorSt
   complete(
     runId: string,
     completedAt: Date,
-    result: { snapshot: WatchedProjectSnapshot } | { errorCode: "inspection_failed" },
+    result:
+      | {
+          snapshot: WatchedProjectSnapshot;
+          notification: WatchedProjectNotificationIntent | null;
+          notificationMaxAttempts: number;
+        }
+      | { errorCode: "inspection_failed" },
   ): void {
     const success = "snapshot" in result;
+    this.database.transaction(() => {
+      const run = this.database.prepare(
+        "SELECT project_id FROM watched_project_monitor_runs WHERE id = ? AND status = 'running'",
+      ).get(runId) as { project_id: string } | undefined;
+      if (!run) return;
+      this.database.prepare(
+        `UPDATE watched_project_monitor_runs SET status = ?, completed_at = ?,
+         snapshot_json = ?, error_code = ? WHERE id = ? AND status = 'running'`,
+      ).run(
+        success ? "succeeded" : "failed",
+        completedAt.toISOString(),
+        success ? JSON.stringify(result.snapshot) : null,
+        success ? null : result.errorCode,
+        runId,
+      );
+      if (success && result.notification) {
+        this.database.prepare(
+          `INSERT OR IGNORE INTO watched_project_notifications
+           (id, project_id, run_id, transition, alert_codes_json, checked_at,
+            status, attempts, max_attempts, next_attempt_at, created_at, updated_at)
+           VALUES (?, ?, ?, ?, ?, ?, 'pending', 0, ?, ?, ?, ?)`,
+        ).run(
+          randomUUID(),
+          run.project_id,
+          runId,
+          result.notification.transition,
+          JSON.stringify(result.notification.alertCodes),
+          result.notification.checkedAt,
+          result.notificationMaxAttempts,
+          completedAt.toISOString(),
+          completedAt.toISOString(),
+          completedAt.toISOString(),
+        );
+      }
+    })();
+  }
+
+  claimNotification(now: Date): WatchedProjectNotificationClaim | null {
+    return this.database.transaction(() => {
+      const row = this.database.prepare(
+        `SELECT * FROM watched_project_notifications
+         WHERE status IN ('pending', 'failed') AND next_attempt_at <= ?
+           AND attempts < max_attempts
+         ORDER BY created_at ASC LIMIT 1`,
+      ).get(now.toISOString()) as NotificationRow | undefined;
+      if (!row) return null;
+      const attempts = row.attempts + 1;
+      this.database.prepare(
+        `UPDATE watched_project_notifications SET status = 'sending', attempts = ?,
+         updated_at = ? WHERE id = ? AND status IN ('pending', 'failed')`,
+      ).run(attempts, now.toISOString(), row.id);
+      return { ...mapNotification({ ...row, status: "sending", attempts }), maxAttempts: row.max_attempts };
+    })();
+  }
+
+  completeNotification(id: string, deliveredAt: Date): void {
     this.database.prepare(
-      `UPDATE watched_project_monitor_runs SET status = ?, completed_at = ?,
-       snapshot_json = ?, error_code = ? WHERE id = ? AND status = 'running'`,
-    ).run(
-      success ? "succeeded" : "failed",
-      completedAt.toISOString(),
-      success ? JSON.stringify(result.snapshot) : null,
-      success ? null : result.errorCode,
-      runId,
-    );
+      `UPDATE watched_project_notifications SET status = 'delivered',
+       delivered_at = ?, next_attempt_at = NULL, error_code = NULL, updated_at = ?
+       WHERE id = ? AND status = 'sending'`,
+    ).run(deliveredAt.toISOString(), deliveredAt.toISOString(), id);
+  }
+
+  failNotification(id: string, failedAt: Date, errorCode: string): void {
+    this.database.transaction(() => {
+      const row = this.database.prepare(
+        "SELECT attempts, max_attempts FROM watched_project_notifications WHERE id = ? AND status = 'sending'",
+      ).get(id) as { attempts: number; max_attempts: number } | undefined;
+      if (!row) return;
+      const abandoned = row.attempts >= row.max_attempts;
+      const nextAttemptAt = abandoned
+        ? null
+        : new Date(failedAt.getTime() + retryDelayMilliseconds(row.attempts)).toISOString();
+      this.database.prepare(
+        `UPDATE watched_project_notifications SET status = ?, next_attempt_at = ?,
+         error_code = ?, updated_at = ? WHERE id = ? AND status = 'sending'`,
+      ).run(
+        abandoned ? "abandoned" : "failed",
+        nextAttemptAt,
+        normalizeErrorCode(errorCode),
+        failedAt.toISOString(),
+        id,
+      );
+    })();
   }
 
   prune(projectId: string, historyLimit: number): void {
@@ -205,6 +328,13 @@ export class SqliteWatchedProjectMonitorStore implements WatchedProjectMonitorSt
         SELECT id FROM watched_project_monitor_runs WHERE project_id = ?
         ORDER BY started_at DESC LIMIT ?
       ) AND status != 'running'`,
+    ).run(projectId, projectId, historyLimit);
+    this.database.prepare(
+      `DELETE FROM watched_project_notifications WHERE project_id = ?
+       AND id NOT IN (
+         SELECT id FROM watched_project_notifications WHERE project_id = ?
+         ORDER BY checked_at DESC LIMIT ?
+       ) AND status IN ('delivered', 'abandoned')`,
     ).run(projectId, projectId, historyLimit);
   }
 
@@ -238,6 +368,32 @@ export class SqliteWatchedProjectMonitorStore implements WatchedProjectMonitorSt
       ON watched_project_monitor_runs(project_id, started_at DESC);
       CREATE UNIQUE INDEX IF NOT EXISTS idx_watched_project_monitor_one_running
       ON watched_project_monitor_runs(project_id) WHERE status = 'running';
+      CREATE TABLE IF NOT EXISTS watched_project_notifications (
+        id TEXT PRIMARY KEY,
+        project_id TEXT NOT NULL,
+        run_id TEXT NOT NULL UNIQUE,
+        transition TEXT NOT NULL CHECK(transition IN (
+          'attention_started', 'attention_changed', 'attention_resolved'
+        )),
+        alert_codes_json TEXT NOT NULL,
+        checked_at TEXT NOT NULL,
+        status TEXT NOT NULL CHECK(status IN (
+          'pending', 'sending', 'failed', 'delivered', 'abandoned'
+        )),
+        attempts INTEGER NOT NULL,
+        max_attempts INTEGER NOT NULL,
+        next_attempt_at TEXT,
+        delivered_at TEXT,
+        error_code TEXT,
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL,
+        FOREIGN KEY(project_id) REFERENCES watched_project_monitors(project_id),
+        FOREIGN KEY(run_id) REFERENCES watched_project_monitor_runs(id)
+      );
+      CREATE INDEX IF NOT EXISTS idx_watched_project_notifications_pending
+      ON watched_project_notifications(status, next_attempt_at, created_at);
+      CREATE INDEX IF NOT EXISTS idx_watched_project_notifications_project
+      ON watched_project_notifications(project_id, checked_at DESC);
     `);
   }
 }
@@ -253,6 +409,31 @@ function mapRun(row: RunRow): WatchedProjectMonitorRun {
     snapshot: row.snapshot_json ? JSON.parse(row.snapshot_json) as WatchedProjectSnapshot : null,
     errorCode: row.error_code,
   };
+}
+
+function mapNotification(row: NotificationRow): WatchedProjectNotification {
+  return {
+    id: row.id,
+    projectId: row.project_id,
+    runId: row.run_id,
+    transition: row.transition,
+    alertCodes: JSON.parse(row.alert_codes_json) as WatchedProjectNotification["alertCodes"],
+    checkedAt: row.checked_at,
+    status: row.status,
+    attempts: row.attempts,
+    nextAttemptAt: row.next_attempt_at,
+    deliveredAt: row.delivered_at,
+    errorCode: row.error_code,
+  };
+}
+
+function retryDelayMilliseconds(attempts: number): number {
+  return [60_000, 5 * 60_000, 15 * 60_000, 60 * 60_000][Math.min(attempts - 1, 3)] ?? 60 * 60_000;
+}
+
+function normalizeErrorCode(value: string): string {
+  const normalized = value.toLowerCase().replaceAll(/[^a-z0-9_-]/g, "_").slice(0, 80);
+  return normalized || "unknown_error";
 }
 
 function utcDate(date: Date): string { return date.toISOString().slice(0, 10); }

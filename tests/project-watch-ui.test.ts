@@ -14,9 +14,9 @@ const server = readFileSync(resolve(projectRoot, "src/server.ts"), "utf8");
 
 describe("Project Watch interface", () => {
   it("makes the read-only and bounded-monitoring boundaries persistent", () => {
-    expect(html).toContain("Jolene only looks.");
-    expect(html).toContain("Local, bounded monitoring");
-    expect(html).toContain("cannot edit files, run a build, commit, push, deploy, publish, repair, or notify anyone");
+    expect(html).toContain("Jolene only looks at project state.");
+    expect(html).toContain("Owner alerts on state changes only");
+    expect(html).toContain("never a shared channel or arbitrary destination");
     expect(javascript).toContain('method: "POST"');
     expect(javascript).not.toMatch(/method:\s*["'](?:PUT|PATCH|DELETE)/);
     expect(javascript).not.toMatch(/\/v1\/(?:action-proposals|workflows|tasks)/);
@@ -56,6 +56,7 @@ describe("Project Watch interface", () => {
     expect(css).toContain(".project-card.has-attention");
     expect(css).toContain(".badge-ok");
     expect(css).toContain(".monitor-history");
+    expect(css).toContain(".notification-history");
     expect(sharedCss).toContain(".empty-state");
     expect(css).toContain("@media (max-width: 720px)");
   });
