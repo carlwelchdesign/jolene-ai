@@ -1,14 +1,14 @@
-import { promises as fs } from "node:fs";
-import path from "node:path";
-
 import type {
   KnowledgeResult,
   KnowledgeSearchContext,
   KnowledgeSource,
 } from "./knowledge-source.js";
+import {
+  ObsidianVaultReader,
+  type ObsidianMarkdownDocument,
+} from "./obsidian-vault.js";
 
 const MAX_EXCERPT_LENGTH = 700;
-const MAX_FILE_BYTES = 1_000_000;
 
 export interface ObsidianSourceOptions {
   readonly vaultRoot: string;
@@ -16,14 +16,10 @@ export interface ObsidianSourceOptions {
 }
 
 export class ObsidianKnowledgeSource implements KnowledgeSource {
-  private readonly root: string;
-  private readonly allowlist: readonly string[];
+  private readonly vault: ObsidianVaultReader;
 
   constructor(options: ObsidianSourceOptions) {
-    this.root = path.resolve(options.vaultRoot);
-    this.allowlist = options.allowlist
-      .map(normalizeRelativePath)
-      .filter((entry) => entry.length > 0);
+    this.vault = new ObsidianVaultReader(options);
   }
 
   async search(
@@ -31,7 +27,7 @@ export class ObsidianKnowledgeSource implements KnowledgeSource {
     context: KnowledgeSearchContext,
     limit = 5,
   ): Promise<KnowledgeResult[]> {
-    if (!context.channelIsPrivate || this.allowlist.length === 0) {
+    if (!context.channelIsPrivate || this.vault.allowlist.length === 0) {
       return [];
     }
 
@@ -40,7 +36,7 @@ export class ObsidianKnowledgeSource implements KnowledgeSource {
       return [];
     }
 
-    const files = await this.collectMarkdownFiles(this.root);
+    const files = await this.vault.listMarkdownDocuments();
     const results = await Promise.all(
       files.map((file) => this.searchFile(file, terms)),
     );
@@ -51,50 +47,12 @@ export class ObsidianKnowledgeSource implements KnowledgeSource {
       .slice(0, Math.max(1, Math.min(limit, 10)));
   }
 
-  private async collectMarkdownFiles(directory: string): Promise<string[]> {
-    const entries = await fs.readdir(directory, { withFileTypes: true });
-    const files: string[] = [];
-
-    for (const entry of entries) {
-      if (entry.name.startsWith(".")) {
-        continue;
-      }
-
-      const absolute = path.join(directory, entry.name);
-      const relative = normalizeRelativePath(path.relative(this.root, absolute));
-
-      if (entry.isDirectory()) {
-        if (this.couldContainAllowedPath(relative)) {
-          files.push(...(await this.collectMarkdownFiles(absolute)));
-        }
-        continue;
-      }
-
-      if (
-        entry.isFile() &&
-        entry.name.toLowerCase().endsWith(".md") &&
-        this.isAllowed(relative)
-      ) {
-        files.push(absolute);
-      }
-    }
-
-    return files;
-  }
-
   private async searchFile(
-    absolutePath: string,
+    document: ObsidianMarkdownDocument,
     terms: readonly string[],
   ): Promise<KnowledgeResult | null> {
-    const stat = await fs.stat(absolutePath);
-    if (stat.size > MAX_FILE_BYTES) {
-      return null;
-    }
-
-    const content = await fs.readFile(absolutePath, "utf8");
-    const lines = content.split(/\r?\n/);
-    const relative = normalizeRelativePath(path.relative(this.root, absolutePath));
-    const relativeLower = relative.toLowerCase();
+    const lines = document.content.split(/\r?\n/);
+    const relativeLower = document.relativePath.toLowerCase();
 
     let bestLine = -1;
     let bestScore = 0;
@@ -131,35 +89,14 @@ export class ObsidianKnowledgeSource implements KnowledgeSource {
       .slice(0, MAX_EXCERPT_LENGTH);
 
     return {
-      notePath: relative,
+      notePath: document.relativePath,
       heading: nearestHeading(lines, bestLine),
       excerpt,
-      modifiedAt: stat.mtime.toISOString(),
+      modifiedAt: document.modifiedAt,
       score: bestScore,
     };
   }
 
-  private isAllowed(relative: string): boolean {
-    return this.allowlist.some(
-      (prefix) => relative === prefix || relative.startsWith(`${prefix}/`),
-    );
-  }
-
-  private couldContainAllowedPath(relative: string): boolean {
-    return this.allowlist.some(
-      (prefix) =>
-        relative === prefix ||
-        relative.startsWith(`${prefix}/`) ||
-        prefix.startsWith(`${relative}/`),
-    );
-  }
-}
-
-function normalizeRelativePath(value: string): string {
-  return value
-    .replaceAll(path.sep, "/")
-    .replace(/^\.\//, "")
-    .replace(/\/$/, "");
 }
 
 function tokenize(query: string): string[] {

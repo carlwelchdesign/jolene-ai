@@ -23,6 +23,8 @@ import {
   type CareerRelationship,
   type CareerRelationshipKind,
   type CareerSource,
+  type CareerSourceMetadata,
+  type CareerSourceState,
   type CareerSourceType,
   type CareerVisibility,
   type DecideCareerClaimInput,
@@ -43,10 +45,11 @@ interface SourceRow {
   readonly provenance_uri: string | null;
   readonly source_hash: string;
   readonly captured_at: string;
+  readonly metadata_json: string;
   readonly review_state: EvidenceReviewState;
   readonly reviewed_by: string | null;
   readonly last_reviewed_at: string | null;
-  readonly state: "active" | "revoked";
+  readonly state: CareerSourceState;
   readonly created_at: string;
   readonly updated_at: string;
 }
@@ -109,14 +112,15 @@ export class SqliteCareerEvidenceStore implements CareerEvidenceStore {
     assertSourceInput(input);
     const current = this.findSource(input.id, input.actorId, input.workspaceId);
     const now = this.now().toISOString();
+    const metadataJson = JSON.stringify(normalizeSourceMetadata(input.metadata));
 
     if (!current) {
       this.database.prepare(
         `INSERT INTO career_sources
           (id, actor_id, workspace_id, source_type, title, provenance_ref,
-           provenance_uri, source_hash, captured_at, review_state, state,
+           provenance_uri, source_hash, captured_at, metadata_json, review_state, state,
            created_at, updated_at)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'needs_review', 'active', ?, ?)`,
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'needs_review', 'active', ?, ?)`,
       ).run(
         input.id,
         input.actorId,
@@ -127,6 +131,7 @@ export class SqliteCareerEvidenceStore implements CareerEvidenceStore {
         input.provenanceUri,
         input.sourceHash,
         normalizeTimestamp(input.capturedAt, "capturedAt"),
+        metadataJson,
         now,
         now,
       );
@@ -138,14 +143,18 @@ export class SqliteCareerEvidenceStore implements CareerEvidenceStore {
       current.sourceType !== input.sourceType ||
       current.provenanceRef !== input.provenanceRef ||
       current.provenanceUri !== input.provenanceUri ||
-      current.capturedAt !== normalizeTimestamp(input.capturedAt, "capturedAt");
+      current.capturedAt !== normalizeTimestamp(input.capturedAt, "capturedAt") ||
+      JSON.stringify(current.metadata) !== metadataJson;
 
-    if (changed) {
+    if (changed || current.state === "missing") {
       this.database.prepare(
         `UPDATE career_sources
          SET source_type = ?, title = ?, provenance_ref = ?, provenance_uri = ?,
-             source_hash = ?, captured_at = ?, review_state = 'needs_review',
-             reviewed_by = NULL, last_reviewed_at = NULL, updated_at = ?
+             source_hash = ?, captured_at = ?, metadata_json = ?,
+             review_state = 'needs_review', reviewed_by = NULL,
+             last_reviewed_at = NULL,
+             state = CASE WHEN state = 'missing' THEN 'active' ELSE state END,
+             updated_at = ?
          WHERE id = ? AND actor_id = ? AND workspace_id = ?`,
       ).run(
         input.sourceType,
@@ -154,6 +163,7 @@ export class SqliteCareerEvidenceStore implements CareerEvidenceStore {
         input.provenanceUri,
         input.sourceHash,
         normalizeTimestamp(input.capturedAt, "capturedAt"),
+        metadataJson,
         now,
         input.id,
         input.actorId,
@@ -162,6 +172,83 @@ export class SqliteCareerEvidenceStore implements CareerEvidenceStore {
     }
 
     return this.requireSource(input.id, input.actorId, input.workspaceId);
+  }
+
+  markSourceMissing(id: string, scope: CareerEvidenceScope): CareerSource {
+    const source = this.requireSource(id, scope.actorId, scope.workspaceId);
+    if (source.state !== "active") return source;
+    this.database.prepare(
+      `UPDATE career_sources
+       SET state = 'missing', review_state = 'needs_review', reviewed_by = NULL,
+           last_reviewed_at = NULL, updated_at = ?
+       WHERE id = ? AND actor_id = ? AND workspace_id = ? AND state = 'active'`,
+    ).run(this.now().toISOString(), id, scope.actorId, scope.workspaceId);
+    return this.requireSource(id, scope.actorId, scope.workspaceId);
+  }
+
+  supersedeClaimsNotInSource(
+    sourceId: string,
+    activeLogicalKeys: readonly string[],
+    scope: CareerEvidenceScope,
+  ): number {
+    this.requireSource(sourceId, scope.actorId, scope.workspaceId);
+    const activeKeys = new Set(activeLogicalKeys);
+    const activeClaims = this.listClaims(scope).filter(
+      (claim) => claim.sourceId === sourceId && claim.state === "active",
+    );
+    const retire = this.database.prepare(
+      `UPDATE career_claims SET state = 'superseded', updated_at = ?
+       WHERE id = ? AND actor_id = ? AND workspace_id = ? AND state = 'active'`,
+    );
+    const now = this.now().toISOString();
+    let retired = 0;
+    const transaction = this.database.transaction(() => {
+      for (const claim of activeClaims) {
+        if (!activeKeys.has(claim.logicalKey)) {
+          retired += retire.run(
+            now,
+            claim.id,
+            scope.actorId,
+            scope.workspaceId,
+          ).changes;
+        }
+      }
+    });
+    transaction();
+    return retired;
+  }
+
+  revokeRelationshipsNotInSource(
+    sourceId: string,
+    activeRelationshipIds: readonly string[],
+    scope: CareerEvidenceScope,
+  ): number {
+    this.requireSource(sourceId, scope.actorId, scope.workspaceId);
+    const activeIds = new Set(activeRelationshipIds);
+    const relationships = this.listRelationships(scope).filter(
+      (relationship) =>
+        relationship.sourceId === sourceId && relationship.state === "active",
+    );
+    const revoke = this.database.prepare(
+      `UPDATE career_relationships SET state = 'revoked', updated_at = ?
+       WHERE id = ? AND actor_id = ? AND workspace_id = ? AND state = 'active'`,
+    );
+    const now = this.now().toISOString();
+    let revoked = 0;
+    const transaction = this.database.transaction(() => {
+      for (const relationship of relationships) {
+        if (!activeIds.has(relationship.id)) {
+          revoked += revoke.run(
+            now,
+            relationship.id,
+            scope.actorId,
+            scope.workspaceId,
+          ).changes;
+        }
+      }
+    });
+    transaction();
+    return revoked;
   }
 
   upsertDraftClaim(input: UpsertCareerClaimInput): CareerClaim {
@@ -525,17 +612,18 @@ export class SqliteCareerEvidenceStore implements CareerEvidenceStore {
         workspace_id TEXT NOT NULL,
         source_type TEXT NOT NULL CHECK(source_type IN (
           'resume', 'employer_history', 'recommendation', 'project', 'repository',
-          'release_artifact', 'portfolio_page', 'confirmed_fact'
+          'release_artifact', 'portfolio_page', 'confirmed_fact', 'career_note'
         )),
         title TEXT NOT NULL,
         provenance_ref TEXT,
         provenance_uri TEXT,
         source_hash TEXT NOT NULL,
         captured_at TEXT NOT NULL,
+        metadata_json TEXT NOT NULL DEFAULT '{}',
         review_state TEXT NOT NULL CHECK(review_state IN ('needs_review', 'approved', 'rejected')),
         reviewed_by TEXT,
         last_reviewed_at TEXT,
-        state TEXT NOT NULL CHECK(state IN ('active', 'revoked')),
+        state TEXT NOT NULL CHECK(state IN ('active', 'missing', 'revoked')),
         created_at TEXT NOT NULL,
         updated_at TEXT NOT NULL
       );
@@ -602,6 +690,78 @@ export class SqliteCareerEvidenceStore implements CareerEvidenceStore {
       CREATE INDEX IF NOT EXISTS career_relationships_scope
         ON career_relationships(actor_id, workspace_id, state, from_kind, from_id);
     `);
+    this.upgradeCareerSourceSchema();
+  }
+
+  private upgradeCareerSourceSchema(): void {
+    const columns = this.database.pragma("table_info(career_sources)") as Array<{
+      readonly name: string;
+    }>;
+    if (!columns.some((column) => column.name === "metadata_json")) {
+      this.database.exec(
+        "ALTER TABLE career_sources ADD COLUMN metadata_json TEXT NOT NULL DEFAULT '{}'",
+      );
+    }
+
+    const table = this.database.prepare(
+      "SELECT sql FROM sqlite_master WHERE type = 'table' AND name = 'career_sources'",
+    ).get() as { readonly sql: string } | undefined;
+    if (table?.sql.includes("'career_note'") && table.sql.includes("'missing'")) {
+      return;
+    }
+
+    this.database.pragma("foreign_keys = OFF");
+    this.database.pragma("legacy_alter_table = ON");
+    const rebuild = this.database.transaction(() => {
+      this.database.exec(`
+        DROP INDEX IF EXISTS career_sources_scope_review;
+        ALTER TABLE career_sources RENAME TO career_sources_legacy;
+        CREATE TABLE career_sources (
+          id TEXT PRIMARY KEY,
+          actor_id TEXT NOT NULL,
+          workspace_id TEXT NOT NULL,
+          source_type TEXT NOT NULL CHECK(source_type IN (
+            'resume', 'employer_history', 'recommendation', 'project', 'repository',
+            'release_artifact', 'portfolio_page', 'confirmed_fact', 'career_note'
+          )),
+          title TEXT NOT NULL,
+          provenance_ref TEXT,
+          provenance_uri TEXT,
+          source_hash TEXT NOT NULL,
+          captured_at TEXT NOT NULL,
+          metadata_json TEXT NOT NULL DEFAULT '{}',
+          review_state TEXT NOT NULL CHECK(review_state IN ('needs_review', 'approved', 'rejected')),
+          reviewed_by TEXT,
+          last_reviewed_at TEXT,
+          state TEXT NOT NULL CHECK(state IN ('active', 'missing', 'revoked')),
+          created_at TEXT NOT NULL,
+          updated_at TEXT NOT NULL
+        );
+        INSERT INTO career_sources
+          (id, actor_id, workspace_id, source_type, title, provenance_ref,
+           provenance_uri, source_hash, captured_at, metadata_json, review_state,
+           reviewed_by, last_reviewed_at, state, created_at, updated_at)
+        SELECT id, actor_id, workspace_id, source_type, title, provenance_ref,
+          provenance_uri, source_hash, captured_at, metadata_json, review_state,
+          reviewed_by, last_reviewed_at, state, created_at, updated_at
+        FROM career_sources_legacy;
+        DROP TABLE career_sources_legacy;
+        CREATE INDEX career_sources_scope_review
+          ON career_sources(actor_id, workspace_id, state, review_state, updated_at DESC);
+      `);
+    });
+    try {
+      rebuild();
+    } finally {
+      this.database.pragma("legacy_alter_table = OFF");
+      this.database.pragma("foreign_keys = ON");
+    }
+    const violations = this.database.pragma("foreign_key_check") as unknown[];
+    if (violations.length > 0) {
+      throw new CareerEvidenceConflictError(
+        "Career source schema migration left invalid evidence references.",
+      );
+    }
   }
 }
 
@@ -616,6 +776,7 @@ function mapSource(row: SourceRow): CareerSource {
     provenanceUri: row.provenance_uri,
     sourceHash: row.source_hash,
     capturedAt: row.captured_at,
+    metadata: parseSourceMetadata(row.metadata_json),
     reviewState: row.review_state,
     reviewedBy: row.reviewed_by,
     lastReviewedAt: row.last_reviewed_at,
@@ -722,6 +883,45 @@ function normalizeTimestamp(value: string, field: string): string {
   const parsed = new Date(value);
   if (Number.isNaN(parsed.getTime())) throw new RangeError(`${field} must be an ISO timestamp.`);
   return parsed.toISOString();
+}
+
+function normalizeSourceMetadata(
+  metadata: Partial<CareerSourceMetadata> | undefined,
+): CareerSourceMetadata {
+  return {
+    relativePath: metadata?.relativePath?.trim() || null,
+    tags: normalizeStringList(metadata?.tags),
+    aliases: normalizeStringList(metadata?.aliases),
+    wikiLinks: normalizeStringList(metadata?.wikiLinks),
+    markdownLinks: normalizeStringList(metadata?.markdownLinks),
+    headings: (metadata?.headings ?? [])
+      .filter((heading) =>
+        Number.isInteger(heading.level) &&
+        heading.level >= 1 &&
+        heading.level <= 6 &&
+        heading.text.trim().length > 0
+      )
+      .map((heading) => ({ level: heading.level, text: heading.text.trim() })),
+    frontmatterKeys: normalizeStringList(metadata?.frontmatterKeys),
+    documentDate: metadata?.documentDate?.trim() || null,
+  };
+}
+
+function parseSourceMetadata(serialized: string): CareerSourceMetadata {
+  try {
+    const value = JSON.parse(serialized) as Partial<CareerSourceMetadata>;
+    return normalizeSourceMetadata(value);
+  } catch {
+    throw new CareerEvidenceConflictError(
+      "Career source metadata is not valid JSON.",
+    );
+  }
+}
+
+function normalizeStringList(values: readonly string[] | undefined): readonly string[] {
+  return Array.from(
+    new Set((values ?? []).map((value) => value.trim()).filter(Boolean)),
+  ).sort((left, right) => left.localeCompare(right));
 }
 
 function requireText(value: string, field: string): string {

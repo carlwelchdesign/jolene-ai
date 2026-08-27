@@ -27,14 +27,16 @@ The first runnable slice provides:
   state alerts;
 - a private governed career-evidence registry with source provenance, project
   maturity, explicit relationships, review freshness, and claim supersession;
+- bounded Obsidian career ingestion that preserves structured note metadata,
+  imports section claims as private review candidates, and records deletions;
 - contract tests that do not call OpenAI.
 
 The Slack adapter is active for a local pilot, with live mention-and-reply behavior verified. Scheduled work, specialist agents, client-AI workflows, always-on hosting, and voice remain later gates.
 
-The current Obsidian bridge uses deterministic lexical retrieval. The career
-registry and portfolio-candidate migration are implemented, but embedding RAG,
-MCP interoperability, the versioned public export, and the public portfolio
-delegate are not. See the
+The conversational Obsidian bridge still uses deterministic lexical retrieval.
+The career registry, portfolio migration, and bounded Obsidian career ingestion
+are implemented, but embedding RAG, MCP interoperability, the versioned public
+export, and the public portfolio delegate are not. See the
 [professional context architecture](plans/JOLENE_PROFESSIONAL_CONTEXT_ARCHITECTURE.md).
 
 ## Setup
@@ -158,6 +160,8 @@ Carl's configured Slack member ID is the only DM identity permitted to use priva
   listings, and has no scheduled polling in this slice.
 - Portfolio imports create review-required candidates only; import cannot
   create publicly approved evidence.
+- Obsidian career imports use a separate explicit folder allowlist and create
+  private review-required claims only.
 - Public career queries exclude stale, revoked, superseded, unapproved, and
   publicly uncitable evidence by construction.
 

@@ -18,6 +18,7 @@ const envSchema = z.object({
     .default(".jolene/jolene.sqlite"),
   JOLENE_OBSIDIAN_VAULT_ROOT: z.string().trim().optional(),
   JOLENE_OBSIDIAN_ALLOWLIST: z.string().default(""),
+  JOLENE_CAREER_OBSIDIAN_ALLOWLIST: z.string().default(""),
   JOLENE_MAX_HISTORY_TURNS: z.coerce.number().int().min(2).max(100).default(16),
   JOLENE_MAX_MEMORY_ITEMS: z.coerce.number().int().min(1).max(100).default(24),
   JOLENE_WATCHED_PROJECTS: z.string().optional(),
@@ -33,6 +34,7 @@ export interface AppConfig {
   readonly databasePath: string;
   readonly vaultRoot: string | undefined;
   readonly vaultAllowlist: readonly string[];
+  readonly careerVaultAllowlist: readonly string[];
   readonly maxHistoryTurns: number;
   readonly maxMemoryItems: number;
   readonly watchedProjects: readonly WatchedProjectDefinition[];
@@ -56,6 +58,9 @@ export function loadConfig(): AppConfig {
     databasePath: path.resolve(process.cwd(), env.JOLENE_DATABASE_PATH),
     vaultRoot: emptyToUndefined(env.JOLENE_OBSIDIAN_VAULT_ROOT),
     vaultAllowlist: env.JOLENE_OBSIDIAN_ALLOWLIST.split(",")
+      .map((value) => value.trim())
+      .filter(Boolean),
+    careerVaultAllowlist: env.JOLENE_CAREER_OBSIDIAN_ALLOWLIST.split(",")
       .map((value) => value.trim())
       .filter(Boolean),
     maxHistoryTurns: env.JOLENE_MAX_HISTORY_TURNS,
