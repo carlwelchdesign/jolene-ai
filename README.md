@@ -14,6 +14,9 @@ The first runnable slice provides:
 - read-only, allowlisted Obsidian Markdown search with citations;
 - a durable, content-minimizing ledger for private knowledge searches and citations;
 - a typed proposal-only capability registry with exact, expiring external-action approvals;
+- durable review-only client-AI task packets for the exact Jenny and Maria
+  project identities, with bounded context, expiry, turn limits, append-only
+  transcripts, exact-action approval per Jolene turn, and reviewed handoff;
 - a CLI and an HTTP API with `/health` and `/v1/chat`;
 - a Slack Socket Mode adapter for owner-only DMs and explicit channel mentions;
 - a durable Slack delivery ledger that retries failed posts without another model call;
@@ -72,7 +75,7 @@ The first runnable slice provides:
   requests and save inert local reply drafts without sending anything;
 - contract tests that make no live OpenAI requests.
 
-The Slack adapter is active for a local pilot, with live mention-and-reply behavior verified. One bounded private-owner briefing schedule and Project Watch monitoring are implemented locally. General scheduled work, specialist agents, client-AI workflows, always-on hosting, and voice remain later gates.
+The Slack adapter is active for a local pilot, with live mention-and-reply behavior verified. One bounded private-owner briefing schedule and Project Watch monitoring are implemented locally. The client-AI packet lifecycle is implemented as a private review-only core, but no client transport or autonomous exchange is active. General scheduled work, specialist agents, always-on hosting, and voice remain later gates.
 
 The conversational Obsidian bridge still uses deterministic lexical retrieval.
 The governed career registry now has a separate private hybrid retrieval path,
@@ -180,6 +183,9 @@ Prerequisite: Node.js 22 or newer.
    Task and memory-management endpoints are documented in [Task and memory API](docs/task-memory-api.md).
    The six reviewable work types and their lifecycle are documented in
    [Personal work workflows](docs/personal-workflows.md).
+
+   The private review-only Jenny/Maria coordination lifecycle and its local API
+   are documented in [Client-AI task packets](docs/client-ai-task-packets.md).
 
    Read-only project awareness is documented in
    [Watched projects](docs/watched-projects.md). It is on-demand only; no
