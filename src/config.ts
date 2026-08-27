@@ -32,6 +32,10 @@ const envSchema = z.object({
     .default(".jolene/personality/research-decision.json"),
   JOLENE_PERSONALITY_TUNING_DECISION_PATH: z.string().trim().min(1)
     .default(".jolene/personality/tuning-decision.json"),
+  JOLENE_CONVERSATION_QUALITY_PACKET_PATH: z.string().trim().min(1)
+    .default(".jolene/evaluations/conversation-quality-capture.json"),
+  JOLENE_CONVERSATION_QUALITY_DECISION_PATH: z.string().trim().min(1)
+    .default(".jolene/evaluations/conversation-quality-decision.json"),
   JOLENE_OBSIDIAN_VAULT_ROOT: z.string().trim().optional(),
   JOLENE_OBSIDIAN_ALLOWLIST: z.string().default(""),
   JOLENE_CAREER_OBSIDIAN_ALLOWLIST: z.string().default(""),
@@ -64,6 +68,8 @@ export interface AppConfig {
   readonly publicLiveReviewDecisionPath: string;
   readonly personalityResearchDecisionPath: string;
   readonly personalityTuningDecisionPath: string;
+  readonly conversationQualityPacketPath: string;
+  readonly conversationQualityDecisionPath: string;
   readonly vaultRoot: string | undefined;
   readonly vaultAllowlist: readonly string[];
   readonly careerVaultAllowlist: readonly string[];
@@ -144,6 +150,14 @@ export function parseConfig(
     personalityTuningDecisionPath: path.resolve(
       workingDirectory,
       env.JOLENE_PERSONALITY_TUNING_DECISION_PATH,
+    ),
+    conversationQualityPacketPath: path.resolve(
+      workingDirectory,
+      env.JOLENE_CONVERSATION_QUALITY_PACKET_PATH,
+    ),
+    conversationQualityDecisionPath: path.resolve(
+      workingDirectory,
+      env.JOLENE_CONVERSATION_QUALITY_DECISION_PATH,
     ),
     vaultRoot: emptyToUndefined(env.JOLENE_OBSIDIAN_VAULT_ROOT),
     vaultAllowlist: env.JOLENE_OBSIDIAN_ALLOWLIST.split(",")

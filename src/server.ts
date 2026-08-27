@@ -16,6 +16,12 @@ import {
   PublicLiveModelReviewUnavailableError,
 } from "./application/public-live-model-review-service.js";
 import {
+  ConversationalQualityReviewConflictError,
+  ConversationalQualityReviewIncompleteError,
+  ConversationalQualityReviewScopeError,
+  ConversationalQualityReviewUnavailableError,
+} from "./application/conversational-quality-review-service.js";
+import {
   PersonalityResearchReviewConflictError,
   PersonalityResearchReviewScopeError,
 } from "./application/personality-research-review-service.js";
@@ -170,6 +176,11 @@ async function handleRequest(
     return;
   }
 
+  if (request.method === "GET" && url.pathname === "/conversation-evaluation") {
+    sendAsset(response, memoryReviewAssets.conversationEvaluationHtml);
+    return;
+  }
+
   if (request.method === "GET" && url.pathname === "/client-ai") {
     sendAsset(response, memoryReviewAssets.clientAiHtml);
     return;
@@ -207,6 +218,16 @@ async function handleRequest(
 
   if (request.method === "GET" && url.pathname === "/public-evaluation-review.js") {
     sendAsset(response, memoryReviewAssets.publicEvaluationJavascript);
+    return;
+  }
+
+  if (request.method === "GET" && url.pathname === "/conversation-evaluation-review.css") {
+    sendAsset(response, memoryReviewAssets.conversationEvaluationCss);
+    return;
+  }
+
+  if (request.method === "GET" && url.pathname === "/conversation-evaluation-review.js") {
+    sendAsset(response, memoryReviewAssets.conversationEvaluationJavascript);
     return;
   }
 
@@ -684,6 +705,26 @@ async function handleRequest(
     return;
   }
 
+  if (request.method === "GET" && url.pathname === "/v1/conversation-quality-review/scope") {
+    sendJson(response, 200, application.conversationalQualityReview.scope());
+    return;
+  }
+
+  if (request.method === "GET" && url.pathname === "/v1/conversation-quality-review") {
+    sendJson(response, 200, await application.conversationalQualityReview.get(scopeFrom(url)));
+    return;
+  }
+
+  if (request.method === "POST" && url.pathname === "/v1/conversation-quality-review/decision") {
+    assertSameOrigin(request.headers);
+    sendJson(
+      response,
+      200,
+      await application.conversationalQualityReview.submit(await readJson(request)),
+    );
+    return;
+  }
+
   if (request.method === "GET" && url.pathname === "/v1/personality-research-review/scope") {
     sendJson(response, 200, application.personalityResearchReview.scope());
     return;
@@ -1020,6 +1061,11 @@ function handleError(error: unknown, response: ServerResponse): void {
     return;
   }
 
+  if (error instanceof ConversationalQualityReviewScopeError) {
+    sendJson(response, 403, { error: "conversation_quality_scope_not_permitted" });
+    return;
+  }
+
   if (
     error instanceof PersonalityResearchReviewScopeError ||
     error instanceof PersonalityTuningReviewScopeError
@@ -1033,11 +1079,24 @@ function handleError(error: unknown, response: ServerResponse): void {
     return;
   }
 
+  if (error instanceof ConversationalQualityReviewUnavailableError) {
+    sendJson(response, 503, { error: "conversation_quality_review_unavailable" });
+    return;
+  }
+
   if (
     error instanceof PublicLiveModelReviewConflictError ||
     error instanceof PublicLiveModelReviewIncompleteError
   ) {
     sendJson(response, 409, { error: "public_live_review_conflict" });
+    return;
+  }
+
+  if (
+    error instanceof ConversationalQualityReviewConflictError ||
+    error instanceof ConversationalQualityReviewIncompleteError
+  ) {
+    sendJson(response, 409, { error: "conversation_quality_review_conflict" });
     return;
   }
 

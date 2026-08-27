@@ -76,6 +76,7 @@ export const conversationalQualityReviewSchema = z.object({
     originality: scoreSchema,
   }).strict(),
   reviewerHardFailures: z.array(conversationHardFailureSchema),
+  notes: z.string().trim().max(2_000).optional(),
 }).strict();
 
 export type ConversationalQualitySuite = z.infer<typeof conversationalQualitySuiteSchema>;

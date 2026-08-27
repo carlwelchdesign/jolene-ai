@@ -24,11 +24,10 @@ Validate the immutable scenario contract without making a model request:
 npm run eval:conversation:validate
 ```
 
-This checkpoint implements the fixture, schemas, deterministic gate, and
-regression tests. It does not claim that a live model has passed. Capturing
-private and public responses, performing the human review, and approving a
-specific personality/model version remain separate gates. No deployment is
-required to validate the suite.
+This checkpoint implements the fixture, schemas, deterministic gate, capture,
+and owner-only human review. Automated preflight has passed for the current
+live capture, but Carl's seven-dimension scoring and explicit decision remain
+separate gates. No deployment is required to review or validate the suite.
 
 With an approved existing local API key, capture all public and private cases
 into an owner-only packet using an isolated temporary SQLite database:
@@ -51,3 +50,12 @@ full-suite rerun:
 npm run eval:conversation:capture -- --live --include-private \
   --case conversation:continuity
 ```
+
+Open `http://127.0.0.1:8421/conversation-evaluation` in the local control
+center to inspect exact answers, citations, follow-ups, and expected behaviors.
+Every case requires 0–4 scores for task success, evidence transparency, warmth
+and kindness, wit and restraint, agency boundaries, situational calibration,
+and originality. Carl may also mark any blocking hard failure. The decision is
+written mode `0600`, bound to the packet SHA-256, and becomes stale whenever
+the capture changes. This page cannot call the model, publish, deploy, contact
+anyone, or activate the personality.

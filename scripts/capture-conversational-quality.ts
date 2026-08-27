@@ -224,6 +224,8 @@ function isolatedConfig(config: AppConfig, directory: string): AppConfig {
     publicLiveReviewDecisionPath: path.join(directory, "public-live-decision.json"),
     personalityResearchDecisionPath: path.join(directory, "research-decision.json"),
     personalityTuningDecisionPath: path.join(directory, "tuning-decision.json"),
+    conversationQualityPacketPath: path.join(directory, "conversation-capture.json"),
+    conversationQualityDecisionPath: path.join(directory, "conversation-decision.json"),
     watchedProjects: [],
   };
 }

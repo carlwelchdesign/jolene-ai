@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light">
+    <title>Jolene Conversation Quality Review</title>
+    <link rel="stylesheet" href="/memory-review.css">
+    <link rel="stylesheet" href="/conversation-evaluation-review.css">
+    <script type="module" src="/conversation-evaluation-review.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to conversation review</a>
+    <header class="topbar">
+      <a class="brand" href="/conversation-evaluation" aria-label="Jolene Conversation Quality Review home">
+        <span class="brand-mark" aria-hidden="true">J</span>
+        <span><strong>Jolene</strong><small>Control Center</small></span>
+      </a>
+      <div class="header-tools">
+        <nav class="product-nav" aria-label="Jolene control center">
+          <a href="/workflows">Work</a><a href="/projects">Projects</a><a href="/career-evidence">Evidence</a>
+          <a href="/public-evaluation">Evaluation</a><a href="/conversation-evaluation" aria-current="page">Quality</a>
+          <a href="/personality-review">Personality</a><a href="/contacts">Contacts</a><a href="/memory">Memory</a>
+          <a href="/approvals">Approvals</a><a href="/client-ai">Client AI</a>
+        </nav>
+        <div class="review-scope-chip" id="scope-chip"><span aria-hidden="true">●</span> Loading owner scope</div>
+      </div>
+    </header>
+    <main id="main">
+      <section class="hero quality-hero" aria-labelledby="page-title">
+        <p class="eyebrow">Human conversation gate</p>
+        <h1 id="page-title">Decide whether Jolene sounds alive, useful, and trustworthy.</h1>
+        <p class="hero-copy">Score the exact private capture across substance, evidence, warmth, wit, boundaries, calibration, and originality. Nothing here is auto-approved.</p>
+        <div class="hero-actions"><button class="button button-primary" id="refresh-button" type="button">Refresh capture</button><span class="local-note"><span aria-hidden="true">●</span> Local owner control</span></div>
+      </section>
+      <aside class="review-boundary" aria-label="Conversation review action boundary">
+        <span class="review-boundary-icon" aria-hidden="true">✓</span>
+        <div><strong>Private review, not deployment approval.</strong><p>This page may display private material from the owner-only capture. It cannot call a model, deploy, publish, contact anyone, or change the public portfolio.</p></div>
+      </aside>
+      <div class="notice" id="page-notice" role="status" aria-live="polite" hidden></div>
+      <section class="quality-summary" aria-label="Capture summary">
+        <article><span>Capture</span><strong id="summary-packet">—</strong></article>
+        <article><span>Cases</span><strong id="summary-cases">—</strong></article>
+        <article><span>Automated preflight</span><strong id="summary-preflight">—</strong></article>
+        <article><span>Human review</span><strong id="summary-review">—</strong></article>
+      </section>
+      <section class="panel packet-panel" aria-labelledby="packet-title">
+        <div class="section-heading packet-heading"><div><p class="eyebrow">Exact captured answers</p><h2 id="packet-title">Conversation suite</h2></div><dl class="packet-meta" id="packet-meta"></dl></div>
+        <div id="packet-state" aria-live="polite" aria-busy="true"><div class="loading-state">Loading the private capture packet…</div></div>
+      </section>
+      <section class="panel decision-panel" id="decision-panel" aria-labelledby="decision-title" hidden>
+        <div class="section-heading"><div><p class="eyebrow">Explicit human scoring</p><h2 id="decision-title">Record this capture’s decision</h2></div></div>
+        <p class="decision-copy">A 0 is unacceptable; 4 is excellent. Every case and dimension is required. Any hard failure blocks approval.</p>
+        <form id="review-form"><div id="case-reviews"></div>
+          <div class="overall-decision"><label class="field" for="overall-decision"><span>Overall decision</span><select id="overall-decision" required><option value="">Choose after scoring every case</option><option value="approved">Approved</option><option value="needs_changes">Needs changes</option><option value="rejected">Rejected</option></select></label><p id="decision-guidance">Approval is accepted only when the calculated quality gate passes.</p></div>
+          <div class="inline-error" id="review-error" role="alert" hidden></div>
+          <div class="review-actions"><button class="button button-primary" id="review-submit" type="submit" disabled>Save human review</button><span>Saved locally and bound to the exact capture hash.</span></div>
+        </form>
+      </section>
+    </main>
+    <div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true" hidden></div>
+  </body>
+</html>
