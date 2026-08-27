@@ -70,6 +70,10 @@ const publicEnvSchema = z.object({
     .default(".jolene/public/model-budget.json"),
   JOLENE_PUBLIC_OPENAI_REQUESTS_PER_DAY: z.coerce.number().int().min(1)
     .max(10_000).default(100),
+  JOLENE_PUBLIC_RETRIEVAL_MODE: z.enum(["deterministic", "hybrid"])
+    .default("deterministic"),
+  JOLENE_PUBLIC_OPENAI_EMBEDDING_MODEL: z.string().trim().min(1)
+    .default("text-embedding-3-small"),
   OPENAI_API_KEY: z.preprocess(
     (value) => typeof value === "string" && value.trim() === ""
       ? undefined
@@ -109,6 +113,16 @@ const publicEnvSchema = z.object({
       code: "custom",
       path: ["OPENAI_API_KEY"],
       message: "OPENAI_API_KEY is required when public answer mode is openai.",
+    });
+  }
+  if (
+    environment.JOLENE_PUBLIC_RETRIEVAL_MODE === "hybrid" &&
+    environment.JOLENE_PUBLIC_ANSWER_MODE !== "openai"
+  ) {
+    context.addIssue({
+      code: "custom",
+      path: ["JOLENE_PUBLIC_RETRIEVAL_MODE"],
+      message: "Hybrid public retrieval requires OpenAI answer mode.",
     });
   }
   if (
@@ -160,6 +174,8 @@ export interface PublicDelegateConfig {
   readonly openaiTimeoutMilliseconds: number;
   readonly openaiBudgetPath: string;
   readonly openaiRequestsPerDay: number;
+  readonly retrievalMode: "deterministic" | "hybrid";
+  readonly openaiEmbeddingModel: string;
   readonly openaiApiKey: string | undefined;
 }
 
@@ -216,6 +232,8 @@ export function parsePublicDelegateConfig(
       parsed.JOLENE_PUBLIC_OPENAI_BUDGET_PATH,
     ),
     openaiRequestsPerDay: parsed.JOLENE_PUBLIC_OPENAI_REQUESTS_PER_DAY,
+    retrievalMode: parsed.JOLENE_PUBLIC_RETRIEVAL_MODE,
+    openaiEmbeddingModel: parsed.JOLENE_PUBLIC_OPENAI_EMBEDDING_MODEL,
     openaiApiKey: parsed.OPENAI_API_KEY,
   };
 }

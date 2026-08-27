@@ -48,7 +48,11 @@ describe("DeterministicPublicAnswerService", () => {
     );
   });
 
-  it("answers a broad hiring-value question with representative reviewed evidence", () => {
+  it.each([
+    "Why should I hire Carl?",
+    "Why shouldn't I hire Carl?",
+    "Why should I not hire Carl?",
+  ])("answers a broad hiring-decision question with representative reviewed evidence: %s", (question) => {
     const artifact = createPublicEvidenceArtifact([
       createPublicEvidenceRecord(1, {
         text: "Carl led frontend delivery and mentored engineers across product work.",
@@ -69,7 +73,7 @@ describe("DeterministicPublicAnswerService", () => {
     ]);
 
     const result = service.answer(artifact, {
-      question: "Why should I hire Carl?",
+      question,
     });
 
     expect(result.claims.length).toBeGreaterThan(0);

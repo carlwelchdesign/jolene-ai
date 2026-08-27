@@ -16,6 +16,10 @@ import {
 } from "./public-delegate-server.js";
 import { DeterministicPublicJobFitService } from "./public-job-fit-service.js";
 import { OpenAIPublicAnswerGenerator } from "./openai-public-answer-generator.js";
+import { OpenAIPublicEmbeddingProvider } from
+  "./openai-public-embedding-provider.js";
+import { HybridPublicEvidenceRetriever } from
+  "./public-hybrid-evidence-retriever.js";
 import { InMemoryPublicModelRequestBudget } from
   "./public-model-request-budget.js";
 import { FixedWindowPublicRequestAdmission } from "./public-request-admission.js";
@@ -41,6 +45,10 @@ const vercelPublicEnvironmentSchema = z.object({
     .max(30_000).default(12_000),
   JOLENE_PUBLIC_OPENAI_REQUESTS_PER_DAY: z.coerce.number().int().min(1)
     .max(10_000).default(500),
+  JOLENE_PUBLIC_RETRIEVAL_MODE: z.enum(["deterministic", "hybrid"])
+    .default("deterministic"),
+  JOLENE_PUBLIC_OPENAI_EMBEDDING_MODEL: z.string().trim().min(1)
+    .default("text-embedding-3-small"),
   OPENAI_API_KEY: z.preprocess(
     (value) => typeof value === "string" && value.trim() === ""
       ? undefined
@@ -56,6 +64,16 @@ const vercelPublicEnvironmentSchema = z.object({
       code: "custom",
       path: ["OPENAI_API_KEY"],
       message: "OPENAI_API_KEY is required when public answer mode is openai.",
+    });
+  }
+  if (
+    environment.JOLENE_PUBLIC_RETRIEVAL_MODE === "hybrid" &&
+    environment.JOLENE_PUBLIC_ANSWER_MODE !== "openai"
+  ) {
+    context.addIssue({
+      code: "custom",
+      path: ["JOLENE_PUBLIC_RETRIEVAL_MODE"],
+      message: "Hybrid public retrieval requires OpenAI answer mode.",
     });
   }
 });
@@ -104,6 +122,16 @@ function createAnswerService(
       maxRequestsPerWindow: config.JOLENE_PUBLIC_OPENAI_REQUESTS_PER_DAY,
       windowMilliseconds: 24 * 60 * 60 * 1_000,
     }),
+    ...(config.JOLENE_PUBLIC_RETRIEVAL_MODE === "hybrid"
+      ? {
+        retriever: new HybridPublicEvidenceRetriever(
+          new OpenAIPublicEmbeddingProvider(
+            config.JOLENE_PUBLIC_OPENAI_EMBEDDING_MODEL,
+            requireOpenAIApiKey(config.OPENAI_API_KEY),
+          ),
+        ),
+      }
+      : {}),
   });
 }
 

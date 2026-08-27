@@ -97,6 +97,8 @@ describe("public delegate manifest boundary", () => {
       openaiTimeoutMilliseconds: 8_000,
       openaiBudgetPath: path.resolve(".jolene/public/model-budget.json"),
       openaiRequestsPerDay: 100,
+      retrievalMode: "deterministic",
+      openaiEmbeddingModel: "text-embedding-3-small",
       openaiApiKey: undefined,
     });
   });
@@ -121,6 +123,21 @@ describe("public delegate manifest boundary", () => {
       openaiModel: "test-model",
       openaiTimeoutMilliseconds: 2_500,
       openaiApiKey: "test-key-not-real",
+    });
+  });
+
+  it("requires OpenAI answer mode for hybrid public retrieval", () => {
+    expect(() => parsePublicDelegateConfig({
+      JOLENE_PUBLIC_RETRIEVAL_MODE: "hybrid",
+    })).toThrow();
+    expect(parsePublicDelegateConfig({
+      JOLENE_PUBLIC_ANSWER_MODE: "openai",
+      JOLENE_PUBLIC_RETRIEVAL_MODE: "hybrid",
+      OPENAI_API_KEY: "test-key-not-real",
+    })).toMatchObject({
+      answerMode: "openai",
+      retrievalMode: "hybrid",
+      openaiEmbeddingModel: "text-embedding-3-small",
     });
   });
 

@@ -39,6 +39,13 @@ export interface PublicAnswerTextGenerator {
   generate(input: GroundedPublicAnswerInput): Promise<string>;
 }
 
+export interface PublicEvidenceRetriever {
+  retrieve(
+    artifact: PublicCareerEvidenceArtifact,
+    request: PortfolioAnswerRequest,
+  ): Promise<readonly PublicCareerEvidenceRecord[]>;
+}
+
 export class DeterministicPublicAnswerService
   implements PublicPortfolioAnswerer
 {
@@ -53,13 +60,26 @@ export class DeterministicPublicAnswerService
     artifact: PublicCareerEvidenceArtifact,
     request: PortfolioAnswerRequest,
   ): PortfolioAnswerResponse {
-    const hiringValueQuestion = isHiringValueQuestion(request.question);
-    const queryTerms = tokenizeLexicalTerms(request.question).filter(
-      (term) => !PUBLIC_QUERY_STOP_WORDS.has(term),
+    return this.answerFromSelected(
+      artifact,
+      request,
+      selectDeterministicPublicEvidence(artifact, request),
     );
-    const selected = hiringValueQuestion
-      ? selectHiringValueEvidence(artifact.evidence)
-      : selectLexicalEvidence(artifact.evidence, queryTerms);
+  }
+
+  answerFromSelected(
+    artifact: PublicCareerEvidenceArtifact,
+    request: PortfolioAnswerRequest,
+    selectedEvidence: readonly PublicCareerEvidenceRecord[],
+  ): PortfolioAnswerResponse {
+    const hiringValueQuestion = isHiringValueQuestion(request.question);
+    const activeEvidence = new Map(
+      artifact.evidence.map((record) => [record.evidenceId, record]),
+    );
+    const selected = uniqueRecords(selectedEvidence
+      .map((record) => activeEvidence.get(record.evidenceId))
+      .filter((record): record is PublicCareerEvidenceRecord => Boolean(record)))
+      .slice(0, PUBLIC_PORTFOLIO_ANSWER_LIMITS.responseItems);
     const conflict = artifact.conflicts.find((candidate) =>
       candidate.evidenceIds.some((evidenceId) =>
         selected.some((record) => record.evidenceId === evidenceId)
@@ -79,23 +99,37 @@ const generatedAnswerSchema = z.string().trim().min(1).max(2_000);
 export class GroundedPublicAnswerService implements PublicPortfolioAnswerer {
   readonly #baseline: DeterministicPublicAnswerService;
   readonly #budget: PublicModelRequestBudget | undefined;
+  readonly #retriever: PublicEvidenceRetriever | undefined;
 
   constructor(
     private readonly generator: PublicAnswerTextGenerator,
     options: {
       readonly baseline?: DeterministicPublicAnswerService;
       readonly budget?: PublicModelRequestBudget;
+      readonly retriever?: PublicEvidenceRetriever;
     } = {},
   ) {
     this.#baseline = options.baseline ?? new DeterministicPublicAnswerService();
     this.#budget = options.budget;
+    this.#retriever = options.retriever;
   }
 
   async execute(
     artifact: PublicCareerEvidenceArtifact,
     request: PortfolioAnswerRequest,
   ): Promise<PublicAnswerExecution> {
-    const baseline = this.#baseline.answer(artifact, request);
+    let baseline = this.#baseline.answer(artifact, request);
+    if (this.#retriever) {
+      try {
+        baseline = this.#baseline.answerFromSelected(
+          artifact,
+          request,
+          await this.#retriever.retrieve(artifact, request),
+        );
+      } catch {
+        // Retrieval failure preserves the deterministic public-safe baseline.
+      }
+    }
     if (baseline.claims.length === 0) {
       return { response: baseline, mode: "deterministic" };
     }
@@ -128,6 +162,19 @@ export class GroundedPublicAnswerService implements PublicPortfolioAnswerer {
       return { response: baseline, mode: "fallback" };
     }
   }
+}
+
+export function selectDeterministicPublicEvidence(
+  artifact: PublicCareerEvidenceArtifact,
+  request: PortfolioAnswerRequest,
+): PublicCareerEvidenceRecord[] {
+  if (isHiringValueQuestion(request.question)) {
+    return selectHiringValueEvidence(artifact.evidence);
+  }
+  const queryTerms = tokenizeLexicalTerms(request.question).filter(
+    (term) => !PUBLIC_QUERY_STOP_WORDS.has(term),
+  );
+  return selectLexicalEvidence(artifact.evidence, queryTerms);
 }
 
 const PUBLIC_QUERY_STOP_WORDS = new Set([
@@ -288,6 +335,8 @@ function isHiringValueQuestion(question: string): boolean {
 
 const HIRING_VALUE_PATTERNS = [
   /\bwhy\s+(?:should|would)\s+(?:i|we|someone|a company)\s+hire\b/u,
+  /\bwhy\s+(?:should(?:n['’]t|\s+not)|would(?:n['’]t|\s+not))\s+(?:i|we|someone|a company)\s+hire\b/u,
+  /\bwhy\s+(?:should|would)\s+(?:i|we|someone|a company)\s+not\s+hire\b/u,
   /\bwhy\s+hire\b/u,
   /\bwhat\s+makes\s+carl\s+(?:a\s+)?(?:strong|good|qualified|valuable)\s+(?:candidate|hire)\b/u,
   /\b(?:reasons?|case)\s+(?:to|for)\s+hire\b/u,
@@ -364,6 +413,17 @@ function conflictResponse(
 
 function unique(values: readonly string[]): string[] {
   return [...new Set(values)];
+}
+
+function uniqueRecords(
+  values: readonly PublicCareerEvidenceRecord[],
+): PublicCareerEvidenceRecord[] {
+  const seen = new Set<string>();
+  return values.filter((record) => {
+    if (seen.has(record.evidenceId)) return false;
+    seen.add(record.evidenceId);
+    return true;
+  });
 }
 
 function boundedSupportedAnswer(

@@ -61,6 +61,30 @@ describe("grounded public answer service", () => {
     expect(reserve).not.toHaveBeenCalled();
   });
 
+  it("uses retrieved public evidence before model synthesis", async () => {
+    const artifact = createPublicEvidenceArtifact();
+    const selected = artifact.evidence[1]!;
+    const generate = vi.fn(async () => "A semantically grounded answer.");
+    const retrieve = vi.fn(async () => [selected]);
+    const execution = await new GroundedPublicAnswerService(
+      { generate },
+      { retriever: { retrieve } },
+    ).execute(artifact, { question: "What work involves moving objects?" });
+
+    expect(execution.mode).toBe("model");
+    expect(execution.response.answer).toBe("A semantically grounded answer.");
+    expect(execution.response.claims).toEqual([selected.claim]);
+    expect(execution.response.citations).toEqual([selected.citation]);
+    expect(generate).toHaveBeenCalledWith({
+      question: "What work involves moving objects?",
+      evidence: [{
+        claimText: selected.claim.text,
+        limitations: selected.claim.limitations,
+        citationTitle: selected.citation.title,
+      }],
+    });
+  });
+
   it.each([
     ["exhausted", async () => false],
     ["unavailable", async () => { throw new Error("unavailable"); }],

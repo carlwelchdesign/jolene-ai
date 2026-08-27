@@ -46,6 +46,12 @@ describe("OpenAI public answer generator", () => {
     expect(request.instructions).toEqual(expect.stringContaining(
       "Synthesize the evidence",
     ));
+    expect(request.instructions).toEqual(expect.stringContaining(
+      "do not reflexively turn them into praise",
+    ));
+    expect(request.instructions).toEqual(expect.stringContaining(
+      "not evidence that weaknesses do not exist",
+    ));
     expect(request.instructions).toEqual(expect.not.stringContaining(
       "Dolly Parton",
     ));
