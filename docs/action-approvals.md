@@ -51,6 +51,10 @@ List the registry:
 
 `GET /v1/capabilities`
 
+The registry also includes Jolene's current private read-only model tools. See
+[Private capability registry](capability-registry.md). External messaging
+remains proposal-only and has no model tool.
+
 Create a proposal:
 
 `POST /v1/action-proposals`

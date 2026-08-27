@@ -452,6 +452,14 @@ The contextual-ranking slice applies a deterministic lexical scorer after author
 
 The knowledge-access-ledger slice records each private Obsidian search with actor, workspace, channel, thread, and inbound-event scope plus exact note and heading citations. It stores only a process-keyed query fingerprint and never the raw query or retrieved excerpt. Successful retrieval fails closed when the audit transaction cannot commit. This is access provenance only; external disclosure authorization and delivery receipts remain pending.
 
+The private capability-registry slice inventories the five current read-only
+model tools plus the inert external-message proposal boundary with stable owner,
+data-class, risk, context, approval, runtime, input/output-contract, and audit
+metadata. Private model tool names and shared-channel denial now resolve through
+that registry. Every attempted model-tool execution adds a durable record with
+only event, actor, workspace, capability, tool, fixed outcome, and timestamp;
+successful private results fail closed if the record cannot commit.
+
 The exact-action-approval slice registers external messaging as proposal-only and binds approval to actor, workspace, optional task, private origin, exact destination, complete content, data classification, purpose, and a maximum 24-hour expiry. A future adapter can claim an approval once only by presenting the exact fingerprinted arguments; exact request retries are idempotent. No claim route or external sending tool is exposed, so approval cannot be mistaken for delivery.
 
 The action-approval-interface slice adds a local graphical control point for staging and reviewing exact external-message proposals. It keeps recipient and complete content prominent, warns on sensitive disclosure, shows expiry and task scope, requires a second exact-review step before approval, and labels approved records as not sent. The UI exposes neither the internal claim operation nor any delivery control.
@@ -468,6 +476,19 @@ Delivery checkpoint:
 | Implementation commit | `7fe9cea` (`JOL-ARCH-002 build Jolene core MVP`) |
 | Pull request | None; this local repository has no remote configured |
 | Verification | Typecheck, 15 contract tests, production build, local health route, live model turn, private Obsidian retrieval, replay deduplication, and dependency audit passed |
+
+Private capability-registry checkpoint:
+
+| Field | Value |
+|---|---|
+| Asana | [JOL-ARCH-001A](https://app.asana.com/1/9789386902387/project/1216473233375594/task/1217891589216822) |
+| Branch | `codex/jol-arch-001a-capability-registry` |
+| Inventory | Five current private read-only model tools and one proposal-only external-message capability; no new authority or execution |
+| Contract | Immutable definitions bind Carl as owner, data classes, risk, private context, approval, runtime, model tool name, versioned input/output contract, and audit mechanisms |
+| Enforcement | Exact model exposure derives from registry policy plus existing career/work/project availability; shared channels resolve to no private model tools |
+| Audit | Durable event/actor/workspace/capability/tool/outcome/time only; no inputs, outputs, exceptions, channels, threads, paths, credentials, or provider details; successful access fails closed on audit failure |
+| Verification | Node 24: 70 test files / 403 tests; typecheck; production build; zero-vulnerability production dependency audit; private/tools and public Compose validation; frozen public suite 41/41 with 24/24 blocker metrics; fresh image manifest `sha256:e31d7346cfbd71732ce8710125628431bef0fefbfd7d0dfe5ea9151d5e5cac1e`; disposable compiled HTTP runtime returned six immutable registry entries, five exact model tool names, an empty scoped invocation ledger, and `400` for missing actor scope |
+| Remaining boundary | Local admin APIs, workers, public delegate operations, future integrations, specialist tools, remote administration, and trusted delivery/execution remain outside this inventory |
 
 Slack adapter checkpoint:
 
@@ -779,7 +800,7 @@ Current ticket evidence:
 
 | ID | Status | Evidence / remaining boundary |
 |---|---|---|
-| JOL-ARCH-001 | Partial | Initial policy taxonomy and trust boundary exist; the full capability registry is pending. |
+| JOL-ARCH-001 | Partial; current private model/proposal surface registered | The five current private read-only model tools and proposal-only external-message boundary now have immutable owner/data/risk/context/approval/runtime/contract/audit definitions. Model exposure is registry-enforced and every attempted model-tool execution has a durable content-minimizing invocation record. Local admin APIs, workers, the public delegate, future integrations, specialists, and trusted execution still require registry coverage. |
 | JOL-ARCH-002 | Implemented for first slice | Core service runs through CLI or HTTP and does not depend on Slack. |
 | JOL-ARCH-003 | Partial | Durable isolated conversations, tasks, scoped task-event timelines, governed and request-ranked memory, local graphical memory and task-history review, relevance-aware private task recall, status updates, retries, and restart recovery are tested. A bounded chronological blend of recent and request-relevant selected-task events enters private context only, with inspectable reasons. Automatic compaction, embedding-backed semantic similarity, retention controls, and authenticated production administration remain pending. |
 | JOL-ARCH-004 | Implemented for local pilot | Socket Mode adapter, manifest, owner gate, thread mapping, live mention/reply evidence, durable generation deduplication, and durable delivery retries exist. Live owner-DM evidence and crash-window reconciliation remain operational gates. |

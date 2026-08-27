@@ -3,6 +3,10 @@ import path from "node:path";
 
 import { OpenAIJoleneRunner } from "./agent/agent-runner.js";
 import { ActionApprovalService } from "./application/action-approval-service.js";
+import { CapabilityInvocationAuditService } from
+  "./application/capability-invocation-audit-service.js";
+import { CapabilityInvocationAuditor } from
+  "./application/capability-invocation-auditor.js";
 import { CareerEvidenceService } from "./application/career-evidence-service.js";
 import { ClientAiTaskPacketService } from "./application/client-ai-task-packet-service.js";
 import { ContactIntentReviewService } from "./application/contact-intent-review-service.js";
@@ -35,6 +39,8 @@ import {
 } from "./knowledge/openai-career-embeddings.js";
 import { SqliteConversationStore } from "./persistence/sqlite-conversation-store.js";
 import { SqliteActionApprovalStore } from "./persistence/sqlite-action-approval-store.js";
+import { SqliteCapabilityInvocationStore } from
+  "./persistence/sqlite-capability-invocation-store.js";
 import { SqliteCareerEvidenceStore } from "./persistence/sqlite-career-evidence-store.js";
 import { SqliteCareerRetrievalAuditStore } from "./persistence/sqlite-career-retrieval-audit-store.js";
 import { SqliteCareerRetrievalIndex } from "./persistence/sqlite-career-retrieval-index.js";
@@ -53,6 +59,7 @@ export interface JoleneApplication {
   readonly deliveries: DeliveryStore;
   readonly work: WorkContextService;
   readonly knowledgeAudit: KnowledgeAuditService;
+  readonly capabilityInvocations: CapabilityInvocationAuditService;
   readonly actionApprovals: ActionApprovalService;
   readonly careerEvidence: CareerEvidenceService;
   readonly careerRetrieval: CareerRetrievalService;
@@ -80,6 +87,9 @@ export async function createApplication(
   const workStore = new SqliteWorkContextStore(config.databasePath);
   const knowledgeAuditStore = new SqliteKnowledgeAccessStore(config.databasePath);
   const actionApprovalStore = new SqliteActionApprovalStore(config.databasePath);
+  const capabilityInvocationStore = new SqliteCapabilityInvocationStore(
+    config.databasePath,
+  );
   const careerEvidenceStore = new SqliteCareerEvidenceStore(config.databasePath);
   const careerRetrievalAuditStore = new SqliteCareerRetrievalAuditStore(
     config.databasePath,
@@ -160,6 +170,7 @@ export async function createApplication(
     careerKnowledge: careerRetrieval,
     workStatus,
     projectWatch: new OwnerWatchedProjectSource(watchedProjects, ownerScope),
+    capabilityAudit: new CapabilityInvocationAuditor(capabilityInvocationStore),
   });
   const service = new JoleneService({
     store,
@@ -178,6 +189,9 @@ export async function createApplication(
     deliveries: store,
     work: new WorkContextService(workStore),
     knowledgeAudit: new KnowledgeAuditService(knowledgeAuditStore),
+    capabilityInvocations: new CapabilityInvocationAuditService(
+      capabilityInvocationStore,
+    ),
     actionApprovals,
     careerEvidence: new CareerEvidenceService(careerEvidenceStore, {
       actorId: config.careerOwnerActorId,
@@ -209,6 +223,7 @@ export async function createApplication(
       workStore.close();
       knowledgeAuditStore.close();
       actionApprovalStore.close();
+      capabilityInvocationStore.close();
       careerEvidenceStore.close();
       careerRetrievalIndex.close();
       careerRetrievalAuditStore.close();
