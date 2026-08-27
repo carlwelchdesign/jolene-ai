@@ -2,11 +2,13 @@ import { loadPublicDelegateConfig } from "./public/public-config.js";
 import { FilePublicArtifactSource } from "./public/public-artifact-source.js";
 import { DeterministicPublicAnswerService } from "./public/public-answer-service.js";
 import { createPublicDelegateServer } from "./public/public-delegate-server.js";
+import { DeterministicPublicJobFitService } from "./public/public-job-fit-service.js";
 
 const config = loadPublicDelegateConfig();
 const server = createPublicDelegateServer({
   artifacts: new FilePublicArtifactSource(config.artifactPath),
   answers: new DeterministicPublicAnswerService(),
+  jobFit: new DeterministicPublicJobFitService(),
 });
 
 server.listen(config.port, config.host, () => {

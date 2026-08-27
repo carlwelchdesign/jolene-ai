@@ -831,3 +831,18 @@ Public-delegate deterministic-answer checkpoint:
 | Live evidence | The valid empty corpus returned citation-free no-evidence responses for an ordinary career question and an injection-like private-memory request, preserved an opaque session token without storage, and rejected an extra field with `400` |
 | Safety evidence | Strict JSON/media/body/question/session bounds; per-request artifact validation and digest verification; no question echo; no durable session; no CORS, model, private data, job-fit, contact, public bind, container service, portfolio integration, or deployment |
 | Remaining boundary | `JOL-CAREER-005` and `PORT-DEP-002` remain incomplete; reviewed public evidence is still empty; model-quality evaluation, job fit, contact intent, rate/abuse/cost controls, public topology, integration, and production enablement remain pending |
+
+Public-delegate deterministic-job-fit checkpoint:
+
+| Field | Evidence |
+|---|---|
+| Asana | [JOL-CAREER-005C](https://app.asana.com/1/9789386902387/project/1216473233375594/task/1217875176816474) |
+| Branch | `codex/jol-career-005c-public-job-fit` |
+| Implementation commit | `5c5a417` (`JOL-CAREER-005C add public job fit comparison`) |
+| Pull request | [#14](https://github.com/carlwelchdesign/jolene-ai/pull/14), stacked on #13 |
+| Contract evidence | Strict frozen v1 `POST /v1/portfolio/job-fit`; bounded job description and optional opaque session token; at most 24 stable bounded requirements with resolving citations, limitations, caveats, follow-up questions, and corpus version |
+| Assessment evidence | Deterministic segmentation and lexical overlap over exact exported evidence; stable requirement hashes and evidence-ID ordering; conservative `direct`, `adjacent`, and `unknown` results; `missing` is never inferred from absent public evidence |
+| Verification | Node 24 typecheck, 35 test files / 185 tests, production build, Compose configuration validation, staged secret scan, production dependency audit, and compiled live loopback checks passed with OpenAI and Slack credentials absent |
+| Live evidence | The valid empty corpus returned citation-free `unknown` assessments for ordinary and injection-like job descriptions, preserved an opaque session token without storage, and rejected an extra field with `400` |
+| Safety evidence | Strict JSON/media/body/description/session bounds; per-request artifact validation and digest verification; ephemeral untrusted job-description input; no model, browse, private lookup, persistence, recommendation score, contact, CORS, public bind, container service, portfolio integration, or deployment |
+| Remaining boundary | `JOL-CAREER-005` and `PORT-DEP-002` remain incomplete; reviewed public evidence is still empty; model-quality evaluation, contact intent, rate/abuse/cost controls, public topology, integration, and production enablement remain pending |
