@@ -214,6 +214,11 @@ Prerequisite: Node.js 22 or newer.
    [Public delegate boundary](docs/public-delegate.md). It is a development
    contract surface, not a public deployment.
 
+   The offline and explicitly opt-in live-model evaluation paths are documented
+   in [Public delegate evaluation](docs/public-delegate-evaluation.md). Ordinary
+   tests never call a provider; live measurement requires a separate public-only
+   environment and always stages its representative outputs for Carl's review.
+
 ## Slack pilot
 
 Jolene can connect through a dedicated Slack app using Socket Mode. The checked-in manifest grants only the scopes needed for owner DMs, explicit mentions, and replies.
