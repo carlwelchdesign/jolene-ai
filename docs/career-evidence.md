@@ -13,6 +13,10 @@ actor, channel, and visibility gates below pass.
   project maturity, visibility, review state, and supersession history.
 - A **relationship** connects explicit employers, roles, projects, skills,
   capabilities, artifacts, and claims without requiring a graph database.
+- A **claim conflict** is an owner-reviewed group of two through five active
+  claim UUIDs whose propositions must not be collapsed into one assertion. Its
+  stable ID is derived from scope and canonical membership; no text similarity
+  or model decides conflict membership.
 
 Imports create `public_candidate` claims in `needs_review`. Import cannot create
 `public_approved` data. Public approval requires:
@@ -24,8 +28,8 @@ Imports create `public_candidate` claims in `needs_review`. Import cannot create
 
 Only active, approved, fresh `public_approved` claims whose sources pass the
 same gates appear in the internal public-claim query. Revoked or superseded
-records disappear immediately. `JOL-CAREER-004` will later turn that bounded
-query into a versioned, content-minimized export artifact.
+records disappear immediately. That bounded query feeds the implemented
+versioned, content-minimized export artifact.
 
 ## Human review control
 
@@ -55,6 +59,21 @@ content, send a message, apply for a role, or expose raw Obsidian documents.
 This is a loopback pilot, not an authenticated remote administration surface.
 Do not bind it to a public interface without adding authentication, production
 CSRF controls, and an explicit deployment threat review.
+
+The private API now supports conflict persistence independently of the pending
+visual control:
+
+- `GET /v1/career-evidence/conflicts?actorId=carl&workspaceId=professional`
+  lists the configured owner's unresolved and resolved groups;
+- `POST /v1/career-evidence/conflicts` declares a group from `actorId`,
+  `workspaceId`, two through five `claimIds`, and the owner `reviewerId`; and
+- `POST /v1/career-evidence/conflicts/:id/resolve` resolves a group using the
+  same scope and reviewer attribution.
+
+Declarations are idempotent, survive restart, reject inactive or unknown
+claims, and prevent one claim from entering multiple unresolved groups.
+Resolution does not delete history. These routes do not infer conflicts,
+publish an artifact, or expose a recruiter-facing control.
 
 ## Import the canonical portfolio
 
@@ -187,7 +206,9 @@ The artifact contains:
   corpus hash and content-derived corpus version;
 - fresh, active `public_approved` claim/citation records only;
 - stable `career:<claim UUID>` evidence IDs;
-- reviewed maturity and contribution-boundary limitations; and
+- reviewed maturity and contribution-boundary limitations;
+- canonical unresolved-conflict groups when every member is public-eligible;
+  and
 - stable revoked IDs for formerly public evidence that is now stale,
   superseded, revoked, missing, or otherwise ineligible.
 
@@ -196,6 +217,13 @@ forward every previously exported ID that is no longer eligible. This catches
 withdrawals that change current visibility as well as explicit revocation and
 supersession. If the prior artifact is malformed or version-incompatible, the
 export fails without overwriting it.
+
+The exporter reads unresolved groups from the private SQLite registry. When
+every member is public-eligible, it emits a content-minimized group of public
+evidence IDs and the delegate refuses to assert those claims. When only some
+members are public-eligible, it omits the otherwise eligible members and emits
+no private conflict membership. Resolving the private group removes that block
+on the next export; it never publishes by itself.
 
 It excludes actor/workspace IDs, private provenance references, source hashes,
 Obsidian metadata, relationships, internal/private claims, contact details, and

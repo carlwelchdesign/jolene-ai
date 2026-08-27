@@ -2,6 +2,7 @@ import { z } from "zod";
 
 import type {
   CareerClaim,
+  CareerClaimConflict,
   CareerEvidenceStore,
   CareerEvidenceValidationIssue,
   CareerRelationship,
@@ -30,6 +31,16 @@ const revokeClaimSchema = scopeSchema.extend({
   id: z.string().uuid(),
 });
 
+const declareConflictSchema = scopeSchema.extend({
+  claimIds: z.array(z.string().uuid()).min(2).max(5),
+  reviewerId: z.string().trim().min(1).max(120),
+}).strict();
+
+const resolveConflictSchema = scopeSchema.extend({
+  id: z.string().regex(/^conflict:[a-f0-9]{16}$/),
+  reviewerId: z.string().trim().min(1).max(120),
+}).strict();
+
 export class CareerEvidenceService {
   constructor(
     private readonly store: CareerEvidenceStore,
@@ -54,6 +65,10 @@ export class CareerEvidenceService {
 
   listPublicClaims(input: unknown): readonly CareerClaim[] {
     return this.store.listPublicClaims(this.parseScope(input));
+  }
+
+  listClaimConflicts(input: unknown): readonly CareerClaimConflict[] {
+    return this.store.listClaimConflicts(this.parseScope(input));
   }
 
   validate(input: unknown): readonly CareerEvidenceValidationIssue[] {
@@ -86,6 +101,20 @@ export class CareerEvidenceService {
       .parse(input);
     this.assertAuthorizedScope(request);
     return this.store.revokeSource(request.id, request);
+  }
+
+  declareClaimConflict(input: unknown): CareerClaimConflict {
+    const request = declareConflictSchema.parse(input);
+    this.assertAuthorizedScope(request);
+    this.assertAuthorizedReviewer(request.reviewerId);
+    return this.store.declareClaimConflict(request);
+  }
+
+  resolveClaimConflict(input: unknown): CareerClaimConflict {
+    const request = resolveConflictSchema.parse(input);
+    this.assertAuthorizedScope(request);
+    this.assertAuthorizedReviewer(request.reviewerId);
+    return this.store.resolveClaimConflict(request);
   }
 
   private parseScope(input: unknown): CareerEvidenceScope {

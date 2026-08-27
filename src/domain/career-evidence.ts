@@ -1,3 +1,5 @@
+import { createHash } from "node:crypto";
+
 import { z } from "zod";
 
 export const careerSourceTypeSchema = z.enum([
@@ -148,6 +150,18 @@ export interface CareerRelationship {
   readonly updatedAt: string;
 }
 
+export interface CareerClaimConflict {
+  readonly id: string;
+  readonly actorId: string;
+  readonly workspaceId: string;
+  readonly claimIds: readonly string[];
+  readonly state: "unresolved" | "resolved";
+  readonly reviewedBy: string;
+  readonly resolvedBy: string | null;
+  readonly createdAt: string;
+  readonly updatedAt: string;
+}
+
 export type CareerEvidenceValidationCode =
   | "source_missing_provenance"
   | "source_public_provenance_missing"
@@ -217,6 +231,16 @@ export interface UpsertCareerRelationshipInput {
   readonly toId: string;
 }
 
+export interface DeclareCareerClaimConflictInput extends CareerEvidenceScope {
+  readonly claimIds: readonly string[];
+  readonly reviewerId: string;
+}
+
+export interface ResolveCareerClaimConflictInput extends CareerEvidenceScope {
+  readonly id: string;
+  readonly reviewerId: string;
+}
+
 export interface CareerEvidenceScope {
   readonly actorId: string;
   readonly workspaceId: string;
@@ -241,16 +265,32 @@ export interface CareerEvidenceStore {
   revokeSource(id: string, scope: CareerEvidenceScope): CareerSource;
   revokeClaim(id: string, scope: CareerEvidenceScope): CareerClaim;
   upsertRelationship(input: UpsertCareerRelationshipInput): CareerRelationship;
+  declareClaimConflict(input: DeclareCareerClaimConflictInput): CareerClaimConflict;
+  resolveClaimConflict(input: ResolveCareerClaimConflictInput): CareerClaimConflict;
   listSources(scope: CareerEvidenceScope): readonly CareerSource[];
   listClaims(scope: CareerEvidenceScope): readonly CareerClaim[];
+  listClaimConflicts(scope: CareerEvidenceScope): readonly CareerClaimConflict[];
   listRelationships(scope: CareerEvidenceScope): readonly CareerRelationship[];
   listPublicClaims(scope: CareerEvidenceScope): readonly CareerClaim[];
   validate(scope: CareerEvidenceScope): readonly CareerEvidenceValidationIssue[];
   close(): void;
 }
 
+export function careerClaimConflictId(input: {
+  readonly actorId: string;
+  readonly workspaceId: string;
+  readonly claimIds: readonly string[];
+}): `conflict:${string}` {
+  const digest = createHash("sha256").update(JSON.stringify({
+    actorId: input.actorId,
+    workspaceId: input.workspaceId,
+    claimIds: [...input.claimIds].sort(),
+  })).digest("hex").slice(0, 16);
+  return `conflict:${digest}`;
+}
+
 export class CareerEvidenceNotFoundError extends Error {
-  constructor(recordKind: "source" | "claim") {
+  constructor(recordKind: "source" | "claim" | "conflict") {
     super(`The requested career ${recordKind} does not exist in this scope.`);
     this.name = "CareerEvidenceNotFoundError";
   }

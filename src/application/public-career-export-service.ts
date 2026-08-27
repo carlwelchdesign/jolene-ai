@@ -6,10 +6,10 @@ import type {
 } from "../domain/career-evidence.js";
 import {
   PUBLIC_CAREER_EVIDENCE_SCHEMA_VERSION,
+  publicCareerConflictId,
   publicCareerEvidenceDigest,
   publicCareerEvidenceArtifactSchema,
   type PublicCareerEvidenceArtifact,
-  type PublicCareerEvidenceConflict,
   type PublicCareerEvidenceRecord,
 } from "../domain/public-career-evidence.js";
 import {
@@ -37,14 +37,38 @@ export class PublicCareerExportService {
   generate(
     scope: CareerEvidenceScope,
     previous: PublicCareerEvidenceArtifact | null = null,
-    conflicts: readonly PublicCareerEvidenceConflict[] = [],
   ): PublicCareerEvidenceArtifact {
     const generatedAt = this.now().toISOString();
     const sources = new Map(
       this.store.listSources(scope).map((source) => [source.id, source]),
     );
-    const eligibleClaims = [...this.store.listPublicClaims(scope)]
+    const publicCandidates = [...this.store.listPublicClaims(scope)]
       .sort((left, right) => evidenceId(left).localeCompare(evidenceId(right)));
+    const publicCandidateIds = new Set(publicCandidates.map((claim) => claim.id));
+    const blockedClaimIds = new Set<string>();
+    const conflicts = this.store.listClaimConflicts(scope)
+      .filter((conflict) => conflict.state === "unresolved")
+      .flatMap((conflict) => {
+        const eligibleMemberIds = conflict.claimIds.filter((claimId) =>
+          publicCandidateIds.has(claimId)
+        );
+        if (eligibleMemberIds.length !== conflict.claimIds.length) {
+          eligibleMemberIds.forEach((claimId) => blockedClaimIds.add(claimId));
+          return [];
+        }
+        const conflictEvidenceIds = eligibleMemberIds.map(
+          (claimId) => `career:${claimId}`,
+        ).sort();
+        return [{
+          conflictId: publicCareerConflictId(conflictEvidenceIds),
+          evidenceIds: conflictEvidenceIds,
+          status: "unresolved" as const,
+        }];
+      })
+      .sort((left, right) => left.conflictId.localeCompare(right.conflictId));
+    const eligibleClaims = publicCandidates.filter(
+      (claim) => !blockedClaimIds.has(claim.id),
+    );
     const eligibleIds = new Set(eligibleClaims.map(evidenceId));
     const evidence = eligibleClaims.map((claim) =>
       this.toPublicRecord(claim, requireSource(sources, claim.sourceId))

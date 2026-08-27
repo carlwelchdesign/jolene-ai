@@ -2,7 +2,7 @@
 
 **Date:** 2026-08-26
 
-**Status:** Docker API, governed career ingestion, private hybrid retrieval, public export, loopback manifest/answer/job-fit/contact-staging/admission/audit/egress-disclosure boundaries, disabled-by-default grounded answer synthesis, private contact review, explicit unresolved public-evidence conflict policy, and an offline response/lifecycle/red-team/contact/conflict evaluation baseline implemented; public integration, full evaluation, and deployment pending
+**Status:** Docker API, governed career ingestion, private hybrid retrieval, durable owner-reviewed conflict registry, public export, loopback manifest/answer/job-fit/contact-staging/admission/audit/egress-disclosure boundaries, disabled-by-default grounded answer synthesis, private contact review, explicit unresolved public-evidence conflict policy, and an offline response/lifecycle/red-team/contact/conflict evaluation baseline implemented; public integration, full evaluation, and deployment pending
 
 ## Product outcome
 
@@ -461,14 +461,18 @@ deployment path.
   evidence IDs plus deterministic answer refusal, grounded-provider bypass,
   and job-fit exclusion. The v1.3 baseline now has 41 cases and 24
   precommitted 100% blocker metrics.
+- `JOL-CAREER-006E` persists owner-reviewed conflict declarations and
+  resolutions in the private SQLite registry and makes export consume them
+  automatically. Partial-public groups fail closed by omitting eligible members
+  rather than revealing private conflict membership.
 - Build fixtures for supported, adjacent, missing, stale, confidential, and
   adversarial questions.
 - Require citation correctness, maturity preservation, privacy refusal, and
   factual invariance across personality modes.
 - Manually review representative answers before public launch.
 
-`JOL-CAREER-006A/B/C/D` do not complete this ticket. Private conflict
-declaration/resolution workflow; live-model
+`JOL-CAREER-006A/B/C/D/E` do not complete this ticket. Visual conflict
+declaration/resolution control; live-model
 quality/semantic-entailment/latency/token/cost measurement; additional adaptive
 red-team coverage; portfolio citation and
 accessibility verification; representative human review; production controls;
@@ -535,6 +539,28 @@ and launch approval remain open.
   dependency-audit, diff, and focused secret checks; and
 - conflict declaration/resolution UI, arbitrary model-prose entailment, live
   model measurement, integration, deployment, human sign-off, and launch
+  authorization remain open.
+
+`JOL-CAREER-006E` verification checkpoint:
+
+- implementation commit: `086784c` (`JOL-CAREER-006E persist reviewed conflicts`);
+- a dedicated private SQLite table retains canonical two-through-five-claim
+  groups, reviewer attribution, unresolved/resolved state, and history across
+  restart;
+- owner-scoped service and same-origin loopback routes list, declare, and
+  resolve groups with idempotent repeat behavior and overlap rejection;
+- export derives public conflict groups only when every member is eligible and
+  omits otherwise eligible members when any conflicting member is private,
+  stale, revoked, superseded, or otherwise ineligible;
+- 44 test files and 283 tests pass on Node 24.18.0; suite v1.3 remains 41 of 41
+  cases and 24 of 24 metrics with hash
+  `4828d381bd05d5a49c60a1e6169e2967fd365f58946a6295ada0d61622ca03ed`;
+  build, Compose, dependency-audit, diff, and focused secret checks pass;
+- an isolated compiled loopback process returned `200 []` for the empty
+  conflict list, `404` for a same-origin declaration referencing unknown
+  claims, and `403` for the same mutation from a foreign origin; and
+- visual conflict review, arbitrary model-prose entailment, live model
+  measurement, integration, deployment, human sign-off, and launch
   authorization remain open.
 
 ### JOL-CAREER-007 — Private MCP adapter

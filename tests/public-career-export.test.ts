@@ -148,7 +148,12 @@ describe("PublicCareerExportService", () => {
       const second = createClaim(store, source.id, "Carl advised the Atlas project.", "atlas-role-b");
       approvePublic(store, source.id, first.id);
       approvePublic(store, source.id, second.id);
-      const evidenceIds = [`career:${first.id}`, `career:${second.id}`];
+      const declared = store.declareClaimConflict({
+        ...scope,
+        claimIds: [first.id, second.id],
+        reviewerId: "carl",
+      });
+      const evidenceIds = declared.claimIds.map((claimId) => `career:${claimId}`);
       const conflict = {
         conflictId: publicCareerConflictId(evidenceIds),
         evidenceIds,
@@ -156,7 +161,7 @@ describe("PublicCareerExportService", () => {
       };
 
       const artifact = new PublicCareerExportService(store, () => fixedNow)
-        .generate(scope, null, [conflict]);
+        .generate(scope);
 
       expect(artifact.conflicts).toEqual([conflict]);
       expect(artifact.evidence).toHaveLength(2);
@@ -173,22 +178,66 @@ describe("PublicCareerExportService", () => {
     }
   });
 
-  it("rejects conflict declarations that do not resolve to active evidence", () => {
+  it("rejects conflict declarations that do not resolve to active claims", () => {
     const store = new SqliteCareerEvidenceStore(":memory:", () => fixedNow);
     try {
-      const unknownIds = [
-        "career:00000000-0000-4000-8000-000000000001",
-        "career:00000000-0000-4000-8000-000000000002",
-      ];
-      expect(() => new PublicCareerExportService(store, () => fixedNow).generate(
-        scope,
-        null,
-        [{
-          conflictId: publicCareerConflictId(unknownIds),
-          evidenceIds: unknownIds,
-          status: "unresolved",
-        }],
-      )).toThrow("Every conflict evidence ID must resolve to active evidence.");
+      expect(() => store.declareClaimConflict({
+        ...scope,
+        claimIds: [
+          "00000000-0000-4000-8000-000000000001",
+          "00000000-0000-4000-8000-000000000002",
+        ],
+        reviewerId: "carl",
+      })).toThrow();
+    } finally {
+      store.close();
+    }
+  });
+
+  it("omits a public claim when another unresolved conflict member is not eligible", () => {
+    const store = new SqliteCareerEvidenceStore(":memory:", () => fixedNow);
+    try {
+      const source = createSource(store);
+      const publicClaim = createClaim(
+        store,
+        source.id,
+        "Carl led the Atlas project.",
+        "atlas-public",
+      );
+      const privateMember = createClaim(
+        store,
+        source.id,
+        "Carl advised the Atlas project.",
+        "atlas-private",
+      );
+      approvePublic(store, source.id, publicClaim.id);
+      const conflict = store.declareClaimConflict({
+        ...scope,
+        claimIds: [publicClaim.id, privateMember.id],
+        reviewerId: "carl",
+      });
+      const service = new PublicCareerExportService(store, () => fixedNow);
+
+      const partial = service.generate(scope);
+      expect(partial.evidence).toEqual([]);
+      expect(partial.conflicts).toEqual([]);
+      expect(partial.manifest.revokedEvidenceIds).toEqual([
+        `career:${publicClaim.id}`,
+      ]);
+
+      approvePublic(store, source.id, privateMember.id);
+      const complete = service.generate(scope, partial);
+      expect(complete.evidence).toHaveLength(2);
+      expect(complete.conflicts).toHaveLength(1);
+
+      store.resolveClaimConflict({
+        ...scope,
+        id: conflict.id,
+        reviewerId: "carl",
+      });
+      const resolved = service.generate(scope, complete);
+      expect(resolved.evidence).toHaveLength(2);
+      expect(resolved.conflicts).toEqual([]);
     } finally {
       store.close();
     }

@@ -8,12 +8,14 @@ import {
   CareerEvidenceApprovalError,
   CareerEvidenceConflictError,
   CareerEvidenceNotFoundError,
+  careerClaimConflictId,
   careerEntityKindSchema,
   careerMaturitySchema,
   careerRelationshipKindSchema,
   careerSourceTypeSchema,
   careerVisibilitySchema,
   type CareerClaim,
+  type CareerClaimConflict,
   type CareerEntityKind,
   type CareerEvidenceScope,
   type CareerEvidenceStore,
@@ -29,7 +31,9 @@ import {
   type CareerVisibility,
   type DecideCareerClaimInput,
   type DecideCareerSourceInput,
+  type DeclareCareerClaimConflictInput,
   type EvidenceReviewState,
+  type ResolveCareerClaimConflictInput,
   type UpsertCareerClaimInput,
   type UpsertCareerRelationshipInput,
   type UpsertCareerSourceInput,
@@ -86,6 +90,18 @@ interface RelationshipRow {
   readonly to_kind: CareerEntityKind;
   readonly to_id: string;
   readonly state: "active" | "revoked";
+  readonly created_at: string;
+  readonly updated_at: string;
+}
+
+interface ClaimConflictRow {
+  readonly id: string;
+  readonly actor_id: string;
+  readonly workspace_id: string;
+  readonly claim_ids_json: string;
+  readonly state: "unresolved" | "resolved";
+  readonly reviewed_by: string;
+  readonly resolved_by: string | null;
   readonly created_at: string;
   readonly updated_at: string;
 }
@@ -441,6 +457,81 @@ export class SqliteCareerEvidenceStore implements CareerEvidenceStore {
     return this.requireRelationship(input.id, input.actorId, input.workspaceId);
   }
 
+  declareClaimConflict(
+    input: DeclareCareerClaimConflictInput,
+  ): CareerClaimConflict {
+    const claimIds = normalizeConflictClaimIds(input.claimIds);
+    const claims = claimIds.map((id) =>
+      this.requireClaim(id, input.actorId, input.workspaceId)
+    );
+    if (claims.some((claim) => claim.state !== "active")) {
+      throw new CareerEvidenceConflictError(
+        "Only active career claims can enter an unresolved conflict.",
+      );
+    }
+    const reviewerId = requireText(input.reviewerId, "reviewerId");
+    const id = careerClaimConflictId({ ...input, claimIds });
+    const existing = this.findClaimConflict(id, input.actorId, input.workspaceId);
+    if (existing?.state === "unresolved") return existing;
+    const now = this.now().toISOString();
+
+    const declare = this.database.transaction(() => {
+      const overlapping = this.listClaimConflicts(input).find((conflict) =>
+        conflict.state === "unresolved" && conflict.id !== id &&
+        conflict.claimIds.some((claimId) => claimIds.includes(claimId))
+      );
+      if (overlapping) {
+        throw new CareerEvidenceConflictError(
+          "A career claim can belong to only one unresolved conflict.",
+        );
+      }
+      this.database.prepare(
+        `INSERT INTO career_claim_conflicts
+          (id, actor_id, workspace_id, claim_ids_json, state, reviewed_by,
+           resolved_by, created_at, updated_at)
+         VALUES (?, ?, ?, ?, 'unresolved', ?, NULL, ?, ?)
+         ON CONFLICT(id) DO UPDATE SET
+           state = 'unresolved', reviewed_by = excluded.reviewed_by,
+           resolved_by = NULL, updated_at = excluded.updated_at
+         WHERE actor_id = excluded.actor_id AND workspace_id = excluded.workspace_id`,
+      ).run(
+        id,
+        input.actorId,
+        input.workspaceId,
+        JSON.stringify(claimIds),
+        reviewerId,
+        now,
+        now,
+      );
+    });
+    declare();
+    return this.requireClaimConflict(id, input.actorId, input.workspaceId);
+  }
+
+  resolveClaimConflict(
+    input: ResolveCareerClaimConflictInput,
+  ): CareerClaimConflict {
+    const conflict = this.requireClaimConflict(
+      input.id,
+      input.actorId,
+      input.workspaceId,
+    );
+    if (conflict.state === "resolved") return conflict;
+    const now = this.now().toISOString();
+    this.database.prepare(
+      `UPDATE career_claim_conflicts
+       SET state = 'resolved', resolved_by = ?, updated_at = ?
+       WHERE id = ? AND actor_id = ? AND workspace_id = ?`,
+    ).run(
+      requireText(input.reviewerId, "reviewerId"),
+      now,
+      input.id,
+      input.actorId,
+      input.workspaceId,
+    );
+    return this.requireClaimConflict(input.id, input.actorId, input.workspaceId);
+  }
+
   listSources(scope: CareerEvidenceScope): readonly CareerSource[] {
     return (this.database.prepare(
       `SELECT * FROM career_sources
@@ -453,6 +544,14 @@ export class SqliteCareerEvidenceStore implements CareerEvidenceStore {
       `SELECT * FROM career_claims
        WHERE actor_id = ? AND workspace_id = ? ORDER BY created_at ASC, id ASC`,
     ).all(scope.actorId, scope.workspaceId) as ClaimRow[]).map(mapClaim);
+  }
+
+  listClaimConflicts(scope: CareerEvidenceScope): readonly CareerClaimConflict[] {
+    return (this.database.prepare(
+      `SELECT * FROM career_claim_conflicts
+       WHERE actor_id = ? AND workspace_id = ? ORDER BY created_at ASC, id ASC`,
+    ).all(scope.actorId, scope.workspaceId) as ClaimConflictRow[])
+      .map(mapClaimConflict);
   }
 
   listRelationships(scope: CareerEvidenceScope): readonly CareerRelationship[] {
@@ -604,6 +703,28 @@ export class SqliteCareerEvidenceStore implements CareerEvidenceStore {
     return mapRelationship(row);
   }
 
+  private requireClaimConflict(
+    id: string,
+    actorId: string,
+    workspaceId: string,
+  ): CareerClaimConflict {
+    const conflict = this.findClaimConflict(id, actorId, workspaceId);
+    if (!conflict) throw new CareerEvidenceNotFoundError("conflict");
+    return conflict;
+  }
+
+  private findClaimConflict(
+    id: string,
+    actorId: string,
+    workspaceId: string,
+  ): CareerClaimConflict | null {
+    const row = this.database.prepare(
+      `SELECT * FROM career_claim_conflicts
+       WHERE id = ? AND actor_id = ? AND workspace_id = ?`,
+    ).get(id, actorId, workspaceId) as ClaimConflictRow | undefined;
+    return row ? mapClaimConflict(row) : null;
+  }
+
   private migrate(): void {
     this.database.exec(`
       CREATE TABLE IF NOT EXISTS career_sources (
@@ -661,6 +782,21 @@ export class SqliteCareerEvidenceStore implements CareerEvidenceStore {
         WHERE state = 'active';
       CREATE INDEX IF NOT EXISTS career_claims_public_export
         ON career_claims(actor_id, workspace_id, state, visibility, review_state, last_reviewed_at);
+
+      CREATE TABLE IF NOT EXISTS career_claim_conflicts (
+        id TEXT PRIMARY KEY,
+        actor_id TEXT NOT NULL,
+        workspace_id TEXT NOT NULL,
+        claim_ids_json TEXT NOT NULL,
+        state TEXT NOT NULL CHECK(state IN ('unresolved', 'resolved')),
+        reviewed_by TEXT NOT NULL,
+        resolved_by TEXT,
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL
+      );
+
+      CREATE INDEX IF NOT EXISTS career_claim_conflicts_scope
+        ON career_claim_conflicts(actor_id, workspace_id, state, created_at ASC);
 
       CREATE TABLE IF NOT EXISTS career_relationships (
         id TEXT PRIMARY KEY,
@@ -808,6 +944,20 @@ function mapClaim(row: ClaimRow): CareerClaim {
   };
 }
 
+function mapClaimConflict(row: ClaimConflictRow): CareerClaimConflict {
+  return {
+    id: row.id,
+    actorId: row.actor_id,
+    workspaceId: row.workspace_id,
+    claimIds: normalizeConflictClaimIds(JSON.parse(row.claim_ids_json)),
+    state: row.state,
+    reviewedBy: row.reviewed_by,
+    resolvedBy: row.resolved_by,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+  };
+}
+
 function mapRelationship(row: RelationshipRow): CareerRelationship {
   return {
     id: row.id,
@@ -922,6 +1072,29 @@ function normalizeStringList(values: readonly string[] | undefined): readonly st
   return Array.from(
     new Set((values ?? []).map((value) => value.trim()).filter(Boolean)),
   ).sort((left, right) => left.localeCompare(right));
+}
+
+function normalizeConflictClaimIds(value: unknown): readonly string[] {
+  if (!Array.isArray(value) || value.length < 2 || value.length > 5) {
+    throw new CareerEvidenceConflictError(
+      "A career claim conflict requires two through five claim IDs.",
+    );
+  }
+  const claimIds = value.map((item) => {
+    if (typeof item !== "string" ||
+        !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(item)) {
+      throw new CareerEvidenceConflictError(
+        "Career claim conflict members must be UUID claim IDs.",
+      );
+    }
+    return item.toLowerCase();
+  });
+  if (new Set(claimIds).size !== claimIds.length) {
+    throw new CareerEvidenceConflictError(
+      "Career claim conflict members must be unique.",
+    );
+  }
+  return claimIds.sort((left, right) => left.localeCompare(right));
 }
 
 function requireText(value: string, field: string): string {

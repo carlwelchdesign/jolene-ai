@@ -416,6 +416,15 @@ async function handleRequest(
     return;
   }
 
+  if (request.method === "GET" && url.pathname === "/v1/career-evidence/conflicts") {
+    sendJson(
+      response,
+      200,
+      application.careerEvidence.listClaimConflicts(scopeFrom(url)),
+    );
+    return;
+  }
+
   if (request.method === "GET" && url.pathname === "/v1/career-evidence/validation") {
     sendJson(response, 200, application.careerEvidence.validate(scopeFrom(url)));
     return;
@@ -470,6 +479,35 @@ async function handleRequest(
   const sourceDecisionMatch = url.pathname.match(
     /^\/v1\/career-evidence\/sources\/([^/]+)\/decision$/,
   );
+
+  if (request.method === "POST" && url.pathname === "/v1/career-evidence/conflicts") {
+    assertSameOrigin(request.headers);
+    sendJson(
+      response,
+      201,
+      application.careerEvidence.declareClaimConflict(await readJson(request)),
+    );
+    return;
+  }
+
+  const conflictResolveMatch = url.pathname.match(
+    /^\/v1\/career-evidence\/conflicts\/([^/]+)\/resolve$/,
+  );
+  if (request.method === "POST" && conflictResolveMatch?.[1]) {
+    assertSameOrigin(request.headers);
+    sendJson(
+      response,
+      200,
+      application.careerEvidence.resolveClaimConflict(
+        withIdentifier(
+          await readJson(request),
+          decodeURIComponent(conflictResolveMatch[1]),
+        ),
+      ),
+    );
+    return;
+  }
+
   if (request.method === "POST" && sourceDecisionMatch?.[1]) {
     assertSameOrigin(request.headers);
     sendJson(response, 200, application.careerEvidence.decideSource(
