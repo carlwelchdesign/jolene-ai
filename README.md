@@ -36,6 +36,8 @@ The first runnable slice provides:
   fingerprints and citation IDs but not queries or evidence excerpts;
 - a local, owner-scoped Career Evidence screen for source-first internal/public
   approval, rejection, validation review, and revocation;
+- a deny-by-default offline public-evidence artifact with a versioned manifest,
+  reproducible corpus hash, revocation list, and adversarial leak checks;
 - contract tests that do not call OpenAI.
 
 The Slack adapter is active for a local pilot, with live mention-and-reply behavior verified. Scheduled work, specialist agents, client-AI workflows, always-on hosting, and voice remain later gates.
@@ -43,8 +45,9 @@ The Slack adapter is active for a local pilot, with live mention-and-reply behav
 The conversational Obsidian bridge still uses deterministic lexical retrieval.
 The governed career registry now has a separate private hybrid retrieval path,
 but no imported claim is eligible until Carl approves its source and claim for
-internal use. MCP interoperability, the versioned public export, and the public
-portfolio delegate are not implemented. See the
+internal use. The versioned export exists only as a local ignored artifact; no
+public endpoint or portfolio delegate is implemented. MCP interoperability is
+also not implemented. See the
 [professional context architecture](plans/JOLENE_PROFESSIONAL_CONTEXT_ARCHITECTURE.md).
 
 ## Setup
@@ -144,6 +147,17 @@ Prerequisite: Node.js 22 or newer.
    npm run career:index
    ```
 
+   Generate the local deny-by-default public handoff artifact with:
+
+   ```bash
+   npm run career:export-public
+   ```
+
+   The default output is ignored at
+   `.jolene/exports/public-career-evidence.json`. With zero public-approved
+   claims it is a valid empty corpus. This command does not publish, deploy, or
+   start a public endpoint.
+
 ## Slack pilot
 
 Jolene can connect through a dedicated Slack app using Socket Mode. The checked-in manifest grants only the scopes needed for owner DMs, explicit mentions, and replies.
@@ -192,6 +206,10 @@ Carl's configured Slack member ID is the only DM identity permitted to use priva
   citation IDs, not raw queries or evidence excerpts.
 - Public career queries exclude stale, revoked, superseded, unapproved, and
   publicly uncitable evidence by construction.
+- The offline public export emits only fresh `public_approved` claim/citation
+  records, uses `limited` strength until that field is explicitly reviewed,
+  and fails closed on private paths, contacts, secrets, Obsidian links, and
+  non-public citation hosts.
 
 See [the architecture plan](plans/JOLENE_SYSTEM_ARCHITECTURE_PLAN.md) and [the personality plan](plans/JOLENE_PERSONALITY_RESEARCH_AND_SPECIFICATION_PLAN.md).
 

@@ -315,10 +315,42 @@ Verification checkpoint:
 
 ### JOL-CAREER-004 — Public evidence export
 
-- Export only active `public_approved` records.
-- Produce a versioned manifest, content hash, schema version, and revocation
+- [x] Export only active `public_approved` records.
+- [x] Produce a versioned manifest, content hash, schema version, and revocation
   list.
-- Validate that no private path, note, memory, or contact record is present.
+- [x] Validate that no private path, note, memory, or contact record is present.
+
+Implementation notes:
+
+- branch: `codex/jol-career-004-public-export`;
+- implementation commit: `1e03a08` (`JOL-CAREER-004 add governed public
+  evidence export`);
+- the artifact is an ignored local file, not a public API, portfolio copy, or
+  deployment;
+- manifest fields align with the portfolio v1 fixture contract, while the
+  embedded evidence records directly provide its public claim/citation shapes;
+- corpus version and SHA-256 hash are content-derived and stable across
+  generation timestamps;
+- removed formerly public claims remain only as stable revoked IDs;
+- leak checks reject private paths and hosts, Obsidian syntax, contacts, common
+  secret formats, private-only claims, and unsupported career-note sources;
+- evidence strength remains conservatively `limited` until a separate reviewed
+  strength field exists; and
+- the canonical zero-public-claim registry produces a valid empty artifact.
+
+Verification checkpoint:
+
+- 27 test files and 127 tests pass on Node 24.18.0, including deterministic
+  hashing, approval withdrawal, supersession, leak rejection, atomic writes,
+  prior-artifact validation, and the empty-corpus case;
+- production TypeScript build, Compose configuration, JSON Schema fixture
+  validation, diff hygiene, and dependency audit pass with zero reported
+  production vulnerabilities;
+- the canonical local artifact is 407 bytes, owner-readable/writable only, and
+  ignored by Git; and
+- a fresh Docker image build remains covered by the existing Docker-capacity
+  operations ticket because Docker Desktop cannot currently start safely on
+  the full data volume.
 
 ### JOL-CAREER-005 — Portfolio delegate
 

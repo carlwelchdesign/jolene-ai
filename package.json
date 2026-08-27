@@ -12,6 +12,7 @@
     "career:import-portfolio": "tsx scripts/import-portfolio-evidence.ts",
     "career:import-obsidian": "tsx scripts/import-obsidian-career.ts",
     "career:index": "tsx scripts/index-career-evidence.ts",
+    "career:export-public": "tsx scripts/export-public-career-evidence.ts",
     "check": "npm run typecheck && npm test",
     "chat": "tsx src/cli.ts",
     "clean": "node --eval \"require('node:fs').rmSync('dist', { recursive: true, force: true })\"",
