@@ -57,8 +57,12 @@ docker compose ps
 docker compose logs -f jolene-api jolene-slack jolene-monitor
 ```
 
-Open `http://127.0.0.1:8421/work` or `http://127.0.0.1:8421/projects`, or request
-`http://127.0.0.1:8421/health`.
+Open `http://127.0.0.1:8421/work`, `http://127.0.0.1:8421/projects`, or
+`http://127.0.0.1:8421/conversation-evaluation`, or request
+`http://127.0.0.1:8421/health`. The conversation review fixture is packaged in
+the image; the ignored capture is mounted read-only from
+`.jolene/evaluations`, while the hash-bound human decision persists separately
+under the private `/data/evaluations` volume.
 
 If port 8421 is already occupied by a local Jolene process:
 

@@ -92,6 +92,10 @@ The first runnable slice provides:
   nonzero hard-gate failure exits;
 - a private owner-scoped Contacts screen that can review or delete staged
   requests and save inert local reply drafts without sending anything;
+- a versioned nine-scenario conversational-quality suite plus owner-only review
+  screen for scoring exact captured answers, citations, follow-ups, warmth,
+  restraint, boundaries, calibration, and originality without activating or
+  deploying the personality;
 - contract tests that make no live OpenAI requests.
 
 The Slack adapter is active for a local pilot, with live mention-and-reply behavior verified. One bounded private-owner briefing schedule and Project Watch monitoring are implemented locally. The client-AI packet lifecycle is implemented as a private review-only core, but no client transport or autonomous exchange is active. General scheduled work, specialist agents, always-on hosting, and voice remain later gates.
@@ -301,6 +305,13 @@ Prerequisite: Node.js 22 or newer.
    decision bound to its exact suite hash. The screen cannot run a provider,
    spend budget, alter evidence, activate the portfolio, message anyone, deploy,
    or authorize launch. A new packet hash makes an earlier decision stale.
+
+   Open [http://127.0.0.1:8421/conversation-evaluation](http://127.0.0.1:8421/conversation-evaluation)
+   to review the current owner-only conversational-quality capture. Every case
+   requires seven explicit 0–4 scores and optional hard-failure findings. The
+   saved mode-`0600` decision is bound to the exact packet hash and becomes
+   stale after recapture. This screen cannot call the model, publish, deploy,
+   contact anyone, or activate Jolene's personality.
 
    Trusted local MCP hosts can use the canonical professional-context adapter
    documented in [Private professional-context MCP](docs/private-career-mcp.md).
