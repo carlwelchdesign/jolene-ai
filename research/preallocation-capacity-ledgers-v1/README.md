@@ -22,3 +22,10 @@ Disputed high-risk labels are omitted from consensus capacity; disputed eligibil
 exclusion fails the source ledger. No v4 allocation, selection, observation coding, trait
 admission, owner decision, prompting, voice behavior, or runtime activation may occur until
 all ten source ledgers and their aggregate manifest pass independent review.
+
+PDF generation is currently fail-closed before ledger creation. The metadata-only
+`pdf-cue-adjudication-audit-v1.yaml` reproduces S04's exact bytes and 101-unit boundary, but
+shows that four literal readings of the frozen cue rules yield 40, 44, 45, or 49 eligible
+target blocks rather than the frozen 48. No exception was invented to force the count. A
+prospective cue-adjudication amendment requires two independent full-boundary reviews before
+any PDF draft or capacity ledger can be accepted.

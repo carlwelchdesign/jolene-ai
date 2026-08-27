@@ -824,6 +824,16 @@ closes generalized source-drift verification only; v2 sampling, coding, reconcil
 admission, owner decisions, behavior activation, model wiring, Slack use, and voice remain
 pending or explicitly out of scope.
 
+JOL-ARCH-009 sampling follow-up (2026-08-27): six coding-ready HTML sources now have complete
+machine boundary drafts containing only hashes, generic locators, and controlled structural
+labels. They cover 1,076 boundary units and identify 448 structurally eligible units, while
+explicitly recording that semantic review, independent review, and selection have not occurred.
+The PDF path remains fail-closed: S04's exact 101-unit boundary reproduces, but the frozen cue
+language is underdetermined and literal policies yield 40, 44, 45, or 49 eligible target blocks
+instead of the frozen 48. A prospective cue-adjudication amendment and two independent
+full-boundary reviews are required before PDF drafts, final capacity ledgers, v4 allocation,
+selection, coding, or personality activation.
+
 ## Architecture risks
 
 | Risk | Impact | Mitigation | Owner | Release gate |
