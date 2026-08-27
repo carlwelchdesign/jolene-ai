@@ -19,7 +19,6 @@ describe("grounded public answer service", () => {
     });
     const request = {
       question: "What React systems has Carl built?",
-      sessionToken: "private-session-value",
     };
     const baseline = new DeterministicPublicAnswerService().answer(
       artifact,
@@ -41,7 +40,6 @@ describe("grounded public answer service", () => {
         citationTitle: artifact.evidence[0]?.citation.title,
       }],
     });
-    expect(JSON.stringify(providerInput)).not.toContain("private-session-value");
     expect(JSON.stringify(providerInput)).not.toContain(
       artifact.evidence[0]?.citation.href ?? "missing",
     );

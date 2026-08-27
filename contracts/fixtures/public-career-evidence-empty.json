@@ -4,7 +4,7 @@
     "corpusVersion": "career:f218a8e06d12d725399b23539c03a8cd0ca4803e98f85e62421b65bf3ff87c7b",
     "corpusHash": "sha256:f218a8e06d12d725399b23539c03a8cd0ca4803e98f85e62421b65bf3ff87c7b",
     "generatedAt": "2026-08-26T08:00:00.000Z",
-    "reviewedAt": "2026-08-26T08:00:00.000Z",
+    "reviewedAt": null,
     "evidenceCount": 0,
     "revokedEvidenceIds": []
   },

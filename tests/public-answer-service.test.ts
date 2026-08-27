@@ -64,15 +64,14 @@ describe("DeterministicPublicAnswerService", () => {
     expect(result.answer).not.toContain(question);
   });
 
-  it("handles an empty corpus and echoes but does not create session state", () => {
+  it("handles an empty corpus without creating session state", () => {
     const artifact = createPublicEvidenceArtifact([]);
     const result = service.answer(artifact, {
       question: "What has Carl built?",
-      sessionToken: "opaque-session-token",
     });
 
     expect(result.claims).toEqual([]);
-    expect(result.sessionToken).toBe("opaque-session-token");
+    expect(result).not.toHaveProperty("sessionToken");
     expect(result.corpusVersion).toBe(artifact.manifest.corpusVersion);
   });
 
@@ -94,14 +93,14 @@ describe("DeterministicPublicAnswerService", () => {
     expect(result.answer).not.toContain("advised");
   });
 
-  it("strictly validates question, session, and extra-field limits", () => {
+  it("strictly validates question and rejects session or extra fields", () => {
     expect(() => portfolioAnswerRequestSchema.parse({ question: "" })).toThrow();
     expect(() => portfolioAnswerRequestSchema.parse({
       question: "x".repeat(801),
     })).toThrow();
     expect(() => portfolioAnswerRequestSchema.parse({
       question: "Valid question",
-      sessionToken: "x".repeat(257),
+      sessionToken: "not-part-of-v1",
     })).toThrow();
     expect(() => portfolioAnswerRequestSchema.parse({
       question: "Valid question",

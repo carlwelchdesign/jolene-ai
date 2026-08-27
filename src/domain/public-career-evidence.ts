@@ -7,13 +7,17 @@ import { careerMaturitySchema } from "./career-evidence.js";
 export const PUBLIC_CAREER_EVIDENCE_SCHEMA_VERSION = "1.0.0" as const;
 
 const isoTimestampSchema = z.string().datetime({ offset: true });
+export const siteRelativePublicHrefSchema = z.string().trim().min(1).max(2_000)
+  .refine((value) => value.startsWith("/") && !value.startsWith("//"), {
+    message: "Public citation hrefs must be site-relative.",
+  });
 export const evidenceStrengthSchema = z.enum([
   "strong",
   "moderate",
   "limited",
 ]);
 export const careerEvidenceIdSchema = z.string().regex(
-  /^career:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/,
+  /^career:[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/,
 );
 export const publicCareerConflictIdSchema = z.string().regex(
   /^conflict:[a-f0-9]{16}$/,
@@ -34,11 +38,19 @@ export const publicCareerEvidenceManifestSchema = z.object({
   corpusVersion: z.string().regex(/^career:[a-f0-9]{64}$/),
   corpusHash: z.string().regex(/^sha256:[a-f0-9]{64}$/),
   generatedAt: isoTimestampSchema,
-  reviewedAt: isoTimestampSchema,
+  reviewedAt: isoTimestampSchema.nullable(),
   evidenceCount: z.number().int().nonnegative(),
-  revokedEvidenceIds: z.array(careerEvidenceIdSchema).refine(unique, {
+  revokedEvidenceIds: z.array(careerEvidenceIdSchema).max(1_000).refine(unique, {
     message: "Revoked evidence IDs must be unique.",
   }),
+}).superRefine((manifest, context) => {
+  if (manifest.evidenceCount > 0 && manifest.reviewedAt === null) {
+    context.addIssue({
+      code: "custom",
+      path: ["reviewedAt"],
+      message: "Reviewed at may be null only for an empty public corpus.",
+    });
+  }
 });
 
 export const publicCareerEvidenceRecordSchema = z.object({
@@ -49,12 +61,12 @@ export const publicCareerEvidenceRecordSchema = z.object({
     evidenceIds: z.array(careerEvidenceIdSchema).length(1),
     evidenceStrength: evidenceStrengthSchema,
     maturity: careerMaturitySchema,
-    limitations: z.array(z.string().trim().min(1).max(2_000)),
+    limitations: z.array(z.string().trim().min(1).max(2_000)).max(8),
   }),
   citation: z.object({
     evidenceId: careerEvidenceIdSchema,
     title: z.string().trim().min(1).max(240),
-    href: z.string().trim().min(1).max(2_000),
+    href: siteRelativePublicHrefSchema,
     sourceType: publicSourceTypeSchema,
     strength: evidenceStrengthSchema,
     maturity: careerMaturitySchema,

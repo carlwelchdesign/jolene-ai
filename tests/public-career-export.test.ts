@@ -38,7 +38,7 @@ describe("PublicCareerExportService", () => {
         corpusVersion: "career:f218a8e06d12d725399b23539c03a8cd0ca4803e98f85e62421b65bf3ff87c7b",
         corpusHash: "sha256:f218a8e06d12d725399b23539c03a8cd0ca4803e98f85e62421b65bf3ff87c7b",
         generatedAt: fixedNow.toISOString(),
-        reviewedAt: fixedNow.toISOString(),
+        reviewedAt: null,
         evidenceCount: 0,
         revokedEvidenceIds: [],
       });
@@ -95,7 +95,7 @@ describe("PublicCareerExportService", () => {
           citation: {
             evidenceId: `career:${publicClaim.id}`,
             title: "Sample project",
-            href: "https://example.com/work/sample",
+            href: "/work/sample#evidence",
             sourceType: "project",
             strength: "limited",
             maturity: "prototype",
@@ -268,15 +268,16 @@ describe("PublicCareerExportService", () => {
   });
 
   it.each([
-    ["Contact me at private@example.com", "https://example.com/work/sample"],
-    ["Call (555) 123-4567 for a private contact.", "https://example.com/work/sample"],
-    ["Read /Users/carl/private/resume.md", "https://example.com/work/sample"],
+    ["Contact me at private@example.com", "/work/sample#evidence"],
+    ["Call (555) 123-4567 for a private contact.", "/work/sample#evidence"],
+    ["Read /Users/carl/private/resume.md", "/work/sample#evidence"],
     [
       `Secret ${["sk", "1234567890abcdefghijkl"].join("-")} should never export.`,
-      "https://example.com/work/sample",
+      "/work/sample#evidence",
     ],
-    ["See [[Private Career Note]] for more.", "https://example.com/work/sample"],
-    ["Internal preview http://localhost:8421/memory", "https://example.com/work/sample"],
+    ["See [[Private Career Note]] for more.", "/work/sample#evidence"],
+    ["Internal preview http://localhost:8421/memory", "/work/sample#evidence"],
+    ["A safe proposition.", "https://example.com/work/sample"],
     ["A safe proposition.", "http://127.0.0.1:3000/work/sample"],
   ])("fails closed on private or unsafe export content", (proposition, href) => {
     const store = new SqliteCareerEvidenceStore(":memory:", () => fixedNow);
@@ -346,7 +347,7 @@ function createSource(
     sourceType: "project",
     title: "Sample project",
     provenanceRef: "site/app/portfolio-data.ts#sample",
-    provenanceUri: "https://example.com/work/sample",
+    provenanceUri: "/work/sample#evidence",
     sourceHash: hash("sample-source"),
     capturedAt: fixedNow.toISOString(),
     ...overrides,

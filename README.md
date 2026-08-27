@@ -284,7 +284,7 @@ and thread.
 - The offline public export emits only fresh `public_approved` claim/citation
   records, uses `limited` strength until that field is explicitly reviewed,
   and fails closed on private paths, contacts, secrets, Obsidian links, and
-  non-public citation hosts.
+  citation destinations that are not site-relative portfolio paths.
 
 See [the architecture plan](plans/JOLENE_SYSTEM_ARCHITECTURE_PLAN.md) and [the personality plan](plans/JOLENE_PERSONALITY_RESEARCH_AND_SPECIFICATION_PLAN.md).
 

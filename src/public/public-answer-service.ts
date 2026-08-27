@@ -71,10 +71,10 @@ export class DeterministicPublicAnswerService
     );
 
     return conflict
-      ? conflictResponse(artifact, request)
+      ? conflictResponse(artifact)
       : selected.length === 0
-      ? noEvidenceResponse(artifact, request)
-      : supportedResponse(artifact, request, selected);
+      ? noEvidenceResponse(artifact)
+      : supportedResponse(artifact, selected);
   }
 }
 
@@ -137,29 +137,25 @@ function score(
 
 function supportedResponse(
   artifact: PublicCareerEvidenceArtifact,
-  request: PortfolioAnswerRequest,
   selected: readonly PublicCareerEvidenceRecord[],
 ): PortfolioAnswerResponse {
   return portfolioAnswerResponseSchema.parse({
     schemaVersion: PUBLIC_CAREER_EVIDENCE_SCHEMA_VERSION,
-    answer: `Reviewed public evidence: ${selected
-      .map((record) => record.claim.text)
-      .join(" ")}`,
+    answer: boundedSupportedAnswer(selected),
     claims: selected.map((record) => record.claim),
     citations: selected.map((record) => record.citation),
-    limitations: unique(selected.flatMap((record) => record.claim.limitations)),
+    limitations: unique(selected.flatMap((record) => record.claim.limitations))
+      .slice(0, PUBLIC_PORTFOLIO_ANSWER_LIMITS.responseLimitations),
     suggestedFollowUpQuestions: [
       "Which cited project or role would you like to examine more closely?",
       "What limitations should we clarify with Carl directly?",
     ],
     corpusVersion: artifact.manifest.corpusVersion,
-    ...(request.sessionToken ? { sessionToken: request.sessionToken } : {}),
   });
 }
 
 function noEvidenceResponse(
   artifact: PublicCareerEvidenceArtifact,
-  request: PortfolioAnswerRequest,
 ): PortfolioAnswerResponse {
   return portfolioAnswerResponseSchema.parse({
     schemaVersion: PUBLIC_CAREER_EVIDENCE_SCHEMA_VERSION,
@@ -172,13 +168,11 @@ function noEvidenceResponse(
       "Would you like to ask about a published project, professional role, skill, or contribution?",
     ],
     corpusVersion: artifact.manifest.corpusVersion,
-    ...(request.sessionToken ? { sessionToken: request.sessionToken } : {}),
   });
 }
 
 function conflictResponse(
   artifact: PublicCareerEvidenceArtifact,
-  request: PortfolioAnswerRequest,
 ): PortfolioAnswerResponse {
   return portfolioAnswerResponseSchema.parse({
     schemaVersion: PUBLIC_CAREER_EVIDENCE_SCHEMA_VERSION,
@@ -193,10 +187,22 @@ function conflictResponse(
       "Would you like to ask about a different published project, role, skill, or contribution?",
     ],
     corpusVersion: artifact.manifest.corpusVersion,
-    ...(request.sessionToken ? { sessionToken: request.sessionToken } : {}),
   });
 }
 
 function unique(values: readonly string[]): string[] {
   return [...new Set(values)];
+}
+
+function boundedSupportedAnswer(
+  selected: readonly PublicCareerEvidenceRecord[],
+): string {
+  const prefix = "Reviewed public evidence: ";
+  const available = PUBLIC_PORTFOLIO_ANSWER_LIMITS.answerCharacters -
+    prefix.length;
+  return `${prefix}${selected
+    .map((record) => record.claim.text)
+    .join(" ")
+    .slice(0, available)
+    .trimEnd()}`;
 }
