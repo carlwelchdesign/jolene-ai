@@ -4,12 +4,12 @@ import path from "node:path";
 
 import Database from "better-sqlite3";
 
-import type { CareerEvidenceStore } from "../domain/career-evidence.js";
 import {
   isCareerEvidenceEligible,
   type CareerEmbedding,
   type CareerEmbeddingProvider,
   type CareerRetrievalChunk,
+  type CareerRetrievalEvidenceSource,
   type CareerRetrievalIndex,
   type CareerRetrievalResponse,
   type CareerRetrievalResult,
@@ -55,7 +55,7 @@ export class SqliteCareerRetrievalIndex implements CareerRetrievalIndex {
 
   constructor(
     databasePath: string,
-    private readonly evidence: CareerEvidenceStore,
+    private readonly evidence: CareerRetrievalEvidenceSource,
     private readonly embeddings: CareerEmbeddingProvider,
     private readonly now: () => Date = () => new Date(),
   ) {
@@ -300,8 +300,8 @@ export class SqliteCareerRetrievalIndex implements CareerRetrievalIndex {
 }
 
 function buildChunks(
-  source: ReturnType<CareerEvidenceStore["listSources"]>[number],
-  claim: ReturnType<CareerEvidenceStore["listClaims"]>[number],
+  source: ReturnType<CareerRetrievalEvidenceSource["listSources"]>[number],
+  claim: ReturnType<CareerRetrievalEvidenceSource["listClaims"]>[number],
 ): CareerRetrievalChunk[] {
   if (!source.lastReviewedAt || !claim.lastReviewedAt) return [];
   if (

@@ -813,9 +813,29 @@ and private API/Slack continuity checks pass.
 
 ### JOL-CAREER-008 — Relationship retrieval evaluation
 
-- Build multi-hop career questions and a relational baseline.
+- `JOL-CAREER-008A` implements the first versioned synthetic benchmark with
+  three precommitted questions, two strict improvement cases, one direct
+  no-regression case, and six 100% blocker metrics. It exercises the production
+  lexical index and compares it with a bounded evaluation-only relationship
+  traversal over active, freshly reviewed evidence.
+- Build a separately reviewed private-corpus multi-hop question set before any
+  production retrieval change.
 - Add GraphRAG or a dedicated graph database only if measured results justify
   the operational cost.
+
+`JOL-CAREER-008A` verification boundary:
+
+- Asana child: [JOL-CAREER-008A](https://app.asana.com/1/9789386902387/project/1216473233375594/task/1217892147365642);
+- fixture: `evaluations/career-relationship-v1.json`, schema `1.0.0`;
+- baseline: 3/3 questions and 6/6 blocker metrics pass; synthetic mean recall
+  rises from 6,111 to 10,000 basis points with 10,000-basis-point relational
+  precision; fixture hash
+  `f1f5df8deb6337096c1c8dd8c023d2abb47ab7bb42f6e80605e798cf7be88254`;
+- the first run exposed weak residual lexical ranking crowding out a two-hop
+  result; the measured seed budget is now explicit and relationship expansion
+  precedes residual weak lexical matches; and
+- no provider call, private corpus read, production behavior change, GraphRAG,
+  graph database, deployment, or launch authorization is part of this slice.
 
 ## Acceptance criteria
 
