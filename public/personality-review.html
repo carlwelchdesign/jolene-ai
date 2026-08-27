@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light">
+    <title>Jolene Personality Research Review</title>
+    <link rel="stylesheet" href="/memory-review.css">
+    <link rel="stylesheet" href="/personality-review.css">
+    <script type="module" src="/personality-review.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to personality research</a>
+    <header class="topbar">
+      <a class="brand" href="/personality-review" aria-label="Jolene Personality Research Review home">
+        <span class="brand-mark" aria-hidden="true">J</span>
+        <span><strong>Jolene</strong><small>Control Center</small></span>
+      </a>
+      <div class="header-tools">
+        <nav class="product-nav" aria-label="Jolene control center">
+          <a href="/workflows">Work</a><a href="/projects">Projects</a>
+          <a href="/career-evidence">Evidence</a><a href="/public-evaluation">Evaluation</a>
+          <a href="/personality-review" aria-current="page">Personality</a>
+          <a href="/contacts">Contacts</a><a href="/memory">Memory</a>
+          <a href="/approvals">Approvals</a><a href="/client-ai">Client AI</a>
+        </nav>
+        <div class="review-scope-chip" id="scope-chip"><span aria-hidden="true">●</span> Loading owner scope</div>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="hero personality-hero" aria-labelledby="page-title">
+        <p class="eyebrow">Research relevance gate</p>
+        <h1 id="page-title">Decide what feels right for Jolene.</h1>
+        <p class="hero-copy">Review the source register, paraphrased observations, hypotheses, and rejected patterns. Your decision is bound to the exact research files you see.</p>
+        <div class="hero-actions">
+          <button class="button button-primary" id="refresh-button" type="button">Refresh research</button>
+          <span class="local-note"><span aria-hidden="true">●</span> Local owner control</span>
+        </div>
+      </section>
+
+      <aside class="review-boundary" aria-label="Personality review boundary">
+        <span class="review-boundary-icon" aria-hidden="true">✓</span>
+        <div>
+          <strong>Relevance approval is not personality activation.</strong>
+          <p>This page cannot change Jolene’s prompt or behavior, imitate Dolly Parton, authorize voice work, publish anything, or send a message.</p>
+        </div>
+      </aside>
+
+      <div class="notice" id="page-notice" role="status" aria-live="polite" hidden></div>
+
+      <section class="research-summary" aria-label="Research summary">
+        <article><span>Sources</span><strong id="summary-sources">—</strong></article>
+        <article><span>Observations</span><strong id="summary-observations">—</strong></article>
+        <article><span>Second reviewed</span><strong id="summary-reviewed">—</strong></article>
+        <article><span>Decision</span><strong id="summary-decision">—</strong></article>
+      </section>
+
+      <section class="panel" aria-labelledby="snapshot-title">
+        <div class="section-heading">
+          <div><p class="eyebrow">Exact review packet</p><h2 id="snapshot-title">Research snapshot</h2></div>
+          <dl class="snapshot-meta" id="snapshot-meta"></dl>
+        </div>
+        <div id="research-state" aria-live="polite" aria-busy="true">
+          <div class="loading-state">Loading the owner-only research snapshot…</div>
+        </div>
+      </section>
+
+      <section class="panel decision-panel" id="decision-panel" aria-labelledby="decision-title" hidden>
+        <div class="section-heading"><div><p class="eyebrow">Explicit human decision</p><h2 id="decision-title">Record relevance</h2></div></div>
+        <p>Approve only if these patterns are useful inspiration for Jolene. Changes requested and rejection require concrete feedback.</p>
+        <form id="decision-form">
+          <label class="field" for="decision"><span>Decision</span>
+            <select id="decision" required>
+              <option value="">Choose after reviewing the research</option>
+              <option value="approved">Relevant — approve this snapshot</option>
+              <option value="changes_requested">Changes requested</option>
+              <option value="rejected">Not relevant — reject this snapshot</option>
+            </select>
+          </label>
+          <label class="field" for="feedback"><span>Feedback</span>
+            <textarea id="feedback" maxlength="4000" placeholder="What should change, what feels wrong, or which qualities matter most?"></textarea>
+          </label>
+          <div class="inline-error" id="review-error" role="alert" tabindex="-1" hidden></div>
+          <div class="review-actions">
+            <button class="button button-primary" id="review-submit" type="submit" disabled>Save relevance decision</button>
+            <span>Saved locally and bound to every artifact hash.</span>
+          </div>
+        </form>
+      </section>
+    </main>
+    <div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true" hidden></div>
+  </body>
+</html>
