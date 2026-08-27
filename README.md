@@ -56,6 +56,9 @@ The first runnable slice provides:
   actor/workspace/client scope, approved-evidence search and inspection,
   conservative private job comparison, and its own content-minimizing audit
   ledger;
+- a versioned synthetic multi-hop career retrieval benchmark that compares the
+  production lexical index with a bounded evaluation-only relationship
+  traversal before any GraphRAG or graph-database decision;
 - a local, owner-scoped Career Evidence screen for source-first internal/public
   approval, rejection, validation review, revocation, and explicit two-to-five
   claim conflict declaration and resolution, with registry-wide search and
@@ -129,6 +132,12 @@ Prerequisite: Node.js 22 or newer.
 
    ```bash
    npm run eval:public
+   ```
+
+   Run the offline relationship-retrieval benchmark separately:
+
+   ```bash
+   npm run eval:career:relationships
    ```
 
    Build the production service separately with:

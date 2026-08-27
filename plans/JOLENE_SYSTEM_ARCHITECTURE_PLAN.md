@@ -1146,6 +1146,19 @@ Deterministic adaptive red-team checkpoint:
 | Baseline | Suite v1.4 passes 61/61 expanded cases and 25/25 precommitted blocker metrics; hash `7bc6a1108a9a9fee06a6dce9e1d039b1ffd8559f48519adee10e7d9788465550` |
 | Remaining boundary | Deterministic transforms are not adaptive model attacks and do not prove arbitrary-prose safety. A separately authorized live run, Carl's representative review, portfolio navigation/accessibility, production operations, deployment, and launch approval remain open. |
 
+Relationship-retrieval benchmark checkpoint:
+
+| Field | Evidence |
+|---|---|
+| Asana | [JOL-CAREER-008A](https://app.asana.com/1/9789386902387/project/1216473233375594/task/1217892147365642) |
+| Branch | `codex/jol-career-008a-relational-benchmark` |
+| Contract | Versioned synthetic fixture with stable sources, claims, relationships, questions, expected claim IDs, seed/result budgets, one-to-two-hop limits, and six precommitted 100% blocker metrics |
+| Baseline boundary | The production SQLite lexical index runs with embeddings disabled; an evaluation-only traversal expands eligible seed claims through shared typed entities, then fills remaining capacity with residual lexical results |
+| Eligibility boundary | Active, freshly owner-reviewed sources and claims plus active relationships are required; deliberately connected unreviewed and revoked decoys remain ineligible |
+| Defect evidence | The first run showed a weak one-word lexical result crowding out a two-hop operational result; the explicit seed budget now preserves strong lexical seeds while relationship expansion precedes residual weak matches |
+| Baseline | Schema v1.0.0 passes 3/3 questions and 6/6 blocker metrics; synthetic mean recall at K rises from 6,111 to 10,000 basis points with 10,000-basis-point relational precision; fixture hash `f1f5df8deb6337096c1c8dd8c023d2abb47ab7bb42f6e80605e798cf7be88254` |
+| Remaining boundary | Synthetic success does not justify GraphRAG or a graph database. A separately reviewed private-corpus question set, comparative quality/latency evidence, production design review, and explicit activation remain open. |
+
 Recovered-evidence review-scale checkpoint:
 
 | Field | Evidence |

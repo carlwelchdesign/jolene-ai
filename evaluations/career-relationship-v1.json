@@ -1,0 +1,309 @@
+{
+  "suiteVersion": "1.0.0",
+  "suiteId": "career-relationship:offline-baseline-v1",
+  "evaluatedAt": "2026-08-27T06:00:00.000Z",
+  "scope": {
+    "actorId": "benchmark-owner",
+    "workspaceId": "synthetic-career"
+  },
+  "thresholds": {
+    "contract_validity": { "minimumPassRateBps": 10000, "blockingSeverity": "blocker" },
+    "lexical_baseline_coverage": { "minimumPassRateBps": 10000, "blockingSeverity": "blocker" },
+    "relational_recall_at_k": { "minimumPassRateBps": 10000, "blockingSeverity": "blocker" },
+    "relational_precision_at_k": { "minimumPassRateBps": 10000, "blockingSeverity": "blocker" },
+    "relational_no_regression": { "minimumPassRateBps": 10000, "blockingSeverity": "blocker" },
+    "relational_improvement": { "minimumPassRateBps": 10000, "blockingSeverity": "blocker" }
+  },
+  "sources": [
+    {
+      "id": "benchmark:source:governed-agent",
+      "title": "Governed agent system",
+      "tags": ["agents", "safety"],
+      "reviewState": "approved",
+      "lastReviewedAt": "2026-08-20T12:00:00.000Z",
+      "state": "active"
+    },
+    {
+      "id": "benchmark:source:teaching-practice",
+      "title": "Teaching practice",
+      "tags": ["education"],
+      "reviewState": "approved",
+      "lastReviewedAt": "2026-08-20T12:00:00.000Z",
+      "state": "active"
+    },
+    {
+      "id": "benchmark:source:typed-interface",
+      "title": "Typed product interface",
+      "tags": ["product"],
+      "reviewState": "approved",
+      "lastReviewedAt": "2026-08-20T12:00:00.000Z",
+      "state": "active"
+    },
+    {
+      "id": "benchmark:source:service-boundaries",
+      "title": "Service boundary work",
+      "tags": ["architecture"],
+      "reviewState": "approved",
+      "lastReviewedAt": "2026-08-20T12:00:00.000Z",
+      "state": "active"
+    },
+    {
+      "id": "benchmark:source:rollback-operations",
+      "title": "Operational release controls",
+      "tags": ["operations"],
+      "reviewState": "approved",
+      "lastReviewedAt": "2026-08-20T12:00:00.000Z",
+      "state": "active"
+    },
+    {
+      "id": "benchmark:source:audio-release",
+      "title": "Cinematic audio release",
+      "tags": ["audio"],
+      "reviewState": "approved",
+      "lastReviewedAt": "2026-08-20T12:00:00.000Z",
+      "state": "active"
+    },
+    {
+      "id": "benchmark:source:excluded-records",
+      "title": "Excluded benchmark records",
+      "tags": ["excluded"],
+      "reviewState": "approved",
+      "lastReviewedAt": "2026-08-20T12:00:00.000Z",
+      "state": "active"
+    }
+  ],
+  "claims": [
+    {
+      "id": "benchmark:claim:guardrails",
+      "sourceId": "benchmark:source:governed-agent",
+      "logicalKey": "guardrails",
+      "title": "Bounded automation guardrails",
+      "proposition": "Carl designed controlled automation with bounded approvals.",
+      "contribution": "He defined the policy and implementation boundaries.",
+      "maturity": "deployed_demo",
+      "visibility": "internal_approved",
+      "reviewState": "approved",
+      "lastReviewedAt": "2026-08-20T12:00:00.000Z",
+      "state": "active"
+    },
+    {
+      "id": "benchmark:claim:teaching",
+      "sourceId": "benchmark:source:teaching-practice",
+      "logicalKey": "teaching",
+      "title": "Hands-on workshop instruction",
+      "proposition": "Carl led practical workshops that made difficult systems understandable.",
+      "contribution": "He developed the exercises and facilitated participant learning.",
+      "maturity": "production",
+      "visibility": "internal_approved",
+      "reviewState": "approved",
+      "lastReviewedAt": "2026-08-20T12:00:00.000Z",
+      "state": "active"
+    },
+    {
+      "id": "benchmark:claim:typed-interface",
+      "sourceId": "benchmark:source:typed-interface",
+      "logicalKey": "typed-interface",
+      "title": "Typed product interfaces",
+      "proposition": "Carl shipped typed product interfaces for complex workflows.",
+      "contribution": "He owned interaction and implementation quality.",
+      "maturity": "production",
+      "visibility": "internal_approved",
+      "reviewState": "approved",
+      "lastReviewedAt": "2026-08-20T12:00:00.000Z",
+      "state": "active"
+    },
+    {
+      "id": "benchmark:claim:service-boundaries",
+      "sourceId": "benchmark:source:service-boundaries",
+      "logicalKey": "service-boundaries",
+      "title": "Explicit service boundaries",
+      "proposition": "Carl separated policy, persistence, and provider concerns in backend services.",
+      "contribution": "He designed and tested the system contracts.",
+      "maturity": "development",
+      "visibility": "internal_approved",
+      "reviewState": "approved",
+      "lastReviewedAt": "2026-08-20T12:00:00.000Z",
+      "state": "active"
+    },
+    {
+      "id": "benchmark:claim:rollback-operations",
+      "sourceId": "benchmark:source:rollback-operations",
+      "logicalKey": "rollback-operations",
+      "title": "Release rollback operations",
+      "proposition": "Carl established readiness checks and rollback rehearsal for releases.",
+      "contribution": "He connected delivery evidence to operational decisions.",
+      "maturity": "pre_release",
+      "visibility": "internal_approved",
+      "reviewState": "approved",
+      "lastReviewedAt": "2026-08-20T12:00:00.000Z",
+      "state": "active"
+    },
+    {
+      "id": "benchmark:claim:audio-release",
+      "sourceId": "benchmark:source:audio-release",
+      "logicalKey": "audio-release",
+      "title": "Cinematic audio plugin release",
+      "proposition": "Carl built a cinematic audio plugin release workflow.",
+      "contribution": "He implemented and validated the host-loadable product.",
+      "maturity": "released_product",
+      "visibility": "internal_approved",
+      "reviewState": "approved",
+      "lastReviewedAt": "2026-08-20T12:00:00.000Z",
+      "state": "active"
+    },
+    {
+      "id": "benchmark:claim:unreviewed-decoy",
+      "sourceId": "benchmark:source:excluded-records",
+      "logicalKey": "unreviewed-decoy",
+      "title": "Unreviewed graph decoy",
+      "proposition": "This unreviewed record must never enter the benchmark result.",
+      "contribution": "No approved contribution exists.",
+      "maturity": "planning",
+      "visibility": "private",
+      "reviewState": "needs_review",
+      "lastReviewedAt": null,
+      "state": "active"
+    },
+    {
+      "id": "benchmark:claim:revoked-decoy",
+      "sourceId": "benchmark:source:excluded-records",
+      "logicalKey": "revoked-decoy",
+      "title": "Revoked graph decoy",
+      "proposition": "This revoked record must never enter the benchmark result.",
+      "contribution": "The former record is no longer eligible.",
+      "maturity": "production",
+      "visibility": "internal_approved",
+      "reviewState": "approved",
+      "lastReviewedAt": "2026-08-20T12:00:00.000Z",
+      "state": "revoked"
+    }
+  ],
+  "relationships": [
+    {
+      "id": "benchmark:relationship:guardrails-translation",
+      "sourceId": "benchmark:source:governed-agent",
+      "claimId": "benchmark:claim:guardrails",
+      "fromKind": "project",
+      "fromId": "jolene",
+      "relationship": "demonstrates",
+      "toKind": "capability",
+      "toId": "complexity-translation",
+      "state": "active"
+    },
+    {
+      "id": "benchmark:relationship:teaching-translation",
+      "sourceId": "benchmark:source:teaching-practice",
+      "claimId": "benchmark:claim:teaching",
+      "fromKind": "role",
+      "fromId": "instructor",
+      "relationship": "demonstrates",
+      "toKind": "capability",
+      "toId": "complexity-translation",
+      "state": "active"
+    },
+    {
+      "id": "benchmark:relationship:typed-typescript",
+      "sourceId": "benchmark:source:typed-interface",
+      "claimId": "benchmark:claim:typed-interface",
+      "fromKind": "project",
+      "fromId": "portfolio",
+      "relationship": "uses_skill",
+      "toKind": "skill",
+      "toId": "typescript",
+      "state": "active"
+    },
+    {
+      "id": "benchmark:relationship:boundaries-typescript",
+      "sourceId": "benchmark:source:service-boundaries",
+      "claimId": "benchmark:claim:service-boundaries",
+      "fromKind": "project",
+      "fromId": "service-platform",
+      "relationship": "uses_skill",
+      "toKind": "skill",
+      "toId": "typescript",
+      "state": "active"
+    },
+    {
+      "id": "benchmark:relationship:boundaries-resilience",
+      "sourceId": "benchmark:source:service-boundaries",
+      "claimId": "benchmark:claim:service-boundaries",
+      "fromKind": "project",
+      "fromId": "service-platform",
+      "relationship": "demonstrates",
+      "toKind": "capability",
+      "toId": "operational-resilience",
+      "state": "active"
+    },
+    {
+      "id": "benchmark:relationship:rollback-resilience",
+      "sourceId": "benchmark:source:rollback-operations",
+      "claimId": "benchmark:claim:rollback-operations",
+      "fromKind": "project",
+      "fromId": "release-program",
+      "relationship": "demonstrates",
+      "toKind": "capability",
+      "toId": "operational-resilience",
+      "state": "active"
+    },
+    {
+      "id": "benchmark:relationship:unreviewed-translation",
+      "sourceId": "benchmark:source:excluded-records",
+      "claimId": "benchmark:claim:unreviewed-decoy",
+      "fromKind": "project",
+      "fromId": "jolene",
+      "relationship": "demonstrates",
+      "toKind": "capability",
+      "toId": "complexity-translation",
+      "state": "active"
+    },
+    {
+      "id": "benchmark:relationship:revoked-typescript",
+      "sourceId": "benchmark:source:excluded-records",
+      "claimId": "benchmark:claim:revoked-decoy",
+      "fromKind": "project",
+      "fromId": "portfolio",
+      "relationship": "uses_skill",
+      "toKind": "skill",
+      "toId": "typescript",
+      "state": "active"
+    }
+  ],
+  "cases": [
+    {
+      "id": "benchmark:question:governance-to-teaching",
+      "query": "controlled automation bounded approvals",
+      "expectedClaimIds": [
+        "benchmark:claim:guardrails",
+        "benchmark:claim:teaching"
+      ],
+      "limit": 2,
+      "seedLimit": 1,
+      "maxDepth": 1,
+      "requiresImprovement": true
+    },
+    {
+      "id": "benchmark:question:interface-to-operations",
+      "query": "typed product interfaces",
+      "expectedClaimIds": [
+        "benchmark:claim:typed-interface",
+        "benchmark:claim:service-boundaries",
+        "benchmark:claim:rollback-operations"
+      ],
+      "limit": 3,
+      "seedLimit": 1,
+      "maxDepth": 2,
+      "requiresImprovement": true
+    },
+    {
+      "id": "benchmark:question:direct-audio-release",
+      "query": "cinematic audio plugin release",
+      "expectedClaimIds": [
+        "benchmark:claim:audio-release"
+      ],
+      "limit": 1,
+      "seedLimit": 1,
+      "maxDepth": 1,
+      "requiresImprovement": false
+    }
+  ]
+}

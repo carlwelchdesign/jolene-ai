@@ -90,6 +90,11 @@ export interface CareerRetrievalIndex {
   close(): void;
 }
 
+export interface CareerRetrievalEvidenceSource {
+  listSources(scope: CareerEvidenceScope): readonly CareerSource[];
+  listClaims(scope: CareerEvidenceScope): readonly CareerClaim[];
+}
+
 export interface CareerRetrievalRequestContext {
   readonly eventId: string;
   readonly actorId: string;
