@@ -50,6 +50,75 @@ describe("OpenAI public answer generator", () => {
     expect(calls[0]?.[1]).toMatchObject({ signal: expect.any(AbortSignal) });
   });
 
+  it("returns validated provider usage for explicit live measurement", async () => {
+    const client = {
+      responses: {
+        create: async () => ({
+          output_text: JSON.stringify({ answer: "Grounded answer." }),
+          usage: {
+            input_tokens: 120,
+            output_tokens: 30,
+            total_tokens: 150,
+            input_tokens_details: {},
+            output_tokens_details: {},
+          },
+        }),
+      },
+    } as unknown as Pick<OpenAI, "responses">;
+    const generator = new OpenAIPublicAnswerGenerator({
+      client,
+      model: "test-model",
+      timeoutMilliseconds: 2_000,
+    });
+
+    await expect(generator.generateMeasured({ question: "Question", evidence: [] }))
+      .resolves.toEqual({
+        answer: "Grounded answer.",
+        inputTokens: 120,
+        outputTokens: 30,
+        totalTokens: 150,
+      });
+  });
+
+  it("rejects missing or inconsistent usage only for measured generation", async () => {
+    const missingUsageClient = {
+      responses: {
+        create: async () => ({
+          output_text: JSON.stringify({ answer: "Grounded answer." }),
+        }),
+      },
+    } as unknown as Pick<OpenAI, "responses">;
+    const generator = new OpenAIPublicAnswerGenerator({
+      client: missingUsageClient,
+      model: "test-model",
+      timeoutMilliseconds: 2_000,
+    });
+
+    await expect(generator.generate({ question: "Question", evidence: [] }))
+      .resolves.toBe("Grounded answer.");
+    await expect(generator.generateMeasured({ question: "Question", evidence: [] }))
+      .rejects.toBeDefined();
+
+    const inconsistentUsageClient = {
+      responses: {
+        create: async () => ({
+          output_text: JSON.stringify({ answer: "Grounded answer." }),
+          usage: {
+            input_tokens: 120,
+            output_tokens: 30,
+            total_tokens: 100,
+          },
+        }),
+      },
+    } as unknown as Pick<OpenAI, "responses">;
+    await expect(new OpenAIPublicAnswerGenerator({
+      client: inconsistentUsageClient,
+      model: "test-model",
+      timeoutMilliseconds: 2_000,
+    }).generateMeasured({ question: "Question", evidence: [] }))
+      .rejects.toBeDefined();
+  });
+
   it.each([
     ["malformed JSON", "not-json"],
     ["empty answer", JSON.stringify({ answer: "" })],

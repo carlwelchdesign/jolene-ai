@@ -624,6 +624,25 @@ Arbitrary model-prose entailment, live-model measurement, portfolio
 integration/accessibility, broader adaptive red-team work, production controls,
 representative human review, deployment, and launch authorization remain open.
 
+`JOL-CAREER-006G` implementation boundary:
+
+- a versioned public-only live suite freezes the model, pricing review date,
+  expected evidence selection, latency/token/cost ceilings, and 100% blocking
+  thresholds before a run;
+- the command requires explicit `--live` opt-in and a manually created
+  `.env.public.local`; it never loads or copies the private Jolene environment;
+- the machine report contains only stable IDs, fixed reasons, gates, and
+  aggregate timing/token/cost values, while representative prompts, public
+  evidence, and model prose go to a separate ignored owner-only review packet;
+  and
+- injected-provider tests exercise success, provider failure, unsafe egress,
+  token/cost failure, deterministic provider bypass, and packet permissions
+  without making a live request.
+
+The harness does not itself satisfy live-model evidence or human review. An
+authorized run, Carl's packet review, portfolio accessibility/integration,
+production controls, deployment, and launch authorization remain open.
+
 ### JOL-CAREER-007 — Private MCP adapter
 
 - Add only after the evidence service contract is stable.

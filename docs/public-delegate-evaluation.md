@@ -115,3 +115,42 @@ additional adaptive red-team coverage; portfolio citation navigation and
 accessible highlighting; production admission and observability; and Carl's
 review of representative outputs. Passing this command never authorizes public
 launch.
+
+## Explicit live-model measurement
+
+`JOL-CAREER-006G` adds a separate live-provider harness. It is inert unless the
+operator supplies `--live`; it refuses to load `.env.local` and reads only a
+separately created `.env.public.local`. The configured model must exactly match
+the reviewed fixture. Ordinary `npm test` and `npm run eval:public` remain fully
+offline.
+
+The committed `evaluations/public-live-model-v1.json` fixture precommits four
+public-only cases, the expected deterministic evidence selection, 100% blocking
+thresholds, and latency/token/cost ceilings. Its `gpt-5.6-terra` token rates were
+reviewed on 2026-08-26 against the [official OpenAI API pricing](https://platform.openai.com/pricing).
+Changing the model, price, scenario, expectation, or threshold changes the suite
+hash and requires review. Cost estimates conservatively charge every reported
+input token at the full short-context input rate instead of assuming a cache
+discount. The committed suite hash is
+`8215efe8e294018fbfc008d0fac67dfe54d9cec387dfc41a9bb83e370b83fd0b`.
+
+To prepare an authorized local run, create `.env.public.local` manually with
+`JOLENE_PUBLIC_ANSWER_MODE=openai`, the exact reviewed model, timeout, and a
+dedicated `OPENAI_API_KEY`. Do not copy the private Jolene environment. Then run:
+
+```bash
+npm run eval:public:live -- --live
+```
+
+The command exits with `0` only when every blocking threshold passes, `1` for a
+valid failing run, and `2` when opt-in, configuration, or fixture validation
+fails. Standard output contains only stable case IDs, fixed reason codes,
+aggregate timing/token/cost values, and gates. It excludes questions, evidence,
+citations, model prose, and provider errors.
+
+Representative questions, exact public grounding, and outputs are written to
+the ignored owner-permission file
+`.jolene/evaluations/public-live-model-review.json`. A passing machine report is
+therefore still incomplete until Carl reviews that packet. The harness neither
+approves evidence nor enables the service, portfolio adapter, CORS, deployment,
+or launch.

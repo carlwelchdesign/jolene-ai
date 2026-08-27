@@ -981,6 +981,19 @@ Owner conflict-review checkpoint:
 | Verification | 44 test files / 284 tests; isolated compiled declaration and resolution flows; accurate counter and selection updates; desktop and 390-pixel mobile visual review; no horizontal overflow or browser console errors |
 | Remaining boundary | `JOL-CAREER-006` and `PORT-EVAL-001` remain open; arbitrary model-prose entailment, live-model, portfolio, operational, representative human-review, and launch gates remain pending |
 
+Live-model measurement-harness checkpoint:
+
+| Field | Evidence |
+|---|---|
+| Asana | [JOL-CAREER-006G](https://app.asana.com/1/9789386902387/project/1216473233375594/task/1217888434407696) |
+| Branch | `codex/jol-career-006g-live-model-eval` |
+| Opt-in boundary | The live command requires `--live` and a manually created `.env.public.local`; ordinary tests and offline evaluation cannot call the provider, and the private environment is never loaded or copied |
+| Measurement boundary | Versioned public-only cases precommit exact evidence selection, model and pricing review, 100% blocker thresholds, latency, input/output token, per-request cost, and total cost ceilings |
+| Suite evidence | Four cases, ten covered metrics, and hash `8215efe8e294018fbfc008d0fac67dfe54d9cec387dfc41a9bb83e370b83fd0b`; the passing implementation check uses an injected fake and is not live-model evidence |
+| Report boundary | Machine output contains stable IDs, fixed reasons, gates, and aggregate measurements only; representative questions, exact public grounding, and prose are isolated in an ignored owner-permission review packet |
+| Safety evidence | Evidence mismatch bypasses the provider; unsafe or invalid prose falls back; no public bind, evidence approval, portfolio enablement, deployment, or launch authorization |
+| Remaining boundary | A separately authorized live run, arbitrary-prose human review, portfolio integration/accessibility, production operations, deployment, and launch approval remain open |
+
 Recovered-evidence review-scale checkpoint:
 
 | Field | Evidence |

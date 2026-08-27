@@ -10,6 +10,27 @@ const generatedAnswerSchema = z.object({
   answer: z.string().trim().min(1).max(2_000),
 }).strict();
 
+const responseUsageSchema = z.object({
+  input_tokens: z.number().int().nonnegative(),
+  output_tokens: z.number().int().nonnegative(),
+  total_tokens: z.number().int().nonnegative(),
+}).passthrough().superRefine((usage, context) => {
+  if (usage.total_tokens < usage.input_tokens + usage.output_tokens) {
+    context.addIssue({
+      code: "custom",
+      path: ["total_tokens"],
+      message: "Total token usage cannot be less than input plus output usage.",
+    });
+  }
+});
+
+export interface MeasuredPublicAnswerGeneration {
+  readonly answer: string;
+  readonly inputTokens: number;
+  readonly outputTokens: number;
+  readonly totalTokens: number;
+}
+
 export interface OpenAIPublicAnswerGeneratorOptions {
   readonly client: Pick<OpenAI, "responses">;
   readonly model: string;
@@ -41,6 +62,25 @@ export class OpenAIPublicAnswerGenerator implements PublicAnswerTextGenerator {
   }
 
   async generate(input: GroundedPublicAnswerInput): Promise<string> {
+    return generatedAnswer(
+      await this.#createResponse(input),
+    );
+  }
+
+  async generateMeasured(
+    input: GroundedPublicAnswerInput,
+  ): Promise<MeasuredPublicAnswerGeneration> {
+    const response = await this.#createResponse(input);
+    const usage = responseUsageSchema.parse(response.usage);
+    return {
+      answer: generatedAnswer(response),
+      inputTokens: usage.input_tokens,
+      outputTokens: usage.output_tokens,
+      totalTokens: usage.total_tokens,
+    };
+  }
+
+  async #createResponse(input: GroundedPublicAnswerInput) {
     const response = await this.#client.responses.create({
       model: this.#model,
       store: false,
@@ -71,6 +111,10 @@ export class OpenAIPublicAnswerGenerator implements PublicAnswerTextGenerator {
     }, {
       signal: AbortSignal.timeout(this.#timeoutMilliseconds),
     });
-    return generatedAnswerSchema.parse(JSON.parse(response.output_text)).answer;
+    return response;
   }
+}
+
+function generatedAnswer(response: { readonly output_text: string }): string {
+  return generatedAnswerSchema.parse(JSON.parse(response.output_text)).answer;
 }
