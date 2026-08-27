@@ -24,6 +24,7 @@
     "eval:public": "tsx scripts/evaluate-public-delegate.ts",
     "eval:public:live": "tsx scripts/evaluate-public-live-model.ts",
     "research:personality:validate": "tsx scripts/validate-personality-research.ts",
+    "secrets:migrate-compose": "tsx scripts/migrate-compose-secrets.ts",
     "slack": "tsx src/slack.ts",
     "start": "node dist/server.js",
     "start:career-index:lexical": "node dist/career-index.js",

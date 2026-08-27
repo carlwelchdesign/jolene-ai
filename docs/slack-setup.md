@@ -12,7 +12,8 @@ The ChatGPT Slack connection and this standalone Slack app are separate integrat
 4. Under **OAuth & Permissions**, copy the Bot User OAuth Token beginning with `xoxb-`.
 5. Under **Basic Information → App-Level Tokens**, generate a token with the `connections:write` scope and copy the token beginning with `xapp-`.
 6. Copy Carl's Slack member ID from his Slack profile using **Copy member ID**.
-7. Add these values to `.env.local` without committing the file:
+7. Add these values to `.env.local` without committing the file for direct host
+   development:
 
    ```dotenv
    SLACK_BOT_TOKEN=xoxb-...
@@ -21,6 +22,16 @@ The ChatGPT Slack connection and this standalone Slack app are separate integrat
    JOLENE_OWNER_ACTOR_ID=carl
    JOLENE_OWNER_WORKSPACE_ID=personal
    ```
+
+8. For the private Compose runtime, migrate them to file-mounted secrets:
+
+   ```bash
+   npm run secrets:migrate-compose
+   ```
+
+   After a credential rotation, replace the ignored secret-file contents and
+   recreate the affected services. Do not paste tokens into Compose YAML,
+   Asana, Slack messages, Git, or diagnostic output.
 
 The manifest requests only:
 

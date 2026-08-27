@@ -12,7 +12,7 @@ if (
   !config.slackOwnerUserId
 ) {
   throw new Error(
-    "Slack is not configured. Set SLACK_BOT_TOKEN, SLACK_APP_TOKEN, and SLACK_OWNER_USER_ID in .env.local.",
+    "Slack is not configured. Provide Slack bot/app credentials directly or through secret files, plus SLACK_OWNER_USER_ID.",
   );
 }
 const ownerUserId = config.slackOwnerUserId;

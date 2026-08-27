@@ -2,7 +2,7 @@
 
 **Date:** 2026-08-26
 
-**Status:** Docker API, governed career ingestion, private hybrid retrieval, durable owner-reviewed conflict registry with loopback visual review, public export, loopback manifest/answer/job-fit/contact-staging/admission/audit/egress-disclosure boundaries, a separate private readiness/aggregate-metrics plane, disabled-by-default grounded answer synthesis, private contact review, explicit unresolved public-evidence conflict policy, offline response/lifecycle/red-team/contact/conflict evaluation, and an owner-only live-model review control implemented; authorized live-provider execution, completed human review, production aggregation/alerting, full evaluation, and deployment remain pending
+**Status:** Docker API, governed career ingestion with completed owner evidence review, private hybrid retrieval, durable owner-reviewed conflict registry with loopback visual review, public export, loopback manifest/answer/job-fit/contact-staging/admission/audit/egress-disclosure boundaries, a separate private readiness/aggregate-metrics plane, disabled-by-default grounded answer synthesis, private contact review, explicit unresolved public-evidence conflict policy, offline response/lifecycle/red-team/contact/conflict evaluation, and an owner-only live-model review control implemented; authorized live-provider execution, production aggregation/alerting, deployment, publication, and launch remain pending
 
 ## Product outcome
 
@@ -29,7 +29,7 @@ chatbot.
 | MCP | Not implemented |
 | Graph database / GraphRAG | Not implemented |
 | Durable private memory | Implemented through explicit proposals and approval |
-| Public portfolio evidence boundary | Versioned deny-by-default export plus isolated loopback contracts and disabled-by-default grounded OpenAI answer synthesis implemented; portfolio integration and deployment remain disabled |
+| Public portfolio evidence boundary | Versioned deny-by-default export plus isolated loopback contracts and disabled-by-default grounded OpenAI answer synthesis implemented; local portfolio integration is verified, while public activation and deployment remain disabled |
 | Docker | Private API and Slack plus the isolated public delegate run as separate healthy local containers; production deployment remains pending |
 | Public operations | Separate loopback-only listener provides strict liveness, component readiness, aggregate fixed-dimension request counts, latency buckets, and bounded two-listener shutdown; no operations port is host-published |
 | Career evidence registry | Implemented with 38 approved active sources and 143 approved active claims: 41 public-artifact eligible and 102 private-Jolene only |
@@ -430,16 +430,18 @@ Verification checkpoint:
   no-evidence requests bypass it, successful output can replace only answer
   prose, and all provider or validation failures preserve the deterministic
   response.
-- Integrate the isolated Jolene public service through the portfolio adapter.
-- Preserve the public-evidence-only source boundary.
-- Add production cost ceilings, provider-specific redaction, edge admission, and
-  centralized audit monitoring.
+- Frozen-v1 alignment, isolated container packaging, persistent model-request
+  budget, and a private aggregate operations plane are implemented in
+  `JOL-CAREER-005J/K/L/M`.
+- The portfolio's disabled same-origin adapter and end-to-end deterministic
+  harness validate the loopback service, 41-claim corpus, focusable citations,
+  and nine blocker flows.
 
-`JOL-CAREER-005A/B/C/D/E/F/G/H/I` do not complete this ticket: there is no
-evaluated or production-enabled model answer path, outbound reply control, authenticated
-production owner surface, CORS, public binding, container service, portfolio
-integration, production-grade abuse controls, production audit pipeline, or
-deployment path.
+The `JOL-CAREER-005` bounded service implementation and local portfolio
+integration dependency are complete. Production topology approval, public
+binding, edge/distributed controls, provider activation, public contact
+activation, authenticated production operations, deployment, publication, and
+launch remain separate tickets and gates.
 
 `JOL-CAREER-005F` verification checkpoint:
 

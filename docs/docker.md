@@ -16,7 +16,28 @@ database, vault content, or local project configuration.
 
 ## Configure
 
-Keep application credentials in the existing ignored `.env.local` file.
+Keep direct host-development credentials in the existing ignored `.env.local`
+file. Before using the private Compose stack, separate those values into
+owner-only secret files and a non-secret runtime environment:
+
+```bash
+npm run secrets:migrate-compose
+```
+
+The migration creates ignored mode-`0600` files under `.jolene/secrets` and an
+ignored mode-`0600` `.env.runtime.local`. It prints only the migrated variable
+names, never their values. An unchanged rerun is idempotent. Changed source
+values require the explicit `--replace` argument; ordinary credential rotation
+may instead update the three secret files directly.
+
+`.env.runtime.example` documents the non-secret runtime variables. Do not add
+credentials to that file or to `.env.runtime.local`.
+
+Private Compose does not load `.env.local`. The API and monitor receive only
+the OpenAI secret file. Slack receives the OpenAI, Slack app, and Slack bot
+secret files. The one-shot career exporter receives none. Application config
+accepts either a direct variable for host development or one matching `*_FILE`
+path, never both, and rejects missing, empty, oversized, or multiline files.
 
 Create an ignored `.env` file for Docker Compose interpolation:
 
@@ -88,6 +109,9 @@ start `jolene-slack` as part of an API-only cutover.
 - The Obsidian bind mount is read-only at the container boundary in addition
   to Jolene's application-level allowlist.
 - The services bind the HTTP port to loopback, not the public network.
+- `docker compose config` renders secret file locations rather than credential
+  values. Treat the source `.env.local` and generated secret files as sensitive
+  even though neither is committed or copied into the image.
 
 `docker compose down` preserves the named data volume. Do not run
 `docker compose down -v` unless deleting Jolene's containerized SQLite history
@@ -118,11 +142,10 @@ docker compose -f compose.public.yaml up --build -d
 docker compose -f compose.public.yaml ps
 ```
 
-The export command above applies when the configured host database is
-canonical. When the private Compose database is canonical, use the governed
-review/export workflow against that database and copy only its generated public
-artifact to the ignored host handoff path. Do not export from a stale host
-database merely to satisfy the container mount.
+The export command runs a network-disabled one-shot job against the canonical
+private Compose data volume and writes only the public-safe artifact to the
+ignored host handoff path. `career:export-public:host` is development-only and
+must not be used as evidence of canonical review state.
 
 Open `http://127.0.0.1:8431/health` or request
 `http://127.0.0.1:8431/v1/public-evidence/manifest`. Compose binds port 8431
