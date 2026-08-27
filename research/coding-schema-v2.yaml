@@ -1,0 +1,43 @@
+schema_version: personality-corpus-v2
+status: contract-only
+runtime_activation: prohibited
+eligibility:
+  minimum_atomic_turns: 100
+  maximum_atomic_turns: 150
+  minimum_source_events: 10
+  minimum_publisher_families: 8
+  minimum_setting_families: 8
+  minimum_research_contexts: 8
+  minimum_time_bands: 4
+  minimum_turns_per_context: 5
+  minimum_sources_per_context: 2
+distribution_caps:
+  maximum_source_share: 0.15
+  maximum_publisher_share: 0.20
+  maximum_time_band_share: 0.40
+independent_review:
+  minimum_rate: 0.25
+  minimum_per_source: 2
+  minimum_per_context: 2
+  sensitive_strata_rate: 1.0
+  low_confidence_rate: 1.0
+  minimum_raw_categorical_agreement: 0.80
+  minimum_trait_family_kappa: 0.60
+trait_admission:
+  minimum_supporting_turns: 6
+  minimum_source_events: 3
+  minimum_setting_families: 3
+  minimum_time_bands: 2
+  maximum_single_source_share: 0.50
+  independent_review_rate: 1.0
+rights:
+  repository_storage: metadata-and-paraphrase-only
+  excerpts: prohibited
+  lyrics: prohibited
+  transcript_audio_video_storage: prohibited
+  recognizable_expression: prohibited
+  biography_or_belief_transfer: prohibited
+  dialect_imitation: prohibited
+  default_intimacy: prohibited
+  voice_imitation: prohibited
+  snapshot_is_non_activating: true
