@@ -25,13 +25,13 @@ chatbot.
 | OpenAI Agents SDK | Implemented |
 | Read-only Obsidian access | Implemented with path allowlists and exact note/heading citations |
 | Retrieval | Conversational Obsidian remains lexical; reviewed career evidence uses lexical/vector fusion with deterministic fallback |
-| Embedding RAG | Implemented for private, freshly reviewed career claims; current eligible corpus is empty pending Carl's review |
+| Embedding RAG | Implemented for 143 approved private-career claims; embeddings require exact opt-in and the live retrieval index remains unsynchronized |
 | MCP | Not implemented |
 | Graph database / GraphRAG | Not implemented |
 | Durable private memory | Implemented through explicit proposals and approval |
 | Public portfolio evidence boundary | Versioned deny-by-default export plus isolated loopback contracts and disabled-by-default grounded OpenAI answer synthesis implemented; portfolio integration and deployment remain disabled |
-| Docker | Image and API container verified; Slack operational cutover and production deployment remain pending |
-| Career evidence registry | Implemented with sources, claims, relationships, review freshness, visibility, revocation, and supersession |
+| Docker | Private API and Slack plus the isolated public delegate run as separate healthy local containers; production deployment remains pending |
+| Career evidence registry | Implemented with 38 approved active sources and 143 approved active claims: 41 public-artifact eligible and 102 private-Jolene only |
 | Portfolio candidate migration | Implemented; 26 sources, 41 active claims, and 57 relationships imported with zero public-approved claims |
 | Obsidian career ingestion | Implemented for the explicit `01 Career & Job Search` allowlist; 11 notes, 81 active private claims, 106 relationships, zero public-approved claims |
 
