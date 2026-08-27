@@ -8,7 +8,7 @@ import type { WorkContextReader } from "../src/domain/work-context.js";
 
 const workContext: WorkContextReader = {
   loadAuthorizedContext() {
-    return { task: null, memories: [] };
+    return { task: null, taskEvents: [], memories: [] };
   },
 };
 

@@ -170,6 +170,45 @@ describe("JoleneService", () => {
     }
   });
 
+  it("loads recent durable task events into private task context", async () => {
+    const store = new SqliteConversationStore(":memory:");
+    const workContext = new SqliteWorkContextStore(":memory:");
+    const runner = new RecordingRunner();
+    const service = new JoleneService({
+      store,
+      runner,
+      workContext,
+      maxHistoryTurns: 16,
+      maxMemoryItems: 24,
+    });
+
+    try {
+      const task = workContext.createTask({
+        actorId: "carl",
+        workspaceId: "personal",
+        title: "Persistent progress",
+        objective: "Keep the next action in context.",
+      });
+      workContext.appendTaskEvent({
+        taskId: task.id,
+        actorId: "carl",
+        workspaceId: "personal",
+        kind: "next_action",
+        summary: "Run the full verification suite.",
+      });
+
+      await service.chat(request({ eventId: "task-history", taskId: task.id }));
+
+      expect(runner.requests[0]?.workContext.taskEvents).toMatchObject([
+        { kind: "created" },
+        { kind: "next_action", summary: "Run the full verification suite." },
+      ]);
+    } finally {
+      store.close();
+      workContext.close();
+    }
+  });
+
   it("selects global durable memory against the current message", async () => {
     const store = new SqliteConversationStore(":memory:");
     const workContext = new SqliteWorkContextStore(":memory:");
@@ -250,6 +289,7 @@ describe("JoleneService", () => {
 
       expect(runner.requests[0]?.workContext).toEqual({
         task: null,
+        taskEvents: [],
         memories: [],
       });
     } finally {
@@ -323,7 +363,7 @@ describe("JoleneService", () => {
         loadAuthorizedContext() {
           contextAttempts += 1;
           if (contextAttempts === 1) throw new Error("Synthetic context failure");
-          return { task: null, memories: [] };
+          return { task: null, taskEvents: [], memories: [] };
         },
       },
       maxHistoryTurns: 16,

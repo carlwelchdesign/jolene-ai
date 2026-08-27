@@ -1,12 +1,14 @@
 import { z } from "zod";
 
 import {
+  appendableTaskEventKindSchema,
   memoryDecisionSchema,
   memoryKindSchema,
   memorySensitivitySchema,
   taskStatusSchema,
   type AuthorizedWorkContext,
   type MemoryProposal,
+  type TaskEvent,
   type DurableMemory,
   type WorkContextStore,
   type WorkTask,
@@ -32,6 +34,20 @@ export const updateTaskStatusSchema = z.object({
 export const listTasksSchema = z.object({
   ...identityFields,
   status: taskStatusSchema.optional(),
+});
+
+export const appendTaskEventSchema = z.object({
+  ...identityFields,
+  taskId: z.string().uuid(),
+  kind: appendableTaskEventKindSchema,
+  summary: z.string().trim().min(1).max(500),
+  details: z.string().trim().min(1).max(8_000).nullable().default(null),
+});
+
+export const listTaskEventsSchema = z.object({
+  ...identityFields,
+  taskId: z.string().uuid(),
+  limit: z.coerce.number().int().min(1).max(100).default(20),
 });
 
 export const proposeMemorySchema = z.object({
@@ -82,6 +98,7 @@ export const previewContextSchema = z.object({
   query: z.string().trim().min(1).max(4_000),
   includeSensitiveMemory: z.boolean().default(false),
   memoryLimit: z.number().int().min(1).max(100).default(24),
+  taskEventLimit: z.number().int().min(1).max(100).default(20),
 });
 
 export class WorkContextService {
@@ -101,6 +118,20 @@ export class WorkContextService {
       request.actorId,
       request.workspaceId,
       request.status,
+    );
+  }
+
+  appendTaskEvent(input: unknown): TaskEvent {
+    return this.store.appendTaskEvent(appendTaskEventSchema.parse(input));
+  }
+
+  listTaskEvents(input: unknown): readonly TaskEvent[] {
+    const request = listTaskEventsSchema.parse(input);
+    return this.store.listTaskEvents(
+      request.taskId,
+      request.actorId,
+      request.workspaceId,
+      request.limit,
     );
   }
 

@@ -69,6 +69,7 @@ export class JoleneService {
             memoryLimit: this.options.maxMemoryItems,
             includeSensitiveMemory: request.includeSensitiveMemory ?? false,
             query: request.message,
+            taskEventLimit: 20,
           })
         : EMPTY_WORK_CONTEXT;
       const response = await this.options.runner.respond({
@@ -98,6 +99,7 @@ export class JoleneService {
 
 const EMPTY_WORK_CONTEXT: AuthorizedWorkContext = {
   task: null,
+  taskEvents: [],
   memories: [],
 };
 

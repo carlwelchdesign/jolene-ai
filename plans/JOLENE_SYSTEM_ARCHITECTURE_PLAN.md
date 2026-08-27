@@ -422,6 +422,13 @@ The Slack Socket Mode slice provides owner-only DMs and explicit channel mention
 
 The task-memory slice adds durable work tasks and an explicit memory-proposal lifecycle. Only approved proposals become durable memories. Private chat may load same-actor, same-workspace global memory plus memory for an explicitly selected task; shared channels receive neither. Pending and rejected proposals never enter model context.
 
+The task-event slice adds a durable timeline for created tasks, status
+transitions, progress, evidence, decisions, blockers, and next actions. Task
+creation and status events are transactional; repeated status updates are
+idempotent. Private model context receives only a bounded chronological window
+from the explicitly selected actor/workspace-owned task. Events are historical
+context, not executable instructions or proof of an external outcome.
+
 The memory-governance slice adds three sensitivity levels, UTC-normalized expiry, correction through a reviewed replacement proposal, and explicit content-forgetting with a non-content tombstone. Restricted records require the selected task; sensitive records additionally require an explicit flag on that individual private request. Expired, superseded, forgotten, pending, and rejected records are excluded from model context.
 
 The contextual-ranking slice applies a deterministic lexical scorer after authorization and before the memory limit. It uses request terms, task terms, selected-task scope, and explicit standing-rule/preference baselines. Selection evidence is available through a read-only preview endpoint. The candidate window is capped, privacy gates precede ranking, and no embedding provider or new external dependency is introduced.
@@ -498,6 +505,18 @@ Contextual-ranking checkpoint:
 | Selection evidence | Older relevant memory outranks newer unrelated memory; current-request, task-term, task-scope, standing-rule, and preference reasons are inspectable |
 | Privacy evidence | Candidate retrieval applies actor, workspace, task, sensitivity, expiry, correction, and forgetting gates before ranking |
 | Remaining boundary | Lexical vocabulary gaps, the bounded candidate window, compaction, bulk retention, task-event history, graphical bulk administration, and authenticated production exposure remain pending |
+
+Task-event-history checkpoint:
+
+| Field | Value |
+|---|---|
+| Branch | `codex/jol-arch-003b-task-events` |
+| Implementation commit | `c375b9c` (`JOL-ARCH-003B add durable task event context`) |
+| Pull request | [#7](https://github.com/carlwelchdesign/jolene-ai/pull/7), stacked on the governed public-export branch |
+| Verification | 28 test files and 133 tests, Node 24.18.0 typecheck, production build, restart persistence, bounded ordering, actor/workspace/task isolation, and live loopback lifecycle pass |
+| Runtime evidence | Task and event creation return 201; context preview returns only the selected task's `created` and `evidence` events; foreign scope returns 404; cross-origin mutation returns 403 |
+| Safety evidence | Shared channels receive no task event context; manual callers cannot forge creation or status-transition events; task history is explicitly labeled non-authoritative |
+| Remaining boundary | Automatic compaction, retention/forget controls, event-search/ranking, graphical task-history administration, and authenticated production exposure remain pending |
 
 Memory Review interface checkpoint:
 
@@ -621,7 +640,7 @@ Current ticket evidence:
 |---|---|---|
 | JOL-ARCH-001 | Partial | Initial policy taxonomy and trust boundary exist; the full capability registry is pending. |
 | JOL-ARCH-002 | Implemented for first slice | Core service runs through CLI or HTTP and does not depend on Slack. |
-| JOL-ARCH-003 | Partial | Durable isolated conversations, tasks, governed and request-ranked memory, a local graphical review workflow, status updates, retries, and restart recovery are tested; task-event history, automatic compaction, embedding-backed similarity, bulk retention controls, and authenticated production administration remain pending. |
+| JOL-ARCH-003 | Partial | Durable isolated conversations, tasks, scoped task-event timelines, governed and request-ranked memory, a local graphical review workflow, status updates, retries, and restart recovery are tested. Recent selected-task events now enter private context only. Automatic compaction, embedding-backed similarity, retention controls, event search/ranking, and authenticated production administration remain pending. |
 | JOL-ARCH-004 | Implemented for local pilot | Socket Mode adapter, manifest, owner gate, thread mapping, live mention/reply evidence, durable generation deduplication, and durable delivery retries exist. Live owner-DM evidence and crash-window reconciliation remain operational gates. |
 | JOL-ARCH-005 | Implemented for local slice | Read-only allowlisted Markdown retrieval is tested with exact note and heading citations. |
 | JOL-ARCH-006 | Partial | Retrieved excerpts retain provenance and private knowledge searches now have a durable, content-minimizing access ledger; external disclosure authorization and delivery receipts remain pending. |

@@ -293,6 +293,34 @@ async function handleRequest(
     return;
   }
 
+  const taskEventsMatch = url.pathname.match(/^\/v1\/tasks\/([^/]+)\/events$/);
+  if (request.method === "GET" && taskEventsMatch?.[1]) {
+    sendJson(
+      response,
+      200,
+      application.work.listTaskEvents({
+        taskId: taskEventsMatch[1],
+        actorId: url.searchParams.get("actorId"),
+        workspaceId: url.searchParams.get("workspaceId"),
+        limit: url.searchParams.get("limit") ?? undefined,
+      }),
+    );
+    return;
+  }
+
+  if (request.method === "POST" && taskEventsMatch?.[1]) {
+    assertSameOrigin(request.headers);
+    sendJson(
+      response,
+      201,
+      application.work.appendTaskEvent({
+        ...asObject(await readJson(request)),
+        taskId: taskEventsMatch[1],
+      }),
+    );
+    return;
+  }
+
   if (request.method === "POST" && url.pathname === "/v1/memory-proposals") {
     sendJson(
       response,
