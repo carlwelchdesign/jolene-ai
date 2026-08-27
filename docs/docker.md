@@ -128,6 +128,13 @@ only to host loopback. The process listens on `0.0.0.0` only inside its isolated
 container, guarded by `JOLENE_PUBLIC_CONTAINER_MODE=true`; a direct host process
 still rejects that bind address.
 
+The same process has a separate operations listener at container loopback
+`127.0.0.1:8432`. Compose does not publish that port. Its `/live`, `/ready`, and
+`/metrics` routes contain only fixed component states and aggregate
+content-free counters; the container healthcheck uses `/ready`. Inspect it only
+through an explicit local container operation when troubleshooting. Do not add
+an operations-port mapping without a separately reviewed deployment topology.
+
 The reviewed artifact is bind-mounted read-only at
 `/public-data/public-career-evidence.json`. A missing artifact is not created as
 a directory and the service fails closed. The only writable persistent mount is

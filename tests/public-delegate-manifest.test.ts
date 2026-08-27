@@ -34,6 +34,10 @@ import {
   type PublicAuditRecordInput,
   type PublicAuditRecorder,
 } from "../src/public/public-audit-ledger.js";
+import {
+  InMemoryPublicOperationalTelemetry,
+  type PublicOperationalTelemetry,
+} from "../src/public/public-operational-telemetry.js";
 
 const temporaryDirectories: string[] = [];
 const openServers: ReturnType<typeof createPublicDelegateServer>[] = [];
@@ -67,6 +71,8 @@ describe("public delegate manifest boundary", () => {
       enabled: true,
       host: "127.0.0.1",
       port: 8431,
+      operationsHost: "127.0.0.1",
+      operationsPort: 8432,
       artifactPath: path.resolve(
         ".jolene/exports/public-career-evidence.json",
       ),
@@ -127,6 +133,18 @@ describe("public delegate manifest boundary", () => {
     })).toThrow();
     expect(() => parsePublicDelegateConfig({
       JOLENE_PUBLIC_CONTAINER_MODE: "yes",
+    })).toThrow();
+    expect(() => parsePublicDelegateConfig({
+      JOLENE_PUBLIC_OPERATIONS_HOST: "0.0.0.0",
+    })).toThrow();
+    expect(parsePublicDelegateConfig({
+      JOLENE_PUBLIC_CONTAINER_MODE: "true",
+      JOLENE_PUBLIC_OPERATIONS_HOST: "0.0.0.0",
+      JOLENE_PUBLIC_OPERATIONS_PORT: "9444",
+    })).toMatchObject({ operationsHost: "0.0.0.0", operationsPort: 9444 });
+    expect(() => parsePublicDelegateConfig({
+      JOLENE_PUBLIC_PORT: "8431",
+      JOLENE_PUBLIC_OPERATIONS_PORT: "8431",
     })).toThrow();
     expect(() => parsePublicDelegateConfig({
       JOLENE_PUBLIC_REQUESTS_PER_MINUTE: "0",
@@ -192,6 +210,23 @@ describe("public delegate manifest boundary", () => {
       schemaVersion: fixture.manifest.schemaVersion,
       corpusVersion: fixture.manifest.corpusVersion,
       evidenceCount: 0,
+    });
+  });
+
+  it("accounts for public requests without retaining client or content dimensions", async () => {
+    const fixture = await loadFixture();
+    const telemetry = new InMemoryPublicOperationalTelemetry();
+    const { baseUrl } = await start(await writeArtifact(fixture), { telemetry });
+    expect((await fetch(`${baseUrl}/health`)).status).toBe(200);
+    expect((await fetch(`${baseUrl}/not-a-route`)).status).toBe(404);
+
+    expect(telemetry.snapshot()).toMatchObject({
+      totalRequests: 2,
+      inFlight: 0,
+      operations: { health: 1, unknown: 1 },
+      methods: { GET: 2 },
+      outcomes: { ok: 1, not_found: 1 },
+      statusClasses: { successful: 1, clientError: 1 },
     });
   });
 
@@ -863,6 +898,7 @@ async function start(
     readonly contactIntents?: PublicContactIntentStager;
     readonly audits?: PublicAuditRecorder;
     readonly answers?: PublicPortfolioAnswerer;
+    readonly telemetry?: PublicOperationalTelemetry;
   } = {},
 ): Promise<{
   readonly baseUrl: string;
@@ -887,6 +923,7 @@ async function start(
       maxConcurrentRequests: 10,
     }),
     requestId: () => testRequestId,
+    ...(overrides.telemetry ? { telemetry: overrides.telemetry } : {}),
     ...(overrides.audits ? { audits: overrides.audits } : {}),
   });
   openServers.push(server);

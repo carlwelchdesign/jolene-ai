@@ -52,7 +52,9 @@ The first runnable slice provides:
   artifact and exposes health, the frozen v1 manifest, and deterministic
   citation-complete public-evidence answers and conservative job-description
   comparisons, plus consented local contact-intent staging, a runtime kill
-  switch, bounded local admission, and a content-minimizing local audit ledger;
+  switch, bounded local admission, a content-minimizing local audit ledger,
+  and a separate private operations listener for readiness and aggregate
+  content-free request metrics;
 - a deterministic public-response disclosure guard that replaces unsafe egress
   with a generic fail-closed response before content leaves the process;
 - optional disabled-by-default grounded OpenAI answer synthesis that can change
@@ -253,6 +255,10 @@ and thread.
 - The isolated public audit ledger records only fixed operations, outcomes,
   timing, corpus version, and counts; it never stores request bodies, visitor
   identity, session tokens, source addresses, citations, or response text.
+- The isolated public operations listener is loopback-only and not host-published
+  by the reference Compose topology. Its strict snapshots contain fixed
+  component states and aggregate counters only—never prompts, answers, job
+  descriptions, contact fields, client addresses, headers, URLs, or stack traces.
 - Offline public export and runtime public egress share one disclosure policy
   for private paths and hosts, file or Obsidian links, likely secrets, email
   addresses, and phone numbers.

@@ -1059,6 +1059,20 @@ Public-model budget checkpoint:
 | Non-goals | No token/cost reconciliation, provider activation, pricing approval, distributed quota, public deployment, or launch authorization |
 | Verification | Node 24 with 47 test files / 309 tests; frozen suite 41/41 cases and 24/24 metrics; disposable pre-exhausted model-mode container returned unchanged 3-claim/3-citation deterministic output with `model_budget_fallback` and no provider request; build, fresh image, both Compose definitions, audit, diff, deterministic runtime, and private API/Slack continuity checks pass |
 
+Private public-operations checkpoint:
+
+| Field | Evidence |
+|---|---|
+| Asana | [JOL-CAREER-005M](https://app.asana.com/1/9789386902387/project/1216473233375594/task/1217889674883596) |
+| Branch | `codex/jol-career-005m-operations-plane` |
+| Implementation commit | `1a364af` (`JOL-CAREER-005M add private operations plane`) |
+| Listener boundary | A second configurable listener defaults to loopback port `8432`; the reference Compose project does not publish it, and the frozen portfolio API on `8431` remains unchanged |
+| Readiness boundary | Strict liveness and readiness snapshots expose only fixed delegate, public-evidence, contact-queue, audit-ledger, and optional model-budget states; probe failures collapse to a generic non-disclosing state |
+| Metrics boundary | In-memory strict-schema counters retain only process times, total/in-flight/high-water counts, fixed operation/method/outcome/status dimensions, and bounded latency aggregates; no client or submitted/returned content dimension exists |
+| Lifecycle boundary | Both listeners stop admission together, close idle connections, drain for a bounded five seconds, and force-close requests that cannot finish; the container healthcheck uses private readiness |
+| Verification | Node 24 typecheck and production build; 55 test files / 335 tests; unchanged offline suite v1.3 at 41/41 cases and 24/24 blocker metrics; private/public Compose validation; zero production dependency vulnerabilities; host-process liveness/readiness/metrics and clean signal drain; fresh isolated image healthy with 41 claims; container-internal operations readiness/metrics; Docker exposed only host-loopback `8431`; temporary smoke container, network, and volume removed |
+| Non-goals | No hosted telemetry provider, external alert destination, operations-port exposure, public bind, provider request, portfolio activation, deployment, or launch authorization |
+
 Repository-integration checkpoint:
 
 | Field | Evidence |

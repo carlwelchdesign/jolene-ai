@@ -20,6 +20,8 @@ process reads `.env.public.local`, not `.env.local`. All settings are optional:
 JOLENE_PUBLIC_ENABLED=true
 JOLENE_PUBLIC_HOST=127.0.0.1
 JOLENE_PUBLIC_PORT=8431
+JOLENE_PUBLIC_OPERATIONS_HOST=127.0.0.1
+JOLENE_PUBLIC_OPERATIONS_PORT=8432
 JOLENE_PUBLIC_ARTIFACT_PATH=.jolene/exports/public-career-evidence.json
 JOLENE_PUBLIC_CONTACT_QUEUE_PATH=.jolene/public/contact-intents.json
 JOLENE_PUBLIC_CONTACT_RETENTION_DAYS=30
@@ -37,9 +39,10 @@ JOLENE_PUBLIC_OPENAI_REQUESTS_PER_DAY=100
 OPENAI_API_KEY=
 ```
 
-Only `127.0.0.1`, `::1`, and `localhost` are accepted as hosts in this slice.
-The artifact path must point to the generated public export, never the private
-SQLite database or vault.
+Only `127.0.0.1`, `::1`, and `localhost` are accepted as hosts outside the
+isolated container. The public and operations listeners must use different
+ports. The artifact path must point to the generated public export, never the
+private SQLite database or vault.
 
 Set `JOLENE_PUBLIC_ENABLED=false` to fail closed before artifact access. The
 local process then returns only a non-disclosing `503` response. The admission
@@ -205,6 +208,37 @@ This is development evidence, not production telemetry. Authenticated access,
 centralized aggregation, availability monitoring, deletion operations, and an
 approved production retention policy remain deployment gates.
 
+## Private operations plane
+
+The reference process starts a second HTTP listener on
+`JOLENE_PUBLIC_OPERATIONS_HOST:JOLENE_PUBLIC_OPERATIONS_PORT`. It defaults to
+`127.0.0.1:8432`; `compose.public.yaml` does not publish that port to the host.
+The frozen portfolio API remains unchanged on port 8431.
+
+The private listener has exactly three read-only routes:
+
+- `GET /live` proves that the operations event loop is serving;
+- `GET /ready` reports fixed states for delegate enablement, public evidence,
+  the contact queue, audit ledger, and optional model-request budget; and
+- `GET /metrics` returns process-start time, observation time, total and
+  in-flight request counts, concurrency high-water mark, fixed
+  operation/method/outcome counters, status classes, and bounded latency
+  buckets.
+
+The schemas have no fields for raw or normalized client identity, IP address,
+headers, user agent, URL, request ID, prompt, answer, job description, contact
+field, citation, claim text, provider detail, filesystem path, or stack trace.
+Metrics are in-memory and reset on restart. A changed or missing public artifact
+makes readiness `unready`; unavailable audit or model-budget state makes it
+`degraded` without broadening a response. The container healthcheck uses the
+private readiness route.
+
+`SIGINT` and `SIGTERM` stop admission by closing both listeners, drain active
+requests for up to five seconds, close idle connections immediately, and then
+force-close any request that cannot finish. This is a local operational
+contract, not centralized production monitoring, an alert destination, or
+approval to expose the operations port.
+
 ## Response disclosure guard
 
 Every response body passes through one deterministic disclosure policy before
@@ -249,10 +283,11 @@ deletion, and inert reply-draft workflow is implemented, but authenticated
 production owner access and any outbound reply workflow still require separate
 privacy, abuse, evaluation, and human-approval gates. Disabled-by-default
 grounded answer synthesis exists, but model-backed answer quality remains open.
-A content-minimizing local audit ledger exists, but the
+A content-minimizing local audit ledger and private aggregate operations plane
+exist, but the
 deterministic job-fit baseline still requires integration and evaluation before
 any public use. Authenticated audit access, production aggregation and
-monitoring, provider-specific redaction, cost controls, and distributed abuse
-controls remain open. The isolated loopback container is implemented, but
+alerting, provider-specific redaction, token/cost reconciliation, and
+distributed abuse controls remain open. The isolated loopback container is implemented, but
 adding a production bind address, public hostname, reverse proxy, CORS policy,
 or deployment requires explicit approval and a reviewed deployment topology.

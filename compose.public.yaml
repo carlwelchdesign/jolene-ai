@@ -12,6 +12,8 @@ services:
       JOLENE_PUBLIC_CONTAINER_MODE: "true"
       JOLENE_PUBLIC_HOST: 0.0.0.0
       JOLENE_PUBLIC_PORT: 8431
+      JOLENE_PUBLIC_OPERATIONS_HOST: 127.0.0.1
+      JOLENE_PUBLIC_OPERATIONS_PORT: 8432
       JOLENE_PUBLIC_ARTIFACT_PATH: /public-data/public-career-evidence.json
       JOLENE_PUBLIC_CONTACT_QUEUE_PATH: /public-state/contact-intents.json
       JOLENE_PUBLIC_CONTACT_RETENTION_DAYS: ${JOLENE_PUBLIC_CONTACT_RETENTION_DAYS:-30}
@@ -58,7 +60,7 @@ services:
         - node
         - --input-type=module
         - -e
-        - "const response=await fetch('http://127.0.0.1:8431/health');if(!response.ok)process.exit(1)"
+        - "const response=await fetch('http://127.0.0.1:8432/ready');if(!response.ok)process.exit(1)"
 
 volumes:
   jolene-public-state:

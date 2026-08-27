@@ -39,6 +39,10 @@ import type {
 import {
   assertPublicResponseDisclosureSafe,
 } from "../domain/public-disclosure-policy.js";
+import type {
+  PublicOperationalMeasurement,
+  PublicOperationalTelemetry,
+} from "./public-operational-telemetry.js";
 
 const MAX_URL_CHARACTERS = 2_048;
 const MAX_BODY_BYTES = 98_304;
@@ -57,6 +61,7 @@ export interface PublicDelegateServerOptions {
   readonly contactIntents: PublicContactIntentStager;
   readonly admissions: PublicRequestAdmissionController;
   readonly audits?: PublicAuditRecorder;
+  readonly telemetry?: PublicOperationalTelemetry;
   readonly requestId?: () => `req:${string}`;
 }
 
@@ -67,10 +72,20 @@ export function createPublicDelegateServer(
     { maxHeaderSize: 16_384 },
     async (request, response) => {
       const requestId = (options.requestId ?? createPublicRequestId)();
+      const measurement = options.telemetry?.begin({
+        operation: auditOperation(request.url ?? "/"),
+        method: auditMethod(request.method),
+      });
+      response.once("close", () => {
+        if (!response.writableFinished) {
+          measurement?.complete({ status: 499, outcome: "request_aborted" });
+        }
+      });
       const respond = createAuditedResponder(
         request,
         response,
         options.audits,
+        measurement,
         requestId,
       );
       if (!options.enabled) {
@@ -295,6 +310,7 @@ function createAuditedResponder(
   request: IncomingMessage,
   response: ServerResponse,
   audits: PublicAuditRecorder | undefined,
+  measurement: PublicOperationalMeasurement | undefined,
   requestId: `req:${string}`,
 ): PublicAuditedResponder {
   const startedAt = Date.now();
@@ -309,6 +325,10 @@ function createAuditedResponder(
       details,
       requestId,
     );
+    measurement?.complete({
+      status: guarded.status,
+      outcome: guarded.outcome,
+    });
     if (audits) {
       try {
         void audits.record({
@@ -351,13 +371,17 @@ function guardPublicResponse(
 
 function auditOperation(rawUrl: string): PublicAuditOperation {
   if (rawUrl.length > MAX_URL_CHARACTERS) return "unknown";
-  const pathname = new URL(rawUrl, "http://127.0.0.1").pathname;
-  if (pathname === "/health") return "health";
-  if (pathname === "/v1/public-evidence/manifest") return "manifest";
-  if (pathname === "/v1/portfolio/answer") return "answer";
-  if (pathname === "/v1/portfolio/job-fit") return "job_fit";
-  if (pathname === "/v1/portfolio/contact-intent") return "contact_intent";
-  return "unknown";
+  try {
+    const pathname = new URL(rawUrl, "http://127.0.0.1").pathname;
+    if (pathname === "/health") return "health";
+    if (pathname === "/v1/public-evidence/manifest") return "manifest";
+    if (pathname === "/v1/portfolio/answer") return "answer";
+    if (pathname === "/v1/portfolio/job-fit") return "job_fit";
+    if (pathname === "/v1/portfolio/contact-intent") return "contact_intent";
+    return "unknown";
+  } catch {
+    return "unknown";
+  }
 }
 
 function auditMethod(method: string | undefined): PublicAuditMethod {

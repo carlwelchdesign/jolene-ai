@@ -80,6 +80,10 @@ describe("Docker runtime boundary", () => {
     expect(publicCompose).toContain("read_only: true");
     expect(publicCompose).toContain("no-new-privileges:true");
     expect(publicCompose).toContain("127.0.0.1:${JOLENE_PUBLIC_HOST_PORT:-8431}:8431");
+    expect(publicCompose).toContain("JOLENE_PUBLIC_OPERATIONS_HOST: 127.0.0.1");
+    expect(publicCompose).toContain("JOLENE_PUBLIC_OPERATIONS_PORT: 8432");
+    expect(publicCompose).toContain("http://127.0.0.1:8432/ready");
+    expect(publicCompose).not.toContain("127.0.0.1:8432:8432");
     expect(publicCompose).toContain(
       "OPENAI_API_KEY: ${JOLENE_PUBLIC_CONTAINER_OPENAI_API_KEY:-}",
     );
