@@ -54,6 +54,7 @@
         <article><span>Observations</span><strong id="summary-observations">—</strong></article>
         <article><span>Second reviewed</span><strong id="summary-reviewed">—</strong></article>
         <article><span>Decision</span><strong id="summary-decision">—</strong></article>
+        <article><span>Tuning</span><strong id="summary-tuning">—</strong></article>
       </section>
 
       <section class="panel" aria-labelledby="snapshot-title">
@@ -85,6 +86,77 @@
           <div class="review-actions">
             <button class="button button-primary" id="review-submit" type="submit" disabled>Save relevance decision</button>
             <span>Saved locally and bound to every artifact hash.</span>
+          </div>
+        </form>
+      </section>
+
+      <section class="panel decision-panel" id="tuning-panel" aria-labelledby="tuning-title">
+        <div class="section-heading">
+          <div><p class="eyebrow">Fingerprint-bound preferences</p><h2 id="tuning-title">Tune Jolene deliberately</h2></div>
+          <dl class="snapshot-meta" id="tuning-meta"></dl>
+        </div>
+        <p id="tuning-status" aria-live="polite">Loading the tuning gate…</p>
+        <div id="tuning-decision" hidden></div>
+        <form id="tuning-form" hidden>
+          <div class="tuning-grid">
+            <label class="field" for="wit-intensity"><span>Wit intensity</span>
+              <select id="wit-intensity" required>
+                <option value="0">0 — none</option><option value="1">1 — restrained</option>
+                <option value="2">2 — noticeable</option><option value="3">3 — strong</option>
+              </select>
+            </label>
+            <label class="field" for="terms-of-endearment"><span>Terms of endearment</span>
+              <select id="terms-of-endearment" required>
+                <option value="disabled">Disabled</option><option value="private_opt_in">Private and explicitly opted in</option>
+              </select>
+            </label>
+            <label class="field" for="faith-language"><span>Faith language</span>
+              <select id="faith-language" required>
+                <option value="absent">Absent</option><option value="user_led_only">User-led only</option><option value="lightly_available">Lightly available</option>
+              </select>
+            </label>
+            <label class="field" for="challenge-style"><span>Challenge style</span>
+              <select id="challenge-style" required>
+                <option value="direct_when_evidence_clear">Direct when evidence is clear</option><option value="ask_permission_first">Ask permission first</option>
+              </select>
+            </label>
+            <label class="field" for="private-response-length"><span>Private response length</span>
+              <select id="private-response-length" required>
+                <option value="concise">Concise</option><option value="adaptive">Adaptive</option><option value="detailed">Detailed</option>
+              </select>
+            </label>
+            <label class="field" for="slack-response-length"><span>Slack response length</span>
+              <select id="slack-response-length" required>
+                <option value="concise">Concise</option><option value="adaptive">Adaptive</option>
+              </select>
+            </label>
+            <label class="field" for="inspiration-strength"><span>Inspiration strength</span>
+              <select id="inspiration-strength" required>
+                <option value="subtle">Subtle</option><option value="noticeable">Noticeable</option><option value="theatrical_but_original">Theatrical but original</option>
+              </select>
+            </label>
+            <label class="field" for="vault-retrieval-preference"><span>Vault retrieval preference</span>
+              <select id="vault-retrieval-preference" required>
+                <option value="explicit_allowlist">Use the configured explicit allowlist</option><option value="ask_each_time">Ask each time</option>
+              </select>
+            </label>
+            <label class="field" for="client-ai-disclosure"><span>Client-AI disclosure</span>
+              <select id="client-ai-disclosure" required>
+                <option value="task_packets_only">Purpose-limited task packets only</option><option value="selected_excerpts_with_exact_approval">Selected excerpts with exact approval</option>
+              </select>
+            </label>
+          </div>
+          <label class="field" for="tuning-notes"><span>Tuning notes</span>
+            <textarea id="tuning-notes" maxlength="4000" placeholder="Optional nuance that should remain bound to this decision."></textarea>
+          </label>
+          <label class="tuning-confirmation" for="tuning-confirm">
+            <input id="tuning-confirm" type="checkbox">
+            <span><strong>I reviewed these exact preferences.</strong><small>Saving records a local decision only. It does not activate or change Jolene.</small></span>
+          </label>
+          <div class="inline-error" id="tuning-error" role="alert" tabindex="-1" hidden></div>
+          <div class="review-actions">
+            <button class="button button-primary" id="tuning-submit" type="submit" disabled>Save tuning decision</button>
+            <span>Bound to the approved research snapshot and tuning contract.</span>
           </div>
         </form>
       </section>

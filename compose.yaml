@@ -22,6 +22,7 @@ x-jolene-runtime: &jolene-runtime
     JOLENE_PUBLIC_LIVE_REVIEW_PACKET_PATH: /review/public-live-model-review.json
     JOLENE_PUBLIC_LIVE_REVIEW_DECISION_PATH: /data/evaluations/public-live-model-decision.json
     JOLENE_PERSONALITY_RESEARCH_DECISION_PATH: /data/personality/research-decision.json
+    JOLENE_PERSONALITY_TUNING_DECISION_PATH: /data/personality/tuning-decision.json
   volumes:
     - jolene-data:/data
     - type: bind

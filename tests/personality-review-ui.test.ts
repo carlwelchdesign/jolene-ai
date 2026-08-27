@@ -18,10 +18,15 @@ describe("personality research review UI", () => {
     expect(html).toContain('id="decision-form"');
     expect(html).toContain("Relevance approval is not personality activation");
     expect(html).toContain("cannot change Jolene’s prompt or behavior");
+    expect(html).toContain('id="tuning-form"');
+    expect(html).toContain("Saving records a local decision only");
+    expect(html).toContain("Purpose-limited task packets only");
     expect(javascript).not.toContain("innerHTML");
     expect(javascript).toContain("textContent");
     expect(javascript).toContain("personality_review_scope_not_permitted");
+    expect(javascript).toContain("personality_tuning_not_eligible");
     expect(css).toContain("@media (max-width:430px)");
+    expect(css).toContain(".decision-panel form[hidden]");
   });
 
   it("serves immutable assets and same-origin protects the decision route", () => {
@@ -32,6 +37,12 @@ describe("personality research review UI", () => {
     );
     expect(route).toBeGreaterThan(0);
     expect(server.slice(route, route + 500)).toContain("assertSameOrigin(request.headers)");
+    const tuningRoute = server.indexOf(
+      'url.pathname === "/v1/personality-tuning-review/decision"',
+    );
+    expect(tuningRoute).toBeGreaterThan(0);
+    expect(server.slice(tuningRoute, tuningRoute + 500))
+      .toContain("assertSameOrigin(request.headers)");
     const assets = loadMemoryReviewAssets(projectRoot);
     expect(assets.personalityHtml.body.byteLength).toBeGreaterThan(1_000);
     expect(assets.personalityCss.body.byteLength).toBeGreaterThan(1_000);

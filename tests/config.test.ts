@@ -23,6 +23,9 @@ describe("private runtime configuration", () => {
     expect(config.personalityResearchDecisionPath).toBe(
       "/tmp/jolene-config-test/.jolene/personality/research-decision.json",
     );
+    expect(config.personalityTuningDecisionPath).toBe(
+      "/tmp/jolene-config-test/.jolene/personality/tuning-decision.json",
+    );
   });
 
   it("requires an exact explicit opt-in for career embeddings", () => {
