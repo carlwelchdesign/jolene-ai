@@ -14,6 +14,7 @@ describe("private runtime configuration", () => {
     );
 
     expect(config.careerEmbeddingsEnabled).toBe(false);
+    expect(config.openaiApiKey).toBe("test-key");
     expect(config.publicLiveReviewPacketPath).toBe(
       "/tmp/jolene-config-test/.jolene/evaluations/public-live-model-review.json",
     );
@@ -78,6 +79,7 @@ describe("private runtime configuration", () => {
 
     expect(config.slackBotToken).toBe("file-bot-token");
     expect(config.slackAppToken).toBe("file-app-token");
+    expect(config.openaiApiKey).toBe("file-openai-key");
   });
 
   it("fails closed on ambiguous or malformed secret-file configuration", () => {

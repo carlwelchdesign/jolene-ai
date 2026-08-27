@@ -178,6 +178,7 @@ export async function createApplication(
     ownerScope,
   );
   const runner = new OpenAIJoleneRunner({
+    apiKey: config.openaiApiKey,
     model: config.model,
     instructions,
     knowledge,
