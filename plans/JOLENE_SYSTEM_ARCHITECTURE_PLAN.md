@@ -896,8 +896,11 @@ Public-delegate frozen-v1 alignment checkpoint:
 |---|---|
 | Asana | [JOL-CAREER-005J](https://app.asana.com/1/9789386902387/project/1216473233375594/task/1217888122836212) — frozen portfolio v1 provider alignment |
 | Branch | `codex/jol-career-005j-contract-alignment` |
+| Implementation commit | `6445105` (`JOL-CAREER-005J align frozen public v1 contract`) |
+| Pull request | [jolene-ai #29](https://github.com/carlwelchdesign/jolene-ai/pull/29), stacked on the Docker cutover branch |
 | Contract boundary | Version 1 omits session continuity, bounds every response collection and string, requires site-relative citations, keeps `missing` and `unknown` citation-free, and uses one versioned safe error envelope with opaque request IDs |
 | Consumer evidence | Read-only compatibility review against `carl-welch-portfolio` PR #13 at commit `3e9e270` |
+| Verification | Node 24 typecheck, 45 test files / 293 tests, all 41 offline evaluation cases and 24 blocker metrics, production build, Compose validation, zero production dependency vulnerabilities, diff checks, and compiled HTTP contract smoke tests passed |
 | Safety evidence | Provider and filesystem failure names remain internal; no request content, private ID, path, evidence excerpt, or destination origin is added to errors; no public bind, deployment, or evidence approval |
 | Remaining boundary | Portfolio integration, authenticated production operations, live-model measurement, production telemetry/cost controls, deployment topology, human review, and launch approval remain separate gates |
 
