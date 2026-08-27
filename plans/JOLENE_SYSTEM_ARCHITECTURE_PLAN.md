@@ -1009,3 +1009,15 @@ Recovered-evidence review-scale checkpoint:
 | Review control | Ten-source pages with synchronized header/footer navigation, registry-wide filtering/search, page reset/clamping, selection preservation, and bounded capture/update/review/fingerprint context |
 | Verification | 44 test files / 285 tests; real four-page registry navigation and recovered-narrative search; desktop and 390-pixel mobile review; no horizontal overflow or browser console errors |
 | Remaining boundary | Human evidence approval, embedding synchronization, public export, portfolio integration, live-model evaluation, production controls, deployment, and launch remain separate explicit gates |
+
+Approved public-corpus checkpoint:
+
+| Field | Evidence |
+|---|---|
+| Delivery | `12c7c4c` (`JOL-CAREER-004A align portfolio evidence citations`); [jolene-ai #31](https://github.com/carlwelchdesign/jolene-ai/pull/31), stacked on #30 |
+| Human decision | Carl explicitly approved all reviewed evidence; 41 claims were approved for public export and 102 were approved for private Jolene retrieval only |
+| Registry state | 38 approved active sources, 143 approved active claims, zero validation issues, and zero unresolved conflicts |
+| Citation boundary | Every public citation is portfolio-relative; project evidence uses `/work/{slug}#evidence` and no repository/live URL is delegated as a citation destination |
+| Artifact boundary | Ignored local artifact `.jolene/exports/public-career-evidence.json`; schema `1.0.0`; corpus `career:3d3b0d7361be5cfae3c634013bc48b73983388d3207d8f9b7bb1aaf50fa5c5de`; generated `2026-08-27T00:42:53.419Z`; evidence reviewed through `2026-08-27T00:38:07.748Z`; 41 public claims; zero revocations |
+| Safety boundary | Approval, artifact generation, portfolio integration, a live public endpoint, deployment, and launch remain distinct gates; no private/internal evidence is present in the artifact |
+| Verification | Node 24: 46 test files / 302 tests; frozen offline suite 41/41 cases and 24/24 blocker metrics; build, Compose, zero production dependency vulnerabilities, diff, artifact integrity, citation, and disclosure checks pass; private API and Slack runtime preserved |

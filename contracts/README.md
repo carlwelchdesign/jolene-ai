@@ -29,3 +29,10 @@ invalid prior artifact blocks replacement instead of resetting that history.
 Publishing, copying outside the configured local boundary, or serving an
 artifact beyond the loopback reference process remains a separate Carl
 approval gate even when its evidence count is zero.
+
+The first human-approved local corpus was generated under schema `1.0.0` with
+41 public claims and zero revocations. All citation destinations are
+site-relative; portfolio project records use `/work/{slug}#evidence`. The
+reviewed artifact remains ignored at
+`.jolene/exports/public-career-evidence.json` and is not a deployment artifact
+or a live endpoint.
