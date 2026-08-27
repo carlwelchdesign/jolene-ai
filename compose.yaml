@@ -12,6 +12,7 @@ x-jolene-runtime: &jolene-runtime
     JOLENE_HOST: 0.0.0.0
     JOLENE_OBSIDIAN_VAULT_ROOT: /vault
     JOLENE_PORT: 8421
+    JOLENE_CAREER_EMBEDDINGS_ENABLED: ${JOLENE_CAREER_EMBEDDINGS_ENABLED:-false}
   volumes:
     - jolene-data:/data
     - type: bind

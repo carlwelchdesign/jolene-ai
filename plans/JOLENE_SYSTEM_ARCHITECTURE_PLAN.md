@@ -1008,7 +1008,7 @@ Recovered-evidence review-scale checkpoint:
 | Registry | 38 active sources, 143 active claims, 0 internal-approved claims, 0 public-approved claims |
 | Review control | Ten-source pages with synchronized header/footer navigation, registry-wide filtering/search, page reset/clamping, selection preservation, and bounded capture/update/review/fingerprint context |
 | Verification | 44 test files / 285 tests; real four-page registry navigation and recovered-narrative search; desktop and 390-pixel mobile review; no horizontal overflow or browser console errors |
-| Remaining boundary | Human evidence approval, embedding synchronization, public export, portfolio integration, live-model evaluation, production controls, deployment, and launch remain separate explicit gates |
+| Remaining boundary | Human evidence approval is complete. Private lexical-index synchronization, explicit embedding-provider opt-in, public export, portfolio integration, live-model evaluation, production controls, deployment, and launch remain separate explicit gates. |
 
 Approved public-corpus checkpoint:
 

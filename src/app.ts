@@ -25,7 +25,7 @@ import {
 import { ObsidianKnowledgeSource } from "./knowledge/obsidian-source.js";
 import { AuditedKnowledgeSource } from "./knowledge/audited-knowledge-source.js";
 import {
-  OpenAICareerEmbeddingProvider,
+  createCareerEmbeddingProvider,
 } from "./knowledge/openai-career-embeddings.js";
 import { SqliteConversationStore } from "./persistence/sqlite-conversation-store.js";
 import { SqliteActionApprovalStore } from "./persistence/sqlite-action-approval-store.js";
@@ -72,7 +72,10 @@ export async function createApplication(
   const careerRetrievalIndex = new SqliteCareerRetrievalIndex(
     config.databasePath,
     careerEvidenceStore,
-    new OpenAICareerEmbeddingProvider(config.embeddingModel),
+    createCareerEmbeddingProvider(
+      config.careerEmbeddingsEnabled,
+      config.embeddingModel,
+    ),
   );
   const careerRetrieval = new CareerRetrievalService({
     index: careerRetrievalIndex,

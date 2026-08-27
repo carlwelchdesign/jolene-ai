@@ -192,12 +192,17 @@ Prerequisite: Node.js 22 or newer.
    an exact, confirmed claim decision; the screen cannot publish or message
    anyone.
 
-   After approving internal evidence, synchronize its retrieval chunks and
-   embeddings with:
+   After approving internal evidence, synchronize its retrieval chunks with:
 
    ```bash
    npm run career:index
    ```
+
+   This is deterministic lexical indexing by default. Semantic embeddings are
+   a separate private-data egress decision: set
+   `JOLENE_CAREER_EMBEDDINGS_ENABLED=true` only when you intend to send eligible
+   reviewed chunks and private search queries to the configured OpenAI
+   embedding model.
 
    Generate the local deny-by-default public handoff artifact with:
 

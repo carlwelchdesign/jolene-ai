@@ -7,6 +7,16 @@ import type {
 
 const MAX_BATCH_SIZE = 64;
 
+export function createCareerEmbeddingProvider(
+  enabled: boolean,
+  model: string,
+  apiKey?: string,
+): CareerEmbeddingProvider {
+  return enabled
+    ? new OpenAICareerEmbeddingProvider(model, apiKey)
+    : new UnavailableCareerEmbeddingProvider();
+}
+
 export class OpenAICareerEmbeddingProvider implements CareerEmbeddingProvider {
   private readonly client: OpenAI;
 

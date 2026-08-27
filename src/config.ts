@@ -28,6 +28,7 @@ const envSchema = z.object({
   JOLENE_OWNER_ACTOR_ID: z.string().trim().min(1).default("carl"),
   JOLENE_OWNER_WORKSPACE_ID: z.string().trim().min(1).default("personal"),
   JOLENE_CAREER_WORKSPACE_ID: z.string().trim().min(1).default("professional"),
+  JOLENE_CAREER_EMBEDDINGS_ENABLED: z.enum(["true", "false"]).default("false"),
   OPENAI_EMBEDDING_MODEL: z.string().trim().min(1).default("text-embedding-3-small"),
   JOLENE_MAX_HISTORY_TURNS: z.coerce.number().int().min(2).max(100).default(16),
   JOLENE_MAX_MEMORY_ITEMS: z.coerce.number().int().min(1).max(100).default(24),
@@ -52,6 +53,7 @@ export interface AppConfig {
   readonly ownerWorkspaceId: string;
   readonly careerOwnerActorId: string;
   readonly careerWorkspaceId: string;
+  readonly careerEmbeddingsEnabled: boolean;
   readonly embeddingModel: string;
   readonly maxHistoryTurns: number;
   readonly maxMemoryItems: number;
@@ -67,15 +69,22 @@ export function loadConfig(): AppConfig {
     quiet: true,
   });
 
-  const env = envSchema.parse(process.env);
+  return parseConfig(process.env);
+}
+
+export function parseConfig(
+  environment: Record<string, string | undefined>,
+  workingDirectory = process.cwd(),
+): AppConfig {
+  const env = envSchema.parse(environment);
 
   return {
     model: env.JOLENE_MODEL,
     host: env.JOLENE_HOST,
     port: env.JOLENE_PORT,
-    databasePath: path.resolve(process.cwd(), env.JOLENE_DATABASE_PATH),
+    databasePath: path.resolve(workingDirectory, env.JOLENE_DATABASE_PATH),
     contactQueuePath: path.resolve(
-      process.cwd(),
+      workingDirectory,
       env.JOLENE_PUBLIC_CONTACT_QUEUE_PATH,
     ),
     contactRetentionDays: env.JOLENE_PUBLIC_CONTACT_RETENTION_DAYS,
@@ -91,10 +100,14 @@ export function loadConfig(): AppConfig {
     ownerWorkspaceId: env.JOLENE_OWNER_WORKSPACE_ID,
     careerOwnerActorId: env.JOLENE_OWNER_ACTOR_ID,
     careerWorkspaceId: env.JOLENE_CAREER_WORKSPACE_ID,
+    careerEmbeddingsEnabled: env.JOLENE_CAREER_EMBEDDINGS_ENABLED === "true",
     embeddingModel: env.OPENAI_EMBEDDING_MODEL,
     maxHistoryTurns: env.JOLENE_MAX_HISTORY_TURNS,
     maxMemoryItems: env.JOLENE_MAX_MEMORY_ITEMS,
-    watchedProjects: loadWatchedProjects(env.JOLENE_WATCHED_PROJECTS),
+    watchedProjects: loadWatchedProjects(
+      env.JOLENE_WATCHED_PROJECTS,
+      workingDirectory,
+    ),
     slackBotToken: emptyToUndefined(env.SLACK_BOT_TOKEN),
     slackAppToken: emptyToUndefined(env.SLACK_APP_TOKEN),
     slackOwnerUserId: emptyToUndefined(env.SLACK_OWNER_USER_ID),
@@ -157,13 +170,14 @@ export function parseWatchedProjects(
 
 function loadWatchedProjects(
   serialized: string | undefined,
+  workingDirectory: string,
 ): readonly WatchedProjectDefinition[] {
   if (serialized !== undefined) return parseWatchedProjects(serialized);
 
   try {
     return parseWatchedProjects(
       readFileSync(
-        path.resolve(process.cwd(), ".jolene/watched-projects.json"),
+        path.resolve(workingDirectory, ".jolene/watched-projects.json"),
         "utf8",
       ),
     );

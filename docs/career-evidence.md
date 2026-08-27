@@ -178,10 +178,22 @@ stores only eligible chunk content and optional embeddings in the same private
 SQLite database. Before every search, synchronization removes stale, revoked,
 superseded, missing-source, rejected, unreviewed, and private draft records.
 
-Retrieval combines lexical rank with cosine vector rank using reciprocal-rank
-fusion. OpenAI `text-embedding-3-small` is the default embedding provider. If
-embedding creation or query embedding is unavailable, retrieval continues with
-the deterministic lexical ranker without widening its authorization scope.
+Retrieval always supports deterministic lexical rank. Embeddings are disabled
+by default, including in Docker Compose, so indexing and search make no
+embedding-provider request even when the private runtime has an OpenAI API key.
+To opt in deliberately, configure:
+
+```dotenv
+JOLENE_CAREER_EMBEDDINGS_ENABLED=true
+OPENAI_EMBEDDING_MODEL=text-embedding-3-small
+```
+
+Enabling this sends eligible reviewed chunk content during synchronization and
+private career-search query text during search to the configured OpenAI
+embedding provider. Vector rank is then fused with lexical rank using
+reciprocal-rank fusion. If embedding creation or query embedding is unavailable,
+retrieval continues with the deterministic lexical ranker without widening its
+authorization scope.
 
 Private Jolene receives the `search_career_evidence` tool only for Carl in a
 private channel. Each result contains the evidence excerpt, maturity,
@@ -195,9 +207,11 @@ stores the raw query or retrieved evidence excerpt. Read the bounded ledger at
 `GET /v1/career-retrieval-accesses?actorId=carl&workspaceId=professional` on
 the loopback-only control API.
 
-The current local corpus has zero retrieval-eligible claims because all
-imported records still require Carl's review. The index therefore synchronizes
-to zero chunks until that separate human gate is completed.
+The canonical private registry currently has 143 retrieval-eligible approved
+claims: 41 are also approved for the public artifact and 102 are private-Jolene
+only. Human approval does not itself synchronize the private retrieval index.
+Index synchronization, embedding-provider opt-in, public export, portfolio
+integration, deployment, and launch remain separate gates.
 
 ## Offline public evidence artifact
 
