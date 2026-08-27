@@ -1,13 +1,20 @@
 import { createHash } from "node:crypto";
-import { mkdtemp, readFile } from "node:fs/promises";
+import { mkdtemp, readFile, stat } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 
 import { describe, expect, it } from "vitest";
 
-import { runPortfolioEvidenceImportAudit } from "../src/application/portfolio-evidence-import-audit.js";
+import {
+  createPortfolioEvidenceImportReviewPacket,
+  runPortfolioEvidenceImportAudit,
+} from "../src/application/portfolio-evidence-import-audit.js";
 import { PortfolioEvidenceImporter } from "../src/application/portfolio-evidence-importer.js";
 import { SqliteCareerEvidenceStore } from "../src/persistence/sqlite-career-evidence-store.js";
+import {
+  readPortfolioEvidenceImportReviewPacket,
+  writePortfolioEvidenceImportReviewPacket,
+} from "../src/publication/portfolio-evidence-import-review-writer.js";
 
 const scope = { actorId: "carl", workspaceId: "professional" };
 const capturedAt = "2026-08-26T08:00:00.000Z";
@@ -55,6 +62,53 @@ describe("runPortfolioEvidenceImportAudit", () => {
       },
     });
     expect(JSON.stringify(report)).not.toContain("materially changed");
+  });
+
+  it("writes an exact owner-only packet bound to the public projection changes", async () => {
+    const databasePath = await approvedFixtureDatabase();
+    const changed = snapshot();
+    changed.projects[0]!.summary = "A materially changed public summary.";
+    const input = {
+      databasePath,
+      importInput: importInput(changed, "2026-08-27T08:00:00.000Z"),
+      now: () => new Date("2026-08-27T09:00:00.000Z"),
+    };
+
+    const packet = await createPortfolioEvidenceImportReviewPacket(input);
+    const repeated = await createPortfolioEvidenceImportReviewPacket({
+      ...input,
+      now: () => new Date("2026-08-27T10:00:00.000Z"),
+    });
+    expect(packet.packetHash).toBe(repeated.packetHash);
+    expect(packet.summary).toEqual({
+      eligiblePublicClaimsBefore: 1,
+      eligiblePublicClaimsAfter: 0,
+      changedSources: 1,
+      changedClaims: 1,
+    });
+    expect(packet.sources[0]).toMatchObject({
+      sourceId: "portfolio:project:sample",
+      changedFields: ["source_content"],
+      claims: [{
+        logicalKey: "summary",
+        status: "changed",
+        before: { visibility: "public_approved" },
+        after: {
+          text: "A materially changed public summary.",
+          visibility: "public_candidate",
+        },
+      }],
+    });
+    const serialized = JSON.stringify(packet);
+    for (const forbidden of ["provenanceRef", "databasePath", "/Users/", "Obsidian"]) {
+      expect(serialized).not.toContain(forbidden);
+    }
+
+    const root = await mkdtemp(path.join(tmpdir(), "jolene-portfolio-review-packet-"));
+    const outputPath = path.join(root, "nested", "packet.json");
+    await writePortfolioEvidenceImportReviewPacket(outputPath, packet);
+    expect(await readPortfolioEvidenceImportReviewPacket(outputPath)).toEqual(packet);
+    expect((await stat(outputPath)).mode & 0o777).toBe(0o600);
   });
 });
 

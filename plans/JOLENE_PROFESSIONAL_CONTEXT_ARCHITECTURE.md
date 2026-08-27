@@ -750,9 +750,16 @@ launch.
 - `npm run career:import-portfolio:audit` uses a SQLite-native temporary clone,
   emits only aggregate counts and fixed validation codes, deletes the clone, and
   leaves the configured database unchanged;
+- `npm run career:import-portfolio:review-packet` writes a schema-validated,
+  mode-0600, SHA-256-bound owner-only packet containing the exact changed public
+  projection without database paths, private provenance, Obsidian material,
+  credentials, or private source bodies;
 - the current `origin/main` portfolio snapshot, evaluated against the latest
   external canonical backup, would retain 14 of 41 immediately export-eligible
   claims while placing 12 changed sources and 6 changed claims back into review;
+- the current packet contains 12 changed source entries and 27 affected public
+  claim entries, including 6 materially changed claims, with stable hash
+  `sha256:eb385ddf47365e4cc423591143997cc44c7a46a07589cf6f285150ca4c23aedb`;
   and
 - no canonical import, approval decision, artifact regeneration, portfolio
   transfer, Vercel action, deployment, publication, or launch is authorized by

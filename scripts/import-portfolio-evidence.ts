@@ -5,8 +5,12 @@ import dotenv from "dotenv";
 import ts from "typescript";
 
 import { PortfolioEvidenceImporter } from "../src/application/portfolio-evidence-importer.js";
-import { runPortfolioEvidenceImportAudit } from "../src/application/portfolio-evidence-import-audit.js";
+import {
+  createPortfolioEvidenceImportReviewPacket,
+  runPortfolioEvidenceImportAudit,
+} from "../src/application/portfolio-evidence-import-audit.js";
 import { SqliteCareerEvidenceStore } from "../src/persistence/sqlite-career-evidence-store.js";
+import { writePortfolioEvidenceImportReviewPacket } from "../src/publication/portfolio-evidence-import-review-writer.js";
 
 dotenv.config({ path: path.resolve(process.cwd(), ".env.local"), quiet: true });
 
@@ -17,6 +21,11 @@ const portfolioRoot = path.resolve(
 const databasePath = path.resolve(
   process.cwd(),
   process.env.JOLENE_DATABASE_PATH ?? ".jolene/jolene.sqlite",
+);
+const reviewPacketPath = path.resolve(
+  process.cwd(),
+  process.env.JOLENE_PUBLIC_CORPUS_REVIEW_PACKET_PATH ??
+    ".jolene/evaluations/public-corpus-import-review.json",
 );
 const dataDirectory = path.join(portfolioRoot, "site/app");
 const portfolioDataPath = path.join(dataDirectory, "portfolio-data.ts");
@@ -46,7 +55,18 @@ const importInput = {
   },
 };
 
-if (process.argv.includes("--audit")) {
+if (process.argv.includes("--review-packet")) {
+  const packet = await createPortfolioEvidenceImportReviewPacket({
+    databasePath,
+    importInput,
+  });
+  await writePortfolioEvidenceImportReviewPacket(reviewPacketPath, packet);
+  process.stdout.write(`${JSON.stringify({
+    packetWritten: true,
+    packetHash: packet.packetHash,
+    ...packet.summary,
+  }, null, 2)}\n`);
+} else if (process.argv.includes("--audit")) {
   const report = await runPortfolioEvidenceImportAudit({ databasePath, importInput });
   process.stdout.write(`${JSON.stringify(report, null, 2)}\n`);
 } else {
