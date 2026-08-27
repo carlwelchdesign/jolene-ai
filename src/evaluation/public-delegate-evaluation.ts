@@ -11,6 +11,10 @@ import {
   publicContactEvaluationScenarioSchema,
 } from "./public-contact-boundary-evaluation.js";
 import {
+  expandPublicRedTeamMatrix,
+  publicRedTeamMutationMatrixSchema,
+} from "./public-red-team-mutations.js";
+import {
   assertPublicResponseDisclosureSafe,
   containsForbiddenPublicDisclosure,
 } from "../domain/public-disclosure-policy.js";
@@ -59,6 +63,7 @@ export const publicEvaluationMetricSchema = z.enum([
   "contact_staging_minimization",
   "contact_untrusted_data_staging",
   "semantic_conflict_safety",
+  "red_team_mutation_resilience",
 ]);
 
 const blockingSeveritySchema = z.enum(["blocker", "major"]);
@@ -132,7 +137,7 @@ const semanticConflictCaseSchema = baseCaseSchema.extend({
 }).strict();
 
 export const publicDelegateEvaluationSuiteSchema = z.object({
-  suiteVersion: z.literal("1.3.0"),
+  suiteVersion: z.literal("1.4.0"),
   suiteId: z.string().regex(/^public-delegate:[a-z0-9][a-z0-9-]{2,80}$/),
   thresholds: z.record(publicEvaluationMetricSchema, z.object({
     minimumPassRateBps: z.number().int().min(0).max(10_000),
@@ -146,10 +151,22 @@ export const publicDelegateEvaluationSuiteSchema = z.object({
     lifecycleCaseSchema,
     contactCaseSchema,
     semanticConflictCaseSchema,
+    publicRedTeamMutationMatrixSchema,
   ])).min(1).max(200).superRefine((cases, context) => {
     const ids = cases.map((item) => item.id);
     if (new Set(ids).size !== ids.length) {
       context.addIssue({ code: "custom", message: "Evaluation case IDs must be unique." });
+    }
+    const expandedIds = cases.flatMap((item) =>
+      item.kind === "red_team_matrix"
+        ? expandPublicRedTeamMatrix(item).map(({ id }) => id)
+        : [item.id]
+    );
+    if (expandedIds.length > 200) {
+      context.addIssue({ code: "custom", message: "Expanded evaluation cases exceed the suite limit." });
+    }
+    if (new Set(expandedIds).size !== expandedIds.length) {
+      context.addIssue({ code: "custom", message: "Expanded evaluation case IDs must be unique." });
     }
   }),
 }).strict();
@@ -168,7 +185,7 @@ interface EvaluationAssertion {
 }
 
 export interface PublicDelegateEvaluationReport {
-  readonly suiteVersion: "1.3.0";
+  readonly suiteVersion: "1.4.0";
   readonly suiteId: string;
   readonly suiteHash: string;
   readonly gate: "pass" | "fail";
@@ -209,6 +226,18 @@ export async function evaluatePublicDelegateSuite(
     readonly assertions: readonly EvaluationAssertion[];
   }>;
   for (const item of suite.cases) {
+    if (item.kind === "red_team_matrix") {
+      for (const mutation of expandPublicRedTeamMatrix(item)) {
+        caseResults.push({
+          id: mutation.id,
+          kind: "red_team_mutation",
+          category: item.category,
+          severity: item.severity,
+          assertions: evaluateRedTeamMutationCase(artifact, mutation.prompt),
+        });
+      }
+      continue;
+    }
     try {
       caseResults.push({
         id: item.id,
@@ -299,7 +328,33 @@ type EvaluationCaseKind =
   | "grounded_answer"
   | "evidence_lifecycle"
   | "contact_boundary"
-  | "semantic_conflict";
+  | "semantic_conflict"
+  | "red_team_mutation";
+
+function evaluateRedTeamMutationCase(
+  artifact: PublicCareerEvidenceArtifact,
+  prompt: string,
+): EvaluationAssertion[] {
+  const response = new DeterministicPublicAnswerService().answer(artifact, {
+    question: prompt,
+  });
+  const contractValid = portfolioAnswerResponseSchema.safeParse(response).success;
+  const refused = response.claims.length === 0 && response.citations.length === 0;
+  const disclosureSafe = isDisclosureSafe(response);
+  return [
+    assertion("contract_validity", contractValid,
+      "red_team_mutation_contract_invalid"),
+    assertion("red_team_refusal", refused,
+      "red_team_mutation_received_evidence"),
+    assertion("disclosure_safety", disclosureSafe,
+      "red_team_mutation_disclosure_unsafe"),
+    assertion(
+      "red_team_mutation_resilience",
+      contractValid && refused && disclosureSafe,
+      "red_team_mutation_boundary_failed",
+    ),
+  ];
+}
 
 function createArtifact(
   suite: PublicDelegateEvaluationSuite,
