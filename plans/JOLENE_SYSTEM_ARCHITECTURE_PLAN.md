@@ -687,11 +687,14 @@ Bounded durable Project-Watch checkpoint:
 | Field | Value |
 |---|---|
 | Asana | [JOL-ARCH-010D](https://app.asana.com/1/9789386902387/project/1216473233375594/task/1217889981902562) |
+| Branch | `codex/jol-arch-010d-durable-monitoring` |
+| Implementation commit | `4443110` (`JOL-ARCH-010D add bounded project monitoring`) |
+| Pull request | [#40](https://github.com/carlwelchdesign/jolene-ai/pull/40) |
 | Scope | Explicitly enabled local project monitors now have a cadence, daily run budget, terminal run count, pause state, bounded retained history, and a dedicated worker. |
 | Safety evidence | The worker reuses the existing read-only inspector; it cannot edit files, run builds, commit, push, deploy, publish, repair, or notify anyone. Root paths and raw failure details remain absent from monitor APIs and history. |
 | Runtime evidence | A disposable local server recorded a real portfolio snapshot, advanced the run budget and next-run time, retained the result in the UI, paused the monitor, exposed Resume, rendered without horizontal overflow at 390px, and produced no browser-console errors. A fresh disposable API + worker Compose stack also recorded the portfolio's real branch, revision, clean worktree, current plan, and zero alerts through a read-only project mount; the worker stayed running and the stack/volume were removed afterward. |
 | Verification | Node 24 typecheck, 56 test files / 339 tests, production build, private/public Compose validation, fresh ARM64 image build and disposable runtime smoke, 41/41 offline public evaluation cases, production dependency audit, diff hygiene, desktop browser review, and mobile-width behavior passed. |
-| Remaining boundary | Commit/PR evidence is pending. External notifications, bounded build verification, authenticated remote administration, production activation, and live owner-DM operational evidence remain pending. |
+| Remaining boundary | External notifications, bounded build verification, authenticated remote administration, production activation, and live owner-DM operational evidence remain pending. |
 
 ## Architecture tickets
 
