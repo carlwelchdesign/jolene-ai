@@ -167,11 +167,23 @@ backup directory.
 
 ## Private hybrid retrieval
 
-Run the index after approving sources and claims for internal use:
+Run deterministic local indexing after approving sources and claims for
+internal use:
 
 ```bash
-npm run career:index
+npm run career:index:lexical
 ```
+
+The compiled runtime image exposes the same bounded operation as
+`npm run start:career-index:lexical`. It refuses to run if
+`JOLENE_CAREER_EMBEDDINGS_ENABLED=true`, uses the network-free provider, removes
+any formerly stored vectors for the synchronized scope, and fails unless every
+retained chunk is lexical-only. Its report contains counts and mode only, not
+claim content or search text.
+
+`npm run career:index` remains the general development command. It follows the
+explicit embedding configuration described below and may contact the configured
+provider when that separate opt-in is enabled.
 
 One reviewed claim becomes one or more stable semantic chunks. The local index
 stores only eligible chunk content and optional embeddings in the same private
@@ -210,8 +222,9 @@ the loopback-only control API.
 The canonical private registry currently has 143 retrieval-eligible approved
 claims: 41 are also approved for the public artifact and 102 are private-Jolene
 only. Human approval does not itself synchronize the private retrieval index.
-Index synchronization, embedding-provider opt-in, public export, portfolio
-integration, deployment, and launch remain separate gates.
+The local pilot has separately synchronized those claims into 152 lexical-only
+chunks with zero stored vectors. Embedding-provider opt-in, public export,
+portfolio production integration, deployment, and launch remain separate gates.
 
 ## Offline public evidence artifact
 

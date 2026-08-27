@@ -14,6 +14,7 @@ export interface CareerEmbedding {
 }
 
 export interface CareerEmbeddingProvider {
+  readonly existingEmbeddingPolicy?: "retain" | "purge";
   embed(texts: readonly string[]): Promise<readonly CareerEmbedding[] | null>;
 }
 

@@ -192,10 +192,11 @@ Prerequisite: Node.js 22 or newer.
    an exact, confirmed claim decision; the screen cannot publish or message
    anyone.
 
-   After approving internal evidence, synchronize its retrieval chunks with:
+   After approving internal evidence, synchronize its local lexical retrieval
+   chunks with:
 
    ```bash
-   npm run career:index
+   npm run career:index:lexical
    ```
 
    This is deterministic lexical indexing by default. Semantic embeddings are
@@ -211,9 +212,9 @@ Prerequisite: Node.js 22 or newer.
    ```
 
    The default output is ignored at
-   `.jolene/exports/public-career-evidence.json`. With zero public-approved
-   claims it is a valid empty corpus. This command does not publish, deploy, or
-   start a public endpoint.
+   `.jolene/exports/public-career-evidence.json`. The current approved artifact
+   contains 41 public claims and zero revocations under schema `1.0.0`. This
+   command does not publish, deploy, or start a public endpoint.
 
    The isolated local manifest boundary is documented in
    [Public delegate boundary](docs/public-delegate.md). It is a development

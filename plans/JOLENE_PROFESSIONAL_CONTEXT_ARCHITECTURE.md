@@ -25,7 +25,7 @@ chatbot.
 | OpenAI Agents SDK | Implemented |
 | Read-only Obsidian access | Implemented with path allowlists and exact note/heading citations |
 | Retrieval | Conversational Obsidian remains lexical; reviewed career evidence uses lexical/vector fusion with deterministic fallback |
-| Embedding RAG | Implemented for 143 approved private-career claims; embeddings require exact opt-in and the live retrieval index remains unsynchronized |
+| Embedding RAG | Implemented for 143 approved private-career claims; the live pilot has 152 lexical-only chunks and zero vectors, while embeddings require exact opt-in |
 | MCP | Not implemented |
 | Graph database / GraphRAG | Not implemented |
 | Durable private memory | Implemented through explicit proposals and approval |

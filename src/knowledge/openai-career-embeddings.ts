@@ -18,6 +18,7 @@ export function createCareerEmbeddingProvider(
 }
 
 export class OpenAICareerEmbeddingProvider implements CareerEmbeddingProvider {
+  readonly existingEmbeddingPolicy = "retain" as const;
   private readonly client: OpenAI;
 
   constructor(
@@ -51,6 +52,8 @@ export class OpenAICareerEmbeddingProvider implements CareerEmbeddingProvider {
 }
 
 export class UnavailableCareerEmbeddingProvider implements CareerEmbeddingProvider {
+  readonly existingEmbeddingPolicy = "purge" as const;
+
   async embed(): Promise<null> {
     return null;
   }
