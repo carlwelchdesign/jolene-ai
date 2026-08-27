@@ -1,0 +1,416 @@
+schema_version: personality-source-register-v2
+status: normalized-non-activating
+reviewed_at: 2026-08-27T07:58:01Z
+rights_policy:
+  repository_storage: metadata-and-paraphrase-only
+  transcript_storage: prohibited
+  lyrics_storage: prohibited
+  audio_video_storage: prohibited
+  content_fingerprint_storage: sha256-only
+publisher_families:
+  - id: abc-news
+    label: ABC News
+    distribution_hosts: [abcnews.com]
+    independence_note: ABC News is treated as one originating editorial family for the archived profile.
+  - id: npr
+    label: NPR and syndicated member-station distribution
+    distribution_hosts: [freshairarchive.org, wfae.org, wprl.org]
+    independence_note: Fresh Air and the two member-station hosts are conservatively counted as one NPR editorial family.
+  - id: cnn
+    label: CNN
+    distribution_hosts: [transcripts.cnn.com]
+    independence_note: CNN is treated as one editorial family across the transcript and rebroadcast metadata.
+  - id: national-press-club
+    label: National Press Club
+    distribution_hosts: [press.org]
+    independence_note: The National Press Club is treated as its own originating institutional publisher family.
+  - id: dan-rather-axs
+    label: The Big Interview with Dan Rather and AXS TV
+    distribution_hosts: [danratherjournalist.org]
+    independence_note: The program and its official archive are conservatively treated as one editorial family.
+  - id: library-of-congress
+    label: Library of Congress
+    distribution_hosts: [loc.gov]
+    independence_note: Library of Congress interviews and events share one institutional publisher family.
+  - id: ted
+    label: TED
+    distribution_hosts: [ted.com]
+    independence_note: TED WorkLife is counted within the single TED originating editorial family.
+  - id: dolly-parton-official
+    label: Dolly Parton official site
+    distribution_hosts: [dollyparton.com]
+    independence_note: The first-party site is a distinct source family but its registered article is currently unavailable.
+events:
+  - sourceEventId: E001
+    sourceRegisterId: S01
+    eventIdentity: abc-news-1977-on-the-road-profile
+    publisherFamilyId: abc-news
+    editorialProgramId: abc-news-archive
+    distributionHost: abcnews.com
+    isRebroadcast: false
+    lineageNote: ABC News is the originating editorial family and the current host of its archival video page.
+    eventDateNote: The official archive identifies the interview date as December 6, 1977 and the archive-page publication as 2019.
+    publisher: ABC News
+    title: On the road with Dolly Parton
+    url: https://abcnews.com/video/66760052/
+    effectiveUrl: https://abcnews.com/video/66760052/
+    contentBoundaryUrl: null
+    date: 1977-12-06
+    timeBand: pre-2000
+    settingFamily: adversarial-interview
+    medium: video
+    transcriptProvenance: metadata-only
+    accessState: metadata-only
+    accessReason: The official video page is reachable, but no stable transcript or reviewed timestamp map establishes atomic turns.
+    retrievalStatus: retrieved
+    retrievedAt: 2026-08-27T07:58:01Z
+    retrievalHttpStatus: 200
+    retrievalContentType: text/html; charset=utf-8
+    primarySourceVerified: true
+    contentBoundaryVerified: false
+    editorialTreatment: edited
+    deliveryStructure: unscripted
+    promotionalPurpose: mixed
+    rightsBasis: metadata-and-paraphrase-only
+    fingerprintBasis: retrieved-response-bytes
+    sourceContentFingerprint: sha256:fdf3212a1865bee419c9dec2bc30bcbb4b5c0d97cbc6b25121127e2aec2a0c6f
+
+  - sourceEventId: E002
+    sourceRegisterId: S02
+    eventIdentity: fresh-air-2001-01-23-dolly-parton-interview
+    publisherFamilyId: npr
+    editorialProgramId: fresh-air
+    distributionHost: freshairarchive.org
+    isRebroadcast: true
+    lineageNote: Fresh Air's archive hosts a later rebroadcast transcript; it remains in the conservative NPR editorial family.
+    eventDateNote: The publisher transcript identifies the original interview as recorded on January 23, 2001.
+    publisher: Fresh Air Archive
+    title: "Dolly Parton: The Fresh Air Interview"
+    url: https://freshairarchive.org/segments/dolly-parton-fresh-air-interview
+    effectiveUrl: https://freshairarchive.org/segments/dolly-parton-fresh-air-interview
+    contentBoundaryUrl: https://freshairarchive.org/segments/dolly-parton-fresh-air-interview
+    date: 2001-01-23
+    timeBand: 2000s
+    settingFamily: long-form-audio
+    medium: audio
+    transcriptProvenance: publisher-transcript
+    accessState: coding-ready
+    accessReason: The publisher-hosted transcript identifies the original event and exposes stable line-addressable speaker turns.
+    retrievalStatus: retrieved
+    retrievedAt: 2026-08-27T07:58:01Z
+    retrievalHttpStatus: 200
+    retrievalContentType: text/html; charset=utf-8
+    primarySourceVerified: true
+    contentBoundaryVerified: true
+    editorialTreatment: rebroadcast
+    deliveryStructure: unscripted
+    promotionalPurpose: mixed
+    rightsBasis: metadata-and-paraphrase-only
+    fingerprintBasis: retrieved-response-bytes
+    sourceContentFingerprint: sha256:d8beb73f1e4b63396bbe4eb433d968ef1e1904ac4d96578d9483f9aad710f0b9
+
+  - sourceEventId: E003
+    sourceRegisterId: S03
+    eventIdentity: cnn-larry-king-live-2003-07-12
+    publisherFamilyId: cnn
+    editorialProgramId: larry-king-live
+    distributionHost: transcripts.cnn.com
+    isRebroadcast: true
+    lineageNote: CNN is the originating editorial family and transcript host; the current transcript labels the broadcast a rebroadcast.
+    eventDateNote: The official transcript route and transcript header identify the broadcast date as July 12, 2003.
+    publisher: CNN
+    title: Larry King Live interview
+    url: https://transcripts.cnn.com/show/lkl/date/2003-07-12/segment/00
+    effectiveUrl: https://transcripts.cnn.com/show/lkl/date/2003-07-12/segment/00
+    contentBoundaryUrl: https://transcripts.cnn.com/show/lkl/date/2003-07-12/segment/00
+    date: 2003-07-12
+    timeBand: 2000s
+    settingFamily: long-form-video
+    medium: video
+    transcriptProvenance: publisher-transcript
+    accessState: coding-ready
+    accessReason: The publisher transcript is reachable and provides line-addressable turns despite its rush-transcript caveat.
+    retrievalStatus: retrieved
+    retrievedAt: 2026-08-27T07:58:01Z
+    retrievalHttpStatus: 200
+    retrievalContentType: text/html
+    primarySourceVerified: true
+    contentBoundaryVerified: true
+    editorialTreatment: rebroadcast
+    deliveryStructure: unscripted
+    promotionalPurpose: mixed
+    rightsBasis: metadata-and-paraphrase-only
+    fingerprintBasis: retrieved-response-bytes
+    sourceContentFingerprint: sha256:a2d7118119be5ff74eb384e7f5bfda09cbdb64ddd8e326378ae6bdeea1bde0cb
+
+  - sourceEventId: E004
+    sourceRegisterId: S04
+    eventIdentity: national-press-club-2009-02-10-luncheon
+    publisherFamilyId: national-press-club
+    editorialProgramId: luncheon-qa
+    distributionHost: press.org
+    isRebroadcast: false
+    lineageNote: The National Press Club is the originating event institution and host of the official luncheon transcript artifact.
+    eventDateNote: The official transcript title page identifies the luncheon date as February 10, 2009.
+    publisher: National Press Club
+    title: National Press Club luncheon
+    url: https://www.press.org/sites/default/files/20090210_parton.pdf
+    effectiveUrl: https://www.press.org/sites/default/files/20090210_parton.pdf
+    contentBoundaryUrl: https://www.press.org/sites/default/files/20090210_parton.pdf
+    date: 2009-02-10
+    timeBand: 2000s
+    settingFamily: formal-qa
+    medium: text
+    transcriptProvenance: official-archive-transcript
+    accessState: coding-ready
+    accessReason: The stable official PDF provides page-addressable prepared remarks and question-and-answer turns.
+    retrievalStatus: retrieved
+    retrievedAt: 2026-08-27T07:58:01Z
+    retrievalHttpStatus: 200
+    retrievalContentType: application/pdf
+    primarySourceVerified: true
+    contentBoundaryVerified: true
+    editorialTreatment: edited
+    deliveryStructure: mixed
+    promotionalPurpose: mixed
+    rightsBasis: metadata-and-paraphrase-only
+    fingerprintBasis: retrieved-response-bytes
+    sourceContentFingerprint: sha256:7f7db3b1766d2656041cbbe6bfdf5df3c2f3342bf4904a4be94027260a018cc5
+
+  - sourceEventId: E005
+    sourceRegisterId: S05
+    eventIdentity: npr-tell-me-more-2009-02-18-interview
+    publisherFamilyId: npr
+    editorialProgramId: tell-me-more
+    distributionHost: wfae.org
+    isRebroadcast: false
+    lineageNote: NPR produced the Tell Me More interview; member station WFAE is a distribution host, not an independent editorial source.
+    eventDateNote: The publisher-hosted transcript records the interview publication date as February 18, 2009.
+    publisher: NPR Tell Me More via WFAE
+    title: Faith, politics, and hard times
+    url: https://www.wfae.org/2009-02-18/dolly-parton-on-faith-politics-and-hard-times
+    effectiveUrl: https://www.wfae.org/2009-02-18/dolly-parton-on-faith-politics-and-hard-times
+    contentBoundaryUrl: https://www.wfae.org/2009-02-18/dolly-parton-on-faith-politics-and-hard-times
+    date: 2009-02-18
+    timeBand: 2000s
+    settingFamily: long-form-audio
+    medium: audio
+    transcriptProvenance: publisher-transcript
+    accessState: coding-ready
+    accessReason: The member-station page retains the NPR transcript with stable line-addressable interview turns.
+    retrievalStatus: retrieved
+    retrievedAt: 2026-08-27T07:58:01Z
+    retrievalHttpStatus: 200
+    retrievalContentType: text/html;charset=UTF-8
+    primarySourceVerified: true
+    contentBoundaryVerified: true
+    editorialTreatment: edited
+    deliveryStructure: unscripted
+    promotionalPurpose: mixed
+    rightsBasis: metadata-and-paraphrase-only
+    fingerprintBasis: retrieved-response-bytes
+    sourceContentFingerprint: sha256:2c2d6219d196620ec90c2e6c6af9badf447d00ce298ad305157baf9510e02dc4
+
+  - sourceEventId: E006
+    sourceRegisterId: S07
+    eventIdentity: npr-dream-more-2012-11-27-highlights
+    publisherFamilyId: npr
+    editorialProgramId: talk-of-the-nation
+    distributionHost: wprl.org
+    isRebroadcast: false
+    lineageNote: NPR produced the interview highlights; member station WPRL republishes them and is not counted as an independent publisher.
+    eventDateNote: The publisher page dates the edited interview highlights to November 27, 2012.
+    publisher: NPR via WPRL
+    title: After decades of dreaming, Dolly Parton says dream more
+    url: https://www.wprl.org/npr-music/2012-11-27/after-decades-of-dreaming-dolly-parton-says-dream-more
+    effectiveUrl: https://www.wprl.org/npr-music/2012-11-27/after-decades-of-dreaming-dolly-parton-says-dream-more
+    contentBoundaryUrl: https://www.wprl.org/npr-music/2012-11-27/after-decades-of-dreaming-dolly-parton-says-dream-more
+    date: 2012-11-27
+    timeBand: 2010s
+    settingFamily: long-form-audio
+    medium: audio
+    transcriptProvenance: edited-primary-highlights
+    accessState: coding-ready
+    accessReason: The page exposes attributable edited highlights, but later sampling must not treat it as a complete transcript.
+    retrievalStatus: retrieved
+    retrievedAt: 2026-08-27T07:58:01Z
+    retrievalHttpStatus: 200
+    retrievalContentType: text/html;charset=UTF-8
+    primarySourceVerified: true
+    contentBoundaryVerified: true
+    editorialTreatment: edited-highlights
+    deliveryStructure: unscripted
+    promotionalPurpose: yes
+    rightsBasis: metadata-and-paraphrase-only
+    fingerprintBasis: retrieved-response-bytes
+    sourceContentFingerprint: sha256:001442e77643063257933026054596fbce149281fe47afeb9a33d28de02077d2
+
+  - sourceEventId: E007
+    sourceRegisterId: S08
+    eventIdentity: axs-big-interview-2014-04-15
+    publisherFamilyId: dan-rather-axs
+    editorialProgramId: the-big-interview
+    distributionHost: danratherjournalist.org
+    isRebroadcast: false
+    lineageNote: AXS TV produced the interview; the Dan Rather archival site hosts the official transcript artifact.
+    eventDateNote: The transcript filename and title page identify the interview date as April 15, 2014.
+    publisher: AXS TV / Dan Rather
+    title: The Big Interview
+    url: https://danratherjournalist.org/sites/default/files/documents/2014%20The_Big_Interview_210%20on%2004%2015%20Dolly%20Parton.pdf
+    effectiveUrl: https://danratherjournalist.org/sites/default/files/documents/2014%20The_Big_Interview_210%20on%2004%2015%20Dolly%20Parton.pdf
+    contentBoundaryUrl: https://danratherjournalist.org/sites/default/files/documents/2014%20The_Big_Interview_210%20on%2004%2015%20Dolly%20Parton.pdf
+    date: 2014-04-15
+    timeBand: 2010s
+    settingFamily: long-form-video
+    medium: video
+    transcriptProvenance: official-archive-transcript
+    accessState: coding-ready
+    accessReason: The stable archival PDF provides page-addressable interview turns and an exact retrieved artifact hash.
+    retrievalStatus: retrieved
+    retrievedAt: 2026-08-27T07:58:01Z
+    retrievalHttpStatus: 200
+    retrievalContentType: application/pdf
+    primarySourceVerified: true
+    contentBoundaryVerified: true
+    editorialTreatment: edited
+    deliveryStructure: unscripted
+    promotionalPurpose: yes
+    rightsBasis: metadata-and-paraphrase-only
+    fingerprintBasis: retrieved-response-bytes
+    sourceContentFingerprint: sha256:13f4a6112aa8ef9f9f552e0fc52df3f3bcb527d6e8817caed77e3d32ef974321
+
+  - sourceEventId: E008
+    sourceRegisterId: S09
+    eventIdentity: loc-coat-of-many-colors-2016-interview
+    publisherFamilyId: library-of-congress
+    editorialProgramId: national-recording-preservation-board
+    distributionHost: loc.gov
+    isRebroadcast: false
+    lineageNote: The Library of Congress conducted or archived the interview and hosts the official transcript artifact.
+    eventDateNote: The official interview artifact identifies the conducted date as February 19, 2016.
+    publisher: Library of Congress
+    title: Dolly Parton interview on Coat of Many Colors
+    url: https://www.loc.gov/static/programs/national-recording-preservation-board/documents/DollyPartonInterview.pdf
+    effectiveUrl: https://www.loc.gov/static/programs/national-recording-preservation-board/documents/DollyPartonInterview.pdf
+    contentBoundaryUrl: https://www.loc.gov/static/programs/national-recording-preservation-board/documents/DollyPartonInterview.pdf
+    date: 2016-02-19
+    timeBand: 2010s
+    settingFamily: archival-interview
+    medium: text
+    transcriptProvenance: official-archive-transcript
+    accessState: coding-ready
+    accessReason: The stable official PDF provides page-addressable interview turns; lyrics remain excluded from coding.
+    retrievalStatus: retrieved
+    retrievedAt: 2026-08-27T07:58:01Z
+    retrievalHttpStatus: 200
+    retrievalContentType: application/pdf
+    primarySourceVerified: true
+    contentBoundaryVerified: true
+    editorialTreatment: edited
+    deliveryStructure: unknown
+    promotionalPurpose: no
+    rightsBasis: metadata-and-paraphrase-only
+    fingerprintBasis: retrieved-response-bytes
+    sourceContentFingerprint: sha256:f98b081573e5fdd39450e030f87a2630a52a1bc652e231239f4561f12a429976
+
+  - sourceEventId: E009
+    sourceRegisterId: S10
+    eventIdentity: loc-imagination-library-2018-02-28-video
+    publisherFamilyId: library-of-congress
+    editorialProgramId: public-programs
+    distributionHost: loc.gov
+    isRebroadcast: false
+    lineageNote: The Library of Congress is the event archive and publisher; no independent transcript host is registered.
+    eventDateNote: The official catalog and timed resources identify the recorded and published date as February 28, 2018.
+    publisher: Library of Congress
+    title: Dolly Parton and the roots of the Imagination Library
+    url: https://www.loc.gov/item/2021690731/
+    effectiveUrl: https://tile.loc.gov/streaming-services/iiif/:service:gdc:gdcwebcasts:18:02:27:li:b1:20:0:180227lib1200:180227lib1200_1280x720_2000/full/full/0/full/default.vtt
+    contentBoundaryUrl: https://tile.loc.gov/streaming-services/iiif/:service:gdc:gdcwebcasts:18:02:27:li:b1:20:0:180227lib1200:180227lib1200_1280x720_2000/full/full/0/full/default.vtt
+    date: 2018-02-28
+    timeBand: 2010s
+    settingFamily: public-service
+    medium: video
+    transcriptProvenance: official-archive-transcript
+    accessState: coding-ready
+    accessReason: The official catalog JSON exposes a stable timed VTT and fulltext boundary even though the HTML item route returned 403.
+    retrievalStatus: retrieved
+    retrievedAt: 2026-08-27T07:58:01Z
+    retrievalHttpStatus: 200
+    retrievalContentType: text/vtt
+    primarySourceVerified: true
+    contentBoundaryVerified: true
+    editorialTreatment: edited
+    deliveryStructure: unscripted
+    promotionalPurpose: mixed
+    rightsBasis: metadata-and-paraphrase-only
+    fingerprintBasis: official-caption-bytes
+    sourceContentFingerprint: sha256:d3815a8e5fe3f536f65e43d8724e9b3f9e376365f876f9dab683865b81f51104
+
+  - sourceEventId: E010
+    sourceRegisterId: S13
+    eventIdentity: ted-worklife-2022-burning-up-interview
+    publisherFamilyId: ted
+    editorialProgramId: worklife
+    distributionHost: ted.com
+    isRebroadcast: false
+    lineageNote: TED's WorkLife program is the originating editorial family and current transcript publisher.
+    eventDateNote: The official transcript identifies the podcast publication date as April 5, 2022.
+    publisher: TED WorkLife
+    title: Dolly Parton is burning up, not burning out
+    url: https://www.ted.com/podcasts/worklife/dolly-parton-is-burning-up-not-burning-out-transcript
+    effectiveUrl: https://www.ted.com/podcasts/worklife/dolly-parton-is-burning-up-not-burning-out-transcript
+    contentBoundaryUrl: https://www.ted.com/podcasts/worklife/dolly-parton-is-burning-up-not-burning-out-transcript
+    date: 2022-04-05
+    timeBand: 2020s
+    settingFamily: workplace-interview
+    medium: audio
+    transcriptProvenance: publisher-transcript
+    accessState: coding-ready
+    accessReason: The publisher transcript is reachable and supplies timestamp-addressable workplace interview turns.
+    retrievalStatus: retrieved
+    retrievedAt: 2026-08-27T07:58:01Z
+    retrievalHttpStatus: 200
+    retrievalContentType: text/html; charset=utf-8
+    primarySourceVerified: true
+    contentBoundaryVerified: true
+    editorialTreatment: edited
+    deliveryStructure: unscripted
+    promotionalPurpose: mixed
+    rightsBasis: metadata-and-paraphrase-only
+    fingerprintBasis: retrieved-response-bytes
+    sourceContentFingerprint: sha256:623ebc2f7a50409d3e5bc12026a3fc02c83ea59af6544fe2a85de4dd4f9f4736
+
+  - sourceEventId: E011
+    sourceRegisterId: S15
+    eventIdentity: dolly-official-2021-01-19-birthday-statement
+    publisherFamilyId: dolly-parton-official
+    editorialProgramId: null
+    distributionHost: dollyparton.com
+    isRebroadcast: false
+    lineageNote: The registered first-party URL belongs to the official site, but it now redirects to the site homepage.
+    eventDateNote: The legacy first-party metadata dates the statement to January 19, 2021; the content is not currently reproducible.
+    publisher: Dolly Parton official site
+    title: Dolly's birthday wish for everyone
+    url: https://dollyparton.com/life-and-career/dollys-birthday-wish-for-everyone
+    effectiveUrl: https://www.dollyparton.com/
+    contentBoundaryUrl: null
+    date: 2021-01-19
+    timeBand: 2020s
+    settingFamily: first-person-statement
+    medium: text
+    transcriptProvenance: first-party-statement
+    accessState: unavailable
+    accessReason: The exact first-party content boundary is unavailable because the registered article redirects to the homepage.
+    retrievalStatus: redirected-away
+    retrievedAt: 2026-08-27T07:58:01Z
+    retrievalHttpStatus: 200
+    retrievalContentType: text/html; charset=utf-8
+    primarySourceVerified: false
+    contentBoundaryVerified: false
+    editorialTreatment: unknown
+    deliveryStructure: scripted
+    promotionalPurpose: yes
+    rightsBasis: metadata-and-paraphrase-only
+    fingerprintBasis: none
+    sourceContentFingerprint: null

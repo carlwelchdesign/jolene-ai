@@ -30,20 +30,36 @@ function fixture(): PersonalityCorpusV2 {
   const sources: PersonalitySourceEvent[] = Array.from({ length: 10 }, (_, index) => ({
     sourceEventId: `E${String(index + 1).padStart(3, "0")}`,
     sourceRegisterId: `S${String(index + 1).padStart(2, "0")}`,
+    eventIdentity: `fixture-source-event-${index + 1}`,
     publisherFamilyId: `publisher-${(index % 8) + 1}`,
+    editorialProgramId: `program-${index + 1}`,
+    distributionHost: "example.com",
+    isRebroadcast: false,
+    lineageNote: "The fixture publisher is the originating editorial family and distribution host.",
+    eventDateNote: "The synthetic fixture assigns an exact representative year for its controlled time band.",
     publisher: `Publisher ${(index % 8) + 1}`,
     title: `Source event ${index + 1}`,
     url: `https://example.com/source-${index + 1}`,
+    effectiveUrl: `https://example.com/source-${index + 1}`,
+    contentBoundaryUrl: `https://example.com/source-${index + 1}`,
     date: ["1998", "2005", "2015", "2022"][index % 4]!,
     timeBand: timeBands[index % 4]!,
     settingFamily: settings[index % 8]!,
     medium: index % 2 === 0 ? "text" : "audio",
     transcriptProvenance: "publisher-transcript",
     accessState: "coding-ready",
+    accessReason: "The synthetic fixture provides a stable publisher transcript boundary for contract testing.",
+    retrievalStatus: "retrieved",
     retrievedAt: "2026-08-27T12:00:00.000Z",
+    retrievalHttpStatus: 200,
+    retrievalContentType: "text/html",
     primarySourceVerified: true,
-    scriptedOrPromotional: "unscripted",
+    contentBoundaryVerified: true,
+    editorialTreatment: "raw",
+    deliveryStructure: "unscripted",
+    promotionalPurpose: "no",
     rightsBasis: "metadata-and-paraphrase-only",
+    fingerprintBasis: "retrieved-response-bytes",
     sourceContentFingerprint: digest(String(index + 1)),
   }));
   const turns: PersonalityTurn[] = Array.from({ length: 120 }, (_, index) => {
@@ -183,7 +199,7 @@ describe("personality corpus v2 contract", () => {
       ...source, timeBand: "2020s" as const,
     } : source);
     expect(() => validatePersonalityCorpusV2({ ...corpus, sources }, policy))
-      .toThrow("Source time-band mismatch for E001");
+      .toThrow("Source date and time band disagree");
   });
 
   it("rejects overlapping locators within one source event", async () => {
