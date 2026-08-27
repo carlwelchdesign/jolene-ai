@@ -1039,7 +1039,9 @@ Public-model budget checkpoint:
 | Field | Evidence |
 |---|---|
 | Asana | [JOL-CAREER-005L](https://app.asana.com/1/9789386902387/project/1216473233375594/task/1217888844493767) |
+| Delivery | `db73709` (`JOL-CAREER-005L add public model request budget`); [jolene-ai #33](https://github.com/carlwelchdesign/jolene-ai/pull/33), stacked on #32 |
 | Admission boundary | Budget reservation happens only after supported deterministic evidence selection and before provider execution; failed attempts remain counted |
 | Persistence boundary | Strict content-free state contains only schema version, fixed-window start, and aggregate request count in the dedicated public-state volume |
 | Failure boundary | Exhausted, malformed, or unavailable budget state bypasses generation and returns the unchanged deterministic response with `model_budget_fallback` audit outcome |
 | Non-goals | No token/cost reconciliation, provider activation, pricing approval, distributed quota, public deployment, or launch authorization |
+| Verification | Node 24 with 47 test files / 309 tests; frozen suite 41/41 cases and 24/24 metrics; disposable pre-exhausted model-mode container returned unchanged 3-claim/3-citation deterministic output with `model_budget_fallback` and no provider request; build, fresh image, both Compose definitions, audit, diff, deterministic runtime, and private API/Slack continuity checks pass |
