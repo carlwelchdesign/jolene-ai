@@ -1,3 +1,5 @@
+import { createHash } from "node:crypto";
+
 import { z } from "zod";
 
 import { careerMaturitySchema } from "./career-evidence.js";
@@ -94,6 +96,19 @@ export type PublicCareerEvidenceRecord = z.infer<
 export type PublicCareerEvidenceArtifact = z.infer<
   typeof publicCareerEvidenceArtifactSchema
 >;
+
+export function publicCareerEvidenceDigest(input: {
+  readonly evidence: readonly PublicCareerEvidenceRecord[];
+  readonly revokedEvidenceIds: readonly string[];
+}): string {
+  return createHash("sha256")
+    .update(JSON.stringify({
+      schemaVersion: PUBLIC_CAREER_EVIDENCE_SCHEMA_VERSION,
+      evidence: input.evidence,
+      revokedEvidenceIds: input.revokedEvidenceIds,
+    }))
+    .digest("hex");
+}
 
 function unique(values: readonly string[]): boolean {
   return new Set(values).size === values.length;

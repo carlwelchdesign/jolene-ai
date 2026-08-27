@@ -45,6 +45,8 @@ The first runnable slice provides:
   approval, rejection, validation review, and revocation;
 - a deny-by-default offline public-evidence artifact with a versioned manifest,
   reproducible corpus hash, revocation list, and adversarial leak checks;
+- a separate loopback-only public-delegate process boundary that validates that
+  artifact and exposes only health plus the frozen v1 manifest contract;
 - contract tests that do not call OpenAI.
 
 The Slack adapter is active for a local pilot, with live mention-and-reply behavior verified. Scheduled work, specialist agents, client-AI workflows, always-on hosting, and voice remain later gates.
@@ -52,9 +54,10 @@ The Slack adapter is active for a local pilot, with live mention-and-reply behav
 The conversational Obsidian bridge still uses deterministic lexical retrieval.
 The governed career registry now has a separate private hybrid retrieval path,
 but no imported claim is eligible until Carl approves its source and claim for
-internal use. The versioned export exists only as a local ignored artifact; no
-public endpoint or portfolio delegate is implemented. MCP interoperability is
-also not implemented. See the
+internal use. The versioned export remains a local ignored artifact. A separate
+loopback-only reference process can serve its validated manifest, but answer,
+job-fit, contact, CORS, public hosting, and portfolio integration are not
+implemented. MCP interoperability is also not implemented. See the
 [professional context architecture](plans/JOLENE_PROFESSIONAL_CONTEXT_ARCHITECTURE.md).
 
 ## Setup
@@ -169,6 +172,10 @@ Prerequisite: Node.js 22 or newer.
    `.jolene/exports/public-career-evidence.json`. With zero public-approved
    claims it is a valid empty corpus. This command does not publish, deploy, or
    start a public endpoint.
+
+   The isolated local manifest boundary is documented in
+   [Public delegate boundary](docs/public-delegate.md). It is a development
+   contract surface, not a public deployment.
 
 ## Slack pilot
 
