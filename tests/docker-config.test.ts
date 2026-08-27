@@ -26,6 +26,7 @@ const parsedCompose = parse(compose, { merge: true }) as {
     readonly network_mode?: string;
     readonly ports?: readonly string[];
     readonly profiles?: readonly string[];
+    readonly read_only?: boolean;
     readonly secrets?: readonly (string | { readonly source?: string })[];
     readonly volumes?: readonly (string | {
       readonly source?: string;
@@ -135,6 +136,31 @@ describe("Docker runtime boundary", () => {
     expect(packageJson.scripts["start:career-index:lexical"]).toBe(
       "node dist/career-index.js",
     );
+  });
+
+  it("audits canonical career relationship topology without network or write access", () => {
+    expect(packageJson.scripts["career:relationships:audit"]).toBe(
+      "docker compose --profile tools run --rm --build jolene-career-topology-audit",
+    );
+    expect(packageJson.scripts["start:career-relationships:audit"]).toBe(
+      "node dist/career-topology.js",
+    );
+    const audit = parsedCompose.services["jolene-career-topology-audit"];
+    expect(audit).toBeDefined();
+    expect(audit?.command).toEqual(["node", "dist/career-topology.js"]);
+    expect(audit?.profiles).toEqual(["tools"]);
+    expect(audit?.network_mode).toBe("none");
+    expect(audit?.ports).toBeUndefined();
+    expect(audit?.secrets).toBeUndefined();
+    expect(audit?.read_only).toBe(true);
+    expect(audit?.volumes).toEqual(["jolene-data:/data:ro"]);
+    expect(audit?.environment).toEqual({
+      JOLENE_DATABASE_PATH: "/data/jolene.sqlite",
+      JOLENE_OWNER_ACTOR_ID: "${JOLENE_OWNER_ACTOR_ID:-carl}",
+      JOLENE_CAREER_WORKSPACE_ID:
+        "${JOLENE_CAREER_WORKSPACE_ID:-professional}",
+    });
+    expect(publicCompose).not.toContain("career-topology");
   });
 
   it("exports public career evidence from the canonical volume without private credentials", () => {

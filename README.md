@@ -59,6 +59,9 @@ The first runnable slice provides:
 - a versioned synthetic multi-hop career retrieval benchmark that compares the
   production lexical index with a bounded evaluation-only relationship
   traversal before any GraphRAG or graph-database decision;
+- a network-disabled, read-only canonical career relationship topology audit
+  that separates precise claim links from broad source inheritance and emits
+  only aggregate readiness evidence;
 - a local, owner-scoped Career Evidence screen for source-first internal/public
   approval, rejection, validation review, revocation, and explicit two-to-five
   claim conflict declaration and resolution, with registry-wide search and
@@ -138,6 +141,12 @@ Prerequisite: Node.js 22 or newer.
 
    ```bash
    npm run eval:career:relationships
+   ```
+
+   Audit the canonical private relationship topology separately:
+
+   ```bash
+   npm run career:relationships:audit
    ```
 
    Build the production service separately with:
