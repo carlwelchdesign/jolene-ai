@@ -242,6 +242,170 @@ describe("career evidence review lifecycle", () => {
       store.close();
     }
   });
+
+  it("requires an exact owner decision before creating a claim relationship", () => {
+    const store = new SqliteCareerEvidenceStore(":memory:", () => fixedNow);
+    try {
+      const source = createSource(store);
+      const claim = createClaim(store, source.id, "Carl built a bounded product.");
+      store.upsertRelationship(sourceRelationshipInput(source.id));
+
+      const candidate = store.listRelationshipCandidates(scope)[0]!;
+      expect(candidate).toMatchObject({
+        claimId: claim.id,
+        sourceRelationshipId: "source-relationship:sample-skill",
+        reviewState: "needs_review",
+        reviewIsCurrent: false,
+        linkedRelationshipId: null,
+      });
+
+      const approved = store.decideRelationshipCandidate({
+        ...scope,
+        id: candidate.id,
+        fingerprint: candidate.fingerprint,
+        decision: "approved",
+        reviewerId: "carl",
+      });
+      expect(approved).toMatchObject({
+        reviewState: "approved",
+        reviewIsCurrent: true,
+      });
+      expect(store.listRelationships(scope)).toEqual(expect.arrayContaining([
+        expect.objectContaining({
+          id: approved.linkedRelationshipId,
+          claimId: claim.id,
+          relationship: "uses_skill",
+          state: "active",
+        }),
+      ]));
+
+      const rejected = store.decideRelationshipCandidate({
+        ...scope,
+        id: approved.id,
+        fingerprint: approved.fingerprint,
+        decision: "rejected",
+        reviewerId: "carl",
+      });
+      expect(rejected).toMatchObject({
+        reviewState: "rejected",
+        reviewIsCurrent: true,
+        linkedRelationshipId: null,
+      });
+      expect(store.listRelationshipReviews(scope).map((review) => review.decision))
+        .toEqual(["approved", "rejected"]);
+      expect(store.listRelationships(scope).find((relationship) =>
+        relationship.id === approved.linkedRelationshipId
+      )?.state).toBe("revoked");
+    } finally {
+      store.close();
+    }
+  });
+
+  it("invalidates reviewed candidates when their exact source relationship changes", () => {
+    let now = fixedNow;
+    const store = new SqliteCareerEvidenceStore(":memory:", () => now);
+    try {
+      const source = createSource(store);
+      createClaim(store, source.id, "Carl built a bounded product.");
+      store.upsertRelationship(sourceRelationshipInput(source.id));
+      const candidate = store.listRelationshipCandidates(scope)[0]!;
+      store.decideRelationshipCandidate({
+        ...scope,
+        id: candidate.id,
+        fingerprint: candidate.fingerprint,
+        decision: "approved",
+        reviewerId: "carl",
+      });
+
+      now = new Date("2026-08-25T13:00:00.000Z");
+      store.upsertRelationship({
+        ...sourceRelationshipInput(source.id),
+        toId: "skill:reviewed-retrieval",
+      });
+      const changed = store.listRelationshipCandidates(scope)[0]!;
+      expect(changed.id).toBe(candidate.id);
+      expect(changed.fingerprint).not.toBe(candidate.fingerprint);
+      expect(changed).toMatchObject({
+        toId: "skill:reviewed-retrieval",
+        reviewState: "needs_review",
+        reviewIsCurrent: false,
+        linkedRelationshipId: null,
+      });
+      expect(() => store.decideRelationshipCandidate({
+        ...scope,
+        id: candidate.id,
+        fingerprint: candidate.fingerprint,
+        decision: "approved",
+        reviewerId: "carl",
+      })).toThrow("changed or is no longer active");
+
+      store.revokeRelationshipsNotInSource(source.id, [], scope);
+      expect(store.listRelationshipCandidates(scope)).toEqual([]);
+    } finally {
+      store.close();
+    }
+  });
+
+  it("requires fresh relationship review after a source disappears and returns", () => {
+    let now = fixedNow;
+    const store = new SqliteCareerEvidenceStore(":memory:", () => now);
+    try {
+      const source = createSource(store);
+      createClaim(store, source.id, "Carl built a bounded product.");
+      store.upsertRelationship(sourceRelationshipInput(source.id));
+      const candidate = store.listRelationshipCandidates(scope)[0]!;
+      const approved = store.decideRelationshipCandidate({
+        ...scope,
+        id: candidate.id,
+        fingerprint: candidate.fingerprint,
+        decision: "approved",
+        reviewerId: "carl",
+      });
+
+      now = new Date("2026-08-25T13:00:00.000Z");
+      store.markSourceMissing(source.id, scope);
+      expect(store.listRelationshipCandidates(scope)).toEqual([]);
+      expect(store.listRelationships(scope).find((relationship) =>
+        relationship.id === approved.linkedRelationshipId
+      )?.state).toBe("revoked");
+
+      now = new Date("2026-08-25T14:00:00.000Z");
+      store.upsertSource(sourceInput());
+      expect(store.listRelationshipCandidates(scope)[0]).toMatchObject({
+        id: candidate.id,
+        reviewState: "needs_review",
+        reviewIsCurrent: false,
+        linkedRelationshipId: null,
+      });
+    } finally {
+      store.close();
+    }
+  });
+
+  it("revokes a review-created relationship when its claim becomes inactive", () => {
+    const store = new SqliteCareerEvidenceStore(":memory:", () => fixedNow);
+    try {
+      const source = createSource(store);
+      const claim = createClaim(store, source.id, "Carl built a bounded product.");
+      store.upsertRelationship(sourceRelationshipInput(source.id));
+      const candidate = store.listRelationshipCandidates(scope)[0]!;
+      const approved = store.decideRelationshipCandidate({
+        ...scope,
+        id: candidate.id,
+        fingerprint: candidate.fingerprint,
+        decision: "approved",
+        reviewerId: "carl",
+      });
+
+      store.revokeClaim(claim.id, scope);
+      expect(store.listRelationshipCandidates(scope)).toEqual([]);
+      expect(store.listRelationships(scope).find((relationship) =>
+        relationship.id === approved.linkedRelationshipId
+      )?.state).toBe("revoked");
+    } finally {
+      store.close();
+    }
+  });
 });
 
 describe("PortfolioEvidenceImporter", () => {
@@ -354,6 +518,20 @@ function approvePublic(
     decision: "approve_public",
     reviewerId: "carl",
   });
+}
+
+function sourceRelationshipInput(sourceId: string) {
+  return {
+    id: "source-relationship:sample-skill",
+    ...scope,
+    sourceId,
+    claimId: null,
+    fromKind: "project" as const,
+    fromId: "project:sample",
+    relationship: "uses_skill" as const,
+    toKind: "skill" as const,
+    toId: "skill:typescript",
+  };
 }
 
 function digest(value: string): string {

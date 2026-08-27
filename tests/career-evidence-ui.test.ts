@@ -40,6 +40,19 @@ describe("career evidence review interface", () => {
     expect(javascript).not.toContain("inferConflict");
   });
 
+  it("requires owner confirmation for exact source-derived relationship links", () => {
+    expect(html).toContain('id="relationship-list"');
+    expect(html).toContain("Jolene does not infer relevance from wording");
+    expect(html).toContain("I confirm this exact source-derived relationship decision.");
+    expect(javascript).toContain('api("/v1/career-evidence/relationship-candidates" + query)');
+    expect(javascript).toContain('kind: "relationship_approve"');
+    expect(javascript).toContain('kind: "relationship_reject"');
+    expect(javascript).toContain("candidate.fingerprint");
+    expect(javascript).toContain("No link was created.");
+    expect(javascript).not.toContain("inferRelationship");
+    expect(css).toContain(".relationship-path");
+  });
+
   it("paginates the full private registry and exposes bounded source review context", () => {
     expect(html).toContain('id="evidence-page-status"');
     expect(html).toContain('id="previous-evidence-page"');

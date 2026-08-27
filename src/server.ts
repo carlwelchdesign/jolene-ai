@@ -613,6 +613,30 @@ async function handleRequest(
     return;
   }
 
+  if (
+    request.method === "GET" &&
+    url.pathname === "/v1/career-evidence/relationship-candidates"
+  ) {
+    sendJson(
+      response,
+      200,
+      application.careerEvidence.listRelationshipCandidates(scopeFrom(url)),
+    );
+    return;
+  }
+
+  if (
+    request.method === "GET" &&
+    url.pathname === "/v1/career-evidence/relationship-reviews"
+  ) {
+    sendJson(
+      response,
+      200,
+      application.careerEvidence.listRelationshipReviews(scopeFrom(url)),
+    );
+    return;
+  }
+
   if (request.method === "GET" && url.pathname === "/v1/career-evidence/validation") {
     sendJson(response, 200, application.careerEvidence.validate(scopeFrom(url)));
     return;
@@ -711,6 +735,24 @@ async function handleRequest(
   const sourceDecisionMatch = url.pathname.match(
     /^\/v1\/career-evidence\/sources\/([^/]+)\/decision$/,
   );
+
+  const relationshipCandidateDecisionMatch = url.pathname.match(
+    /^\/v1\/career-evidence\/relationship-candidates\/([^/]+)\/decision$/,
+  );
+  if (request.method === "POST" && relationshipCandidateDecisionMatch?.[1]) {
+    assertSameOrigin(request.headers);
+    sendJson(
+      response,
+      200,
+      application.careerEvidence.decideRelationshipCandidate(
+        withIdentifier(
+          await readJson(request),
+          decodeURIComponent(relationshipCandidateDecisionMatch[1]),
+        ),
+      ),
+    );
+    return;
+  }
 
   if (request.method === "POST" && url.pathname === "/v1/career-evidence/conflicts") {
     assertSameOrigin(request.headers);

@@ -150,6 +150,46 @@ export interface CareerRelationship {
   readonly updatedAt: string;
 }
 
+export const careerRelationshipReviewDecisionSchema = z.enum([
+  "approved",
+  "rejected",
+]);
+export type CareerRelationshipReviewDecision = z.infer<
+  typeof careerRelationshipReviewDecisionSchema
+>;
+
+export interface CareerRelationshipReview {
+  readonly id: string;
+  readonly actorId: string;
+  readonly workspaceId: string;
+  readonly candidateId: string;
+  readonly candidateFingerprint: string;
+  readonly claimId: string;
+  readonly sourceRelationshipId: string;
+  readonly decision: CareerRelationshipReviewDecision;
+  readonly reviewedBy: string;
+  readonly reviewedAt: string;
+}
+
+export interface CareerRelationshipCandidate {
+  readonly id: string;
+  readonly fingerprint: string;
+  readonly actorId: string;
+  readonly workspaceId: string;
+  readonly sourceId: string;
+  readonly claimId: string;
+  readonly sourceRelationshipId: string;
+  readonly fromKind: CareerEntityKind;
+  readonly fromId: string;
+  readonly relationship: CareerRelationshipKind;
+  readonly toKind: CareerEntityKind;
+  readonly toId: string;
+  readonly reviewState: "needs_review" | CareerRelationshipReviewDecision;
+  readonly lastReview: CareerRelationshipReview | null;
+  readonly reviewIsCurrent: boolean;
+  readonly linkedRelationshipId: string | null;
+}
+
 export interface CareerClaimConflict {
   readonly id: string;
   readonly actorId: string;
@@ -231,6 +271,14 @@ export interface UpsertCareerRelationshipInput {
   readonly toId: string;
 }
 
+export interface DecideCareerRelationshipCandidateInput
+  extends CareerEvidenceScope {
+  readonly id: string;
+  readonly fingerprint: string;
+  readonly decision: CareerRelationshipReviewDecision;
+  readonly reviewerId: string;
+}
+
 export interface DeclareCareerClaimConflictInput extends CareerEvidenceScope {
   readonly claimIds: readonly string[];
   readonly reviewerId: string;
@@ -265,12 +313,21 @@ export interface CareerEvidenceStore {
   revokeSource(id: string, scope: CareerEvidenceScope): CareerSource;
   revokeClaim(id: string, scope: CareerEvidenceScope): CareerClaim;
   upsertRelationship(input: UpsertCareerRelationshipInput): CareerRelationship;
+  decideRelationshipCandidate(
+    input: DecideCareerRelationshipCandidateInput,
+  ): CareerRelationshipCandidate;
   declareClaimConflict(input: DeclareCareerClaimConflictInput): CareerClaimConflict;
   resolveClaimConflict(input: ResolveCareerClaimConflictInput): CareerClaimConflict;
   listSources(scope: CareerEvidenceScope): readonly CareerSource[];
   listClaims(scope: CareerEvidenceScope): readonly CareerClaim[];
   listClaimConflicts(scope: CareerEvidenceScope): readonly CareerClaimConflict[];
   listRelationships(scope: CareerEvidenceScope): readonly CareerRelationship[];
+  listRelationshipCandidates(
+    scope: CareerEvidenceScope,
+  ): readonly CareerRelationshipCandidate[];
+  listRelationshipReviews(
+    scope: CareerEvidenceScope,
+  ): readonly CareerRelationshipReview[];
   listPublicClaims(scope: CareerEvidenceScope): readonly CareerClaim[];
   validate(scope: CareerEvidenceScope): readonly CareerEvidenceValidationIssue[];
   close(): void;
@@ -287,6 +344,37 @@ export function careerClaimConflictId(input: {
     claimIds: [...input.claimIds].sort(),
   })).digest("hex").slice(0, 16);
   return `conflict:${digest}`;
+}
+
+export function careerRelationshipCandidateId(input: {
+  readonly actorId: string;
+  readonly workspaceId: string;
+  readonly claimId: string;
+  readonly sourceRelationshipId: string;
+}): `relationship-candidate:${string}` {
+  return `relationship-candidate:${careerRelationshipDigest(input)}`;
+}
+
+export function reviewedCareerRelationshipId(
+  candidateId: string,
+): `reviewed-relationship:${string}` {
+  return `reviewed-relationship:${createHash("sha256").update(candidateId).digest("hex").slice(0, 24)}`;
+}
+
+export function careerRelationshipCandidateFingerprint(input: {
+  readonly candidateId: string;
+  readonly sourceHash: string;
+  readonly claim: Pick<CareerClaim, "id" | "title" | "proposition" | "contribution" | "maturity">;
+  readonly relationship: Pick<
+    CareerRelationship,
+    "id" | "fromKind" | "fromId" | "relationship" | "toKind" | "toId" | "updatedAt"
+  >;
+}): string {
+  return createHash("sha256").update(JSON.stringify(input)).digest("hex");
+}
+
+function careerRelationshipDigest(input: unknown): string {
+  return createHash("sha256").update(JSON.stringify(input)).digest("hex").slice(0, 24);
 }
 
 export class CareerEvidenceNotFoundError extends Error {

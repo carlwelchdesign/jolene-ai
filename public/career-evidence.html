@@ -60,6 +60,7 @@
         <article><span>Internal approved</span><strong id="count-internal">—</strong></article>
         <article><span>Public approved</span><strong id="count-public">—</strong></article>
         <article><span>Unresolved conflicts</span><strong id="count-conflicts">—</strong></article>
+        <article><span>Relationship reviews</span><strong id="count-relationship-review">—</strong></article>
       </section>
 
       <section class="panel conflict-panel" aria-labelledby="conflict-title">
@@ -80,6 +81,19 @@
         </div>
         <div class="conflict-list" id="conflict-list" aria-live="polite" aria-busy="true">
           <div class="loading-state">Loading claim conflicts…</div>
+        </div>
+      </section>
+
+      <section class="panel relationship-panel" aria-labelledby="relationship-title">
+        <div class="section-heading relationship-heading">
+          <div>
+            <p class="eyebrow">Source-derived graph control</p>
+            <h2 id="relationship-title">Claim relationship suggestions</h2>
+            <p class="supporting-copy">These suggestions copy exact relationships already attached to a claim's source. Jolene does not infer relevance from wording, and no link exists until you approve that exact candidate.</p>
+          </div>
+        </div>
+        <div class="relationship-list" id="relationship-list" aria-live="polite" aria-busy="true">
+          <div class="loading-state">Loading relationship suggestions…</div>
         </div>
       </section>
 
@@ -130,6 +144,10 @@
         <label class="check-field" id="conflict-confirmation" hidden>
           <input id="conflict-confirm" type="checkbox">
           <span><strong>I confirm these exact claims conflict and require review.</strong><small>Jolene will withhold affected public evidence until this group is resolved.</small></span>
+        </label>
+        <label class="check-field" id="relationship-confirmation" hidden>
+          <input id="relationship-confirm" type="checkbox">
+          <span><strong>I confirm this exact source-derived relationship decision.</strong><small>Approval creates only this claim link. Rejection creates no link. Neither action publishes anything.</small></span>
         </label>
         <div class="inline-error" id="decision-error" role="alert" hidden></div>
         <div class="dialog-actions">

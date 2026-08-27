@@ -42,4 +42,62 @@ describe("CareerEvidenceService", () => {
       store.close();
     }
   });
+
+  it("exposes candidates and restricts exact relationship decisions to the owner", () => {
+    const store = new SqliteCareerEvidenceStore(":memory:");
+    const scope = { actorId: "carl", workspaceId: "professional" };
+    const service = new CareerEvidenceService(store, scope);
+    try {
+      store.upsertSource({
+        id: "source:sample",
+        ...scope,
+        sourceType: "project",
+        title: "Sample",
+        provenanceRef: "portfolio/sample",
+        provenanceUri: "https://example.com/sample",
+        sourceHash: "a".repeat(64),
+        capturedAt: "2026-08-25T12:00:00.000Z",
+      });
+      store.upsertDraftClaim({
+        ...scope,
+        sourceId: "source:sample",
+        logicalKey: "summary",
+        title: "Sample claim",
+        proposition: "Carl built Sample.",
+        contribution: "Bounded contribution.",
+        maturity: "prototype",
+      });
+      store.upsertRelationship({
+        id: "relationship:source-skill",
+        ...scope,
+        sourceId: "source:sample",
+        claimId: null,
+        fromKind: "project",
+        fromId: "project:sample",
+        relationship: "uses_skill",
+        toKind: "skill",
+        toId: "skill:typescript",
+      });
+
+      const candidate = service.listRelationshipCandidates(scope)[0]!;
+      expect(service.listRelationshipReviews(scope)).toEqual([]);
+      expect(() => service.decideRelationshipCandidate({
+        ...scope,
+        id: candidate.id,
+        fingerprint: candidate.fingerprint,
+        decision: "approved",
+        reviewerId: "other",
+      })).toThrow(CareerEvidenceScopeError);
+      expect(service.decideRelationshipCandidate({
+        ...scope,
+        id: candidate.id,
+        fingerprint: candidate.fingerprint,
+        decision: "approved",
+        reviewerId: "carl",
+      }).reviewState).toBe("approved");
+      expect(service.listRelationshipReviews(scope)).toHaveLength(1);
+    } finally {
+      store.close();
+    }
+  });
 });

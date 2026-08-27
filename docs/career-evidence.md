@@ -13,6 +13,9 @@ actor, channel, and visibility gates below pass.
   project maturity, visibility, review state, and supersession history.
 - A **relationship** connects explicit employers, roles, projects, skills,
   capabilities, artifacts, and claims without requiring a graph database.
+- A **relationship review** is an append-only owner decision over a
+  deterministic candidate that binds one active claim to one exact active
+  source-level relationship snapshot.
 - A **claim conflict** is an owner-reviewed group of two through five active
   claim UUIDs whose propositions must not be collapsed into one assertion. Its
   stable ID is derived from scope and canonical membership; no text similarity
@@ -50,6 +53,12 @@ The review screen:
   history, and resolve a group without choosing a winning claim;
 - excludes claims already held by an unresolved group from new selections and
   labels their withheld state in the evidence queue;
+- shows source-derived claim-relationship suggestions with exact typed
+  endpoints and fingerprints, and requires confirmation before either approval
+  or rejection;
+- creates a claim-level relationship only after exact owner approval, records
+  rejection without creating a link, and marks previous decisions stale when
+  the source content or source relationship changes;
 - supports rejection and confirmation-gated source or claim revocation; and
 - keeps the current 38-source, 143-active-claim queue navigable through
   registry-wide search, filters, summaries, ten-source pages, synchronized
@@ -87,6 +96,25 @@ Declarations are idempotent, survive restart, reject inactive or unknown
 claims, and prevent one claim from entering multiple unresolved groups.
 Resolution does not delete history. These routes do not infer conflicts,
 publish an artifact, or expose a recruiter-facing control.
+
+The relationship enrichment workflow uses two additional read boundaries and
+one same-origin mutation:
+
+- `GET /v1/career-evidence/relationship-candidates` lists deterministic
+  candidates in the configured owner scope;
+- `GET /v1/career-evidence/relationship-reviews` lists append-only decision
+  history; and
+- `POST /v1/career-evidence/relationship-candidates/:id/decision` accepts the
+  exact candidate fingerprint, `approved` or `rejected`, and owner reviewer ID.
+
+Candidates are produced only when an active claim and an active source-level
+relationship share the same active source. Existing exact claim relationships
+are not proposed again. Approval copies only the reviewed typed endpoints;
+rejection creates no link. A source content change, source disappearance or
+revocation, relationship mutation or revocation, or inactive claim removes the
+candidate from current eligibility and revokes any review-created link. The
+decision history remains. This is deterministic enrichment, not semantic
+inference, GraphRAG, or a graph-database activation.
 
 ## Import the canonical portfolio
 
