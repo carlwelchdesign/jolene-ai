@@ -818,6 +818,10 @@ and private API/Slack continuity checks pass.
   no-regression case, and six 100% blocker metrics. It exercises the production
   lexical index and compares it with a bounded evaluation-only relationship
   traversal over active, freshly reviewed evidence.
+- `JOL-CAREER-008B` implements a content-free canonical topology gate in a
+  network-disabled tools container with a read-only volume. It distinguishes
+  direct claim links from conservative source-level inheritance before any
+  private benchmark is authored.
 - Build a separately reviewed private-corpus multi-hop question set before any
   production retrieval change.
 - Add GraphRAG or a dedicated graph database only if measured results justify
@@ -836,6 +840,24 @@ and private API/Slack continuity checks pass.
   precedes residual weak lexical matches; and
 - no provider call, private corpus read, production behavior change, GraphRAG,
   graph database, deployment, or launch authorization is part of this slice.
+
+`JOL-CAREER-008B` canonical readiness boundary:
+
+- Asana child: [JOL-CAREER-008B](https://app.asana.com/1/9789386902387/project/1216473233375594/task/1217892382993625);
+- the read-only audit sees 38 eligible sources, 143 eligible claims, 190 active
+  eligible relationships, 121 shared entities, 3,738 one-hop pairs, and 1,100
+  exact two-hop pairs;
+- effective relationship coverage passes at 9,090 basis points, and component
+  concentration passes at 7,132 basis points;
+- direct claim-linked coverage fails at 699 basis points: only 10 claims are
+  directly linked, while the 2,500-basis-point floor requires 36, leaving 26
+  reviewed claim relationships to add;
+- result: `claim_relationship_enrichment_required`; corpus fingerprint
+  `5ca6869f1ac0525620ed64aaea05d4ced61d1b3edc6977427704b9a376c4cf8b`;
+  evaluated `2026-08-27T06:24:56.845Z`; and
+- this is a data-readiness failure, not an implementation failure. It creates
+  no relationship, question, relevance decision, graph infrastructure,
+  production behavior, provider request, deployment, or launch authority.
 
 ## Acceptance criteria
 

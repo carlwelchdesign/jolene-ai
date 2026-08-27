@@ -176,26 +176,48 @@ export class CareerRetrievalAuthorizationError extends Error {
   }
 }
 
-export function isCareerEvidenceEligible(
-  source: CareerSource,
-  claim: CareerClaim,
+export type CareerEligibilitySource = Pick<
+  CareerSource,
+  "state" | "reviewState" | "lastReviewedAt"
+>;
+
+export type CareerEligibilityClaim = Pick<
+  CareerClaim,
+  "state" | "reviewState" | "lastReviewedAt" | "visibility"
+>;
+
+export function isCareerSourceEligible(
+  source: CareerEligibilitySource,
   now: Date,
 ): boolean {
-  if (
-    source.state !== "active" ||
-    source.reviewState !== "approved" ||
-    !source.lastReviewedAt ||
-    claim.state !== "active" ||
-    claim.reviewState !== "approved" ||
-    !claim.lastReviewedAt ||
-    (claim.visibility !== "internal_approved" &&
-      claim.visibility !== "public_approved")
-  ) {
-    return false;
-  }
+  return source.state === "active" &&
+    source.reviewState === "approved" &&
+    source.lastReviewedAt !== null &&
+    isWithinReviewWindow(source.lastReviewedAt, now);
+}
 
+export function isCareerClaimEligible(
+  claim: CareerEligibilityClaim,
+  now: Date,
+): boolean {
+  return claim.state === "active" &&
+    claim.reviewState === "approved" &&
+    claim.lastReviewedAt !== null &&
+    (claim.visibility === "internal_approved" ||
+      claim.visibility === "public_approved") &&
+    isWithinReviewWindow(claim.lastReviewedAt, now);
+}
+
+export function isCareerEvidenceEligible(
+  source: CareerEligibilitySource,
+  claim: CareerEligibilityClaim,
+  now: Date,
+): boolean {
+  return isCareerSourceEligible(source, now) && isCareerClaimEligible(claim, now);
+}
+
+function isWithinReviewWindow(reviewedAt: string, now: Date): boolean {
   const cutoff = new Date(now);
   cutoff.setUTCDate(cutoff.getUTCDate() - 180);
-  return new Date(source.lastReviewedAt) >= cutoff &&
-    new Date(claim.lastReviewedAt) >= cutoff;
+  return new Date(reviewedAt) >= cutoff;
 }

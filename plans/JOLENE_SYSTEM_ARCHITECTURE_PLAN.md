@@ -1159,6 +1159,20 @@ Relationship-retrieval benchmark checkpoint:
 | Baseline | Schema v1.0.0 passes 3/3 questions and 6/6 blocker metrics; synthetic mean recall at K rises from 6,111 to 10,000 basis points with 10,000-basis-point relational precision; fixture hash `f1f5df8deb6337096c1c8dd8c023d2abb47ab7bb42f6e80605e798cf7be88254` |
 | Remaining boundary | Synthetic success does not justify GraphRAG or a graph database. A separately reviewed private-corpus question set, comparative quality/latency evidence, production design review, and explicit activation remain open. |
 
+Canonical relationship-topology readiness checkpoint:
+
+| Field | Evidence |
+|---|---|
+| Asana | [JOL-CAREER-008B](https://app.asana.com/1/9789386902387/project/1216473233375594/task/1217892382993625) |
+| Branch | `codex/jol-career-008b-topology-audit` |
+| Runtime boundary | Network-disabled tools profile, no ports or secrets, read-only canonical SQLite volume, database opened read-only, and no vault/public-artifact/provider mount |
+| Content boundary | Queries only IDs, scope, lifecycle/review fields, and typed endpoints; report exposes only a fingerprint, aggregate counts/coverage, thresholds, and fixed codes |
+| Canonical topology | 38 eligible sources; 143 eligible claims; 190 eligible relationships; 121 shared entities; 3,738 one-hop pairs; 1,100 exact two-hop pairs; 16 components; largest component 102; 13 isolates |
+| Passing gates | Effective coverage 9,090 bps; shared-entity pool 121; two-hop pool 1,100; largest-component concentration 7,132 bps |
+| Failing gate | Direct claim coverage is 699 bps (10/143) against a 2,500-bps floor (36/143); 26 more eligible claims need reviewed claim-level relationships |
+| Result | `claim_relationship_enrichment_required`; fingerprint `5ca6869f1ac0525620ed64aaea05d4ced61d1b3edc6977427704b9a376c4cf8b`; evaluated `2026-08-27T06:24:56.845Z` |
+| Remaining boundary | The next justified slice is review-controlled claim-relationship enrichment, followed by re-audit and owner-reviewed private benchmark authoring. No relationship inference, GraphRAG, graph database, production retrieval change, provider activation, deployment, or launch is authorized. |
+
 Recovered-evidence review-scale checkpoint:
 
 | Field | Evidence |
