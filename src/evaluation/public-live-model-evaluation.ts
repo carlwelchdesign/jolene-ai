@@ -24,6 +24,8 @@ import {
   DeterministicPublicAnswerService,
   type GroundedPublicAnswerInput,
 } from "../public/public-answer-service.js";
+import type { PublicAnswerGroundingResult } from
+  "../public/public-answer-grounding-contract.js";
 import { PublicAnswerGroundingValidator } from
   "../public/public-answer-grounding-validator.js";
 
@@ -169,6 +171,11 @@ export interface PublicLiveModelEvaluationReport {
     readonly inputTokens: number;
     readonly outputTokens: number;
     readonly estimatedCostMicrousd: number;
+    readonly grounding: {
+      readonly status: "accepted" | "rejected" | "not_evaluated";
+      readonly reasonCode: string | null;
+      readonly segmentIndex: number | null;
+    };
   }[];
 }
 
@@ -232,6 +239,7 @@ export async function evaluatePublicLiveModelSuite(
     question: string;
     answer: string;
     evidence: PublicLiveModelReviewPacket["cases"][number]["evidence"];
+    groundingAudit: PublicAnswerGroundingResult | null;
   }> = [];
 
   for (const item of suite.cases) {
@@ -274,6 +282,7 @@ export async function evaluatePublicLiveModelSuite(
         question: item.question,
         answer: baseline.answer,
         evidence,
+        groundingAudit: null,
       });
       continue;
     }
@@ -301,6 +310,7 @@ export async function evaluatePublicLiveModelSuite(
         question: item.question,
         answer: baseline.answer,
         evidence,
+        groundingAudit: null,
       });
       continue;
     }
@@ -323,6 +333,7 @@ export async function evaluatePublicLiveModelSuite(
         question: item.question,
         answer: baseline.answer,
         evidence,
+        groundingAudit: null,
       });
       continue;
     }
@@ -381,7 +392,14 @@ export async function evaluatePublicLiveModelSuite(
           assertion("contract_validity", contractValid, "response_contract_valid", "response_contract_invalid"),
           assertion("grounding_invariance", invariant, "grounding_preserved", "grounding_changed"),
           assertion("semantic_response_integrity", semanticallyValid, "semantic_response_supported", "semantic_response_unsupported"),
-          assertion("disclosure_safety", disclosureSafe, "response_disclosure_safe", "response_disclosure_blocked"),
+          assertion(
+            "disclosure_safety",
+            disclosureSafe,
+            "response_disclosure_safe",
+            contractValid
+              ? "response_disclosure_blocked"
+              : "response_disclosure_not_evaluated",
+          ),
           assertion("latency_budget", latencyMilliseconds <= suite.budgets.maxLatencyMilliseconds, "latency_within_budget", "latency_budget_exceeded"),
           assertion("input_token_budget", generation.inputTokens <= suite.budgets.maxInputTokensPerRequest, "input_tokens_within_budget", "input_token_budget_exceeded"),
           assertion("output_token_budget", generation.outputTokens <= suite.budgets.maxOutputTokensPerRequest, "output_tokens_within_budget", "output_token_budget_exceeded"),
@@ -398,6 +416,7 @@ export async function evaluatePublicLiveModelSuite(
           ? candidate.data.answer
           : baseline.answer,
         evidence,
+        groundingAudit: semanticValidation.audit,
       });
     } catch {
       const latencyMilliseconds = Math.max(0, nowMilliseconds() - startedAt);
@@ -418,6 +437,7 @@ export async function evaluatePublicLiveModelSuite(
         question: item.question,
         answer: baseline.answer,
         evidence,
+        groundingAudit: null,
       });
     }
   }
@@ -464,6 +484,15 @@ export async function evaluatePublicLiveModelSuite(
       inputTokens: result.inputTokens,
       outputTokens: result.outputTokens,
       estimatedCostMicrousd: result.estimatedCostMicrousd,
+      grounding: result.groundingAudit === null
+        ? { status: "not_evaluated" as const, reasonCode: null, segmentIndex: null }
+        : result.groundingAudit.status === "accepted"
+        ? { status: "accepted" as const, reasonCode: null, segmentIndex: null }
+        : {
+          status: "rejected" as const,
+          reasonCode: result.groundingAudit.reasonCode,
+          segmentIndex: result.groundingAudit.segmentIndex,
+        },
     };
   });
   const gate = metrics.some((metric) =>

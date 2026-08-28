@@ -170,6 +170,16 @@ results are measurement evidence, not permission to relax thresholds, activate
 the service, or launch. Remediation and a new explicitly authorized live run are
 required before this gate can pass.
 
+Follow-up remediation keeps those failed artifacts intact. Machine reports now
+record only the grounding validator's fixed status, reason code, and segment
+index, so a rejected answer can be diagnosed without copying its prose into the
+report. The provider input uses a compact, explicit untrusted-data contract while
+the full provenance and taint envelopes remain local for output lineage. On the
+three versioned model cases this reduces serialized request-data characters by
+61.84% to 63.15% without removing evidence IDs, claim text, limitations,
+citation titles, corpus identity, or the no-authority boundary. No paid rerun was
+performed as part of that remediation.
+
 The focused red-team command uses the repository-pinned Node 22 runtime, a
 two-thread worker ceiling, and serial file execution to avoid the prior
 evaluation-worker instability:

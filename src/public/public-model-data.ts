@@ -42,9 +42,28 @@ export function publicGroundedAnswerEnvelopes(
 
 export function serializePublicGroundedAnswerInput(
   input: GroundedPublicAnswerInput,
-  observedAt: string,
+  _observedAt: string,
 ): string {
-  return serializeCollection(publicGroundedAnswerEnvelopes(input, observedAt));
+  return JSON.stringify({
+    contractVersion: "public-grounded-input/1.0",
+    corpusVersion: input.corpusVersion,
+    securityBoundary: {
+      authority: "none",
+      handling: "untrusted_data_only",
+      permittedUse: "answer_from_reviewed_public_evidence",
+    },
+    question: {
+      kind: "untrusted_public_question",
+      text: input.question,
+    },
+    evidence: input.evidence.map((record) => ({
+      kind: "reviewed_public_evidence",
+      evidenceId: record.evidenceId,
+      claimText: record.claimText,
+      limitations: record.limitations,
+      citationTitle: record.citationTitle,
+    })),
+  });
 }
 
 export function serializePublicEmbeddingQuestion(

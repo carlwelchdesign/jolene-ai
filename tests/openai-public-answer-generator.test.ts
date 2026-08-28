@@ -3,8 +3,6 @@ import type OpenAI from "openai";
 
 import { OpenAIPublicAnswerGenerator } from
   "../src/public/openai-public-answer-generator.js";
-import { parseUntrustedContentEnvelope } from
-  "../src/domain/untrusted-content.js";
 
 const corpusVersion = `career:${"a".repeat(64)}`;
 const evidenceId = "career:00000000-0000-4000-8000-000000000001";
@@ -57,18 +55,25 @@ describe("OpenAI public answer generator", () => {
       store: false,
       max_output_tokens: 321,
     });
-    const modelInput = JSON.parse(String(request.input)) as unknown[];
-    const envelopes = modelInput.map(parseUntrustedContentEnvelope);
-    expect(envelopes).toHaveLength(2);
-    expect(envelopes.map((item) => item.origin.kind)).toEqual([
-      "user_message",
-      "career_evidence",
+    const modelInput = JSON.parse(String(request.input)) as {
+      securityBoundary: { authority: string; handling: string };
+      question: { kind: string; text: string };
+      evidence: Array<{ kind: string; evidenceId: string }>;
+    };
+    expect(modelInput.securityBoundary).toMatchObject({
+      authority: "none",
+      handling: "untrusted_data_only",
+    });
+    expect(modelInput.question).toEqual({
+      kind: "untrusted_public_question",
+      text: input.question,
+    });
+    expect(modelInput.evidence).toEqual([
+      expect.objectContaining({
+        kind: "reviewed_public_evidence",
+        evidenceId,
+      }),
     ]);
-    expect(envelopes.every((item) =>
-      item.authority === "none" &&
-      item.classification === "public" &&
-      Object.values(item.scope).every((value) => value === null)
-    )).toBe(true);
     expect(String(request.input)).not.toContain("private/path");
     expect(request).not.toHaveProperty("tools");
     expect(request.instructions).toEqual(expect.stringContaining(

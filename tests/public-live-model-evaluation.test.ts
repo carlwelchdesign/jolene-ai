@@ -51,6 +51,8 @@ describe("public live-model evaluation", () => {
       estimatedCostMicrousd: 4_200,
       maximumLatencyMilliseconds: 50,
     });
+    expect(result.report.cases.filter((item) => item.mode === "model")
+      .every((item) => item.grounding.status === "accepted")).toBe(true);
     expect(result.reviewPacket.cases).toHaveLength(4);
     expect(result.reviewPacket.cases[0]?.question).toContain("React");
     expect(result.reviewPacket.cases[0]?.answer).toBe(
@@ -185,6 +187,14 @@ describe("public live-model evaluation", () => {
     expect(result.report.metrics.find(({ id }) => id === "semantic_response_integrity"))
       .toMatchObject({ gate: "fail", passed: 0, total: 3 });
     expect(result.report.cases[0]?.failures).toContain("semantic_response_unsupported");
+    expect(result.report.cases[0]?.grounding).toMatchObject({
+      status: "rejected",
+      reasonCode: "unsupported_segment",
+      segmentIndex: 0,
+    });
+    expect(result.report.cases[0]?.failures).toContain(
+      "response_disclosure_not_evaluated",
+    );
   });
 
   it("fails closed on model and corpus drift before claiming a releasable run", async () => {
