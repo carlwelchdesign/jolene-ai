@@ -22,6 +22,12 @@ not treated as proof that every participant may receive Carl's private context.
 Client-AI task packets and external-message approvals remain separate systems;
 neither one silently widens this retrieval policy.
 
+The non-activating authorization contract in
+`docs/slack-vault-disclosure-policy.md` defines the exact owner, workspace,
+channel, thread, recipient, source, content-fingerprint, purpose, and expiry
+binding a future integration must satisfy. Defining that contract does not make
+private retrieval available on either shared or private Slack.
+
 ## Enforcement points
 
 - `JoleneService` resolves the policy before loading same-thread history or
@@ -36,7 +42,8 @@ neither one silently widens this retrieval policy.
 
 ## Non-goals
 
-This policy does not add a disclosure-approval UI, shared-Slack private
-retrieval, client-AI delivery, cross-channel conversation memory, semantic
-retrieval, deployment, or Vercel configuration. Those require separate scoped
+This policy does not add a disclosure-approval UI or store, one-time grant
+consumption, Slack membership verification, shared-Slack private retrieval,
+client-AI delivery, cross-channel conversation memory, semantic retrieval,
+deployment, or Vercel configuration. Those require separate scoped
 authorization and verification.
