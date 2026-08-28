@@ -243,18 +243,24 @@ bounded in-memory vector index. Provider failure falls back to deterministic
 selection. Sensitive/private-information requests bypass embeddings.
 
 For a supported question, the answer provider receives only the visitor's
-question and each selected public claim's text, limitations, and citation
-title. It does not receive citation links, session tokens, contact intents, job
+question, current public corpus version, and each selected public evidence ID,
+claim text, limitations, and citation title. It does not receive citation
+links, session tokens, contact intents, job
 descriptions, audit data, private paths, Obsidian content, Slack content,
 private memory, private relationships, or private retrieval results.
 
 The adapter uses the Responses API with `store: false`, no tools, a bounded
-output budget, a bounded timeout, and a strict JSON schema containing only an
-answer string. The existing deterministic response owns every other field:
+output budget, a bounded timeout, and a strict versioned JSON schema containing
+single-sentence segments with exact selected evidence IDs. A deterministic
+validator checks corpus/revocation/conflict state, support substitution,
+prohibited behavior, contribution boundaries, and conservative lexical
+entailment before joining accepted segments. The existing deterministic
+response owns every other field:
 claims, citations, limitations, follow-up questions, and corpus version cannot
-be replaced by model output. Provider failure,
-timeout, refusal, malformed JSON, empty text, or oversized text returns the
-exact deterministic answer. The audit ledger records only fixed
+be replaced by model output. Provider failure, timeout, refusal, malformed
+JSON, empty or oversized text, unsupported prose, poisoned-evidence
+instructions, or validator failure returns the exact deterministic answer. The
+audit ledger records only fixed
 `model_supported` or `model_fallback` outcomes and never submitted or generated
 content.
 

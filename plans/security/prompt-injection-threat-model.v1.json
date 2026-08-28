@@ -640,12 +640,12 @@
     {
       "id": "C28",
       "name": "Public semantic entailment and instruction-following output validator",
-      "phase": "planned",
+      "phase": "current",
       "kind": "deterministic",
       "ownerTicket": "JOL-SEC-006",
-      "implementationRefs": ["src/public/public-answer-service.ts", "src/domain/public-disclosure-policy.ts"],
-      "evidenceRefs": ["JOL-SEC-006 acceptance criteria"],
-      "limitations": ["Any model-based judge must supplement, not replace, deterministic invariants and fallback."]
+      "implementationRefs": ["src/public/public-answer-grounding-contract.ts", "src/public/public-answer-grounding-validator.ts", "src/public/public-answer-service.ts", "src/public/openai-public-answer-generator.ts"],
+      "evidenceRefs": ["docs/public-answer-grounding-contract.md", "evaluations/public-answer-grounding-adversarial-v1.json", "tests/public-answer-grounding-contract.test.ts", "tests/public-answer-grounding-validator.test.ts", "tests/public-answer-grounding-adversarial.test.ts"],
+      "limitations": ["Deterministic lexical entailment and finite prohibited-pattern families can miss novel semantic, multilingual or steganographic attacks; exact deterministic fallback and later live-model red-team gates remain required."]
     },
     {
       "id": "C29",

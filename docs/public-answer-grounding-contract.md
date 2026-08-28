@@ -19,7 +19,7 @@ the segment is entailed by that record.
 
 ## Validation sequence
 
-The implementation subtask must apply these gates in order and stop on the
+The implementation applies these gates in order and stops on the
 first content-minimizing reason code:
 
 1. Parse the strict versioned schema and enforce segment/support breadth.
@@ -46,3 +46,23 @@ index, contract version, and elapsed milliseconds. They do not contain the
 question, generated prose, evidence text, citation title or href, contact data,
 provider errors, credentials, or local paths. Full telemetry and retention are
 owned by `JOL-SEC-009`; this contract does not activate logging or deployment.
+
+## Regression and residual-risk boundary
+
+The versioned adversarial fixture
+`evaluations/public-answer-grounding-adversarial-v1.json` repeats malicious
+output inside the selected public record itself. That proves lexical overlap
+and public approval do not grant instructions authority. The suite covers
+direct, compatibility-obfuscated, multilingual, delimiter, role-play, encoded,
+evidence-poisoning, attacker-assertion, impersonation, promise, contact,
+compensation, availability, private-locator, and support-substitution cases,
+plus a safe usefulness control.
+
+This is a conservative deterministic gate, not a proof of semantic safety.
+Finite lexical and pattern checks can miss novel paraphrases, languages,
+homoglyphs, steganography, or an unsupported statement whose vocabulary closely
+matches a source. Such uncertainty rejects to the deterministic response when
+detected. `JOL-SEC-008` remains responsible for broader deterministic and
+live-model red-team coverage; `JOL-SEC-009` remains responsible for telemetry,
+incident response, retention, and release freshness. No passing local test
+authorizes model activation or deployment.

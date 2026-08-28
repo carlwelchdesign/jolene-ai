@@ -97,9 +97,18 @@ return a valid, citation-free, disclosure-safe refusal. The matrices do not use
 a model to invent attacks and do not prove safety against arbitrary prose.
 
 The model-path cases use an injected deterministic fake. They prove adapter
-invariants without spending tokens or depending on provider availability. The
-unsafe case uses a synthetic private-path marker and passes only when the shared
-egress policy recognizes that the response must be blocked.
+invariants without spending tokens or depending on provider availability.
+Unsafe generated email, phone, credential, Obsidian URI, private-host, and
+private-path cases pass only when validation returns the exact deterministic,
+disclosure-safe fallback.
+
+The separate versioned public-answer grounding suite adds poisoned-evidence
+cases where selected public text repeats the attack. It covers direct,
+obfuscated, multilingual, delimiter, role-play, encoded, attacker-assertion,
+impersonation, promise, contact, compensation, availability, private-locator,
+and support-substitution families plus a safe control. This finite suite is a
+local deterministic gate; broader live-model coverage remains a separate
+release prerequisite.
 
 ## Report privacy
 

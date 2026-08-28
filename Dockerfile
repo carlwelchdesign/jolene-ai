@@ -10,6 +10,7 @@ COPY package.json package-lock.json ./
 RUN npm ci
 
 COPY tsconfig.json tsconfig.build.json ./
+COPY scripts/verify-node-runtime.mjs ./scripts/verify-node-runtime.mjs
 COPY src ./src
 RUN npm run build && npm prune --omit=dev
 
