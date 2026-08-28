@@ -180,6 +180,14 @@ three versioned model cases this reduces serialized request-data characters by
 citation titles, corpus identity, or the no-authority boundary. No paid rerun was
 performed as part of that remediation.
 
+The approved follow-up run confirmed the minimization in provider measurements:
+3,967 input tokens, 756 output tokens, 17,006 micro-USD estimated total cost,
+and 3,083 ms maximum latency. Token, cost, latency, model, corpus, evidence,
+provider-bypass, and disclosure boundaries all stayed within their precommitted
+limits. Three of four cases passed. The remaining React case failed closed at
+grounded segment index 2 with the fixed `unsupported_segment` reason, leaving
+semantic remediation—not budget calibration—as the only live-gate failure.
+
 The focused red-team command uses the repository-pinned Node 22 runtime, a
 two-thread worker ceiling, and serial file execution to avoid the prior
 evaluation-worker instability:

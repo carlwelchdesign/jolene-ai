@@ -103,9 +103,29 @@ export class OpenAIPublicAnswerGenerator implements PublicAnswerTextGenerator {
   }
 
   async #createResponse(input: GroundedPublicAnswerInput, observedAt: string) {
-    const response = await this.#client.responses.create({
-      model: this.#model,
-      store: false,
+    const response = await this.#client.responses.create(
+      createOpenAIPublicAnswerRequest({
+        input,
+        model: this.#model,
+        maxOutputTokens: this.#maxOutputTokens,
+        observedAt,
+      }), {
+        signal: AbortSignal.timeout(this.#timeoutMilliseconds),
+      });
+    return response;
+  }
+}
+
+export function createOpenAIPublicAnswerRequest(options: {
+  readonly input: GroundedPublicAnswerInput;
+  readonly model: string;
+  readonly maxOutputTokens: number;
+  readonly observedAt: string;
+}) {
+  const { input } = options;
+  return {
+      model: options.model,
+      store: false as const,
       instructions: [
         "You are Jolene, Carl Welch's public portfolio assistant.",
         ...PUBLIC_JOLENE_PERSONALITY_INSTRUCTIONS,
@@ -123,11 +143,11 @@ export class OpenAIPublicAnswerGenerator implements PublicAnswerTextGenerator {
         "Do not produce unsupported transitions, pleasantries, scope claims, or conclusions; the server renders deterministic limitations separately.",
         "Return only the required JSON object.",
       ].join(" "),
-      input: serializePublicGroundedAnswerInput(input, observedAt),
-      max_output_tokens: this.#maxOutputTokens,
+      input: serializePublicGroundedAnswerInput(input, options.observedAt),
+      max_output_tokens: options.maxOutputTokens,
       text: {
         format: {
-          type: "json_schema",
+          type: "json_schema" as const,
           name: "public_portfolio_grounded_answer",
           strict: true,
           schema: {
@@ -170,11 +190,7 @@ export class OpenAIPublicAnswerGenerator implements PublicAnswerTextGenerator {
           },
         },
       },
-    }, {
-      signal: AbortSignal.timeout(this.#timeoutMilliseconds),
-    });
-    return response;
-  }
+    };
 }
 
 function generatedAnswer(

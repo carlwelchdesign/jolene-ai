@@ -221,8 +221,8 @@ export async function evaluatePublicLiveModelSuite(
   nowMilliseconds: () => number = Date.now,
 ): Promise<PublicLiveModelEvaluationResult> {
   const suite = publicLiveModelEvaluationSuiteSchema.parse(input);
-  const suiteHash = hashSuite(suite);
-  const artifact = createArtifact(suite);
+  const suiteHash = hashPublicLiveModelSuite(suite);
+  const artifact = createPublicLiveModelArtifact(suite);
   const corpusMatches = artifact.manifest.corpusVersion === suite.corpusVersion;
   const baselineService = new DeterministicPublicAnswerService();
   const groundingValidator = new PublicAnswerGroundingValidator();
@@ -548,7 +548,7 @@ export async function evaluatePublicLiveModelSuite(
   };
 }
 
-function createArtifact(
+export function createPublicLiveModelArtifact(
   suite: PublicLiveModelEvaluationSuite,
 ): PublicCareerEvidenceArtifact {
   const digest = publicCareerEvidenceDigest({
@@ -643,6 +643,8 @@ function sum<T extends Record<string, unknown>>(
   return values.reduce((total, item) => total + Number(item[key]), 0);
 }
 
-function hashSuite(suite: PublicLiveModelEvaluationSuite): string {
+export function hashPublicLiveModelSuite(
+  suite: PublicLiveModelEvaluationSuite,
+): string {
   return createHash("sha256").update(JSON.stringify(suite)).digest("hex");
 }

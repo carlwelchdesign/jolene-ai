@@ -40,6 +40,7 @@
     "eval:public": "tsx scripts/evaluate-public-delegate.ts",
     "eval:public:live": "tsx scripts/evaluate-public-live-model.ts",
     "eval:public:live:refresh": "tsx scripts/refresh-public-live-model-fixture.ts",
+    "eval:public:live:preflight": "tsx scripts/preflight-public-live-model.ts",
     "eval:career:relationships": "tsx scripts/evaluate-career-relationships.ts",
     "eval:conversation:validate": "tsx scripts/validate-conversational-quality-suite.ts",
     "eval:conversation:capture": "tsx scripts/capture-conversational-quality.ts",
