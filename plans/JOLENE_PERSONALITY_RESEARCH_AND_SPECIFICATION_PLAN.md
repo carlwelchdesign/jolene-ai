@@ -578,7 +578,10 @@ made the relevance decision merely because this control exists.
 **Target:** 2026-09-04
 **Owner:** Research lead and AI architecture reviewer
 **Deliverables:** 100–150 coded turns, evidence graph, contradiction map, confidence labels.
-**Exit gate:** every identity-level trait meets the admission rule or remains explicitly provisional.
+**Exit gate:** complete locally. The reviewed v1 character graph binds eight trait decisions
+to 111 content-minimized observation references, preserves support and counterexample edges,
+and applies seven anti-caricature constraints to every trait. One trait is admitted and seven
+remain explicitly deferred. Runtime activation and deployment remain separate gates.
 
 ### Phase 3 — Behavior specification and evaluation suite
 

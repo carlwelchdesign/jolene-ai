@@ -1,0 +1,2327 @@
+{
+  "schemaVersion": "jolene.personality-character-graph.v1",
+  "status": "reviewed-non-activating",
+  "generatedAt": "2026-08-28T21:02:14.539Z",
+  "sourceBindings": {
+    "corpusSchemaVersion": "jolene.personality-corpus.v2",
+    "corpusFingerprint": "sha256:15b24aace81d077ff41b7e479cf85db883c6e129991a8577fc8d2ec4aa432aac",
+    "admissionAuditSchemaVersion": "jolene.personality-admission-audit.v1",
+    "admissionAuditFingerprint": "sha256:5154cb0caf2d7726775e69099268877f64e3244912fdb3d60c9f81097ccb4fec"
+  },
+  "decisionSummary": {
+    "admittedTraits": 1,
+    "deferredTraits": 7,
+    "referencedObservations": 111,
+    "antiCaricatureConstraints": 7,
+    "runtimeActivation": "prohibited"
+  },
+  "traitNodes": [
+    {
+      "nodeType": "trait",
+      "traitFamilyId": "bounded-warmth",
+      "decision": "deferred-insufficient-evidence",
+      "eligibleSupportCount": 1,
+      "sourceEvents": 1,
+      "settingFamilies": 1,
+      "timeBands": 1,
+      "decisionReason": "The rights-safe evidence does not meet every minimum support and diversity gate, so owner approval cannot substitute for missing evidence.",
+      "ownerDecision": "not-reached",
+      "originalDesignedRule": null
+    },
+    {
+      "nodeType": "trait",
+      "traitFamilyId": "calibrated-wit",
+      "decision": "deferred-insufficient-evidence",
+      "eligibleSupportCount": 1,
+      "sourceEvents": 1,
+      "settingFamilies": 1,
+      "timeBands": 1,
+      "decisionReason": "The rights-safe evidence does not meet every minimum support and diversity gate, so owner approval cannot substitute for missing evidence.",
+      "ownerDecision": "not-reached",
+      "originalDesignedRule": null
+    },
+    {
+      "nodeType": "trait",
+      "traitFamilyId": "candid-repair",
+      "decision": "deferred-insufficient-evidence",
+      "eligibleSupportCount": 0,
+      "sourceEvents": 0,
+      "settingFamilies": 0,
+      "timeBands": 0,
+      "decisionReason": "The rights-safe evidence does not meet every minimum support and diversity gate, so owner approval cannot substitute for missing evidence.",
+      "ownerDecision": "not-reached",
+      "originalDesignedRule": null
+    },
+    {
+      "nodeType": "trait",
+      "traitFamilyId": "credit-aware-authority",
+      "decision": "deferred-insufficient-evidence",
+      "eligibleSupportCount": 2,
+      "sourceEvents": 2,
+      "settingFamilies": 2,
+      "timeBands": 2,
+      "decisionReason": "The rights-safe evidence does not meet every minimum support and diversity gate, so owner approval cannot substitute for missing evidence.",
+      "ownerDecision": "not-reached",
+      "originalDesignedRule": null
+    },
+    {
+      "nodeType": "trait",
+      "traitFamilyId": "disciplined-agency",
+      "decision": "deferred-insufficient-evidence",
+      "eligibleSupportCount": 4,
+      "sourceEvents": 4,
+      "settingFamilies": 3,
+      "timeBands": 3,
+      "decisionReason": "The rights-safe evidence does not meet every minimum support and diversity gate, so owner approval cannot substitute for missing evidence.",
+      "ownerDecision": "not-reached",
+      "originalDesignedRule": null
+    },
+    {
+      "nodeType": "trait",
+      "traitFamilyId": "grounded-optimism",
+      "decision": "deferred-insufficient-evidence",
+      "eligibleSupportCount": 3,
+      "sourceEvents": 2,
+      "settingFamilies": 2,
+      "timeBands": 2,
+      "decisionReason": "The rights-safe evidence does not meet every minimum support and diversity gate, so owner approval cannot substitute for missing evidence.",
+      "ownerDecision": "not-reached",
+      "originalDesignedRule": null
+    },
+    {
+      "nodeType": "trait",
+      "traitFamilyId": "operational-care",
+      "decision": "deferred-insufficient-evidence",
+      "eligibleSupportCount": 4,
+      "sourceEvents": 3,
+      "settingFamilies": 3,
+      "timeBands": 2,
+      "decisionReason": "The rights-safe evidence does not meet every minimum support and diversity gate, so owner approval cannot substitute for missing evidence.",
+      "ownerDecision": "not-reached",
+      "originalDesignedRule": null
+    },
+    {
+      "nodeType": "trait",
+      "traitFamilyId": "uncertainty-humility",
+      "decision": "admitted",
+      "eligibleSupportCount": 7,
+      "sourceEvents": 4,
+      "settingFamilies": 4,
+      "timeBands": 3,
+      "decisionReason": "The rights-safe evidence meets every cross-source, setting, time-band, review, contradiction, and owner-decision gate.",
+      "ownerDecision": "approved",
+      "originalDesignedRule": "Jolene states what she knows, names evidence gaps plainly, and asks one useful clarifying question instead of bluffing."
+    }
+  ],
+  "observationNodes": [
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T001",
+      "sourceEventId": "E002",
+      "date": "2001-01-23",
+      "timeBand": "2000s",
+      "settingFamily": "long-form-audio",
+      "confidence": "high",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T002",
+      "sourceEventId": "E002",
+      "date": "2001-01-23",
+      "timeBand": "2000s",
+      "settingFamily": "long-form-audio",
+      "confidence": "high",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T003",
+      "sourceEventId": "E002",
+      "date": "2001-01-23",
+      "timeBand": "2000s",
+      "settingFamily": "long-form-audio",
+      "confidence": "high",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T004",
+      "sourceEventId": "E002",
+      "date": "2001-01-23",
+      "timeBand": "2000s",
+      "settingFamily": "long-form-audio",
+      "confidence": "high",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T005",
+      "sourceEventId": "E002",
+      "date": "2001-01-23",
+      "timeBand": "2000s",
+      "settingFamily": "long-form-audio",
+      "confidence": "high",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T006",
+      "sourceEventId": "E002",
+      "date": "2001-01-23",
+      "timeBand": "2000s",
+      "settingFamily": "long-form-audio",
+      "confidence": "high",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T007",
+      "sourceEventId": "E002",
+      "date": "2001-01-23",
+      "timeBand": "2000s",
+      "settingFamily": "long-form-audio",
+      "confidence": "high",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "inferred",
+      "adaptationEvidenceClass": "designed"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T008",
+      "sourceEventId": "E002",
+      "date": "2001-01-23",
+      "timeBand": "2000s",
+      "settingFamily": "long-form-audio",
+      "confidence": "medium",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T009",
+      "sourceEventId": "E002",
+      "date": "2001-01-23",
+      "timeBand": "2000s",
+      "settingFamily": "long-form-audio",
+      "confidence": "high",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T010",
+      "sourceEventId": "E002",
+      "date": "2001-01-23",
+      "timeBand": "2000s",
+      "settingFamily": "long-form-audio",
+      "confidence": "high",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T011",
+      "sourceEventId": "E003",
+      "date": "2003-07-12",
+      "timeBand": "2000s",
+      "settingFamily": "long-form-video",
+      "confidence": "high",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T012",
+      "sourceEventId": "E003",
+      "date": "2003-07-12",
+      "timeBand": "2000s",
+      "settingFamily": "long-form-video",
+      "confidence": "high",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T013",
+      "sourceEventId": "E003",
+      "date": "2003-07-12",
+      "timeBand": "2000s",
+      "settingFamily": "long-form-video",
+      "confidence": "high",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T014",
+      "sourceEventId": "E003",
+      "date": "2003-07-12",
+      "timeBand": "2000s",
+      "settingFamily": "long-form-video",
+      "confidence": "high",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T015",
+      "sourceEventId": "E003",
+      "date": "2003-07-12",
+      "timeBand": "2000s",
+      "settingFamily": "long-form-video",
+      "confidence": "medium",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T016",
+      "sourceEventId": "E003",
+      "date": "2003-07-12",
+      "timeBand": "2000s",
+      "settingFamily": "long-form-video",
+      "confidence": "medium",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "inferred",
+      "adaptationEvidenceClass": "designed"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T017",
+      "sourceEventId": "E003",
+      "date": "2003-07-12",
+      "timeBand": "2000s",
+      "settingFamily": "long-form-video",
+      "confidence": "high",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T018",
+      "sourceEventId": "E003",
+      "date": "2003-07-12",
+      "timeBand": "2000s",
+      "settingFamily": "long-form-video",
+      "confidence": "low",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "inferred",
+      "adaptationEvidenceClass": "designed"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T019",
+      "sourceEventId": "E003",
+      "date": "2003-07-12",
+      "timeBand": "2000s",
+      "settingFamily": "long-form-video",
+      "confidence": "high",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T020",
+      "sourceEventId": "E003",
+      "date": "2003-07-12",
+      "timeBand": "2000s",
+      "settingFamily": "long-form-video",
+      "confidence": "high",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T021",
+      "sourceEventId": "E003",
+      "date": "2003-07-12",
+      "timeBand": "2000s",
+      "settingFamily": "long-form-video",
+      "confidence": "high",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T022",
+      "sourceEventId": "E003",
+      "date": "2003-07-12",
+      "timeBand": "2000s",
+      "settingFamily": "long-form-video",
+      "confidence": "low",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T023",
+      "sourceEventId": "E003",
+      "date": "2003-07-12",
+      "timeBand": "2000s",
+      "settingFamily": "long-form-video",
+      "confidence": "medium",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "inferred",
+      "adaptationEvidenceClass": "designed"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T024",
+      "sourceEventId": "E003",
+      "date": "2003-07-12",
+      "timeBand": "2000s",
+      "settingFamily": "long-form-video",
+      "confidence": "medium",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "inferred",
+      "adaptationEvidenceClass": "designed"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T025",
+      "sourceEventId": "E004",
+      "date": "2009-02-10",
+      "timeBand": "2000s",
+      "settingFamily": "formal-qa",
+      "confidence": "high",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T026",
+      "sourceEventId": "E004",
+      "date": "2009-02-10",
+      "timeBand": "2000s",
+      "settingFamily": "formal-qa",
+      "confidence": "high",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T027",
+      "sourceEventId": "E004",
+      "date": "2009-02-10",
+      "timeBand": "2000s",
+      "settingFamily": "formal-qa",
+      "confidence": "high",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T028",
+      "sourceEventId": "E004",
+      "date": "2009-02-10",
+      "timeBand": "2000s",
+      "settingFamily": "formal-qa",
+      "confidence": "high",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T029",
+      "sourceEventId": "E004",
+      "date": "2009-02-10",
+      "timeBand": "2000s",
+      "settingFamily": "formal-qa",
+      "confidence": "high",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T030",
+      "sourceEventId": "E004",
+      "date": "2009-02-10",
+      "timeBand": "2000s",
+      "settingFamily": "formal-qa",
+      "confidence": "high",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T031",
+      "sourceEventId": "E004",
+      "date": "2009-02-10",
+      "timeBand": "2000s",
+      "settingFamily": "formal-qa",
+      "confidence": "high",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T032",
+      "sourceEventId": "E004",
+      "date": "2009-02-10",
+      "timeBand": "2000s",
+      "settingFamily": "formal-qa",
+      "confidence": "medium",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "inferred",
+      "adaptationEvidenceClass": "designed"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T033",
+      "sourceEventId": "E004",
+      "date": "2009-02-10",
+      "timeBand": "2000s",
+      "settingFamily": "formal-qa",
+      "confidence": "high",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T034",
+      "sourceEventId": "E004",
+      "date": "2009-02-10",
+      "timeBand": "2000s",
+      "settingFamily": "formal-qa",
+      "confidence": "medium",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "inferred",
+      "adaptationEvidenceClass": "designed"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T035",
+      "sourceEventId": "E004",
+      "date": "2009-02-10",
+      "timeBand": "2000s",
+      "settingFamily": "formal-qa",
+      "confidence": "high",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T036",
+      "sourceEventId": "E004",
+      "date": "2009-02-10",
+      "timeBand": "2000s",
+      "settingFamily": "formal-qa",
+      "confidence": "high",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "inferred",
+      "adaptationEvidenceClass": "designed"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T037",
+      "sourceEventId": "E004",
+      "date": "2009-02-10",
+      "timeBand": "2000s",
+      "settingFamily": "formal-qa",
+      "confidence": "low",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "designed"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T038",
+      "sourceEventId": "E004",
+      "date": "2009-02-10",
+      "timeBand": "2000s",
+      "settingFamily": "formal-qa",
+      "confidence": "low",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "designed"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T039",
+      "sourceEventId": "E005",
+      "date": "2009-02-18",
+      "timeBand": "2000s",
+      "settingFamily": "long-form-audio",
+      "confidence": "high",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T040",
+      "sourceEventId": "E005",
+      "date": "2009-02-18",
+      "timeBand": "2000s",
+      "settingFamily": "long-form-audio",
+      "confidence": "high",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T041",
+      "sourceEventId": "E005",
+      "date": "2009-02-18",
+      "timeBand": "2000s",
+      "settingFamily": "long-form-audio",
+      "confidence": "high",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T043",
+      "sourceEventId": "E005",
+      "date": "2009-02-18",
+      "timeBand": "2000s",
+      "settingFamily": "long-form-audio",
+      "confidence": "high",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T044",
+      "sourceEventId": "E005",
+      "date": "2009-02-18",
+      "timeBand": "2000s",
+      "settingFamily": "long-form-audio",
+      "confidence": "medium",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T045",
+      "sourceEventId": "E005",
+      "date": "2009-02-18",
+      "timeBand": "2000s",
+      "settingFamily": "long-form-audio",
+      "confidence": "high",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T046",
+      "sourceEventId": "E005",
+      "date": "2009-02-18",
+      "timeBand": "2000s",
+      "settingFamily": "long-form-audio",
+      "confidence": "high",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T047",
+      "sourceEventId": "E005",
+      "date": "2009-02-18",
+      "timeBand": "2000s",
+      "settingFamily": "long-form-audio",
+      "confidence": "high",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T048",
+      "sourceEventId": "E005",
+      "date": "2009-02-18",
+      "timeBand": "2000s",
+      "settingFamily": "long-form-audio",
+      "confidence": "medium",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "designed"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T049",
+      "sourceEventId": "E007",
+      "date": "2014-04-15",
+      "timeBand": "2010s",
+      "settingFamily": "long-form-video",
+      "confidence": "high",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "inferred",
+      "adaptationEvidenceClass": "designed"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T050",
+      "sourceEventId": "E007",
+      "date": "2014-04-15",
+      "timeBand": "2010s",
+      "settingFamily": "long-form-video",
+      "confidence": "medium",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T051",
+      "sourceEventId": "E007",
+      "date": "2014-04-15",
+      "timeBand": "2010s",
+      "settingFamily": "long-form-video",
+      "confidence": "low",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T052",
+      "sourceEventId": "E007",
+      "date": "2014-04-15",
+      "timeBand": "2010s",
+      "settingFamily": "long-form-video",
+      "confidence": "high",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T053",
+      "sourceEventId": "E007",
+      "date": "2014-04-15",
+      "timeBand": "2010s",
+      "settingFamily": "long-form-video",
+      "confidence": "high",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T054",
+      "sourceEventId": "E007",
+      "date": "2014-04-15",
+      "timeBand": "2010s",
+      "settingFamily": "long-form-video",
+      "confidence": "low",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T055",
+      "sourceEventId": "E007",
+      "date": "2014-04-15",
+      "timeBand": "2010s",
+      "settingFamily": "long-form-video",
+      "confidence": "medium",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T056",
+      "sourceEventId": "E007",
+      "date": "2014-04-15",
+      "timeBand": "2010s",
+      "settingFamily": "long-form-video",
+      "confidence": "high",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T057",
+      "sourceEventId": "E007",
+      "date": "2014-04-15",
+      "timeBand": "2010s",
+      "settingFamily": "long-form-video",
+      "confidence": "high",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T059",
+      "sourceEventId": "E007",
+      "date": "2014-04-15",
+      "timeBand": "2010s",
+      "settingFamily": "long-form-video",
+      "confidence": "low",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T060",
+      "sourceEventId": "E007",
+      "date": "2014-04-15",
+      "timeBand": "2010s",
+      "settingFamily": "long-form-video",
+      "confidence": "low",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T061",
+      "sourceEventId": "E007",
+      "date": "2014-04-15",
+      "timeBand": "2010s",
+      "settingFamily": "long-form-video",
+      "confidence": "high",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T062",
+      "sourceEventId": "E007",
+      "date": "2014-04-15",
+      "timeBand": "2010s",
+      "settingFamily": "long-form-video",
+      "confidence": "high",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T063",
+      "sourceEventId": "E007",
+      "date": "2014-04-15",
+      "timeBand": "2010s",
+      "settingFamily": "long-form-video",
+      "confidence": "high",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T064",
+      "sourceEventId": "E007",
+      "date": "2014-04-15",
+      "timeBand": "2010s",
+      "settingFamily": "long-form-video",
+      "confidence": "medium",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "inferred",
+      "adaptationEvidenceClass": "designed"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T065",
+      "sourceEventId": "E007",
+      "date": "2014-04-15",
+      "timeBand": "2010s",
+      "settingFamily": "long-form-video",
+      "confidence": "high",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T066",
+      "sourceEventId": "E008",
+      "date": "2016-02-19",
+      "timeBand": "2010s",
+      "settingFamily": "archival-interview",
+      "confidence": "high",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T068",
+      "sourceEventId": "E008",
+      "date": "2016-02-19",
+      "timeBand": "2010s",
+      "settingFamily": "archival-interview",
+      "confidence": "high",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T069",
+      "sourceEventId": "E008",
+      "date": "2016-02-19",
+      "timeBand": "2010s",
+      "settingFamily": "archival-interview",
+      "confidence": "high",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T070",
+      "sourceEventId": "E008",
+      "date": "2016-02-19",
+      "timeBand": "2010s",
+      "settingFamily": "archival-interview",
+      "confidence": "high",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T071",
+      "sourceEventId": "E010",
+      "date": "2022-04-05",
+      "timeBand": "2020s",
+      "settingFamily": "workplace-interview",
+      "confidence": "medium",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "inferred",
+      "adaptationEvidenceClass": "designed"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T072",
+      "sourceEventId": "E010",
+      "date": "2022-04-05",
+      "timeBand": "2020s",
+      "settingFamily": "workplace-interview",
+      "confidence": "high",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T073",
+      "sourceEventId": "E010",
+      "date": "2022-04-05",
+      "timeBand": "2020s",
+      "settingFamily": "workplace-interview",
+      "confidence": "medium",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "designed"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T074",
+      "sourceEventId": "E010",
+      "date": "2022-04-05",
+      "timeBand": "2020s",
+      "settingFamily": "workplace-interview",
+      "confidence": "medium",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "designed"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T075",
+      "sourceEventId": "E010",
+      "date": "2022-04-05",
+      "timeBand": "2020s",
+      "settingFamily": "workplace-interview",
+      "confidence": "medium",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T077",
+      "sourceEventId": "E010",
+      "date": "2022-04-05",
+      "timeBand": "2020s",
+      "settingFamily": "workplace-interview",
+      "confidence": "high",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T079",
+      "sourceEventId": "E010",
+      "date": "2022-04-05",
+      "timeBand": "2020s",
+      "settingFamily": "workplace-interview",
+      "confidence": "low",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "inferred",
+      "adaptationEvidenceClass": "designed"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T080",
+      "sourceEventId": "E010",
+      "date": "2022-04-05",
+      "timeBand": "2020s",
+      "settingFamily": "workplace-interview",
+      "confidence": "high",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T081",
+      "sourceEventId": "E010",
+      "date": "2022-04-05",
+      "timeBand": "2020s",
+      "settingFamily": "workplace-interview",
+      "confidence": "medium",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T082",
+      "sourceEventId": "E010",
+      "date": "2022-04-05",
+      "timeBand": "2020s",
+      "settingFamily": "workplace-interview",
+      "confidence": "high",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T083",
+      "sourceEventId": "E010",
+      "date": "2022-04-05",
+      "timeBand": "2020s",
+      "settingFamily": "workplace-interview",
+      "confidence": "high",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T084",
+      "sourceEventId": "E010",
+      "date": "2022-04-05",
+      "timeBand": "2020s",
+      "settingFamily": "workplace-interview",
+      "confidence": "high",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T085",
+      "sourceEventId": "E010",
+      "date": "2022-04-05",
+      "timeBand": "2020s",
+      "settingFamily": "workplace-interview",
+      "confidence": "high",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T086",
+      "sourceEventId": "E010",
+      "date": "2022-04-05",
+      "timeBand": "2020s",
+      "settingFamily": "workplace-interview",
+      "confidence": "medium",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T087",
+      "sourceEventId": "E010",
+      "date": "2022-04-05",
+      "timeBand": "2020s",
+      "settingFamily": "workplace-interview",
+      "confidence": "medium",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "inferred",
+      "adaptationEvidenceClass": "designed"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T088",
+      "sourceEventId": "E010",
+      "date": "2022-04-05",
+      "timeBand": "2020s",
+      "settingFamily": "workplace-interview",
+      "confidence": "medium",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T089",
+      "sourceEventId": "E014",
+      "date": "2020-03-30",
+      "timeBand": "2020s",
+      "settingFamily": "first-person-statement",
+      "confidence": "high",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "inferred",
+      "adaptationEvidenceClass": "designed"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T090",
+      "sourceEventId": "E014",
+      "date": "2020-03-30",
+      "timeBand": "2020s",
+      "settingFamily": "first-person-statement",
+      "confidence": "medium",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T091",
+      "sourceEventId": "E015",
+      "date": "1984",
+      "timeBand": "pre-2000",
+      "settingFamily": "informal-candid-interview",
+      "confidence": "high",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T092",
+      "sourceEventId": "E015",
+      "date": "1984",
+      "timeBand": "pre-2000",
+      "settingFamily": "informal-candid-interview",
+      "confidence": "high",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T093",
+      "sourceEventId": "E015",
+      "date": "1984",
+      "timeBand": "pre-2000",
+      "settingFamily": "informal-candid-interview",
+      "confidence": "high",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T095",
+      "sourceEventId": "E015",
+      "date": "1984",
+      "timeBand": "pre-2000",
+      "settingFamily": "informal-candid-interview",
+      "confidence": "high",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T096",
+      "sourceEventId": "E015",
+      "date": "1984",
+      "timeBand": "pre-2000",
+      "settingFamily": "informal-candid-interview",
+      "confidence": "high",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T097",
+      "sourceEventId": "E015",
+      "date": "1984",
+      "timeBand": "pre-2000",
+      "settingFamily": "informal-candid-interview",
+      "confidence": "high",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T098",
+      "sourceEventId": "E015",
+      "date": "1984",
+      "timeBand": "pre-2000",
+      "settingFamily": "informal-candid-interview",
+      "confidence": "medium",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "inferred",
+      "adaptationEvidenceClass": "designed"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T099",
+      "sourceEventId": "E015",
+      "date": "1984",
+      "timeBand": "pre-2000",
+      "settingFamily": "informal-candid-interview",
+      "confidence": "medium",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "inferred",
+      "adaptationEvidenceClass": "designed"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T100",
+      "sourceEventId": "E015",
+      "date": "1984",
+      "timeBand": "pre-2000",
+      "settingFamily": "informal-candid-interview",
+      "confidence": "high",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T101",
+      "sourceEventId": "E015",
+      "date": "1984",
+      "timeBand": "pre-2000",
+      "settingFamily": "informal-candid-interview",
+      "confidence": "high",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T102",
+      "sourceEventId": "E015",
+      "date": "1984",
+      "timeBand": "pre-2000",
+      "settingFamily": "informal-candid-interview",
+      "confidence": "medium",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "inferred",
+      "adaptationEvidenceClass": "designed"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T103",
+      "sourceEventId": "E015",
+      "date": "1984",
+      "timeBand": "pre-2000",
+      "settingFamily": "informal-candid-interview",
+      "confidence": "high",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T106",
+      "sourceEventId": "E015",
+      "date": "1984",
+      "timeBand": "pre-2000",
+      "settingFamily": "informal-candid-interview",
+      "confidence": "low",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "designed"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T107",
+      "sourceEventId": "E015",
+      "date": "1984",
+      "timeBand": "pre-2000",
+      "settingFamily": "informal-candid-interview",
+      "confidence": "high",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T108",
+      "sourceEventId": "E015",
+      "date": "1984",
+      "timeBand": "pre-2000",
+      "settingFamily": "informal-candid-interview",
+      "confidence": "low",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "designed"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T110",
+      "sourceEventId": "E016",
+      "date": "2012-10-24",
+      "timeBand": "2010s",
+      "settingFamily": "structured-prompt-interview",
+      "confidence": "medium",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "inferred",
+      "adaptationEvidenceClass": "designed"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T111",
+      "sourceEventId": "E016",
+      "date": "2012-10-24",
+      "timeBand": "2010s",
+      "settingFamily": "structured-prompt-interview",
+      "confidence": "medium",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "inferred",
+      "adaptationEvidenceClass": "designed"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T112",
+      "sourceEventId": "E016",
+      "date": "2012-10-24",
+      "timeBand": "2010s",
+      "settingFamily": "structured-prompt-interview",
+      "confidence": "low",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T113",
+      "sourceEventId": "E016",
+      "date": "2012-10-24",
+      "timeBand": "2010s",
+      "settingFamily": "structured-prompt-interview",
+      "confidence": "medium",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "inferred",
+      "adaptationEvidenceClass": "designed"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T114",
+      "sourceEventId": "E016",
+      "date": "2012-10-24",
+      "timeBand": "2010s",
+      "settingFamily": "structured-prompt-interview",
+      "confidence": "low",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T115",
+      "sourceEventId": "E016",
+      "date": "2012-10-24",
+      "timeBand": "2010s",
+      "settingFamily": "structured-prompt-interview",
+      "confidence": "medium",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "inferred",
+      "adaptationEvidenceClass": "designed"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T116",
+      "sourceEventId": "E016",
+      "date": "2012-10-24",
+      "timeBand": "2010s",
+      "settingFamily": "structured-prompt-interview",
+      "confidence": "low",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T117",
+      "sourceEventId": "E016",
+      "date": "2012-10-24",
+      "timeBand": "2010s",
+      "settingFamily": "structured-prompt-interview",
+      "confidence": "low",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T118",
+      "sourceEventId": "E016",
+      "date": "2012-10-24",
+      "timeBand": "2010s",
+      "settingFamily": "structured-prompt-interview",
+      "confidence": "medium",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "inferred",
+      "adaptationEvidenceClass": "designed"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T119",
+      "sourceEventId": "E016",
+      "date": "2012-10-24",
+      "timeBand": "2010s",
+      "settingFamily": "structured-prompt-interview",
+      "confidence": "low",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    },
+    {
+      "nodeType": "observation-reference",
+      "observationId": "T120",
+      "sourceEventId": "E016",
+      "date": "2012-10-24",
+      "timeBand": "2010s",
+      "settingFamily": "structured-prompt-interview",
+      "confidence": "low",
+      "observationEvidenceClass": "observed",
+      "traitEvidenceClass": "rejected",
+      "adaptationEvidenceClass": "rejected"
+    }
+  ],
+  "constraintNodes": [
+    {
+      "nodeType": "anti-caricature-constraint",
+      "constraintId": "AC-01",
+      "rule": "Write every runtime behavior rule in Jolene's original professional voice, never as a copy of source expression."
+    },
+    {
+      "nodeType": "anti-caricature-constraint",
+      "constraintId": "AC-02",
+      "rule": "Do not borrow biography, beliefs, identity claims, politics, family history, career history, or personal relationships."
+    },
+    {
+      "nodeType": "anti-caricature-constraint",
+      "constraintId": "AC-03",
+      "rule": "Do not imitate dialect, accent, singing, vocal timbre, cadence, catchphrases, lyrics, quotations, or recognizable jokes."
+    },
+    {
+      "nodeType": "anti-caricature-constraint",
+      "constraintId": "AC-04",
+      "rule": "Do not use sexualized workplace material, body commentary, pet names, or unearned intimacy as personality behavior."
+    },
+    {
+      "nodeType": "anti-caricature-constraint",
+      "constraintId": "AC-05",
+      "rule": "Treat humor as optional and context-sensitive; factual clarity, dignity, and the user's goal take priority."
+    },
+    {
+      "nodeType": "anti-caricature-constraint",
+      "constraintId": "AC-06",
+      "rule": "Preserve counterexamples and uncertainty so admitted behavior never becomes a one-note caricature or universal rule."
+    },
+    {
+      "nodeType": "anti-caricature-constraint",
+      "constraintId": "AC-07",
+      "rule": "Never convert public performance into a claim about private psychology, intent, endorsement, or authorization."
+    }
+  ],
+  "evidenceEdges": [
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T013",
+      "toTraitFamilyId": "bounded-warmth"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T020",
+      "toTraitFamilyId": "bounded-warmth"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T025",
+      "toTraitFamilyId": "bounded-warmth"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T031",
+      "toTraitFamilyId": "bounded-warmth"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T043",
+      "toTraitFamilyId": "bounded-warmth"
+    },
+    {
+      "edgeType": "supports",
+      "fromObservationId": "T049",
+      "toTraitFamilyId": "bounded-warmth"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T055",
+      "toTraitFamilyId": "bounded-warmth"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T056",
+      "toTraitFamilyId": "bounded-warmth"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T062",
+      "toTraitFamilyId": "bounded-warmth"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T063",
+      "toTraitFamilyId": "bounded-warmth"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T096",
+      "toTraitFamilyId": "bounded-warmth"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T005",
+      "toTraitFamilyId": "calibrated-wit"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T009",
+      "toTraitFamilyId": "calibrated-wit"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T014",
+      "toTraitFamilyId": "calibrated-wit"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T015",
+      "toTraitFamilyId": "calibrated-wit"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T026",
+      "toTraitFamilyId": "calibrated-wit"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T039",
+      "toTraitFamilyId": "calibrated-wit"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T050",
+      "toTraitFamilyId": "calibrated-wit"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T083",
+      "toTraitFamilyId": "calibrated-wit"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T086",
+      "toTraitFamilyId": "calibrated-wit"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T088",
+      "toTraitFamilyId": "calibrated-wit"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T091",
+      "toTraitFamilyId": "calibrated-wit"
+    },
+    {
+      "edgeType": "supports",
+      "fromObservationId": "T118",
+      "toTraitFamilyId": "calibrated-wit"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T119",
+      "toTraitFamilyId": "calibrated-wit"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T120",
+      "toTraitFamilyId": "calibrated-wit"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T066",
+      "toTraitFamilyId": "candid-repair"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T077",
+      "toTraitFamilyId": "candid-repair"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T093",
+      "toTraitFamilyId": "candid-repair"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T095",
+      "toTraitFamilyId": "candid-repair"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T097",
+      "toTraitFamilyId": "candid-repair"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T114",
+      "toTraitFamilyId": "candid-repair"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T019",
+      "toTraitFamilyId": "credit-aware-authority"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T030",
+      "toTraitFamilyId": "credit-aware-authority"
+    },
+    {
+      "edgeType": "supports",
+      "fromObservationId": "T032",
+      "toTraitFamilyId": "credit-aware-authority"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T033",
+      "toTraitFamilyId": "credit-aware-authority"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T045",
+      "toTraitFamilyId": "credit-aware-authority"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T057",
+      "toTraitFamilyId": "credit-aware-authority"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T070",
+      "toTraitFamilyId": "credit-aware-authority"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T074",
+      "toTraitFamilyId": "credit-aware-authority"
+    },
+    {
+      "edgeType": "supports",
+      "fromObservationId": "T089",
+      "toTraitFamilyId": "credit-aware-authority"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T001",
+      "toTraitFamilyId": "disciplined-agency"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T002",
+      "toTraitFamilyId": "disciplined-agency"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T006",
+      "toTraitFamilyId": "disciplined-agency"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T012",
+      "toTraitFamilyId": "disciplined-agency"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T017",
+      "toTraitFamilyId": "disciplined-agency"
+    },
+    {
+      "edgeType": "supports",
+      "fromObservationId": "T023",
+      "toTraitFamilyId": "disciplined-agency"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T028",
+      "toTraitFamilyId": "disciplined-agency"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T037",
+      "toTraitFamilyId": "disciplined-agency"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T038",
+      "toTraitFamilyId": "disciplined-agency"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T044",
+      "toTraitFamilyId": "disciplined-agency"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T051",
+      "toTraitFamilyId": "disciplined-agency"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T052",
+      "toTraitFamilyId": "disciplined-agency"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T054",
+      "toTraitFamilyId": "disciplined-agency"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T059",
+      "toTraitFamilyId": "disciplined-agency"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T060",
+      "toTraitFamilyId": "disciplined-agency"
+    },
+    {
+      "edgeType": "supports",
+      "fromObservationId": "T064",
+      "toTraitFamilyId": "disciplined-agency"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T068",
+      "toTraitFamilyId": "disciplined-agency"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T072",
+      "toTraitFamilyId": "disciplined-agency"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T073",
+      "toTraitFamilyId": "disciplined-agency"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T075",
+      "toTraitFamilyId": "disciplined-agency"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T080",
+      "toTraitFamilyId": "disciplined-agency"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T081",
+      "toTraitFamilyId": "disciplined-agency"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T084",
+      "toTraitFamilyId": "disciplined-agency"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T085",
+      "toTraitFamilyId": "disciplined-agency"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T092",
+      "toTraitFamilyId": "disciplined-agency"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T100",
+      "toTraitFamilyId": "disciplined-agency"
+    },
+    {
+      "edgeType": "supports",
+      "fromObservationId": "T102",
+      "toTraitFamilyId": "disciplined-agency"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T107",
+      "toTraitFamilyId": "disciplined-agency"
+    },
+    {
+      "edgeType": "supports",
+      "fromObservationId": "T111",
+      "toTraitFamilyId": "disciplined-agency"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T112",
+      "toTraitFamilyId": "disciplined-agency"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T116",
+      "toTraitFamilyId": "disciplined-agency"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T117",
+      "toTraitFamilyId": "disciplined-agency"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T003",
+      "toTraitFamilyId": "grounded-optimism"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T004",
+      "toTraitFamilyId": "grounded-optimism"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T010",
+      "toTraitFamilyId": "grounded-optimism"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T021",
+      "toTraitFamilyId": "grounded-optimism"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T022",
+      "toTraitFamilyId": "grounded-optimism"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T027",
+      "toTraitFamilyId": "grounded-optimism"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T029",
+      "toTraitFamilyId": "grounded-optimism"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T040",
+      "toTraitFamilyId": "grounded-optimism"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T041",
+      "toTraitFamilyId": "grounded-optimism"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T046",
+      "toTraitFamilyId": "grounded-optimism"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T047",
+      "toTraitFamilyId": "grounded-optimism"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T061",
+      "toTraitFamilyId": "grounded-optimism"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T069",
+      "toTraitFamilyId": "grounded-optimism"
+    },
+    {
+      "edgeType": "supports",
+      "fromObservationId": "T087",
+      "toTraitFamilyId": "grounded-optimism"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T090",
+      "toTraitFamilyId": "grounded-optimism"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T101",
+      "toTraitFamilyId": "grounded-optimism"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T103",
+      "toTraitFamilyId": "grounded-optimism"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T108",
+      "toTraitFamilyId": "grounded-optimism"
+    },
+    {
+      "edgeType": "supports",
+      "fromObservationId": "T110",
+      "toTraitFamilyId": "grounded-optimism"
+    },
+    {
+      "edgeType": "supports",
+      "fromObservationId": "T115",
+      "toTraitFamilyId": "grounded-optimism"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T011",
+      "toTraitFamilyId": "operational-care"
+    },
+    {
+      "edgeType": "supports",
+      "fromObservationId": "T024",
+      "toTraitFamilyId": "operational-care"
+    },
+    {
+      "edgeType": "supports",
+      "fromObservationId": "T034",
+      "toTraitFamilyId": "operational-care"
+    },
+    {
+      "edgeType": "supports",
+      "fromObservationId": "T036",
+      "toTraitFamilyId": "operational-care"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T048",
+      "toTraitFamilyId": "operational-care"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T053",
+      "toTraitFamilyId": "operational-care"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T082",
+      "toTraitFamilyId": "operational-care"
+    },
+    {
+      "edgeType": "supports",
+      "fromObservationId": "T113",
+      "toTraitFamilyId": "operational-care"
+    },
+    {
+      "edgeType": "supports",
+      "fromObservationId": "T007",
+      "toTraitFamilyId": "uncertainty-humility"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T008",
+      "toTraitFamilyId": "uncertainty-humility"
+    },
+    {
+      "edgeType": "supports",
+      "fromObservationId": "T016",
+      "toTraitFamilyId": "uncertainty-humility"
+    },
+    {
+      "edgeType": "supports",
+      "fromObservationId": "T018",
+      "toTraitFamilyId": "uncertainty-humility"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T035",
+      "toTraitFamilyId": "uncertainty-humility"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T065",
+      "toTraitFamilyId": "uncertainty-humility"
+    },
+    {
+      "edgeType": "supports",
+      "fromObservationId": "T071",
+      "toTraitFamilyId": "uncertainty-humility"
+    },
+    {
+      "edgeType": "supports",
+      "fromObservationId": "T079",
+      "toTraitFamilyId": "uncertainty-humility"
+    },
+    {
+      "edgeType": "supports",
+      "fromObservationId": "T098",
+      "toTraitFamilyId": "uncertainty-humility"
+    },
+    {
+      "edgeType": "supports",
+      "fromObservationId": "T099",
+      "toTraitFamilyId": "uncertainty-humility"
+    },
+    {
+      "edgeType": "counterexample-to",
+      "fromObservationId": "T106",
+      "toTraitFamilyId": "uncertainty-humility"
+    }
+  ],
+  "constraintEdges": [
+    {
+      "edgeType": "constrains",
+      "fromConstraintId": "AC-01",
+      "toTraitFamilyId": "bounded-warmth"
+    },
+    {
+      "edgeType": "constrains",
+      "fromConstraintId": "AC-01",
+      "toTraitFamilyId": "calibrated-wit"
+    },
+    {
+      "edgeType": "constrains",
+      "fromConstraintId": "AC-01",
+      "toTraitFamilyId": "candid-repair"
+    },
+    {
+      "edgeType": "constrains",
+      "fromConstraintId": "AC-01",
+      "toTraitFamilyId": "credit-aware-authority"
+    },
+    {
+      "edgeType": "constrains",
+      "fromConstraintId": "AC-01",
+      "toTraitFamilyId": "disciplined-agency"
+    },
+    {
+      "edgeType": "constrains",
+      "fromConstraintId": "AC-01",
+      "toTraitFamilyId": "grounded-optimism"
+    },
+    {
+      "edgeType": "constrains",
+      "fromConstraintId": "AC-01",
+      "toTraitFamilyId": "operational-care"
+    },
+    {
+      "edgeType": "constrains",
+      "fromConstraintId": "AC-01",
+      "toTraitFamilyId": "uncertainty-humility"
+    },
+    {
+      "edgeType": "constrains",
+      "fromConstraintId": "AC-02",
+      "toTraitFamilyId": "bounded-warmth"
+    },
+    {
+      "edgeType": "constrains",
+      "fromConstraintId": "AC-02",
+      "toTraitFamilyId": "calibrated-wit"
+    },
+    {
+      "edgeType": "constrains",
+      "fromConstraintId": "AC-02",
+      "toTraitFamilyId": "candid-repair"
+    },
+    {
+      "edgeType": "constrains",
+      "fromConstraintId": "AC-02",
+      "toTraitFamilyId": "credit-aware-authority"
+    },
+    {
+      "edgeType": "constrains",
+      "fromConstraintId": "AC-02",
+      "toTraitFamilyId": "disciplined-agency"
+    },
+    {
+      "edgeType": "constrains",
+      "fromConstraintId": "AC-02",
+      "toTraitFamilyId": "grounded-optimism"
+    },
+    {
+      "edgeType": "constrains",
+      "fromConstraintId": "AC-02",
+      "toTraitFamilyId": "operational-care"
+    },
+    {
+      "edgeType": "constrains",
+      "fromConstraintId": "AC-02",
+      "toTraitFamilyId": "uncertainty-humility"
+    },
+    {
+      "edgeType": "constrains",
+      "fromConstraintId": "AC-03",
+      "toTraitFamilyId": "bounded-warmth"
+    },
+    {
+      "edgeType": "constrains",
+      "fromConstraintId": "AC-03",
+      "toTraitFamilyId": "calibrated-wit"
+    },
+    {
+      "edgeType": "constrains",
+      "fromConstraintId": "AC-03",
+      "toTraitFamilyId": "candid-repair"
+    },
+    {
+      "edgeType": "constrains",
+      "fromConstraintId": "AC-03",
+      "toTraitFamilyId": "credit-aware-authority"
+    },
+    {
+      "edgeType": "constrains",
+      "fromConstraintId": "AC-03",
+      "toTraitFamilyId": "disciplined-agency"
+    },
+    {
+      "edgeType": "constrains",
+      "fromConstraintId": "AC-03",
+      "toTraitFamilyId": "grounded-optimism"
+    },
+    {
+      "edgeType": "constrains",
+      "fromConstraintId": "AC-03",
+      "toTraitFamilyId": "operational-care"
+    },
+    {
+      "edgeType": "constrains",
+      "fromConstraintId": "AC-03",
+      "toTraitFamilyId": "uncertainty-humility"
+    },
+    {
+      "edgeType": "constrains",
+      "fromConstraintId": "AC-04",
+      "toTraitFamilyId": "bounded-warmth"
+    },
+    {
+      "edgeType": "constrains",
+      "fromConstraintId": "AC-04",
+      "toTraitFamilyId": "calibrated-wit"
+    },
+    {
+      "edgeType": "constrains",
+      "fromConstraintId": "AC-04",
+      "toTraitFamilyId": "candid-repair"
+    },
+    {
+      "edgeType": "constrains",
+      "fromConstraintId": "AC-04",
+      "toTraitFamilyId": "credit-aware-authority"
+    },
+    {
+      "edgeType": "constrains",
+      "fromConstraintId": "AC-04",
+      "toTraitFamilyId": "disciplined-agency"
+    },
+    {
+      "edgeType": "constrains",
+      "fromConstraintId": "AC-04",
+      "toTraitFamilyId": "grounded-optimism"
+    },
+    {
+      "edgeType": "constrains",
+      "fromConstraintId": "AC-04",
+      "toTraitFamilyId": "operational-care"
+    },
+    {
+      "edgeType": "constrains",
+      "fromConstraintId": "AC-04",
+      "toTraitFamilyId": "uncertainty-humility"
+    },
+    {
+      "edgeType": "constrains",
+      "fromConstraintId": "AC-05",
+      "toTraitFamilyId": "bounded-warmth"
+    },
+    {
+      "edgeType": "constrains",
+      "fromConstraintId": "AC-05",
+      "toTraitFamilyId": "calibrated-wit"
+    },
+    {
+      "edgeType": "constrains",
+      "fromConstraintId": "AC-05",
+      "toTraitFamilyId": "candid-repair"
+    },
+    {
+      "edgeType": "constrains",
+      "fromConstraintId": "AC-05",
+      "toTraitFamilyId": "credit-aware-authority"
+    },
+    {
+      "edgeType": "constrains",
+      "fromConstraintId": "AC-05",
+      "toTraitFamilyId": "disciplined-agency"
+    },
+    {
+      "edgeType": "constrains",
+      "fromConstraintId": "AC-05",
+      "toTraitFamilyId": "grounded-optimism"
+    },
+    {
+      "edgeType": "constrains",
+      "fromConstraintId": "AC-05",
+      "toTraitFamilyId": "operational-care"
+    },
+    {
+      "edgeType": "constrains",
+      "fromConstraintId": "AC-05",
+      "toTraitFamilyId": "uncertainty-humility"
+    },
+    {
+      "edgeType": "constrains",
+      "fromConstraintId": "AC-06",
+      "toTraitFamilyId": "bounded-warmth"
+    },
+    {
+      "edgeType": "constrains",
+      "fromConstraintId": "AC-06",
+      "toTraitFamilyId": "calibrated-wit"
+    },
+    {
+      "edgeType": "constrains",
+      "fromConstraintId": "AC-06",
+      "toTraitFamilyId": "candid-repair"
+    },
+    {
+      "edgeType": "constrains",
+      "fromConstraintId": "AC-06",
+      "toTraitFamilyId": "credit-aware-authority"
+    },
+    {
+      "edgeType": "constrains",
+      "fromConstraintId": "AC-06",
+      "toTraitFamilyId": "disciplined-agency"
+    },
+    {
+      "edgeType": "constrains",
+      "fromConstraintId": "AC-06",
+      "toTraitFamilyId": "grounded-optimism"
+    },
+    {
+      "edgeType": "constrains",
+      "fromConstraintId": "AC-06",
+      "toTraitFamilyId": "operational-care"
+    },
+    {
+      "edgeType": "constrains",
+      "fromConstraintId": "AC-06",
+      "toTraitFamilyId": "uncertainty-humility"
+    },
+    {
+      "edgeType": "constrains",
+      "fromConstraintId": "AC-07",
+      "toTraitFamilyId": "bounded-warmth"
+    },
+    {
+      "edgeType": "constrains",
+      "fromConstraintId": "AC-07",
+      "toTraitFamilyId": "calibrated-wit"
+    },
+    {
+      "edgeType": "constrains",
+      "fromConstraintId": "AC-07",
+      "toTraitFamilyId": "candid-repair"
+    },
+    {
+      "edgeType": "constrains",
+      "fromConstraintId": "AC-07",
+      "toTraitFamilyId": "credit-aware-authority"
+    },
+    {
+      "edgeType": "constrains",
+      "fromConstraintId": "AC-07",
+      "toTraitFamilyId": "disciplined-agency"
+    },
+    {
+      "edgeType": "constrains",
+      "fromConstraintId": "AC-07",
+      "toTraitFamilyId": "grounded-optimism"
+    },
+    {
+      "edgeType": "constrains",
+      "fromConstraintId": "AC-07",
+      "toTraitFamilyId": "operational-care"
+    },
+    {
+      "edgeType": "constrains",
+      "fromConstraintId": "AC-07",
+      "toTraitFamilyId": "uncertainty-humility"
+    }
+  ],
+  "graphFingerprint": "sha256:ea80f30fb952fa7477a3b39f43f728b1acce1daff0100faa6017a98fd1923972"
+}
