@@ -5,7 +5,7 @@ import { pathToFileURL } from "node:url";
 import { stringify } from "yaml";
 
 import { fetchAllowedContentBoundary } from
-  "./validate-personality-source-content-fingerprints.js";
+  "../src/personality/personality-source-content-boundary.js";
 import { validatePreallocationBoundaryDraft } from
   "../src/personality/personality-preallocation-boundary-draft.js";
 import type { PreallocationBoundaryDraft } from

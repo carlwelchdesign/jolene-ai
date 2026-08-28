@@ -7,7 +7,7 @@ import { fingerprintSamplingUnitSegments } from "./personality-sampling-selectio
 import { loadPersonalitySelectionArtifactsV5 } from "./personality-selection-ledgers-v5.js";
 import { loadPersonalitySourceRegisterV3 } from "./personality-source-register-v3.js";
 import { fetchAllowedContentBoundary } from
-  "../../scripts/validate-personality-source-content-fingerprints.js";
+  "./personality-source-content-boundary.js";
 
 const htmlSourceIds = ["S02", "S03", "S05", "S13", "S19", "S20"] as const;
 type HtmlSourceId = typeof htmlSourceIds[number];
