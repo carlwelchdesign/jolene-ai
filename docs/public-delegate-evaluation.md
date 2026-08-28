@@ -146,13 +146,25 @@ offline.
 
 The committed `evaluations/public-live-model-v1.json` fixture precommits four
 public-only cases, the expected deterministic evidence selection, 100% blocking
-thresholds, and latency/token/cost ceilings. Its `gpt-5.6-terra` token rates were
+thresholds, exact model and corpus versions, semantic support validation, and
+latency/token/cost ceilings. Measured provider output retains its structured
+support IDs and must pass the same fail-closed grounding validator used by the
+public answer service; unchanged claim cards alone cannot make unsupported prose
+pass. Its `gpt-5.6-terra` token rates were
 reviewed on 2026-08-26 against the [official OpenAI API pricing](https://platform.openai.com/pricing).
 Changing the model, price, scenario, expectation, or threshold changes the suite
 hash and requires review. Cost estimates conservatively charge every reported
 input token at the full short-context input rate instead of assuming a cache
 discount. The committed suite hash is
-`8215efe8e294018fbfc008d0fac67dfe54d9cec387dfc41a9bb83e370b83fd0b`.
+`a71ae1e505e1305c38c1e5bef0aec37dfdbcad44dfa612b29e0f4b0676d47f2b`.
+
+The focused red-team command uses the repository-pinned Node 22 runtime, a
+two-thread worker ceiling, and serial file execution to avoid the prior
+evaluation-worker instability:
+
+```bash
+npm run test:security:red-team
+```
 
 To prepare an authorized local run, create `.env.public.local` manually with
 `JOLENE_PUBLIC_ANSWER_MODE=openai`, the exact reviewed model, timeout, and a

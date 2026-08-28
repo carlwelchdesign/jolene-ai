@@ -1155,10 +1155,10 @@ Live-model measurement-harness checkpoint:
 | Implementation commit | `734d7fb` (`JOL-CAREER-006G add live model evaluation harness`) |
 | Pull request | [jolene-ai #30](https://github.com/carlwelchdesign/jolene-ai/pull/30), stacked on the frozen-v1 contract branch |
 | Opt-in boundary | The live command requires `--live` and a manually created `.env.public.local`; ordinary tests and offline evaluation cannot call the provider, and the private environment is never loaded or copied |
-| Measurement boundary | Versioned public-only cases precommit exact evidence selection, model and pricing review, 100% blocker thresholds, latency, input/output token, per-request cost, and total cost ceilings |
-| Suite evidence | Four cases, ten covered metrics, and hash `8215efe8e294018fbfc008d0fac67dfe54d9cec387dfc41a9bb83e370b83fd0b`; the passing implementation check uses an injected fake and is not live-model evidence |
+| Measurement boundary | Versioned public-only cases precommit exact evidence selection, model, corpus and pricing review, 100% blocker thresholds, semantic response support, latency, input/output token, per-request cost, and total cost ceilings |
+| Suite evidence | Four cases, thirteen covered metrics, and hash `a71ae1e505e1305c38c1e5bef0aec37dfdbcad44dfa612b29e0f4b0676d47f2b`; the passing implementation check uses an injected fake and is not live-model evidence |
 | Report boundary | Machine output contains stable IDs, fixed reasons, gates, and aggregate measurements only; representative questions, exact public grounding, and prose are isolated in an ignored owner-permission review packet |
-| Safety evidence | Evidence mismatch bypasses the provider; unsafe or invalid prose falls back; no public bind, evidence approval, portfolio enablement, deployment, or launch authorization |
+| Safety evidence | Evidence or corpus mismatch bypasses the provider; model drift, unsupported semantics, unsafe disclosure, or invalid prose fail closed; no public bind, evidence approval, portfolio enablement, deployment, or launch authorization |
 | Verification | Node 24 typecheck, 46 test files / 302 tests, unchanged 41/41 offline suite, production build, Compose validation, zero production dependency vulnerabilities, opt-in/config refusal checks, and a 4/4 fake-provider preflight passed |
 | Remaining boundary | A separately authorized live run, arbitrary-prose human review, portfolio integration/accessibility, production operations, deployment, and launch approval remain open |
 

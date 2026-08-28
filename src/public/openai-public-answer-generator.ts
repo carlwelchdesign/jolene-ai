@@ -35,6 +35,8 @@ const responseUsageSchema = z.object({
 
 export interface MeasuredPublicAnswerGeneration {
   readonly answer: string;
+  readonly groundedGeneration: PublicAnswerGroundedGeneration;
+  readonly model: string;
   readonly inputTokens: number;
   readonly outputTokens: number;
   readonly totalTokens: number;
@@ -84,13 +86,16 @@ export class OpenAIPublicAnswerGenerator implements PublicAnswerTextGenerator {
     const observedAt = new Date().toISOString();
     const response = await this.#createResponse(input, observedAt);
     const usage = responseUsageSchema.parse(response.usage);
+    const groundedGeneration = externalAiGeneration(
+      generatedAnswer(response),
+      input,
+      this.#model,
+      observedAt,
+    );
     return {
-      answer: externalAiGeneration(
-        generatedAnswer(response),
-        input,
-        this.#model,
-        observedAt,
-      ).segments.map((segment) => segment.text).join("\n\n"),
+      answer: groundedGeneration.segments.map((segment) => segment.text).join("\n\n"),
+      groundedGeneration,
+      model: response.model,
       inputTokens: usage.input_tokens,
       outputTokens: usage.output_tokens,
       totalTokens: usage.total_tokens,

@@ -107,6 +107,7 @@ describe("OpenAI public answer generator", () => {
       responses: {
         create: async () => ({
           output_text: JSON.stringify(groundedOutput()),
+          model: "test-model",
           usage: {
             input_tokens: 120,
             output_tokens: 30,
@@ -126,6 +127,8 @@ describe("OpenAI public answer generator", () => {
     await expect(generator.generateMeasured(emptyInput()))
       .resolves.toEqual({
         answer: "Grounded answer.",
+        groundedGeneration: groundedOutput(),
+        model: "test-model",
         inputTokens: 120,
         outputTokens: 30,
         totalTokens: 150,

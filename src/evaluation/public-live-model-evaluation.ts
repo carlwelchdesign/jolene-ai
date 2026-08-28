@@ -22,6 +22,8 @@ import {
   DeterministicPublicAnswerService,
   type GroundedPublicAnswerInput,
 } from "../public/public-answer-service.js";
+import { PublicAnswerGroundingValidator } from
+  "../public/public-answer-grounding-validator.js";
 
 const evidenceIdSchema = z.string().regex(
   /^career:[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/,
@@ -33,6 +35,9 @@ export const publicLiveModelMetricSchema = z.enum([
   "provider_success",
   "contract_validity",
   "grounding_invariance",
+  "semantic_response_integrity",
+  "model_version_integrity",
+  "corpus_version_integrity",
   "disclosure_safety",
   "latency_budget",
   "input_token_budget",
@@ -46,10 +51,11 @@ const thresholdSchema = z.object({
 }).strict();
 
 export const publicLiveModelEvaluationSuiteSchema = z.object({
-  suiteVersion: z.literal("1.0.0"),
+  suiteVersion: z.literal("1.1.0"),
   suiteId: z.string().regex(/^public-live-model:[a-z0-9][a-z0-9-]{2,80}$/),
   generatedAt: z.string().datetime({ offset: true }),
   model: z.string().trim().min(1).max(120),
+  corpusVersion: z.string().regex(/^career:[a-f0-9]{64}$/u),
   pricing: z.object({
     reviewedAt: z.string().date(),
     sourceUrl: z.string().url().max(2_000),
@@ -121,10 +127,11 @@ interface EvaluationAssertion {
 }
 
 export interface PublicLiveModelEvaluationReport {
-  readonly suiteVersion: "1.0.0";
+  readonly suiteVersion: "1.1.0";
   readonly suiteId: string;
   readonly suiteHash: string;
   readonly model: string;
+  readonly corpusVersion: string;
   readonly gate: "pass" | "fail";
   readonly humanReview: "required";
   readonly counts: {
@@ -162,10 +169,11 @@ export interface PublicLiveModelEvaluationReport {
 }
 
 export const publicLiveModelReviewPacketSchema = z.object({
-  suiteVersion: z.literal("1.0.0"),
+  suiteVersion: z.literal("1.1.0"),
   suiteId: z.string().regex(/^public-live-model:[a-z0-9][a-z0-9-]{2,80}$/),
   suiteHash: z.string().regex(/^[a-f0-9]{64}$/),
   model: z.string().trim().min(1).max(120),
+  corpusVersion: z.string().regex(/^career:[a-f0-9]{64}$/u),
   generatedAt: z.string().datetime({ offset: true }),
   humanReview: z.literal("required"),
   cases: z.array(z.object({
@@ -204,7 +212,9 @@ export async function evaluatePublicLiveModelSuite(
   const suite = publicLiveModelEvaluationSuiteSchema.parse(input);
   const suiteHash = hashSuite(suite);
   const artifact = createArtifact(suite);
+  const corpusMatches = artifact.manifest.corpusVersion === suite.corpusVersion;
   const baselineService = new DeterministicPublicAnswerService();
+  const groundingValidator = new PublicAnswerGroundingValidator();
   const results: Array<{
     id: string;
     mode: "model" | "deterministic" | "fallback";
@@ -235,6 +245,34 @@ export async function evaluatePublicLiveModelSuite(
       passed: evidenceMatches,
       reason: evidenceMatches ? "expected_evidence_selected" : "unexpected_evidence_selection",
     };
+    const corpusAssertion = assertion(
+      "corpus_version_integrity",
+      corpusMatches,
+      "corpus_version_matched",
+      "corpus_version_drift",
+    );
+
+    if (!corpusMatches) {
+      results.push({
+        id: item.id,
+        mode: "fallback",
+        assertions: [
+          corpusAssertion,
+          evidenceAssertion,
+          ...failedPreselectionAssertions("corpus_version_drift"),
+        ],
+        latencyMilliseconds: 0,
+        inputTokens: 0,
+        outputTokens: 0,
+        totalTokens: 0,
+        estimatedCostMicrousd: 0,
+        providerRequested: false,
+        question: item.question,
+        answer: baseline.answer,
+        evidence,
+      });
+      continue;
+    }
 
     if (item.expectedMode === "deterministic") {
       const bypassed = baseline.claims.length === 0;
@@ -242,6 +280,7 @@ export async function evaluatePublicLiveModelSuite(
         id: item.id,
         mode: "deterministic",
         assertions: [
+          corpusAssertion,
           evidenceAssertion,
           {
             metric: "provider_bypass",
@@ -267,8 +306,9 @@ export async function evaluatePublicLiveModelSuite(
         id: item.id,
         mode: "fallback",
         assertions: [
+          corpusAssertion,
           evidenceAssertion,
-          ...failedPreselectionAssertions(),
+          ...failedPreselectionAssertions("provider_bypassed_after_evidence_mismatch"),
         ],
         latencyMilliseconds: 0,
         inputTokens: 0,
@@ -298,11 +338,21 @@ export async function evaluatePublicLiveModelSuite(
       const generation = await generator.generateMeasured(groundedInput);
       const latencyMilliseconds = Math.max(0, nowMilliseconds() - startedAt);
       const estimatedCostMicrousd = estimateCostMicrousd(suite, generation);
+      const modelMatches = generation.model === suite.model;
+      const semanticValidation = groundingValidator.validate(
+        artifact,
+        baseline,
+        generation.groundedGeneration,
+      );
+      const semanticallyValid = semanticValidation.status === "accepted" &&
+        semanticValidation.answer === generation.answer;
       const candidate = portfolioAnswerResponseSchema.safeParse({
         ...baseline,
-        answer: generation.answer,
+        answer: semanticValidation.status === "accepted"
+          ? semanticValidation.answer
+          : baseline.answer,
       });
-      const contractValid = candidate.success;
+      const contractValid = candidate.success && semanticallyValid;
       const invariant = contractValid && responseInvariant(
         baseline,
         candidate.data,
@@ -318,12 +368,15 @@ export async function evaluatePublicLiveModelSuite(
       }
       results.push({
         id: item.id,
-        mode: contractValid && disclosureSafe ? "model" : "fallback",
+        mode: contractValid && disclosureSafe && modelMatches ? "model" : "fallback",
         assertions: [
+          corpusAssertion,
           evidenceAssertion,
           assertion("provider_success", true, "provider_response_received", "provider_call_failed"),
+          assertion("model_version_integrity", modelMatches, "model_version_matched", "model_version_drift"),
           assertion("contract_validity", contractValid, "response_contract_valid", "response_contract_invalid"),
           assertion("grounding_invariance", invariant, "grounding_preserved", "grounding_changed"),
+          assertion("semantic_response_integrity", semanticallyValid, "semantic_response_supported", "semantic_response_unsupported"),
           assertion("disclosure_safety", disclosureSafe, "response_disclosure_safe", "response_disclosure_blocked"),
           assertion("latency_budget", latencyMilliseconds <= suite.budgets.maxLatencyMilliseconds, "latency_within_budget", "latency_budget_exceeded"),
           assertion("input_token_budget", generation.inputTokens <= suite.budgets.maxInputTokensPerRequest, "input_tokens_within_budget", "input_token_budget_exceeded"),
@@ -337,7 +390,9 @@ export async function evaluatePublicLiveModelSuite(
         estimatedCostMicrousd,
         providerRequested: true,
         question: item.question,
-        answer: contractValid && disclosureSafe ? candidate.data.answer : baseline.answer,
+        answer: contractValid && disclosureSafe && modelMatches
+          ? candidate.data.answer
+          : baseline.answer,
         evidence,
       });
     } catch {
@@ -346,6 +401,7 @@ export async function evaluatePublicLiveModelSuite(
         id: item.id,
         mode: "fallback",
         assertions: [
+          corpusAssertion,
           evidenceAssertion,
           ...failedProviderAssertions(latencyMilliseconds, suite),
         ],
@@ -418,6 +474,7 @@ export async function evaluatePublicLiveModelSuite(
       suiteId: suite.suiteId,
       suiteHash,
       model: suite.model,
+      corpusVersion: suite.corpusVersion,
       gate,
       humanReview: "required",
       counts: {
@@ -444,6 +501,7 @@ export async function evaluatePublicLiveModelSuite(
       suiteId: suite.suiteId,
       suiteHash,
       model: suite.model,
+      corpusVersion: suite.corpusVersion,
       generatedAt: new Date(nowMilliseconds()).toISOString(),
       humanReview: "required",
       cases: results.map((result) => ({
@@ -507,8 +565,10 @@ function failedProviderAssertions(
 ): readonly EvaluationAssertion[] {
   return [
     assertion("provider_success", false, "provider_response_received", "provider_call_failed"),
+    assertion("model_version_integrity", false, "model_version_matched", "provider_call_failed"),
     assertion("contract_validity", false, "response_contract_valid", "provider_call_failed"),
     assertion("grounding_invariance", false, "grounding_preserved", "provider_call_failed"),
+    assertion("semantic_response_integrity", false, "semantic_response_supported", "provider_call_failed"),
     assertion("disclosure_safety", false, "response_disclosure_safe", "provider_call_failed"),
     assertion("latency_budget", latencyMilliseconds <= suite.budgets.maxLatencyMilliseconds, "latency_within_budget", "latency_budget_exceeded"),
     assertion("input_token_budget", false, "input_tokens_within_budget", "usage_unavailable"),
@@ -517,12 +577,14 @@ function failedProviderAssertions(
   ];
 }
 
-function failedPreselectionAssertions(): readonly EvaluationAssertion[] {
+function failedPreselectionAssertions(reason: string): readonly EvaluationAssertion[] {
   return [
-    assertion("provider_success", false, "provider_response_received", "provider_bypassed_after_evidence_mismatch"),
-    assertion("contract_validity", false, "response_contract_valid", "provider_bypassed_after_evidence_mismatch"),
-    assertion("grounding_invariance", false, "grounding_preserved", "provider_bypassed_after_evidence_mismatch"),
-    assertion("disclosure_safety", false, "response_disclosure_safe", "provider_bypassed_after_evidence_mismatch"),
+    assertion("provider_success", false, "provider_response_received", reason),
+    assertion("model_version_integrity", false, "model_version_matched", reason),
+    assertion("contract_validity", false, "response_contract_valid", reason),
+    assertion("grounding_invariance", false, "grounding_preserved", reason),
+    assertion("semantic_response_integrity", false, "semantic_response_supported", reason),
+    assertion("disclosure_safety", false, "response_disclosure_safe", reason),
     assertion("latency_budget", true, "latency_within_budget", "latency_budget_exceeded"),
     assertion("input_token_budget", false, "input_tokens_within_budget", "usage_unavailable"),
     assertion("output_token_budget", false, "output_tokens_within_budget", "usage_unavailable"),

@@ -1,8 +1,9 @@
 {
-  "suiteVersion": "1.0.0",
+  "suiteVersion": "1.1.0",
   "suiteId": "public-live-model:representative-v1",
   "generatedAt": "2026-08-26T12:00:00.000Z",
   "model": "gpt-5.6-terra",
+  "corpusVersion": "career:6ef6f57adfa6ef32610455ab2deef5b6a71d0f861288b43e1f29f263eeb58c58",
   "pricing": {
     "reviewedAt": "2026-08-26",
     "sourceUrl": "https://platform.openai.com/pricing",
@@ -22,6 +23,9 @@
     "provider_success": { "minimumPassRateBps": 10000, "blockingSeverity": "blocker" },
     "contract_validity": { "minimumPassRateBps": 10000, "blockingSeverity": "blocker" },
     "grounding_invariance": { "minimumPassRateBps": 10000, "blockingSeverity": "blocker" },
+    "semantic_response_integrity": { "minimumPassRateBps": 10000, "blockingSeverity": "blocker" },
+    "model_version_integrity": { "minimumPassRateBps": 10000, "blockingSeverity": "blocker" },
+    "corpus_version_integrity": { "minimumPassRateBps": 10000, "blockingSeverity": "blocker" },
     "disclosure_safety": { "minimumPassRateBps": 10000, "blockingSeverity": "blocker" },
     "latency_budget": { "minimumPassRateBps": 10000, "blockingSeverity": "blocker" },
     "input_token_budget": { "minimumPassRateBps": 10000, "blockingSeverity": "blocker" },

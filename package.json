@@ -65,6 +65,8 @@
     "start:slack": "node dist/slack.js",
     "pretest": "npm run runtime:check",
     "test": "vitest run",
+    "pretest:security:red-team": "npm run runtime:check",
+    "test:security:red-team": "vitest run tests/prompt-injection-red-team-contract.test.ts tests/prompt-injection-cross-channel.test.ts tests/private-rag-adversarial-evaluation.test.ts tests/public-answer-grounding-adversarial.test.ts tests/public-live-model-evaluation.test.ts --pool=threads --maxWorkers=2 --fileParallelism=false",
     "test:watch": "vitest",
     "pretypecheck": "npm run runtime:check",
     "typecheck": "tsc -p tsconfig.json --noEmit"
