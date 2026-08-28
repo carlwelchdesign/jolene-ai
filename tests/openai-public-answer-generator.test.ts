@@ -3,6 +3,8 @@ import type OpenAI from "openai";
 
 import { OpenAIPublicAnswerGenerator } from
   "../src/public/openai-public-answer-generator.js";
+import { parseUntrustedContentEnvelope } from
+  "../src/domain/untrusted-content.js";
 
 describe("OpenAI public answer generator", () => {
   it("uses a bounded, stored-disabled Responses request with strict JSON output", async () => {
@@ -36,9 +38,21 @@ describe("OpenAI public answer generator", () => {
     expect(request).toMatchObject({
       model: "test-model",
       store: false,
-      input: JSON.stringify(input),
       max_output_tokens: 321,
     });
+    const modelInput = JSON.parse(String(request.input)) as unknown[];
+    const envelopes = modelInput.map(parseUntrustedContentEnvelope);
+    expect(envelopes).toHaveLength(2);
+    expect(envelopes.map((item) => item.origin.kind)).toEqual([
+      "user_message",
+      "career_evidence",
+    ]);
+    expect(envelopes.every((item) =>
+      item.authority === "none" &&
+      item.classification === "public" &&
+      Object.values(item.scope).every((value) => value === null)
+    )).toBe(true);
+    expect(String(request.input)).not.toContain("private/path");
     expect(request).not.toHaveProperty("tools");
     expect(request.instructions).toEqual(expect.stringContaining(
       "Lead with the direct answer",

@@ -7,6 +7,11 @@ import type {
 } from "./public-answer-service.js";
 import { PUBLIC_JOLENE_PERSONALITY_INSTRUCTIONS } from
   "../personality/runtime-personality-policy.js";
+import {
+  createPublicExternalAiTextEnvelope,
+  publicGroundedAnswerEnvelopes,
+  serializePublicGroundedAnswerInput,
+} from "./public-model-data.js";
 
 const generatedAnswerSchema = z.object({
   answer: z.string().trim().min(1).max(2_000),
@@ -64,25 +69,31 @@ export class OpenAIPublicAnswerGenerator implements PublicAnswerTextGenerator {
   }
 
   async generate(input: GroundedPublicAnswerInput): Promise<string> {
-    return generatedAnswer(
-      await this.#createResponse(input),
-    );
+    const observedAt = new Date().toISOString();
+    const answer = generatedAnswer(await this.#createResponse(input, observedAt));
+    return externalAiAnswer(answer, input, this.#model, observedAt);
   }
 
   async generateMeasured(
     input: GroundedPublicAnswerInput,
   ): Promise<MeasuredPublicAnswerGeneration> {
-    const response = await this.#createResponse(input);
+    const observedAt = new Date().toISOString();
+    const response = await this.#createResponse(input, observedAt);
     const usage = responseUsageSchema.parse(response.usage);
     return {
-      answer: generatedAnswer(response),
+      answer: externalAiAnswer(
+        generatedAnswer(response),
+        input,
+        this.#model,
+        observedAt,
+      ),
       inputTokens: usage.input_tokens,
       outputTokens: usage.output_tokens,
       totalTokens: usage.total_tokens,
     };
   }
 
-  async #createResponse(input: GroundedPublicAnswerInput) {
+  async #createResponse(input: GroundedPublicAnswerInput, observedAt: string) {
     const response = await this.#client.responses.create({
       model: this.#model,
       store: false,
@@ -101,7 +112,7 @@ export class OpenAIPublicAnswerGenerator implements PublicAnswerTextGenerator {
         "State a limitation naturally only when it materially changes the answer; structured limitations are rendered separately.",
         "Return only the required JSON object.",
       ].join(" "),
-      input: JSON.stringify(input),
+      input: serializePublicGroundedAnswerInput(input, observedAt),
       max_output_tokens: this.#maxOutputTokens,
       text: {
         format: {
@@ -127,4 +138,22 @@ export class OpenAIPublicAnswerGenerator implements PublicAnswerTextGenerator {
 
 function generatedAnswer(response: { readonly output_text: string }): string {
   return generatedAnswerSchema.parse(JSON.parse(response.output_text)).answer;
+}
+
+function externalAiAnswer(
+  answer: string,
+  input: GroundedPublicAnswerInput,
+  model: string,
+  observedAt: string,
+): string {
+  const envelope = createPublicExternalAiTextEnvelope({
+    answer,
+    parents: publicGroundedAnswerEnvelopes(input, observedAt),
+    model,
+    observedAt,
+  });
+  if (envelope.payload.kind !== "text") {
+    throw new Error("Public model output must be a text envelope.");
+  }
+  return envelope.payload.text;
 }
