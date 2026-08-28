@@ -571,7 +571,7 @@ describe("PortfolioEvidenceImporter", () => {
       expect(first).toEqual({
         sourceCount: 4,
         claimCount: 6,
-        relationshipCount: 4,
+        relationshipCount: 5,
         validationIssueCount: 10,
         publicClaimCount: 0,
       });
@@ -584,6 +584,19 @@ describe("PortfolioEvidenceImporter", () => {
       expect(store.listClaims(scope).every((claim) =>
         claim.visibility === "public_candidate" && claim.reviewState === "needs_review"
       )).toBe(true);
+      const recommendationClaim = store.listClaims(scope).find((claim) =>
+        claim.sourceId === "portfolio:recommendation:reviewer:august-25-2026"
+      );
+      expect(store.listRelationships(scope)).toContainEqual(expect.objectContaining({
+        id: "portfolio:recommendation:reviewer:august-25-2026:recommender-support",
+        claimId: recommendationClaim?.id,
+        fromKind: "person",
+        fromId: "reviewer",
+        relationship: "supports",
+        toKind: "person",
+        toId: "carl",
+        state: "active",
+      }));
     } finally {
       store.close();
     }
