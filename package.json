@@ -35,6 +35,7 @@
     "research:personality:sources:content": "tsx scripts/validate-personality-source-content-fingerprints.ts",
     "research:personality:sources:v2": "tsx scripts/validate-personality-sources-v2.ts",
     "research:personality:sampling:v2": "tsx scripts/validate-personality-sampling-plan.ts",
+    "security:prompt-injection:validate": "tsx scripts/validate-prompt-injection-threat-model.ts",
     "secrets:migrate-compose": "tsx scripts/migrate-compose-secrets.ts",
     "slack": "tsx src/slack.ts",
     "start": "node dist/server.js",

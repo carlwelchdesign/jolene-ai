@@ -1312,3 +1312,15 @@ Live private lexical-index checkpoint:
 | Live state | Private API and Slack run image `659cfdf96ccddb5da8dff2a9a27d02a9aa5c1d321fbaaa02ee249ef7249390c7` with `JOLENE_CAREER_EMBEDDINGS_ENABLED=false`; the canonical index contains 152 lexical-only chunks and zero vectors |
 | Runtime verification | A network-isolated live-volume query returned `lexical_fallback`, five citation-complete results, and zero vector scores; API health passed, Slack reconnected in Socket Mode, and the isolated public delegate remained healthy on its unchanged 41-claim corpus |
 | Remaining boundary | No provider request, embedding opt-in, public artifact change, public deployment, hosting change, external message, or launch action occurred |
+
+Prompt-injection threat-model checkpoint:
+
+| Field | Evidence |
+|---|---|
+| Asana | `JOL-SEC-003` (`1217931645187988`) |
+| Canonical artifacts | [`JOLENE_PROMPT_INJECTION_THREAT_MODEL.md`](JOLENE_PROMPT_INJECTION_THREAT_MODEL.md) and machine-validated [`prompt-injection-threat-model.v1.json`](security/prompt-injection-threat-model.v1.json) |
+| Inventory | 7 actors; 9 data classes; 18 trust boundaries; 35 current/planned controls; 20 threats across direct, indirect, persistent, tool, exfiltration, identity, poisoning, provider, retention, audit, encoding, and resource-abuse families; 9 scored risks; 9 blocking gates |
+| Highest-priority finding | The loopback private HTTP control plane does not authenticate its caller and accepts caller-supplied actor/workspace/channel scope; loopback and same-origin checks are containment, not identity proof |
+| Control boundary | The model distinguishes deterministic/isolation/process controls from prompt-only guidance and records every current limitation; reviewed or approved content always remains non-authoritative data |
+| Delivery sequence | `JOL-SEC-004A` authenticated private ingress → `JOL-SEC-004` typed untrusted envelopes → `JOL-SEC-005` intent-bound tools → `JOL-SEC-007` private RAG/egress/quarantine → `JOL-SEC-006` public semantic grounding → `JOL-SEC-008` adversarial gates → `JOL-SEC-009` telemetry/recovery |
+| Release boundary | This checkpoint is an implementation-ready security plan, not proof that injection is impossible. It adds no tool, provider call, runtime mutation, push, deployment, promotion, or launch authorization. |
