@@ -54,6 +54,9 @@ const envSchema = z.object({
   SLACK_OWNER_USER_ID: z.string().trim().regex(/^[UW][A-Z0-9]+$/)
     .or(z.literal(""))
     .optional(),
+  SLACK_OWNER_TEAM_ID: z.string().trim().regex(/^T[A-Z0-9]+$/)
+    .or(z.literal(""))
+    .optional(),
 });
 
 export interface AppConfig {
@@ -87,6 +90,7 @@ export interface AppConfig {
   readonly slackBotToken: string | undefined;
   readonly slackAppToken: string | undefined;
   readonly slackOwnerUserId: string | undefined;
+  readonly slackOwnerTeamId: string | undefined;
 }
 
 export function loadConfig(): AppConfig {
@@ -148,6 +152,13 @@ export function parseConfig(
       { required: false, workingDirectory },
     ),
   });
+  const slackOwnerUserId = emptyToUndefined(env.SLACK_OWNER_USER_ID);
+  const slackOwnerTeamId = emptyToUndefined(env.SLACK_OWNER_TEAM_ID);
+  if (Boolean(slackOwnerUserId) !== Boolean(slackOwnerTeamId)) {
+    throw new Error(
+      "SLACK_OWNER_USER_ID and SLACK_OWNER_TEAM_ID must be configured together.",
+    );
+  }
 
   return {
     openaiApiKey: env.OPENAI_API_KEY,
@@ -210,7 +221,8 @@ export function parseConfig(
     ),
     slackBotToken: emptyToUndefined(env.SLACK_BOT_TOKEN),
     slackAppToken: emptyToUndefined(env.SLACK_APP_TOKEN),
-    slackOwnerUserId: emptyToUndefined(env.SLACK_OWNER_USER_ID),
+    slackOwnerUserId,
+    slackOwnerTeamId,
   };
 }
 

@@ -8,6 +8,7 @@ import {
 const resolver = new CanonicalPrivateWorkScopeResolver({
   ownerScope: { actorId: "carl", workspaceId: "personal" },
   slackOwnerUserId: "UOWNER",
+  slackOwnerWorkspaceId: "TSLACK",
 });
 
 describe("TransportPrivateWorkScopeResolver", () => {
@@ -66,6 +67,16 @@ describe("CanonicalPrivateWorkScopeResolver", () => {
     expect(resolver.slackDisclosureScope({
       actorId: "UOTHER",
       workspaceId: "TSLACK",
+      channelKind: "slack_dm",
+    })).toBe("none");
+    expect(resolver.resolve({
+      actorId: "UOWNER",
+      workspaceId: "TOTHER",
+      channelKind: "slack_dm",
+    })).toBeNull();
+    expect(resolver.slackDisclosureScope({
+      actorId: "UOWNER",
+      workspaceId: "TOTHER",
       channelKind: "slack_dm",
     })).toBe("none");
     expect(resolver.resolve({

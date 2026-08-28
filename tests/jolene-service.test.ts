@@ -317,6 +317,7 @@ describe("JoleneService", () => {
       workScopeResolver: new CanonicalPrivateWorkScopeResolver({
         ownerScope: { actorId: "carl", workspaceId: "personal" },
         slackOwnerUserId: "UOWNER",
+        slackOwnerWorkspaceId: "TSLACK",
       }),
       maxHistoryTurns: 16,
       maxMemoryItems: 24,
@@ -375,6 +376,7 @@ describe("JoleneService", () => {
       workScopeResolver: new CanonicalPrivateWorkScopeResolver({
         ownerScope: { actorId: "carl", workspaceId: "personal" },
         slackOwnerUserId: "UOWNER",
+        slackOwnerWorkspaceId: "TSLACK",
       }),
       maxHistoryTurns: 16,
       maxMemoryItems: 24,

@@ -13,6 +13,7 @@ describe("mapSlackEvent", () => {
         }),
         "UJOLENE",
         "UCARL",
+        "TWORK",
       ),
     ).toEqual({
       request: {
@@ -39,6 +40,7 @@ describe("mapSlackEvent", () => {
       }),
       "UJOLENE",
       "UCARL",
+      "TWORK",
     );
 
     expect(result?.request).toMatchObject({
@@ -55,6 +57,7 @@ describe("mapSlackEvent", () => {
         envelope({ type: "message", channel_type: "channel" }),
         "UJOLENE",
         "UCARL",
+        "TWORK",
       ),
     ).toBeNull();
     expect(
@@ -62,6 +65,7 @@ describe("mapSlackEvent", () => {
         envelope({ type: "message", bot_id: "B123" }),
         "UJOLENE",
         "UCARL",
+        "TWORK",
       ),
     ).toBeNull();
     expect(
@@ -69,6 +73,7 @@ describe("mapSlackEvent", () => {
         envelope({ type: "message", subtype: "message_changed" }),
         "UJOLENE",
         "UCARL",
+        "TWORK",
       ),
     ).toBeNull();
   });
@@ -79,8 +84,16 @@ describe("mapSlackEvent", () => {
         envelope({ type: "message", user: "UOTHER", channel_type: "im" }),
         "UJOLENE",
         "UCARL",
+        "TWORK",
       ),
     ).toBeNull();
+  });
+
+  it("ignores matching member IDs from another Slack workspace", () => {
+    const otherWorkspace = envelope() as Record<string, unknown>;
+    otherWorkspace.team_id = "TOTHER";
+    expect(mapSlackEvent(otherWorkspace, "UJOLENE", "UCARL", "TWORK"))
+      .toBeNull();
   });
 });
 

@@ -18,6 +18,7 @@ export interface PrivateWorkScopeResolver {
 export interface CanonicalPrivateWorkScopeOptions {
   readonly ownerScope: PrivateWorkScope;
   readonly slackOwnerUserId: string | undefined;
+  readonly slackOwnerWorkspaceId: string | undefined;
 }
 
 export class CanonicalPrivateWorkScopeResolver
@@ -29,8 +30,7 @@ export class CanonicalPrivateWorkScopeResolver
     if (request.channelKind === "slack_shared") return null;
     if (request.channelKind === "cli") return this.options.ownerScope;
     if (request.channelKind === "slack_dm") {
-      return this.options.slackOwnerUserId &&
-          request.actorId === this.options.slackOwnerUserId
+      return this.isSlackOwner(request)
         ? this.options.ownerScope
         : null;
     }
@@ -41,11 +41,17 @@ export class CanonicalPrivateWorkScopeResolver
   }
 
   slackDisclosureScope(request: PrivateWorkScopeRequest): SlackDisclosureScope {
-    return request.channelKind === "slack_dm" &&
-        Boolean(this.options.slackOwnerUserId) &&
-        request.actorId === this.options.slackOwnerUserId
+    return this.isSlackOwner(request)
       ? "verified_owner_dm"
       : "none";
+  }
+
+  private isSlackOwner(request: PrivateWorkScopeRequest): boolean {
+    return request.channelKind === "slack_dm" &&
+      Boolean(this.options.slackOwnerUserId) &&
+      Boolean(this.options.slackOwnerWorkspaceId) &&
+      request.actorId === this.options.slackOwnerUserId &&
+      request.workspaceId === this.options.slackOwnerWorkspaceId;
   }
 }
 

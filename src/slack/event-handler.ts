@@ -22,9 +22,10 @@ export async function handleSlackEvent(
   envelope: unknown,
   botUserId: string | undefined,
   ownerUserId: string,
+  ownerTeamId: string,
   postMessage: SlackPostMessage,
 ): Promise<SlackHandlingResult> {
-  const mapped = mapSlackEvent(envelope, botUserId, ownerUserId);
+  const mapped = mapSlackEvent(envelope, botUserId, ownerUserId, ownerTeamId);
   if (!mapped) {
     return { outcome: "ignored" };
   }

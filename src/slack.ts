@@ -10,12 +10,14 @@ if (
   !config.slackBotToken ||
   !config.slackAppToken ||
   !config.slackOwnerUserId
+  || !config.slackOwnerTeamId
 ) {
   throw new Error(
     "Slack is not configured. Provide Slack bot/app credentials directly or through secret files, plus SLACK_OWNER_USER_ID.",
   );
 }
 const ownerUserId = config.slackOwnerUserId;
+const ownerTeamId = config.slackOwnerTeamId;
 
 const application = await createApplication(config);
 const slack = new App({
@@ -40,6 +42,7 @@ const listener = async ({
     body,
     context.botUserId,
     ownerUserId,
+    ownerTeamId,
     async ({ text, threadTs }) => {
       await say({ text, thread_ts: threadTs });
     },

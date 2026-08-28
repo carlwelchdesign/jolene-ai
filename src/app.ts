@@ -203,6 +203,7 @@ export async function createApplication(
     workScopeResolver: new CanonicalPrivateWorkScopeResolver({
       ownerScope,
       slackOwnerUserId: config.slackOwnerUserId,
+      slackOwnerWorkspaceId: config.slackOwnerTeamId,
     }),
     maxHistoryTurns: config.maxHistoryTurns,
     maxMemoryItems: config.maxMemoryItems,

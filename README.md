@@ -337,7 +337,9 @@ See [Slack setup](docs/slack-setup.md) for the credential and workspace activati
 npm run slack
 ```
 
-Carl's configured Slack member ID is the only DM identity permitted to use private context. All channel mentions are treated as shared and receive no Obsidian tool.
+Carl's configured Slack workspace/member pair is the only DM identity permitted
+to use private context. A matching member ID from another workspace is ignored.
+All channel mentions are treated as shared and receive no Obsidian tool.
 For that configured owner DM, private work lookup resolves to
 `JOLENE_OWNER_ACTOR_ID` and `JOLENE_OWNER_WORKSPACE_ID`; Slack conversation and
 delivery identity remain tied to the originating Slack user, workspace, channel,

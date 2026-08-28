@@ -76,18 +76,34 @@ describe("private runtime configuration", () => {
     ).toThrow();
   });
 
-  it("accepts one Slack owner member ID and rejects multi-user destinations", () => {
+  it("requires one exact Slack workspace/member pair", () => {
     expect(parseConfig(configEnvironment({
       OPENAI_API_KEY: "test-key",
       SLACK_OWNER_USER_ID: "U0BSN6JA3PC",
+      SLACK_OWNER_TEAM_ID: "T0BSQ518J8H",
     })).slackOwnerUserId).toBe("U0BSN6JA3PC");
+    expect(parseConfig(configEnvironment({
+      OPENAI_API_KEY: "test-key",
+      SLACK_OWNER_USER_ID: "U0BSN6JA3PC",
+      SLACK_OWNER_TEAM_ID: "T0BSQ518J8H",
+    })).slackOwnerTeamId).toBe("T0BSQ518J8H");
     expect(() => parseConfig(configEnvironment({
       OPENAI_API_KEY: "test-key",
       SLACK_OWNER_USER_ID: "UOWNER,UOTHER",
+      SLACK_OWNER_TEAM_ID: "T0BSQ518J8H",
     }))).toThrow();
+    expect(() => parseConfig(configEnvironment({
+      OPENAI_API_KEY: "test-key",
+      SLACK_OWNER_USER_ID: "U0BSN6JA3PC",
+    }))).toThrow(/must be configured together/);
+    expect(() => parseConfig(configEnvironment({
+      OPENAI_API_KEY: "test-key",
+      SLACK_OWNER_TEAM_ID: "T0BSQ518J8H",
+    }))).toThrow(/must be configured together/);
     expect(parseConfig(configEnvironment({
       OPENAI_API_KEY: "test-key",
       SLACK_OWNER_USER_ID: "",
+      SLACK_OWNER_TEAM_ID: "",
     })).slackOwnerUserId).toBeUndefined();
   });
 
