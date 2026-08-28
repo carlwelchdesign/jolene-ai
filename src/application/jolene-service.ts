@@ -93,6 +93,7 @@ export class JoleneService {
         : EMPTY_WORK_CONTEXT;
       const response = await this.options.runner.respond({
         eventId: request.eventId,
+        receivedAt: new Date().toISOString(),
         actorId: request.actorId,
         workspaceId: request.workspaceId,
         channelKind: request.channelKind,

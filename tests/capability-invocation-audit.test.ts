@@ -189,7 +189,7 @@ describe("capability invocation audit", () => {
       await expect(knowledgeTool.invoke(
         {},
         JSON.stringify({ query: "approved project context", limit: 3 }),
-      )).resolves.toBe(JSON.stringify({ resultCount: 0, results: [] }));
+      )).resolves.toBe("[]");
       expect(store.listInvocations({
         actorId: "carl",
         workspaceId: "personal",
@@ -303,6 +303,7 @@ function invocationContext() {
 function agentRequest(): AgentRequest {
   return {
     eventId: "event-capability-1",
+    receivedAt: "2026-08-27T17:00:00.000Z",
     actorId: "carl",
     workspaceId: "personal",
     channelKind: "private_chat",
