@@ -3,6 +3,7 @@ const state = {
   tasks: [],
   proposals: [],
   filter: "pending",
+  reviewProposal: null,
 };
 
 const ui = {
@@ -258,6 +259,7 @@ function validateTaskBinding() {
 }
 
 function openApproval(proposal) {
+  state.reviewProposal = proposal;
   ui.approveId.value = proposal.id;
   ui.approveDetails.replaceChildren();
   addReviewRow("Recipient", humanize(proposal.destinationKind) + " · " + proposal.destinationId);
@@ -280,10 +282,19 @@ async function submitApproval(event) {
   ui.approveSubmit.disabled = true;
   clearInlineError(ui.approveError);
   try {
+    if (!state.reviewProposal || state.reviewProposal.id !== ui.approveId.value) {
+      throw new Error("The reviewed proposal is no longer available. Refresh and try again.");
+    }
     await api("/v1/action-proposals/" + encodeURIComponent(ui.approveId.value) + "/decision", {
       method: "POST",
-      body: { ...state.scope, decision: "approved" },
+      body: {
+        ...state.scope,
+        decision: "approved",
+        payloadFingerprint: state.reviewProposal.payloadFingerprint,
+        authority: directOwnerReviewAuthority(),
+      },
     });
+    state.reviewProposal = null;
     ui.approveDialog.close();
     showToast("Exact action approved. Nothing was sent.");
     await loadProposals();
@@ -299,7 +310,12 @@ async function decideProposal(proposal, decision, controls) {
   try {
     await api("/v1/action-proposals/" + encodeURIComponent(proposal.id) + "/decision", {
       method: "POST",
-      body: { ...state.scope, decision },
+      body: {
+        ...state.scope,
+        decision,
+        payloadFingerprint: proposal.payloadFingerprint,
+        authority: directOwnerReviewAuthority(),
+      },
     });
     showToast("Action proposal rejected. Nothing was sent.");
     await loadProposals();
@@ -307,6 +323,15 @@ async function decideProposal(proposal, decision, controls) {
     showNotice(friendlyError(error), true);
     setDisabled(controls, false);
   }
+}
+
+function directOwnerReviewAuthority() {
+  return {
+    source: "authenticated_owner_review_ui",
+    authority: "user",
+    taintIds: [],
+    derivationIds: [],
+  };
 }
 
 function populateTaskSelect() {

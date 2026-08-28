@@ -11,6 +11,9 @@ import {
   type ContactIntentRequest,
   type ContactIntentResponse,
 } from "../domain/public-portfolio-contract.js";
+import { untrustedContentEnvelopeSchema } from
+  "../domain/untrusted-content.js";
+import { createContactSubmissionEnvelope } from "./public-model-data.js";
 
 const storedContactIntentSchema = contactIntentRequestSchema.extend({
   intentId: z.string().uuid(),
@@ -20,6 +23,7 @@ const storedContactIntentSchema = contactIntentRequestSchema.extend({
   reviewedAt: z.string().datetime({ offset: true }).nullable().optional(),
   replyDraft: z.string().trim().min(1).max(4_000).nullable().optional(),
   replyDraftUpdatedAt: z.string().datetime({ offset: true }).nullable().optional(),
+  untrustedContent: untrustedContentEnvelopeSchema.optional(),
 });
 
 export type StoredPublicContactIntent = z.infer<typeof storedContactIntentSchema>;
@@ -107,6 +111,12 @@ export class FilePublicContactIntentQueue
         status: "pending_review",
         submittedAt,
         expiresAt: new Date(now + this.#retentionMilliseconds).toISOString(),
+        untrustedContent: createContactSubmissionEnvelope(
+          validated,
+          intentId,
+          submittedAt,
+          new Date(now + this.#retentionMilliseconds).toISOString(),
+        ),
       });
       const loaded = await this.#read();
       const intents = [...this.#retained(loaded.intents, now), record].slice(

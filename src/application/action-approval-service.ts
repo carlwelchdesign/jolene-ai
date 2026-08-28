@@ -48,7 +48,14 @@ const decideProposalSchema = z.object({
   ...identityFields,
   id: z.string().uuid(),
   decision: z.enum(["approved", "rejected"]),
-});
+  payloadFingerprint: z.string().regex(/^[a-f0-9]{64}$/u),
+  authority: z.object({
+    source: z.literal("authenticated_owner_review_ui"),
+    authority: z.literal("user"),
+    taintIds: z.array(z.never()).length(0),
+    derivationIds: z.array(z.never()).length(0),
+  }).strict(),
+}).strict();
 
 const listProposalsSchema = z.object({
   ...identityFields,

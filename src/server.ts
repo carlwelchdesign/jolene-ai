@@ -3,8 +3,7 @@ import { createServer, type IncomingMessage, type ServerResponse } from "node:ht
 import { ZodError } from "zod";
 
 import { createApplication } from "./app.js";
-import { chatRequestSchema } from "./application/jolene-service.js";
-import { loadConfig } from "./config.js";
+import { loadPrivateServerConfig } from "./config.js";
 import { ActionProposalPolicyError } from "./application/action-approval-service.js";
 import { CareerEvidenceScopeError } from "./application/career-evidence-service.js";
 import { ClientAiTaskPacketPolicyError } from "./application/client-ai-task-packet-service.js";
@@ -15,6 +14,12 @@ import {
   PublicLiveModelReviewScopeError,
   PublicLiveModelReviewUnavailableError,
 } from "./application/public-live-model-review-service.js";
+import {
+  ConversationalQualityReviewConflictError,
+  ConversationalQualityReviewIncompleteError,
+  ConversationalQualityReviewScopeError,
+  ConversationalQualityReviewUnavailableError,
+} from "./application/conversational-quality-review-service.js";
 import {
   PersonalityResearchReviewConflictError,
   PersonalityResearchReviewScopeError,
@@ -64,15 +69,30 @@ import {
 } from "./ui/memory-review-assets.js";
 import { assertSameOrigin, RequestOriginError } from "./http/request-origin.js";
 import {
+  createPrivateControlRequestGuard,
+  derivePrivateHttpChatRequest,
+  PrivateIngressAuthenticationError,
+} from "./http/private-ingress-auth.js";
+import {
   PublicContactIntentNotFoundError,
   PublicContactQueueUnavailableError,
 } from "./public/public-contact-intent-queue.js";
 
 const MAX_REQUEST_BYTES = 1_000_000;
 
-const config = loadConfig();
+const config = loadPrivateServerConfig();
 const application = await createApplication(config);
 const memoryReviewAssets = loadMemoryReviewAssets();
+const privateControl = createPrivateControlRequestGuard({
+  token: config.privateControlToken,
+  ownerActorId: config.ownerActorId,
+  ownerWorkspaceId: config.ownerWorkspaceId,
+  audit(event) {
+    process.stdout.write(
+      `Private control authentication: ${event.outcome}:${event.reasonCode}\n`,
+    );
+  },
+});
 
 const server = createServer(async (request, response) => {
   try {
@@ -102,6 +122,13 @@ async function handleRequest(
   response: ServerResponse,
 ): Promise<void> {
   const url = new URL(request.url ?? "/", "http://127.0.0.1");
+
+  if (request.method === "GET" && url.pathname === "/health") {
+    sendJson(response, 200, application.health());
+    return;
+  }
+
+  const privatePrincipal = privateControl.authorize(request.headers);
 
   if (request.method === "GET" && url.pathname === "/") {
     response.writeHead(302, {
@@ -170,6 +197,11 @@ async function handleRequest(
     return;
   }
 
+  if (request.method === "GET" && url.pathname === "/conversation-evaluation") {
+    sendAsset(response, memoryReviewAssets.conversationEvaluationHtml);
+    return;
+  }
+
   if (request.method === "GET" && url.pathname === "/client-ai") {
     sendAsset(response, memoryReviewAssets.clientAiHtml);
     return;
@@ -210,6 +242,16 @@ async function handleRequest(
     return;
   }
 
+  if (request.method === "GET" && url.pathname === "/conversation-evaluation-review.css") {
+    sendAsset(response, memoryReviewAssets.conversationEvaluationCss);
+    return;
+  }
+
+  if (request.method === "GET" && url.pathname === "/conversation-evaluation-review.js") {
+    sendAsset(response, memoryReviewAssets.conversationEvaluationJavascript);
+    return;
+  }
+
   if (request.method === "GET" && url.pathname === "/client-ai-review.css") {
     sendAsset(response, memoryReviewAssets.clientAiCss);
     return;
@@ -247,11 +289,6 @@ async function handleRequest(
 
   if (request.method === "GET" && url.pathname === "/action-review.js") {
     sendAsset(response, memoryReviewAssets.actionJavascript);
-    return;
-  }
-
-  if (request.method === "GET" && url.pathname === "/health") {
-    sendJson(response, 200, application.health());
     return;
   }
 
@@ -470,7 +507,10 @@ async function handleRequest(
   }
 
   if (request.method === "POST" && url.pathname === "/v1/chat") {
-    const body = chatRequestSchema.parse(await readJson(request));
+    const body = derivePrivateHttpChatRequest(
+      await readJson(request),
+      privatePrincipal,
+    );
     const result = await application.service.chat(body);
     sendJson(response, result.status === "processing" ? 202 : 200, result);
     return;
@@ -680,6 +720,26 @@ async function handleRequest(
       response,
       200,
       await application.publicLiveModelReview.submit(await readJson(request)),
+    );
+    return;
+  }
+
+  if (request.method === "GET" && url.pathname === "/v1/conversation-quality-review/scope") {
+    sendJson(response, 200, application.conversationalQualityReview.scope());
+    return;
+  }
+
+  if (request.method === "GET" && url.pathname === "/v1/conversation-quality-review") {
+    sendJson(response, 200, await application.conversationalQualityReview.get(scopeFrom(url)));
+    return;
+  }
+
+  if (request.method === "POST" && url.pathname === "/v1/conversation-quality-review/decision") {
+    assertSameOrigin(request.headers);
+    sendJson(
+      response,
+      200,
+      await application.conversationalQualityReview.submit(await readJson(request)),
     );
     return;
   }
@@ -1020,6 +1080,11 @@ function handleError(error: unknown, response: ServerResponse): void {
     return;
   }
 
+  if (error instanceof ConversationalQualityReviewScopeError) {
+    sendJson(response, 403, { error: "conversation_quality_scope_not_permitted" });
+    return;
+  }
+
   if (
     error instanceof PersonalityResearchReviewScopeError ||
     error instanceof PersonalityTuningReviewScopeError
@@ -1033,11 +1098,24 @@ function handleError(error: unknown, response: ServerResponse): void {
     return;
   }
 
+  if (error instanceof ConversationalQualityReviewUnavailableError) {
+    sendJson(response, 503, { error: "conversation_quality_review_unavailable" });
+    return;
+  }
+
   if (
     error instanceof PublicLiveModelReviewConflictError ||
     error instanceof PublicLiveModelReviewIncompleteError
   ) {
     sendJson(response, 409, { error: "public_live_review_conflict" });
+    return;
+  }
+
+  if (
+    error instanceof ConversationalQualityReviewConflictError ||
+    error instanceof ConversationalQualityReviewIncompleteError
+  ) {
+    sendJson(response, 409, { error: "conversation_quality_review_conflict" });
     return;
   }
 
@@ -1066,6 +1144,16 @@ function handleError(error: unknown, response: ServerResponse): void {
 
   if (error instanceof RequestOriginError) {
     sendJson(response, 403, { error: "request_origin_not_permitted" });
+    return;
+  }
+
+  if (error instanceof PrivateIngressAuthenticationError) {
+    response.writeHead(401, {
+      "content-type": "application/json; charset=utf-8",
+      "cache-control": "no-store",
+      "www-authenticate": 'Basic realm="Jolene local control", charset="UTF-8"',
+    });
+    response.end(JSON.stringify({ error: "private_control_authentication_required" }));
     return;
   }
 

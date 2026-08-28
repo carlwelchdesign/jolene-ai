@@ -8,7 +8,10 @@ import {
   evaluatePublicLiveModelSuite,
   publicLiveModelEvaluationSuiteSchema,
 } from "../src/evaluation/public-live-model-evaluation.js";
-import { writePublicLiveModelReviewPacket } from
+import {
+  writePublicLiveModelMachineReport,
+  writePublicLiveModelReviewPacket,
+} from
   "../src/evaluation/public-live-model-review-packet.js";
 
 const fixture = JSON.parse(await readFile(
@@ -22,8 +25,7 @@ describe("public live-model evaluation", () => {
     const result = await evaluatePublicLiveModelSuite(
       fixture,
       {
-        generateMeasured: async (input) => ({
-          answer: `Grounded answer about ${input.evidence[0]?.citationTitle ?? "evidence"}.`,
+        generateMeasured: async (input) => measured(input, {
           inputTokens: 400,
           outputTokens: 50,
           totalTokens: 450,
@@ -46,12 +48,16 @@ describe("public live-model evaluation", () => {
       inputTokens: 1_200,
       outputTokens: 150,
       totalTokens: 1_350,
-      estimatedCostMicrousd: 2_625,
+      estimatedCostMicrousd: 4_200,
       maximumLatencyMilliseconds: 50,
     });
+    expect(result.report.cases.filter((item) => item.mode === "model")
+      .every((item) => item.grounding.status === "accepted")).toBe(true);
     expect(result.reviewPacket.cases).toHaveLength(4);
     expect(result.reviewPacket.cases[0]?.question).toContain("React");
-    expect(result.reviewPacket.cases[0]?.answer).toContain("Typed product systems");
+    expect(result.reviewPacket.cases[0]?.answer).toBe(
+      result.reviewPacket.cases[0]?.evidence[0]?.claimText,
+    );
 
     const serializedReport = JSON.stringify(result.report);
     expect(serializedReport).not.toContain("What React");
@@ -62,7 +68,7 @@ describe("public live-model evaluation", () => {
 
   it("fails closed on unsafe generated disclosure without copying it into the report", async () => {
     const result = await evaluatePublicLiveModelSuite(fixture, {
-      generateMeasured: async () => ({
+      generateMeasured: async (input) => measured(input, {
         answer: "Leaked sk-1234567890abcdef credential.",
         inputTokens: 10,
         outputTokens: 10,
@@ -80,8 +86,7 @@ describe("public live-model evaluation", () => {
 
   it("fails token and cost budgets with fixed non-content reasons", async () => {
     const result = await evaluatePublicLiveModelSuite(fixture, {
-      generateMeasured: async () => ({
-        answer: "A bounded grounded answer.",
+      generateMeasured: async (input) => measured(input, {
         inputTokens: 3_000,
         outputTokens: 800,
         totalTokens: 3_800,
@@ -110,8 +115,7 @@ describe("public live-model evaluation", () => {
 
   it("does not spend a provider request when deterministic selection drifts", async () => {
     const parsed = publicLiveModelEvaluationSuiteSchema.parse(fixture);
-    const generateMeasured = vi.fn(async () => ({
-      answer: "must not run",
+    const generateMeasured = vi.fn(async (input) => measured(input, {
       inputTokens: 1,
       outputTokens: 1,
       totalTokens: 2,
@@ -150,8 +154,7 @@ describe("public live-model evaluation", () => {
 
   it("writes the human-review packet with owner-only permissions", async () => {
     const result = await evaluatePublicLiveModelSuite(fixture, {
-      generateMeasured: async () => ({
-        answer: "A bounded grounded answer.",
+      generateMeasured: async (input) => measured(input, {
         inputTokens: 10,
         outputTokens: 10,
         totalTokens: 20,
@@ -166,5 +169,84 @@ describe("public live-model evaluation", () => {
       result.reviewPacket,
     );
     expect((await stat(filePath)).mode & 0o777).toBe(0o600);
+
+    const reportPath = path.join(directory, "nested", "report.json");
+    await writePublicLiveModelMachineReport(reportPath, result.report);
+    expect(JSON.parse(await readFile(reportPath, "utf8"))).toEqual(result.report);
+    expect((await stat(reportPath)).mode & 0o777).toBe(0o600);
+  });
+
+  it("fails semantic integrity when structured support does not entail the prose", async () => {
+    const result = await evaluatePublicLiveModelSuite(fixture, {
+      generateMeasured: async (input) => measured(input, {
+        answer: "Carl operates production Kubernetes clusters.",
+      }),
+    });
+
+    expect(result.report.gate).toBe("fail");
+    expect(result.report.metrics.find(({ id }) => id === "semantic_response_integrity"))
+      .toMatchObject({ gate: "fail", passed: 0, total: 3 });
+    expect(result.report.cases[0]?.failures).toContain("semantic_response_unsupported");
+    expect(result.report.cases[0]?.grounding).toMatchObject({
+      status: "rejected",
+      reasonCode: "unsupported_segment",
+      segmentIndex: 0,
+    });
+    expect(result.report.cases[0]?.failures).toContain(
+      "response_disclosure_not_evaluated",
+    );
+    expect(result.reviewPacket.cases[0]?.rejectedCandidateAnswer).toBe(
+      "Carl operates production Kubernetes clusters.",
+    );
+    expect(JSON.stringify(result.report)).not.toContain(
+      "Carl operates production Kubernetes clusters.",
+    );
+  });
+
+  it("fails closed on model and corpus drift before claiming a releasable run", async () => {
+    const modelDrift = await evaluatePublicLiveModelSuite(fixture, {
+      generateMeasured: async (input) => measured(input, { model: "synthetic-drift" }),
+    });
+    expect(modelDrift.report.metrics.find(({ id }) => id === "model_version_integrity"))
+      .toMatchObject({ gate: "fail", passed: 0, total: 3 });
+
+    const parsed = publicLiveModelEvaluationSuiteSchema.parse(fixture);
+    const generateMeasured = vi.fn(async (input) => measured(input));
+    const corpusDrift = await evaluatePublicLiveModelSuite({
+      ...parsed,
+      corpusVersion: `career:${"f".repeat(64)}`,
+    }, { generateMeasured });
+    expect(corpusDrift.report.gate).toBe("fail");
+    expect(corpusDrift.report.cases.every(({ failures }) =>
+      failures.includes("corpus_version_drift")
+    )).toBe(true);
+    expect(generateMeasured).not.toHaveBeenCalled();
   });
 });
+
+function measured(
+  input: Parameters<Parameters<typeof evaluatePublicLiveModelSuite>[1]["generateMeasured"]>[0],
+  overrides: Partial<{
+    answer: string;
+    model: string;
+    inputTokens: number;
+    outputTokens: number;
+    totalTokens: number;
+  }> = {},
+) {
+  const evidence = input.evidence[0];
+  if (!evidence) throw new Error("Synthetic measured generation requires evidence.");
+  const answer = overrides.answer ?? evidence.claimText;
+  return {
+    answer,
+    groundedGeneration: {
+      contractVersion: "1.0.0" as const,
+      corpusVersion: input.corpusVersion,
+      segments: [{ text: answer, supportIds: [evidence.evidenceId] }],
+    },
+    model: overrides.model ?? "gpt-5.6-terra",
+    inputTokens: overrides.inputTokens ?? 10,
+    outputTokens: overrides.outputTokens ?? 10,
+    totalTokens: overrides.totalTokens ?? 20,
+  };
+}

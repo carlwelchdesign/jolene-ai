@@ -155,10 +155,11 @@ function submission() {
 
 function packet(hash = suiteHash) {
   return {
-    suiteVersion: "1.0.0" as const,
+    suiteVersion: "1.1.0" as const,
     suiteId: "public-live-model:review-control",
     suiteHash: hash,
     model: "gpt-test",
+    corpusVersion: `career:${"a".repeat(64)}`,
     generatedAt: "2026-08-26T19:00:00.000Z",
     humanReview: "required" as const,
     cases: [

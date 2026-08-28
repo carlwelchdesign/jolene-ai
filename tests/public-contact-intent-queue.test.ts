@@ -13,6 +13,8 @@ import {
   PublicContactQueueUnavailableError,
   publicContactIntentQueueFileSchema,
 } from "../src/public/public-contact-intent-queue.js";
+import { parseUntrustedContentEnvelope } from
+  "../src/domain/untrusted-content.js";
 
 const temporaryDirectories: string[] = [];
 
@@ -42,13 +44,22 @@ describe("FilePublicContactIntentQueue", () => {
     expect(JSON.stringify(response)).not.toContain("Interview request");
 
     const stored = await readQueue(filePath);
-    expect(stored.intents).toEqual([{
+    expect(stored.intents).toMatchObject([{
       ...validRequest(),
       intentId: response.intentId,
       status: "pending_review",
       submittedAt: response.submittedAt,
       expiresAt: "2026-09-25T17:00:00.000Z",
     }]);
+    const envelope = parseUntrustedContentEnvelope(
+      stored.intents[0]?.untrustedContent,
+    );
+    expect(envelope).toMatchObject({
+      authority: "none",
+      classification: "sensitive",
+      disclosureCeiling: "no_disclosure",
+      origin: { kind: "contact_submission" },
+    });
     expect((await stat(path.dirname(filePath))).mode & 0o777).toBe(0o700);
     expect((await stat(filePath)).mode & 0o777).toBe(0o600);
   });

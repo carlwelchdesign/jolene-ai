@@ -10,6 +10,7 @@ COPY package.json package-lock.json ./
 RUN npm ci
 
 COPY tsconfig.json tsconfig.build.json ./
+COPY scripts/verify-node-runtime.mjs ./scripts/verify-node-runtime.mjs
 COPY src ./src
 RUN npm run build && npm prune --omit=dev
 
@@ -21,13 +22,14 @@ WORKDIR /app
 RUN apt-get update \
   && apt-get install -y --no-install-recommends git \
   && rm -rf /var/lib/apt/lists/* \
-  && mkdir -p /app/docs /app/public /app/research /data /public-data /public-state \
+  && mkdir -p /app/docs /app/evaluations /app/public /app/research /data /public-data /public-state \
   && chown -R node:node /app /data /public-data /public-state
 
 COPY --from=build --chown=node:node /app/node_modules ./node_modules
 COPY --from=build --chown=node:node /app/dist ./dist
 COPY --chown=node:node package.json package-lock.json ./
 COPY --chown=node:node docs/prompt.md ./docs/prompt.md
+COPY --chown=node:node evaluations/conversational-quality-v1.json ./evaluations/conversational-quality-v1.json
 COPY --chown=node:node public ./public
 COPY --chown=node:node research ./research
 

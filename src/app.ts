@@ -7,9 +7,13 @@ import { CapabilityInvocationAuditService } from
   "./application/capability-invocation-audit-service.js";
 import { CapabilityInvocationAuditor } from
   "./application/capability-invocation-auditor.js";
+import { PrivateRagSecurityCoordinator } from
+  "./application/private-rag-security-coordinator.js";
 import { CareerEvidenceService } from "./application/career-evidence-service.js";
 import { ClientAiTaskPacketService } from "./application/client-ai-task-packet-service.js";
 import { ContactIntentReviewService } from "./application/contact-intent-review-service.js";
+import { ConversationalQualityReviewService } from
+  "./application/conversational-quality-review-service.js";
 import { PublicLiveModelReviewService } from "./application/public-live-model-review-service.js";
 import { PersonalityResearchReviewService } from
   "./application/personality-research-review-service.js";
@@ -45,6 +49,8 @@ import { SqliteConversationStore } from "./persistence/sqlite-conversation-store
 import { SqliteActionApprovalStore } from "./persistence/sqlite-action-approval-store.js";
 import { SqliteCapabilityInvocationStore } from
   "./persistence/sqlite-capability-invocation-store.js";
+import { SqlitePrivateRagSecurityStore } from
+  "./persistence/sqlite-private-rag-security-store.js";
 import { SqliteCareerEvidenceStore } from "./persistence/sqlite-career-evidence-store.js";
 import { SqliteCareerRetrievalAuditStore } from "./persistence/sqlite-career-retrieval-audit-store.js";
 import { SqliteCareerRetrievalIndex } from "./persistence/sqlite-career-retrieval-index.js";
@@ -55,6 +61,8 @@ import { SqlitePrivateBriefingStore } from "./persistence/sqlite-private-briefin
 import { SqliteWorkContextStore } from "./persistence/sqlite-work-context-store.js";
 import { SqliteWatchedProjectMonitorStore } from "./persistence/sqlite-watched-project-monitor-store.js";
 import { FilePublicLiveModelReviewStore } from "./persistence/file-public-live-model-review-store.js";
+import { FileConversationalQualityReviewStore } from
+  "./persistence/file-conversational-quality-review-store.js";
 import { FilePersonalityResearchReviewStore } from
   "./persistence/file-personality-research-review-store.js";
 import { FilePersonalityTuningStore } from
@@ -75,6 +83,7 @@ export interface JoleneApplication {
   readonly clientAiPackets: ClientAiTaskPacketService;
   readonly contactIntents: ContactIntentReviewService;
   readonly publicLiveModelReview: PublicLiveModelReviewService;
+  readonly conversationalQualityReview: ConversationalQualityReviewService;
   readonly personalityResearchReview: PersonalityResearchReviewService;
   readonly personalityTuningReview: PersonalityTuningReviewService;
   readonly workflows: PersonalWorkflowService;
@@ -99,6 +108,9 @@ export async function createApplication(
   const knowledgeAuditStore = new SqliteKnowledgeAccessStore(config.databasePath);
   const actionApprovalStore = new SqliteActionApprovalStore(config.databasePath);
   const capabilityInvocationStore = new SqliteCapabilityInvocationStore(
+    config.databasePath,
+  );
+  const privateRagSecurityStore = new SqlitePrivateRagSecurityStore(
     config.databasePath,
   );
   const careerEvidenceStore = new SqliteCareerEvidenceStore(config.databasePath);
@@ -134,6 +146,10 @@ export async function createApplication(
     path.resolve(process.cwd(), "docs/prompt.md"),
     "utf8",
   );
+  const conversationQualitySuite = JSON.parse(await fs.readFile(
+    path.resolve(process.cwd(), "evaluations/conversational-quality-v1.json"),
+    "utf8",
+  )) as unknown;
   const projectInspector = new LocalWatchedProjectInspector();
   const watchedProjects = new WatchedProjectService(config.watchedProjects, projectInspector);
   const projectMonitorStore = new SqliteWatchedProjectMonitorStore(config.databasePath);
@@ -186,6 +202,10 @@ export async function createApplication(
     workStatus,
     projectWatch: new OwnerWatchedProjectSource(watchedProjects, ownerScope),
     capabilityAudit: new CapabilityInvocationAuditor(capabilityInvocationStore),
+    privateRetrievalProviderEgress: config.privateRetrievalProviderEgress,
+    privateRagSecurity: new PrivateRagSecurityCoordinator(
+      privateRagSecurityStore,
+    ),
   });
   const service = new JoleneService({
     store,
@@ -194,6 +214,7 @@ export async function createApplication(
     workScopeResolver: new CanonicalPrivateWorkScopeResolver({
       ownerScope,
       slackOwnerUserId: config.slackOwnerUserId,
+      slackOwnerWorkspaceId: config.slackOwnerTeamId,
     }),
     maxHistoryTurns: config.maxHistoryTurns,
     maxMemoryItems: config.maxMemoryItems,
@@ -220,6 +241,14 @@ export async function createApplication(
         packetPath: config.publicLiveReviewPacketPath,
         decisionPath: config.publicLiveReviewDecisionPath,
       }),
+      ownerScope,
+    ),
+    conversationalQualityReview: new ConversationalQualityReviewService(
+      new FileConversationalQualityReviewStore(
+        config.conversationQualityPacketPath,
+        config.conversationQualityDecisionPath,
+      ),
+      conversationQualitySuite,
       ownerScope,
     ),
     personalityResearchReview: new PersonalityResearchReviewService(
@@ -250,6 +279,7 @@ export async function createApplication(
       knowledgeAuditStore.close();
       actionApprovalStore.close();
       capabilityInvocationStore.close();
+      privateRagSecurityStore.close();
       careerEvidenceStore.close();
       careerRetrievalIndex.close();
       careerRetrievalAuditStore.close();

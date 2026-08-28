@@ -35,7 +35,9 @@ describe("action approval interface", () => {
     expect(javascript).toContain("textContent");
     expect(javascript).toContain("/v1/action-proposals");
     expect(javascript).toContain('decision: "approved"');
-    expect(javascript).toContain('decision },');
+    expect(javascript).toContain("payloadFingerprint: proposal.payloadFingerprint");
+    expect(javascript).toContain('source: "authenticated_owner_review_ui"');
+    expect(javascript).toContain("taintIds: []");
     expect(javascript).not.toContain("claimApprovedAction");
     expect(javascript).not.toContain("execution-claim");
   });

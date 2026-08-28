@@ -5,11 +5,23 @@
   "type": "module",
   "description": "A private, policy-gated personal chief-of-staff agent for Carl.",
   "engines": {
-    "node": ">=22"
+    "node": ">=22 <23"
+  },
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": ">=22 <23",
+      "onFail": "error"
+    }
   },
   "scripts": {
+    "runtime:check": "node scripts/verify-node-runtime.mjs",
+    "prebuild": "npm run runtime:check",
     "build": "npm run clean && tsc -p tsconfig.build.json",
     "career:import-portfolio": "tsx scripts/import-portfolio-evidence.ts",
+    "career:import-portfolio:audit": "tsx scripts/import-portfolio-evidence.ts --audit",
+    "career:import-portfolio:review-packet": "tsx scripts/import-portfolio-evidence.ts --review-packet",
+    "career:import-portfolio:apply-approved": "tsx scripts/import-portfolio-evidence.ts --apply-approved-packet",
     "career:import-obsidian": "tsx scripts/import-obsidian-career.ts",
     "career:index": "tsx scripts/index-career-evidence.ts",
     "career:index:lexical": "tsx src/career-index.ts",
@@ -17,14 +29,21 @@
     "career:export-public": "docker compose --profile tools run --rm --build jolene-career-export",
     "career:export-public:host": "tsx scripts/export-public-career-evidence.ts",
     "check": "npm run typecheck && npm test",
+    "predev": "npm run runtime:check",
     "chat": "tsx src/cli.ts",
     "clean": "node --eval \"require('node:fs').rmSync('dist', { recursive: true, force: true })\"",
     "dev": "tsx watch src/server.ts",
+    "predev:public": "npm run runtime:check",
     "dev:public": "tsx watch src/public-server.ts",
+    "predev:monitor": "npm run runtime:check",
     "dev:monitor": "tsx watch src/project-monitor.ts",
     "eval:public": "tsx scripts/evaluate-public-delegate.ts",
     "eval:public:live": "tsx scripts/evaluate-public-live-model.ts",
+    "eval:public:live:refresh": "tsx scripts/refresh-public-live-model-fixture.ts",
+    "eval:public:live:preflight": "tsx scripts/preflight-public-live-model.ts",
     "eval:career:relationships": "tsx scripts/evaluate-career-relationships.ts",
+    "eval:conversation:validate": "tsx scripts/validate-conversational-quality-suite.ts",
+    "eval:conversation:capture": "tsx scripts/capture-conversational-quality.ts",
     "mcp:career:audit": "tsx scripts/inspect-private-career-mcp-audit.ts",
     "mcp:career:dev": "tsx src/private-career-mcp.ts",
     "research:personality:validate": "tsx scripts/validate-personality-research.ts",
@@ -39,6 +58,13 @@
     "research:personality:av-recovery:v1": "tsx scripts/validate-personality-av-recovery-outcome.ts",
     "research:personality:boundary-drafts:html": "tsx scripts/generate-personality-html-boundary-drafts.ts",
     "research:personality:pdf-cue-audit:v1": "tsx scripts/validate-personality-pdf-cue-audit.ts",
+    "security:prompt-injection:validate": "tsx scripts/validate-prompt-injection-threat-model.ts",
+    "security:prompt-injection:red-team:validate": "tsx scripts/validate-prompt-injection-red-team-contract.ts",
+    "security:operations:tabletop": "tsx scripts/run-security-tabletop.ts",
+    "security:release:check": "tsx scripts/check-security-release.ts",
+    "security:private-rag:validate": "tsx scripts/validate-private-rag-security.ts",
+    "security:tool-authorization:validate": "tsx scripts/validate-tool-call-authorization.ts",
+    "security:untrusted-content:validate": "tsx scripts/validate-untrusted-content-envelopes.ts",
     "secrets:migrate-compose": "tsx scripts/migrate-compose-secrets.ts",
     "slack": "tsx src/slack.ts",
     "start": "node dist/server.js",
@@ -50,8 +76,12 @@
     "start:monitor": "node dist/project-monitor.js",
     "start:mcp:career": "node dist/private-career-mcp.js",
     "start:slack": "node dist/slack.js",
+    "pretest": "npm run runtime:check",
     "test": "vitest run",
+    "pretest:security:red-team": "npm run runtime:check",
+    "test:security:red-team": "vitest run tests/prompt-injection-red-team-contract.test.ts tests/prompt-injection-cross-channel.test.ts tests/private-rag-adversarial-evaluation.test.ts tests/public-answer-grounding-adversarial.test.ts tests/public-live-model-evaluation.test.ts --pool=threads --maxWorkers=2 --fileParallelism=false",
     "test:watch": "vitest",
+    "pretypecheck": "npm run runtime:check",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {

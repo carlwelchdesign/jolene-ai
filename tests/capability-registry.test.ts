@@ -7,6 +7,7 @@ import {
   listCapabilities,
   requireModelCapability,
 } from "../src/domain/capability-registry.js";
+import { resolveChannelRetrievalPolicy } from "../src/domain/channel-retrieval-policy.js";
 
 describe("capability registry", () => {
   it("inventories every implemented private model tool and proposal boundary", () => {
@@ -61,6 +62,25 @@ describe("capability registry", () => {
       workStatus: true,
       projectWatch: true,
     })).toEqual([]);
+    expect(selectModelCapabilityIds("slack_dm", {
+      careerSearch: true,
+      workStatus: true,
+      projectWatch: true,
+    })).toEqual([]);
+    expect(selectModelCapabilityIds("slack_dm", {
+      careerSearch: true,
+      workStatus: true,
+      projectWatch: true,
+    }, resolveChannelRetrievalPolicy({
+      surface: "slack_dm",
+      slackDisclosureScope: "verified_owner_dm",
+    }))).toEqual([
+      "knowledge.search",
+      "career_evidence.search",
+      "work_status.review",
+      "watched_projects.list",
+      "watched_projects.review",
+    ]);
   });
 
   it("cannot expose proposal-only or private-read capabilities in shared context", () => {

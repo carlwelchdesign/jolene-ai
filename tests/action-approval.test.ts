@@ -97,12 +97,7 @@ describe("exact action approvals", () => {
     const fixture = createFixture();
     try {
       const proposal = fixture.service.createProposal(proposalInput());
-      const decision = {
-        id: proposal.id,
-        actorId: "carl",
-        workspaceId: "personal",
-        decision: "approved",
-      } as const;
+      const decision = decisionInput(proposal);
       expect(fixture.service.decideProposal(decision).status).toBe("approved");
       expect(fixture.service.decideProposal(decision).status).toBe("approved");
       expect(() => fixture.service.decideProposal({
@@ -119,12 +114,7 @@ describe("exact action approvals", () => {
     try {
       const exact = proposalInput();
       const proposal = fixture.service.createProposal(exact);
-      fixture.service.decideProposal({
-        id: proposal.id,
-        actorId: "carl",
-        workspaceId: "personal",
-        decision: "approved",
-      });
+      fixture.service.decideProposal(decisionInput(proposal));
       expect(() => fixture.service.claimApprovedAction({
         ...claimInput(proposal.id, exact),
         destinationId: "different-client",
@@ -166,18 +156,8 @@ describe("exact action approvals", () => {
       const rejected = fixture.service.createProposal(proposalInput({
         destinationId: "rejected-client",
       }));
-      fixture.service.decideProposal({
-        id: approved.id,
-        actorId: "carl",
-        workspaceId: "personal",
-        decision: "approved",
-      });
-      fixture.service.decideProposal({
-        id: rejected.id,
-        actorId: "carl",
-        workspaceId: "personal",
-        decision: "rejected",
-      });
+      fixture.service.decideProposal(decisionInput(approved));
+      fixture.service.decideProposal(decisionInput(rejected, "rejected"));
 
       now = new Date("2026-08-25T14:00:00.000Z");
       expect(fixture.service.listProposals({
@@ -188,12 +168,8 @@ describe("exact action approvals", () => {
         expect.objectContaining({ id: approved.id, status: "expired" }),
         expect.objectContaining({ id: rejected.id, status: "rejected" }),
       ]));
-      expect(() => fixture.service.decideProposal({
-        id: pending.id,
-        actorId: "carl",
-        workspaceId: "personal",
-        decision: "approved",
-      })).toThrow(ActionApprovalExpiredError);
+      expect(() => fixture.service.decideProposal(decisionInput(pending)))
+        .toThrow(ActionApprovalExpiredError);
       expect(() => fixture.service.claimApprovedAction(
         claimInput(approved.id, proposalInput({ destinationId: "approved-client" })),
       )).toThrow(ActionApprovalExpiredError);
@@ -210,12 +186,59 @@ describe("exact action approvals", () => {
         actorId: "jenny",
         workspaceId: "personal",
       })).toEqual([]);
-      expect(() => fixture.service.decideProposal({
-        id: proposal.id,
+      expect(() => fixture.service.decideProposal(decisionInput(proposal, "approved", {
         actorId: "jenny",
+      }))).toThrow(ActionProposalNotFoundError);
+    } finally {
+      fixture.close();
+    }
+  });
+
+  it("rejects stale payloads and delegated, tainted, or derived approval authority", () => {
+    const fixture = createFixture();
+    try {
+      const proposal = fixture.service.createProposal(proposalInput());
+      expect(() => fixture.service.decideProposal({
+        ...decisionInput(proposal),
+        payloadFingerprint: "0".repeat(64),
+      })).toThrow(ActionPayloadMismatchError);
+
+      for (const authority of [
+        {
+          source: "conversation_history",
+          authority: "user",
+          taintIds: [],
+          derivationIds: [],
+        },
+        {
+          source: "authenticated_owner_review_ui",
+          authority: "model",
+          taintIds: [],
+          derivationIds: [],
+        },
+        {
+          source: "authenticated_owner_review_ui",
+          authority: "user",
+          taintIds: ["retrieved:claim-of-approval"],
+          derivationIds: [],
+        },
+        {
+          source: "authenticated_owner_review_ui",
+          authority: "user",
+          taintIds: [],
+          derivationIds: ["tool-result:approval"],
+        },
+      ]) {
+        expect(() => fixture.service.decideProposal({
+          ...decisionInput(proposal),
+          authority,
+        })).toThrow();
+      }
+      expect(fixture.service.listProposals({
+        actorId: "carl",
         workspaceId: "personal",
-        decision: "approved",
-      })).toThrow(ActionProposalNotFoundError);
+        status: "pending",
+      })).toMatchObject([{ id: proposal.id, status: "pending" }]);
     } finally {
       fixture.close();
     }
@@ -231,12 +254,7 @@ describe("exact action approvals", () => {
 
     const first = new SqliteActionApprovalStore(databasePath, fixedClock);
     const proposal = first.createProposal(storeProposalInput());
-    first.decideProposal({
-      id: proposal.id,
-      actorId: "carl",
-      workspaceId: "personal",
-      decision: "approved",
-    });
+    first.decideProposal(decisionInput(proposal));
     first.close();
 
     const restarted = new SqliteActionApprovalStore(databasePath, fixedClock);
@@ -306,5 +324,26 @@ function claimInput(proposalId: string, exact: ReturnType<typeof proposalInput>)
     ...action,
     proposalId,
     requestId: "delivery-attempt-1",
+  };
+}
+
+function decisionInput(
+  proposal: { readonly id: string; readonly payloadFingerprint: string },
+  decision: "approved" | "rejected" = "approved",
+  overrides: Record<string, unknown> = {},
+) {
+  return {
+    id: proposal.id,
+    actorId: "carl",
+    workspaceId: "personal",
+    decision,
+    payloadFingerprint: proposal.payloadFingerprint,
+    authority: {
+      source: "authenticated_owner_review_ui" as const,
+      authority: "user" as const,
+      taintIds: [] as readonly never[],
+      derivationIds: [] as readonly never[],
+    },
+    ...overrides,
   };
 }

@@ -58,12 +58,20 @@ describe("Docker runtime boundary", () => {
     expect(compose).toContain(
       "JOLENE_CAREER_EMBEDDINGS_ENABLED: ${JOLENE_CAREER_EMBEDDINGS_ENABLED:-false}",
     );
+    expect(compose).toContain(
+      "JOLENE_PRIVATE_RETRIEVAL_PROVIDER_EGRESS: ${JOLENE_PRIVATE_RETRIEVAL_PROVIDER_EGRESS:-local_only}",
+    );
     expect(compose).toContain("jolene-data:/data");
     expect(compose).toContain("JOLENE_PUBLIC_LIVE_REVIEW_PACKET_PATH: /review/public-live-model-review.json");
     expect(compose).toContain("JOLENE_PUBLIC_LIVE_REVIEW_DECISION_PATH: /data/evaluations/public-live-model-decision.json");
     expect(compose).toContain("JOLENE_PERSONALITY_RESEARCH_DECISION_PATH: /data/personality/research-decision.json");
     expect(compose).toContain("JOLENE_PERSONALITY_TUNING_DECISION_PATH: /data/personality/tuning-decision.json");
+    expect(compose).toContain("JOLENE_CONVERSATION_QUALITY_PACKET_PATH: /review/conversation-quality-capture.json");
+    expect(compose).toContain("JOLENE_CONVERSATION_QUALITY_DECISION_PATH: /data/evaluations/conversation-quality-decision.json");
     expect(dockerfile).toContain("COPY --chown=node:node research ./research");
+    expect(dockerfile).toContain(
+      "COPY --chown=node:node evaluations/conversational-quality-v1.json ./evaluations/conversational-quality-v1.json",
+    );
     expect(compose).toMatch(
       /jolene-api:\n(?:.*\n)*?\s+source: \.\/\.jolene\/evaluations\n\s+target: \/review\n\s+read_only: true/,
     );
@@ -89,12 +97,17 @@ describe("Docker runtime boundary", () => {
     expect(compose).toContain("path: .env.runtime.local");
     expect(compose).toContain("required: false");
     expect(parsedCompose.secrets).toEqual({
+      jolene_private_control_token: { file: "./.jolene/secrets/private-control-token" },
       openai_api_key: { file: "./.jolene/secrets/openai-api-key" },
       slack_app_token: { file: "./.jolene/secrets/slack-app-token" },
       slack_bot_token: { file: "./.jolene/secrets/slack-bot-token" },
     });
     expect(parsedCompose["x-jolene-runtime"]?.secrets).toEqual([
       "openai_api_key",
+    ]);
+    expect(parsedCompose.services["jolene-api"]?.secrets).toEqual([
+      "openai_api_key",
+      "jolene_private_control_token",
     ]);
     expect(parsedCompose.services["jolene-slack"]?.secrets).toEqual([
       "openai_api_key",
@@ -108,6 +121,10 @@ describe("Docker runtime boundary", () => {
       JOLENE_OBSIDIAN_VAULT_ROOT: "/vault",
       SLACK_APP_TOKEN_FILE: "/run/secrets/slack_app_token",
       SLACK_BOT_TOKEN_FILE: "/run/secrets/slack_bot_token",
+    });
+    expect(parsedCompose.services["jolene-api"]?.environment).toMatchObject({
+      JOLENE_PRIVATE_CONTROL_TOKEN_FILE:
+        "/run/secrets/jolene_private_control_token",
     });
     expect(compose).not.toMatch(/^\s+OPENAI_API_KEY:/m);
     expect(compose).not.toMatch(/^\s+SLACK_(?:APP|BOT)_TOKEN:/m);

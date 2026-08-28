@@ -140,8 +140,35 @@ JOLENE_CAREER_WORKSPACE_ID=professional
 Then run:
 
 ```bash
-npm run career:import-portfolio
+npm run career:import-portfolio:audit
+npm run career:import-portfolio:review-packet
+npm run career:import-portfolio:apply-approved -- --packet-hash sha256:<approved-hash> --reviewer-id <owner-id>
 ```
+
+Run the audit before every canonical import. It creates a SQLite-native temporary
+backup, imports into that disposable clone, reports only aggregate approval and
+validation counts, and deletes the clone. It never mutates the configured source
+database or emits claim, source, or portfolio prose. A later capture timestamp by
+itself does not invalidate an unchanged approved source, and an unchanged reviewed
+claim retains its explicit `public_approved` or `internal_approved` decision.
+Actual source, proposition, contribution, maturity, citation, or metadata changes
+still fail closed into review-required state.
+
+The separate review-packet command writes the exact changed public projection to
+the ignored owner-only path configured by
+`JOLENE_PUBLIC_CORPUS_REVIEW_PACKET_PATH`. The mode-0600, schema-validated packet
+contains only stable source IDs, public citation destinations, source hashes, and
+before/after public claim text, contribution, maturity, and visibility. It omits
+database and checkout paths, private provenance references, Obsidian material,
+credentials, and private source bodies. Its SHA-256 excludes the generation time
+and clone-local candidate UUIDs, so identical inputs produce the same review
+binding. Generating the packet does not record an approval or authorize import.
+
+The apply command requires the exact owner-selected packet hash and reviewer ID.
+It recomputes the packet hash, regenerates the review packet against the current
+database and portfolio snapshot, verifies every imported source and claim
+projection, and records the source and public-claim approvals in one transaction.
+Any packet, database, or portfolio drift fails closed before approval.
 
 Run this development migration from the source checkout, not from the pruned
 runtime container.
@@ -154,6 +181,21 @@ prior claim as `superseded`; unchanged reruns do not duplicate records.
 The existing recommendation collection remains candidate evidence. Import does
 not resolve its official-source reconciliation, publication rights, or Carl's
 record-level approval.
+
+The 2026-08-27 `JOL-PUBLIC-010` dry run used the current portfolio `origin/main`
+snapshot and the latest external canonical backup. The source database remained
+byte-for-byte unchanged. Of 41 previously eligible public claims, 14 would remain
+immediately eligible; 12 changed sources and 6 changed claims require fresh human
+review. The report exposed only those counts and fixed validation codes. No
+canonical import, approval decision, artifact replacement, endpoint change, or
+deployment occurred.
+
+The corresponding owner-only packet is schema `1.0.0`, contains 12 changed
+source entries and 27 affected public claim entries (6 materially changed), and
+is bound by packet hash
+`sha256:eb385ddf47365e4cc423591143997cc44c7a46a07589cf6f285150ca4c23aedb`.
+It passed mode, schema, forbidden-marker, deterministic-hash, and source-database
+immutability checks. It is a review input, not a completed review decision.
 
 ## Current local migration evidence
 
@@ -234,6 +276,7 @@ embedding-provider request even when the private runtime has an OpenAI API key.
 To opt in deliberately, configure:
 
 ```dotenv
+JOLENE_PRIVATE_RETRIEVAL_PROVIDER_EGRESS=approved_openai
 JOLENE_CAREER_EMBEDDINGS_ENABLED=true
 OPENAI_EMBEDDING_MODEL=text-embedding-3-small
 ```

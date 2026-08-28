@@ -12,6 +12,7 @@ import {
   type PortfolioJobFitRequest,
   type PortfolioJobFitResponse,
 } from "../domain/public-portfolio-contract.js";
+import { createPublicJobDescriptionEnvelope } from "./public-model-data.js";
 
 export interface PublicJobFitComparer {
   compare(
@@ -25,7 +26,14 @@ export class DeterministicPublicJobFitService implements PublicJobFitComparer {
     artifact: PublicCareerEvidenceArtifact,
     request: PortfolioJobFitRequest,
   ): PortfolioJobFitResponse {
-    const requirements = segmentRequirements(request.jobDescription);
+    const jobDescription = createPublicJobDescriptionEnvelope(
+      request.jobDescription,
+      new Date().toISOString(),
+    );
+    if (jobDescription.payload.kind !== "text") {
+      throw new Error("Job descriptions require a text envelope.");
+    }
+    const requirements = segmentRequirements(jobDescription.payload.text);
     const conflictedIds = new Set(
       artifact.conflicts.flatMap((conflict) => conflict.evidenceIds),
     );
@@ -33,7 +41,7 @@ export class DeterministicPublicJobFitService implements PublicJobFitComparer {
       (record) => !conflictedIds.has(record.evidenceId),
     );
     const treatAsUntrustedInstruction = looksLikeInstructionInjection(
-      request.jobDescription,
+      jobDescription.payload.text,
     );
     const results = requirements.map((requirement) =>
       assessRequirement(

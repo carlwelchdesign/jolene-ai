@@ -28,6 +28,9 @@ export interface MemoryReviewAssets {
   readonly publicEvaluationHtml: MemoryReviewAsset;
   readonly publicEvaluationCss: MemoryReviewAsset;
   readonly publicEvaluationJavascript: MemoryReviewAsset;
+  readonly conversationEvaluationHtml: MemoryReviewAsset;
+  readonly conversationEvaluationCss: MemoryReviewAsset;
+  readonly conversationEvaluationJavascript: MemoryReviewAsset;
   readonly clientAiHtml: MemoryReviewAsset;
   readonly clientAiCss: MemoryReviewAsset;
   readonly clientAiJavascript: MemoryReviewAsset;
@@ -154,6 +157,21 @@ export function loadMemoryReviewAssets(
     publicEvaluationJavascript: loadAsset(
       publicDirectory,
       "public-evaluation-review.js",
+      "text/javascript; charset=utf-8",
+    ),
+    conversationEvaluationHtml: loadAsset(
+      publicDirectory,
+      "conversation-evaluation-review.html",
+      "text/html; charset=utf-8",
+    ),
+    conversationEvaluationCss: loadAsset(
+      publicDirectory,
+      "conversation-evaluation-review.css",
+      "text/css; charset=utf-8",
+    ),
+    conversationEvaluationJavascript: loadAsset(
+      publicDirectory,
+      "conversation-evaluation-review.js",
       "text/javascript; charset=utf-8",
     ),
     clientAiHtml: loadAsset(

@@ -1,12 +1,16 @@
+import { randomBytes } from "node:crypto";
 import { chmod, mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 import dotenv from "dotenv";
 
+import { privateControlTokenSchema } from "../http/private-ingress-auth.js";
+
 const SECRET_FILES = [
   ["OPENAI_API_KEY", "openai-api-key"],
   ["SLACK_APP_TOKEN", "slack-app-token"],
   ["SLACK_BOT_TOKEN", "slack-bot-token"],
+  ["JOLENE_PRIVATE_CONTROL_TOKEN", "private-control-token"],
 ] as const;
 const FILTERED_KEYS = new Set([
   ...SECRET_FILES.map(([key]) => key),
@@ -33,13 +37,32 @@ export async function migrateComposeSecrets(
   const secretsDirectory = path.resolve(input.secretsDirectory);
   const source = await readFile(sourcePath, "utf8");
   const parsed = dotenv.parse(source);
-  const secretValues = SECRET_FILES.map(([name, filename]) => {
+  const secretValues = await Promise.all(SECRET_FILES.map(async ([name, filename]) => {
     const value = parsed[name]?.trim();
+    if (name === "JOLENE_PRIVATE_CONTROL_TOKEN" && !value) {
+      const targetPath = path.join(secretsDirectory, filename);
+      let existing: string | undefined;
+      try {
+        existing = (await readFile(targetPath, "utf8")).trim();
+      } catch (error) {
+        if (!isMissingFile(error)) throw error;
+      }
+      return {
+        name,
+        filename,
+        value: privateControlTokenSchema.parse(
+          existing || randomBytes(32).toString("base64url"),
+        ),
+      };
+    }
     if (!value || /[\r\n]/.test(value)) {
       throw new Error(`${name} must contain one nonempty line before migration.`);
     }
+    if (name === "JOLENE_PRIVATE_CONTROL_TOKEN") {
+      privateControlTokenSchema.parse(value);
+    }
     return { name, filename, value };
-  });
+  }));
   const runtimeEnvironment = source.split(/(?<=\n)/).filter((line) => {
     const match = line.match(/^\s*(?:export\s+)?([A-Z][A-Z0-9_]*)\s*=/);
     return !match?.[1] || !FILTERED_KEYS.has(match[1]);

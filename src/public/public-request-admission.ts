@@ -1,7 +1,7 @@
 export type PublicRequestAdmission =
   | {
     readonly accepted: true;
-    readonly release: () => void;
+    readonly release: () => void | Promise<void>;
   }
   | {
     readonly accepted: false;
@@ -11,7 +11,7 @@ export type PublicRequestAdmission =
   };
 
 export interface PublicRequestAdmissionController {
-  acquire(clientKey: string): PublicRequestAdmission;
+  acquire(clientKey: string): PublicRequestAdmission | Promise<PublicRequestAdmission>;
 }
 
 export interface FixedWindowPublicRequestAdmissionOptions {

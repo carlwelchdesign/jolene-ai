@@ -11,6 +11,10 @@ import {
   type PublicEvidenceRetriever,
   selectDeterministicPublicEvidence,
 } from "./public-answer-service.js";
+import {
+  serializePublicEmbeddingEvidence,
+  serializePublicEmbeddingQuestion,
+} from "./public-model-data.js";
 
 const RRF_K = 60;
 
@@ -61,7 +65,10 @@ export class HybridPublicEvidenceRetriever implements PublicEvidenceRetriever {
 
     const [corpus, queryEmbeddings] = await Promise.all([
       this.#corpusEmbeddings(artifact),
-      safeEmbed(this.embeddings, [request.question]),
+      safeEmbed(this.embeddings, [serializePublicEmbeddingQuestion(
+        request.question,
+        new Date().toISOString(),
+      )]),
     ]);
     const queryVector = queryEmbeddings?.[0]?.vector;
     if (!corpus || !queryVector) return deterministic;
@@ -130,7 +137,7 @@ export class HybridPublicEvidenceRetriever implements PublicEvidenceRetriever {
   ): Promise<CachedPublicCorpusEmbeddings | null> {
     const embeddings = await safeEmbed(
       this.embeddings,
-      artifact.evidence.map(publicEmbeddingText),
+      artifact.evidence.map(serializePublicEmbeddingEvidence),
     );
     if (!embeddings || embeddings.length !== artifact.evidence.length) {
       return null;
@@ -141,16 +148,6 @@ export class HybridPublicEvidenceRetriever implements PublicEvidenceRetriever {
       vectors: embeddings.map(({ vector }) => vector),
     };
   }
-}
-
-function publicEmbeddingText(record: PublicCareerEvidenceRecord): string {
-  return [
-    record.citation.title,
-    record.claim.text,
-    record.claim.limitations.join(" "),
-    record.citation.sourceType,
-    record.citation.maturity,
-  ].filter(Boolean).join("\n");
 }
 
 async function safeEmbed(

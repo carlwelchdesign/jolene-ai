@@ -618,6 +618,19 @@ Private personal-knowledge and recipe checkpoint:
 | Privacy boundary | The portfolio delegate remains physically isolated from the vault; shared Slack exposes no private knowledge tool; allowlist changes remain local and untracked |
 | Remaining boundary | Hybrid semantic retrieval, cross-note synthesis, freshness review, and channel-specific disclosure approvals remain tracked in `JOL-KNOW-002` |
 
+Channel-aware retrieval-policy checkpoint:
+
+| Field | Value |
+|---|---|
+| Ticket | `JOL-KNOW-002` — [Asana](https://app.asana.com/1/9789386902387/project/1216473233375594/task/1217931071239192) |
+| Branch | `codex/jol-know-002-channel-policy` |
+| Policy | Versioned deterministic matrix resolved before conversation history, durable memory, Obsidian, career evidence, or private work tools are exposed |
+| Private/local | Same-thread history, approved durable context, allowlisted Obsidian, and reviewed internal/public career evidence; sensitive memory remains explicit-request only |
+| Slack | Verified owner DM may use the canonical private scope; unverified DMs and private/shared channels receive no private retrieval capability |
+| Portfolio | Public export accepts only `public_approved` career evidence and keeps note/claim/public-evidence citation contracts explicit |
+| Injection boundary | User messages, retrieved notes, memories, recommendations, and conversation quotations cannot widen policy because content is not a policy input and remains labeled untrusted evidence |
+| Deployment boundary | Local code, tests, and documentation only for this checkpoint; pushing or opening a PR is withheld because GitHub may trigger a Vercel build. No Vercel build, environment change, promotion, or deployment without Carl's later approval |
+
 Exact-action-approval checkpoint:
 
 | Field | Value |
@@ -1152,10 +1165,10 @@ Live-model measurement-harness checkpoint:
 | Implementation commit | `734d7fb` (`JOL-CAREER-006G add live model evaluation harness`) |
 | Pull request | [jolene-ai #30](https://github.com/carlwelchdesign/jolene-ai/pull/30), stacked on the frozen-v1 contract branch |
 | Opt-in boundary | The live command requires `--live` and a manually created `.env.public.local`; ordinary tests and offline evaluation cannot call the provider, and the private environment is never loaded or copied |
-| Measurement boundary | Versioned public-only cases precommit exact evidence selection, model and pricing review, 100% blocker thresholds, latency, input/output token, per-request cost, and total cost ceilings |
-| Suite evidence | Four cases, ten covered metrics, and hash `8215efe8e294018fbfc008d0fac67dfe54d9cec387dfc41a9bb83e370b83fd0b`; the passing implementation check uses an injected fake and is not live-model evidence |
+| Measurement boundary | Versioned public-only cases precommit exact evidence selection, model, corpus and pricing review, 100% blocker thresholds, semantic response support, latency, input/output token, per-request cost, and total cost ceilings |
+| Suite evidence | Four cases, thirteen covered metrics, and hash `a71ae1e505e1305c38c1e5bef0aec37dfdbcad44dfa612b29e0f4b0676d47f2b`; the passing implementation check uses an injected fake and is not live-model evidence |
 | Report boundary | Machine output contains stable IDs, fixed reasons, gates, and aggregate measurements only; representative questions, exact public grounding, and prose are isolated in an ignored owner-permission review packet |
-| Safety evidence | Evidence mismatch bypasses the provider; unsafe or invalid prose falls back; no public bind, evidence approval, portfolio enablement, deployment, or launch authorization |
+| Safety evidence | Evidence or corpus mismatch bypasses the provider; model drift, unsupported semantics, unsafe disclosure, or invalid prose fail closed; no public bind, evidence approval, portfolio enablement, deployment, or launch authorization |
 | Verification | Node 24 typecheck, 46 test files / 302 tests, unchanged 41/41 offline suite, production build, Compose validation, zero production dependency vulnerabilities, opt-in/config refusal checks, and a 4/4 fake-provider preflight passed |
 | Remaining boundary | A separately authorized live run, arbitrary-prose human review, portfolio integration/accessibility, production operations, deployment, and launch approval remain open |
 
@@ -1309,3 +1322,30 @@ Live private lexical-index checkpoint:
 | Live state | Private API and Slack run image `659cfdf96ccddb5da8dff2a9a27d02a9aa5c1d321fbaaa02ee249ef7249390c7` with `JOLENE_CAREER_EMBEDDINGS_ENABLED=false`; the canonical index contains 152 lexical-only chunks and zero vectors |
 | Runtime verification | A network-isolated live-volume query returned `lexical_fallback`, five citation-complete results, and zero vector scores; API health passed, Slack reconnected in Socket Mode, and the isolated public delegate remained healthy on its unchanged 41-claim corpus |
 | Remaining boundary | No provider request, embedding opt-in, public artifact change, public deployment, hosting change, external message, or launch action occurred |
+
+Prompt-injection threat-model checkpoint:
+
+| Field | Evidence |
+|---|---|
+| Asana | `JOL-SEC-003` (`1217931645187988`) |
+| Canonical artifacts | [`JOLENE_PROMPT_INJECTION_THREAT_MODEL.md`](JOLENE_PROMPT_INJECTION_THREAT_MODEL.md) and machine-validated [`prompt-injection-threat-model.v1.json`](security/prompt-injection-threat-model.v1.json) |
+| Inventory | 7 actors; 9 data classes; 18 trust boundaries; 35 current/planned controls; 20 threats across direct, indirect, persistent, tool, exfiltration, identity, poisoning, provider, retention, audit, encoding, and resource-abuse families; 9 scored risks; 9 blocking gates |
+| Highest-priority finding | The loopback private HTTP control plane does not authenticate its caller and accepts caller-supplied actor/workspace/channel scope; loopback and same-origin checks are containment, not identity proof |
+| Control boundary | The model distinguishes deterministic/isolation/process controls from prompt-only guidance and records every current limitation; reviewed or approved content always remains non-authoritative data |
+| Delivery sequence | `JOL-SEC-004A` authenticated private ingress → `JOL-SEC-004` typed untrusted envelopes → `JOL-SEC-005` intent-bound tools → `JOL-SEC-007` private RAG/egress/quarantine → `JOL-SEC-006` public semantic grounding → `JOL-SEC-008` adversarial gates → `JOL-SEC-009` telemetry/recovery |
+| Release boundary | This checkpoint is an implementation-ready security plan, not proof that injection is impossible. It adds no tool, provider call, runtime mutation, push, deployment, promotion, or launch authorization. |
+
+Private-ingress authentication checkpoint:
+
+| Field | Evidence |
+|---|---|
+| Asana | Parent `JOL-SEC-004A` with four implementation subtasks; one parent plus its current subtasks may be In Progress, and each completed subtask moves immediately to Complete |
+| Branch | `codex/jol-sec-004a-private-ingress-auth` |
+| Private HTTP identity | Dedicated at-least-43-character secret; Bearer API access and browser-native Basic access; immutable server-derived Carl actor/workspace, `private_chat`, and `local_private` scope |
+| Network containment | Every private UI/control route is authenticated before routing; Host must be loopback and browser Origin must match; minimized `/health` is the only credential-free route |
+| Chat boundary | Caller JSON cannot supply actor, workspace, channel kind, or disclosure authority; strict extra-field rejection occurs before model execution |
+| Slack identity | Private Slack scope requires the exact configured workspace/member pair at authenticated event mapping and domain scope resolution; a member-only or wrong-workspace match is ignored before model execution/posting |
+| Secret isolation | Private Compose gives the private-control secret only to `jolene-api`; migration generates a non-printing 256-bit token when absent and preserves mode `0600`/idempotence |
+| Audit boundary | Authentication records only policy version, outcome, and fixed reason code; responses are sanitized and no credential, header, address, path, query, prompt, or payload is logged |
+| Residual boundary | The reusable possession credential must be rotated after plausible exposure; domain capability/approval rules remain required after authentication |
+| Release boundary | Local development and verification only. No service creation/restart, secret migration against Carl's live files, Slack message, push, deployment, promotion, or production verification is included. |

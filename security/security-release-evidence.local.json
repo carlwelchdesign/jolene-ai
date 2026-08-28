@@ -1,0 +1,34 @@
+{
+  "schemaVersion": "jolene.security-release-evidence.v1",
+  "releaseId": "release:00900000000000000000000000000000",
+  "evidence": [
+    {
+      "evidenceClass": "deterministic",
+      "status": "passed",
+      "observedAt": "2026-08-27T21:00:00.000-07:00",
+      "expiresAt": "2026-09-03T21:00:00.000-07:00",
+      "subjectHash": "ea63ee38adeec43fad0f23483b355dbfaaba5e1c6ec2c3854482e305da60d0fc",
+      "expectedSubjectHash": "ea63ee38adeec43fad0f23483b355dbfaaba5e1c6ec2c3854482e305da60d0fc"
+    },
+    {
+      "evidenceClass": "live_model",
+      "status": "missing"
+    },
+    {
+      "evidenceClass": "privacy",
+      "status": "passed",
+      "observedAt": "2026-08-27T21:00:00.000-07:00",
+      "expiresAt": "2026-09-03T21:00:00.000-07:00",
+      "subjectHash": "ea63ee38adeec43fad0f23483b355dbfaaba5e1c6ec2c3854482e305da60d0fc",
+      "expectedSubjectHash": "ea63ee38adeec43fad0f23483b355dbfaaba5e1c6ec2c3854482e305da60d0fc"
+    },
+    {
+      "evidenceClass": "owner_approval",
+      "status": "missing"
+    },
+    {
+      "evidenceClass": "deployment",
+      "status": "missing"
+    }
+  ]
+}

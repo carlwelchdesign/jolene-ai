@@ -28,14 +28,18 @@ The migration creates ignored mode-`0600` files under `.jolene/secrets` and an
 ignored mode-`0600` `.env.runtime.local`. It prints only the migrated variable
 names, never their values. An unchanged rerun is idempotent. Changed source
 values require the explicit `--replace` argument; ordinary credential rotation
-may instead update the three secret files directly.
+may instead update the four secret files directly. When the source environment
+does not define `JOLENE_PRIVATE_CONTROL_TOKEN`, migration generates a new
+256-bit base64url credential without printing it. An unchanged rerun reuses the
+existing private-control secret.
 
 `.env.runtime.example` documents the non-secret runtime variables. Do not add
 credentials to that file or to `.env.runtime.local`.
 
-Private Compose does not load `.env.local`. The API and monitor receive only
-the OpenAI secret file. Slack receives the OpenAI, Slack app, and Slack bot
-secret files. The one-shot career exporter receives none. Application config
+Private Compose does not load `.env.local`. The API receives the OpenAI and
+private-control secret files; the monitor receives only OpenAI. Slack receives
+the OpenAI, Slack app, and Slack bot secret files. The one-shot career exporter
+receives none. Application config
 accepts either a direct variable for host development or one matching `*_FILE`
 path, never both, and rejects missing, empty, oversized, or multiline files.
 
@@ -57,8 +61,18 @@ docker compose ps
 docker compose logs -f jolene-api jolene-slack jolene-monitor
 ```
 
-Open `http://127.0.0.1:8421/work` or `http://127.0.0.1:8421/projects`, or request
-`http://127.0.0.1:8421/health`.
+Open `http://127.0.0.1:8421/work`, `http://127.0.0.1:8421/projects`, or
+`http://127.0.0.1:8421/conversation-evaluation`, or request
+`http://127.0.0.1:8421/health`. The conversation review fixture is packaged in
+the image; the ignored capture is mounted read-only from
+`.jolene/evaluations`, while the hash-bound human decision persists separately
+under the private `/data/evaluations` volume.
+
+The browser presents its native authentication prompt. Use `jolene` as the
+username and the value stored in the ignored mode-`0600`
+`.jolene/secrets/private-control-token` file as the password. API clients use
+that same value as a Bearer token. Do not paste it into URLs, logs, tickets, or
+chat. `/health` remains unauthenticated and returns only minimized readiness.
 
 If port 8421 is already occupied by a local Jolene process:
 
