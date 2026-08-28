@@ -1,0 +1,170 @@
+schema_version: personality-html-capacity-review-evidence-v1
+created_at: 2026-08-28T07:10:00Z
+source_register_fingerprint: sha256:29dcfbe68ffc7b7be13758be298739179146dab5041ff73ee9e49fc74218481f
+boundary_protocol_fingerprint: sha256:7ef6eba7a8eee9fde9be225f4e4b3dc7045a5165974091e008e41a592330bda7
+high_risk_taxonomy_fingerprint: sha256:e56f2bd612a511a18eb9c1b47fc51b51715cdf1ed0e6bd6209f700c72351ee07
+primary_review:
+  fingerprint: sha256:6278149911dd7336e3fad8aa6994a35df1ae138c9c28adcd9f13e0a43808507d
+  reviewer_id: codex-primary-data-methodology-reviewer
+  reviewer_type: ai
+  tool: Codex independent live-boundary audit plus OpenAI Responses API structured semantic review; store=false
+  model_version: gpt-5.6-terra
+  reviewed_at: 2026-08-28T07:08:15.518Z
+  all_eligible_units_reviewed: 448
+  source_content_stored: false
+independent_review:
+  fingerprint: sha256:0ac4bf1cd3c8d02c9bb25d58c5831d183bc1f9b58322ddaf6e455789c38e4484
+  reviewer_id: independent-trust-rights-reviewer
+  reviewer_type: ai
+  tool: Codex read-only live-boundary reproduction plus OpenAI Responses API semantic adjudication
+  model_version: gpt-5.6-terra
+  reviewed_at: 2026-08-28T07:01:13.020Z
+  all_eligible_units_reviewed: 448
+  source_content_stored: false
+consensus_rule: exact-stratum-intersection-with-uncertainty-withheld
+uncertain_units:
+  - source_register_id: S03
+    locator: speaker-block-105
+    boundary_unit_fingerprint: sha256:1def64b300bf243c58743a72a9980f15a3b634f82936a5829da2e5eebeca86ec
+  - source_register_id: S03
+    locator: speaker-block-113
+    boundary_unit_fingerprint: sha256:78e0d2e5e4b57dad5a88341b676505fd4ba71f838949b727ba0bd04426de5a40
+  - source_register_id: S03
+    locator: speaker-block-117
+    boundary_unit_fingerprint: sha256:1e1da251f0be0728f73ac0a22dc688f7c31365934b899e10f6ad3759c57623c6
+  - source_register_id: S03
+    locator: speaker-block-119
+    boundary_unit_fingerprint: sha256:e1badf1ee7de1d8f4825fdb3b2a1bf709ec51e7137cbb6e808e0d204e1a184e6
+  - source_register_id: S03
+    locator: speaker-block-138
+    boundary_unit_fingerprint: sha256:707a1a8ac2b76110156f53e00ee440a82da98491dddb6b13cab88ffa663ec1de
+  - source_register_id: S03
+    locator: speaker-block-143
+    boundary_unit_fingerprint: sha256:9c5ad90f5a7b63b158886bad09d2dd9e39861a1b0705789675ab629e6506e876
+  - source_register_id: S03
+    locator: speaker-block-148
+    boundary_unit_fingerprint: sha256:2a410e174173439c14fc23163154344db7f8827d6652254faec3e6eb6a352660
+  - source_register_id: S03
+    locator: speaker-block-160
+    boundary_unit_fingerprint: sha256:5206e010e7e58df9c4e49c15a433c190bff428f50801b801d578530a088721eb
+  - source_register_id: S03
+    locator: speaker-block-164
+    boundary_unit_fingerprint: sha256:a39aecc2c2f18ba23d8526e265e368ccdfae7484ddc182ae40a6dede855bb8a6
+  - source_register_id: S03
+    locator: speaker-block-175
+    boundary_unit_fingerprint: sha256:83ca6010c141013b020b3d71e440025343b88140e1eb81fba3972425755e5981
+  - source_register_id: S03
+    locator: speaker-block-193
+    boundary_unit_fingerprint: sha256:9ceb2e8fc08407837df2746554d2c18da11e0866798476109dd8c11604de83e4
+  - source_register_id: S03
+    locator: speaker-block-257
+    boundary_unit_fingerprint: sha256:ece27b5a325a2a7ce556e2c30e5832be7a366c088cbb9c55af2ca6865407dee3
+  - source_register_id: S03
+    locator: speaker-block-261
+    boundary_unit_fingerprint: sha256:85579015a7f18191d28e6ed8a38b66ad48e6a276fd0f7e324d53443c75b59274
+  - source_register_id: S03
+    locator: speaker-block-269
+    boundary_unit_fingerprint: sha256:eb6cf1e2b36f582adab1691d1a40785196a2c0957dd6ce4d23dca3ba5cbbd1f2
+  - source_register_id: S03
+    locator: speaker-block-273
+    boundary_unit_fingerprint: sha256:22cbc0f7089787a3a8adf8ef4c27a9b49dd42be4c7d4720a83d500994f47e74c
+  - source_register_id: S03
+    locator: speaker-block-364
+    boundary_unit_fingerprint: sha256:061f703ef853a377f924476131169899ffbc03584444a439bdebc57b67a8e859
+  - source_register_id: S03
+    locator: speaker-block-370
+    boundary_unit_fingerprint: sha256:8a4be5f9e61eba47d5375de3ccaab243cd91c002a32968d8447604def79cc864
+  - source_register_id: S03
+    locator: speaker-block-376
+    boundary_unit_fingerprint: sha256:1def64b300bf243c58743a72a9980f15a3b634f82936a5829da2e5eebeca86ec
+  - source_register_id: S03
+    locator: speaker-block-390
+    boundary_unit_fingerprint: sha256:e1badf1ee7de1d8f4825fdb3b2a1bf709ec51e7137cbb6e808e0d204e1a184e6
+  - source_register_id: S03
+    locator: speaker-block-409
+    boundary_unit_fingerprint: sha256:707a1a8ac2b76110156f53e00ee440a82da98491dddb6b13cab88ffa663ec1de
+  - source_register_id: S03
+    locator: speaker-block-414
+    boundary_unit_fingerprint: sha256:9c5ad90f5a7b63b158886bad09d2dd9e39861a1b0705789675ab629e6506e876
+  - source_register_id: S03
+    locator: speaker-block-416
+    boundary_unit_fingerprint: sha256:2879dae65c8a5dced7e88d4998126cc3c378b8262ad586e62e9065eb07c6e915
+  - source_register_id: S03
+    locator: speaker-block-419
+    boundary_unit_fingerprint: sha256:2a410e174173439c14fc23163154344db7f8827d6652254faec3e6eb6a352660
+  - source_register_id: S03
+    locator: speaker-block-431
+    boundary_unit_fingerprint: sha256:5206e010e7e58df9c4e49c15a433c190bff428f50801b801d578530a088721eb
+  - source_register_id: S03
+    locator: speaker-block-435
+    boundary_unit_fingerprint: sha256:a39aecc2c2f18ba23d8526e265e368ccdfae7484ddc182ae40a6dede855bb8a6
+  - source_register_id: S03
+    locator: speaker-block-446
+    boundary_unit_fingerprint: sha256:83ca6010c141013b020b3d71e440025343b88140e1eb81fba3972425755e5981
+  - source_register_id: S03
+    locator: speaker-block-456
+    boundary_unit_fingerprint: sha256:a51bb24ff06ce3cdcc186d427872ccb126c4c5aa498e1064a26fb5ace7596342
+  - source_register_id: S03
+    locator: speaker-block-462
+    boundary_unit_fingerprint: sha256:822627c2041c15fb2ece0b284e833a1bea3ea7c46e8a96039c55d692e5b59ae1
+  - source_register_id: S03
+    locator: speaker-block-479
+    boundary_unit_fingerprint: sha256:c6e2f0ad48a995347aa7bb838d4bc4e13f7067ea3438706f1d19318c11239103
+  - source_register_id: S03
+    locator: speaker-block-49
+    boundary_unit_fingerprint: sha256:5dbc5d4d4b3e658246ac7ebd45f957caa2dfb05dc11507b3d9138a03f96b1207
+  - source_register_id: S03
+    locator: speaker-block-501
+    boundary_unit_fingerprint: sha256:76ac3cedcbfecfb186c98407b792b26090cb022ad9c1164a40935a0dbdffd63c
+  - source_register_id: S03
+    locator: speaker-block-507
+    boundary_unit_fingerprint: sha256:4519da5f78c409afb0775c31b33f92ed8464d3db30c6d656cf376a71712aebbf
+  - source_register_id: S03
+    locator: speaker-block-528
+    boundary_unit_fingerprint: sha256:ece27b5a325a2a7ce556e2c30e5832be7a366c088cbb9c55af2ca6865407dee3
+  - source_register_id: S03
+    locator: speaker-block-61
+    boundary_unit_fingerprint: sha256:9648facb1eaa3f645c38dc5550cbdd1090c8284bf953db9049a8eea2d875e308
+  - source_register_id: S03
+    locator: speaker-block-65
+    boundary_unit_fingerprint: sha256:4682e18a3058c2863bf51f6b77180a7a7134b6c5b1a59417ffe178b516e5694c
+  - source_register_id: S03
+    locator: speaker-block-80
+    boundary_unit_fingerprint: sha256:ee206a30cf44e3dfb7277d462ee1e190b782438a7aeb42eddbd2289b1c1844b5
+  - source_register_id: S03
+    locator: speaker-block-82
+    boundary_unit_fingerprint: sha256:9e3391fce4595b096dda35ca5e023bdc32b0674204b3d5458c3663ac7a7334f4
+  - source_register_id: S03
+    locator: speaker-block-99
+    boundary_unit_fingerprint: sha256:8a4be5f9e61eba47d5375de3ccaab243cd91c002a32968d8447604def79cc864
+  - source_register_id: S05
+    locator: paragraph-27
+    boundary_unit_fingerprint: sha256:0fd21780fd079c9cde56fdd3364841557a3b75da420eb22859a98c09c47ee4de
+  - source_register_id: S19
+    locator: speaker-block-113
+    boundary_unit_fingerprint: sha256:8430ef0f3fdc68459c33fc5758feedbdb745e7442b7f74780382483f5a79c8e2
+  - source_register_id: S19
+    locator: speaker-block-31
+    boundary_unit_fingerprint: sha256:04e0cfc8fd2d8ee950ecb9486c2912a6df7ed11affe80b69456fe5f594a053b7
+fingerprint_map_reviews:
+  primary_verdict: pass
+  independent_verdict: pass
+  discrepancies: 0
+  source_draft_fingerprints:
+    S02: sha256:b8f9f401af8d3699634c59663f50930c850e92186bceb3812c9aa91c6b55cb3d
+    S03: sha256:d183dbd7fe537a717a28990e96cff5702221f71590679080d5f2edad8e95746b
+    S05: sha256:62a3319871080059754f464d1628bc41076336d996d43c7d15172ca639912c35
+    S13: sha256:1f0500bcc87942b1dca9fd0462ff1b20a31c5f5b82191ef6ee1a49ffc2925a59
+    S19: sha256:64d6f42e2990fb23cea08ad1a2e5cd77660228b173f48c0816b5e9541b4e4c94
+    S20: sha256:af32f140cdfcd10359855ef1a816192a7e470250ab8008970b007c7994f7814a
+  source_map_fingerprints:
+    S02: sha256:a9d8c4aef90485e52f5318d648bac19ea8cbae9be40cc1c052bd5fa16b3eb88c
+    S03: sha256:51f73ff647d97d147d0d4afcc733caca720ee6580a5cc66a6e7fb8952322a217
+    S05: sha256:34ace012322a116caabb7dcc7624584e021344069175b37e2bc92c46317c6c55
+    S13: sha256:2a81745ed7d6548c3ad5c559ab01a6b86a05967e2aecf9dd8605c900fc4c39e2
+    S19: sha256:a6d5a8d937aac1c94214230f277c38b4c50258b644e5cb6a8839fa08db5f1295
+    S20: sha256:99cb108ee00fa64ea5f578639823d6553e14513c4d795171c618678073740435
+source_content_stored: false
+selection_performed: false
+observation_coding_performed: false
+runtime_activation: prohibited

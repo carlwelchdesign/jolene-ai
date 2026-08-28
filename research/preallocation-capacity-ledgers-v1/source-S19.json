@@ -1,0 +1,2403 @@
+{
+  "schemaVersion": "jolene.personality-preallocation-capacity-ledger.v1",
+  "status": "independently-reviewed-before-allocation",
+  "sourceRegisterFingerprint": "sha256:29dcfbe68ffc7b7be13758be298739179146dab5041ff73ee9e49fc74218481f",
+  "boundaryProtocolFingerprint": "sha256:7ef6eba7a8eee9fde9be225f4e4b3dc7045a5165974091e008e41a592330bda7",
+  "highRiskTaxonomyFingerprint": "sha256:e56f2bd612a511a18eb9c1b47fc51b51715cdf1ed0e6bd6209f700c72351ee07",
+  "sourceRegisterId": "S19",
+  "sourceEventId": "E015",
+  "sourceContentFingerprint": "sha256:b1765353abd7f2d2c562d3447d9bd2a20e168c81d619a9ecf6e6f6604ecd0449",
+  "boundaryManifestFingerprint": "sha256:64d6f42e2990fb23cea08ad1a2e5cd77660228b173f48c0816b5e9541b4e4c94",
+  "ledgerFingerprintMapFingerprint": "sha256:a6d5a8d937aac1c94214230f277c38b4c50258b644e5cb6a8839fa08db5f1295",
+  "policyAmendmentFingerprint": null,
+  "primaryReviewFingerprint": "sha256:6278149911dd7336e3fad8aa6994a35df1ae138c9c28adcd9f13e0a43808507d",
+  "independentReviewFingerprint": "sha256:0ac4bf1cd3c8d02c9bb25d58c5831d183bc1f9b58322ddaf6e455789c38e4484",
+  "segmentationRule": "interview-speaker-label-blocks-v1",
+  "sourceBoundaryUnitCount": 118,
+  "frozenAt": "2026-08-28T07:10:00Z",
+  "primaryReviewer": {
+    "reviewerId": "codex-primary-data-methodology-reviewer",
+    "reviewerType": "ai",
+    "tool": "Codex independent live-boundary audit plus OpenAI Responses API structured semantic review; store=false",
+    "modelVersion": "gpt-5.6-terra",
+    "reviewedAt": "2026-08-28T07:08:15.518Z"
+  },
+  "independentReviewer": {
+    "reviewerId": "independent-trust-rights-reviewer",
+    "reviewerType": "ai",
+    "tool": "Codex read-only live-boundary reproduction plus OpenAI Responses API semantic adjudication",
+    "modelVersion": "gpt-5.6-terra",
+    "reviewedAt": "2026-08-28T07:01:13.020Z"
+  },
+  "eligibleUnits": [
+    {
+      "unitId": "C-S19-0002",
+      "sourceUnitOrdinal": 1,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 1,
+        "end": 1,
+        "label": "speaker-block-1"
+      },
+      "segmentFingerprint": "sha256:4fba41c57095b36ba56fb9c590cfc793d8faeb87d9ebfdbb36332227b95a1b37",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [
+        "humor"
+      ],
+      "independentHighRiskStrata": [
+        "humor"
+      ],
+      "agreedHighRiskStrata": [
+        "humor"
+      ],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S19-0004",
+      "sourceUnitOrdinal": 3,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 3,
+        "end": 3,
+        "label": "speaker-block-3"
+      },
+      "segmentFingerprint": "sha256:25c89c0a676fb3c1387d5453e60d7751c34dd79c5795ee4911665d769635b5e0",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [],
+      "independentHighRiskStrata": [],
+      "agreedHighRiskStrata": [],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S19-0006",
+      "sourceUnitOrdinal": 5,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 5,
+        "end": 5,
+        "label": "speaker-block-5"
+      },
+      "segmentFingerprint": "sha256:69c3c520971c35e9171b53d3a51a3346d76b83a2a318d23294a2ed04f23bc947",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [
+        "biography"
+      ],
+      "independentHighRiskStrata": [
+        "biography"
+      ],
+      "agreedHighRiskStrata": [
+        "biography"
+      ],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S19-0009",
+      "sourceUnitOrdinal": 8,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 8,
+        "end": 8,
+        "label": "speaker-block-8"
+      },
+      "segmentFingerprint": "sha256:13abbeeb1aac74af94921afb1121f493279f83b7f899280bd6f96545eab8524a",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [
+        "humor"
+      ],
+      "independentHighRiskStrata": [
+        "humor"
+      ],
+      "agreedHighRiskStrata": [
+        "humor"
+      ],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S19-0011",
+      "sourceUnitOrdinal": 10,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 10,
+        "end": 10,
+        "label": "speaker-block-10"
+      },
+      "segmentFingerprint": "sha256:6989068ddba0b45b41182d543249a9bb5d289bc989ee251bc052f06b8724ac3b",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [
+        "biography"
+      ],
+      "independentHighRiskStrata": [
+        "biography"
+      ],
+      "agreedHighRiskStrata": [
+        "biography"
+      ],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S19-0013",
+      "sourceUnitOrdinal": 12,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 12,
+        "end": 12,
+        "label": "speaker-block-12"
+      },
+      "segmentFingerprint": "sha256:dbff353e507c1ee64130b3a13ac17db2647be61a87e658520683be256cf8dad9",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [
+        "biography",
+        "contradiction",
+        "grief-or-hurt"
+      ],
+      "independentHighRiskStrata": [
+        "biography",
+        "grief-or-hurt"
+      ],
+      "agreedHighRiskStrata": [
+        "biography",
+        "grief-or-hurt"
+      ],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S19-0015",
+      "sourceUnitOrdinal": 14,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 14,
+        "end": 14,
+        "label": "speaker-block-14"
+      },
+      "segmentFingerprint": "sha256:61070e1954dd370b0f540e0153334cd3e1c21e852cdc11ea00a54389dd790ddc",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [
+        "biography",
+        "contradiction",
+        "grief-or-hurt"
+      ],
+      "independentHighRiskStrata": [
+        "biography"
+      ],
+      "agreedHighRiskStrata": [
+        "biography"
+      ],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S19-0017",
+      "sourceUnitOrdinal": 16,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 16,
+        "end": 16,
+        "label": "speaker-block-16"
+      },
+      "segmentFingerprint": "sha256:b44eaf7b1927b484b21cee6788fcac07fda7bc6595d42ac30a93b47b2581469a",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [],
+      "independentHighRiskStrata": [],
+      "agreedHighRiskStrata": [],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S19-0020",
+      "sourceUnitOrdinal": 19,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 19,
+        "end": 19,
+        "label": "speaker-block-19"
+      },
+      "segmentFingerprint": "sha256:997e3ad5596afa88d09c012c8c70e0e2f0e6d29291209c6bde367db63f7b7636",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [
+        "biography",
+        "contradiction",
+        "grief-or-hurt",
+        "identity-trait"
+      ],
+      "independentHighRiskStrata": [
+        "biography",
+        "contradiction",
+        "grief-or-hurt",
+        "identity-trait"
+      ],
+      "agreedHighRiskStrata": [
+        "biography",
+        "contradiction",
+        "grief-or-hurt",
+        "identity-trait"
+      ],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S19-0022",
+      "sourceUnitOrdinal": 21,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 21,
+        "end": 21,
+        "label": "speaker-block-21"
+      },
+      "segmentFingerprint": "sha256:07651f0c143bb120784992d72567ca666b9d032253905a65cf1191fab59b2d1f",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [
+        "biography",
+        "grief-or-hurt"
+      ],
+      "independentHighRiskStrata": [
+        "biography"
+      ],
+      "agreedHighRiskStrata": [
+        "biography"
+      ],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S19-0024",
+      "sourceUnitOrdinal": 23,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 23,
+        "end": 23,
+        "label": "speaker-block-23"
+      },
+      "segmentFingerprint": "sha256:a07de46fa6a8bdfb96a71bbff67d48029861fafa17f7b2d7e3d47bffefb4c6cc",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [
+        "biography"
+      ],
+      "independentHighRiskStrata": [
+        "biography"
+      ],
+      "agreedHighRiskStrata": [
+        "biography"
+      ],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S19-0026",
+      "sourceUnitOrdinal": 25,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 25,
+        "end": 25,
+        "label": "speaker-block-25"
+      },
+      "segmentFingerprint": "sha256:2a004c54330208dafd1f60387f56dcbbdf44d6b4c54b7e61eb0e263487f0efcf",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [
+        "biography",
+        "humor",
+        "identity-trait"
+      ],
+      "independentHighRiskStrata": [
+        "biography",
+        "grief-or-hurt",
+        "humor",
+        "identity-trait"
+      ],
+      "agreedHighRiskStrata": [
+        "biography",
+        "humor",
+        "identity-trait"
+      ],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S19-0028",
+      "sourceUnitOrdinal": 27,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 27,
+        "end": 27,
+        "label": "speaker-block-27"
+      },
+      "segmentFingerprint": "sha256:131e45e9027b3e8e73754fe78d7b6ed317cd4c328f72be0be5f9936bcfb3d76d",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [
+        "biography",
+        "contradiction",
+        "grief-or-hurt"
+      ],
+      "independentHighRiskStrata": [
+        "biography",
+        "grief-or-hurt"
+      ],
+      "agreedHighRiskStrata": [
+        "biography",
+        "grief-or-hurt"
+      ],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S19-0030",
+      "sourceUnitOrdinal": 29,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 29,
+        "end": 29,
+        "label": "speaker-block-29"
+      },
+      "segmentFingerprint": "sha256:f21abb714e363f39005c33c69120584de3c60afecb748fa32da5adb864f828a4",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [
+        "biography",
+        "boundary",
+        "contradiction",
+        "grief-or-hurt",
+        "identity-trait"
+      ],
+      "independentHighRiskStrata": [
+        "biography",
+        "boundary",
+        "contradiction",
+        "grief-or-hurt",
+        "identity-trait"
+      ],
+      "agreedHighRiskStrata": [
+        "biography",
+        "boundary",
+        "contradiction",
+        "grief-or-hurt",
+        "identity-trait"
+      ],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S19-0032",
+      "sourceUnitOrdinal": 31,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 31,
+        "end": 31,
+        "label": "speaker-block-31"
+      },
+      "segmentFingerprint": "sha256:04e0cfc8fd2d8ee950ecb9486c2912a6df7ed11affe80b69456fe5f594a053b7",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [
+        "identity-trait"
+      ],
+      "independentHighRiskStrata": [
+        "identity-trait"
+      ],
+      "agreedHighRiskStrata": [],
+      "consensusWithheldHighRiskStrata": [
+        "identity-trait"
+      ],
+      "highRiskReviewState": "uncertainty-withheld"
+    },
+    {
+      "unitId": "C-S19-0034",
+      "sourceUnitOrdinal": 33,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 33,
+        "end": 33,
+        "label": "speaker-block-33"
+      },
+      "segmentFingerprint": "sha256:e78b5c9c1c624e5112215cdada43ce56ecde859d8f749e9f47dcb8ce052ab784",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [
+        "belief",
+        "biography"
+      ],
+      "independentHighRiskStrata": [
+        "belief"
+      ],
+      "agreedHighRiskStrata": [
+        "belief"
+      ],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S19-0036",
+      "sourceUnitOrdinal": 35,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 35,
+        "end": 35,
+        "label": "speaker-block-35"
+      },
+      "segmentFingerprint": "sha256:1d8b006ccba884b0411c1de9faf6f6c10f2fd3fd1c5870c7a8ff7238a62f2fef",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [],
+      "independentHighRiskStrata": [],
+      "agreedHighRiskStrata": [],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S19-0038",
+      "sourceUnitOrdinal": 37,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 37,
+        "end": 37,
+        "label": "speaker-block-37"
+      },
+      "segmentFingerprint": "sha256:3c90e59b9a297b55838597d143a9678b4892282df093ccb4fb0cc7610217cdfc",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [
+        "belief",
+        "biography",
+        "grief-or-hurt",
+        "voice-adjacent"
+      ],
+      "independentHighRiskStrata": [
+        "belief",
+        "biography",
+        "grief-or-hurt"
+      ],
+      "agreedHighRiskStrata": [
+        "belief",
+        "biography",
+        "grief-or-hurt"
+      ],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S19-0040",
+      "sourceUnitOrdinal": 39,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 39,
+        "end": 39,
+        "label": "speaker-block-39"
+      },
+      "segmentFingerprint": "sha256:ed8a5db3e992bd38fd11f9f47303fd1fef4068b3a01a1a8720e7d81e9f322997",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [],
+      "independentHighRiskStrata": [],
+      "agreedHighRiskStrata": [],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S19-0042",
+      "sourceUnitOrdinal": 41,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 41,
+        "end": 41,
+        "label": "speaker-block-41"
+      },
+      "segmentFingerprint": "sha256:9a466a395b5a069cfb3b20bdd0a28c5af3156fa08d3f860855817b7793e08d81",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [
+        "biography",
+        "humor",
+        "identity-trait"
+      ],
+      "independentHighRiskStrata": [
+        "biography",
+        "identity-trait"
+      ],
+      "agreedHighRiskStrata": [
+        "biography",
+        "identity-trait"
+      ],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S19-0044",
+      "sourceUnitOrdinal": 43,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 43,
+        "end": 43,
+        "label": "speaker-block-43"
+      },
+      "segmentFingerprint": "sha256:ff522d9009a0069bf78f2f789b8089b5e4c6376a579b654379b3c245cb2bcf6b",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [
+        "biography",
+        "contradiction",
+        "humor",
+        "identity-trait"
+      ],
+      "independentHighRiskStrata": [
+        "biography",
+        "humor",
+        "identity-trait"
+      ],
+      "agreedHighRiskStrata": [
+        "biography",
+        "humor",
+        "identity-trait"
+      ],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S19-0046",
+      "sourceUnitOrdinal": 45,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 45,
+        "end": 45,
+        "label": "speaker-block-45"
+      },
+      "segmentFingerprint": "sha256:b7d0898ba807634c9654e73f495cfa4f400070735b6b740f38c7e47a8508fe17",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [
+        "humor"
+      ],
+      "independentHighRiskStrata": [
+        "humor"
+      ],
+      "agreedHighRiskStrata": [
+        "humor"
+      ],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S19-0048",
+      "sourceUnitOrdinal": 47,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 47,
+        "end": 47,
+        "label": "speaker-block-47"
+      },
+      "segmentFingerprint": "sha256:e2106cea1fa2ef5bf1d676f2d38a4f851d073d2f9fe279c55c522acac89d1e2c",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [
+        "biography",
+        "humor",
+        "identity-trait"
+      ],
+      "independentHighRiskStrata": [
+        "biography",
+        "humor",
+        "identity-trait"
+      ],
+      "agreedHighRiskStrata": [
+        "biography",
+        "humor",
+        "identity-trait"
+      ],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S19-0050",
+      "sourceUnitOrdinal": 49,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 49,
+        "end": 49,
+        "label": "speaker-block-49"
+      },
+      "segmentFingerprint": "sha256:14f25878c16813142c81fce42aaddc7ca6a262a86ecfbb3035abcc4dd419eb6f",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [
+        "biography",
+        "identity-trait",
+        "voice-adjacent"
+      ],
+      "independentHighRiskStrata": [
+        "biography",
+        "identity-trait",
+        "voice-adjacent"
+      ],
+      "agreedHighRiskStrata": [
+        "biography",
+        "identity-trait",
+        "voice-adjacent"
+      ],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S19-0052",
+      "sourceUnitOrdinal": 51,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 51,
+        "end": 51,
+        "label": "speaker-block-51"
+      },
+      "segmentFingerprint": "sha256:60e84687177e709aa12ce1c2b2e38e82406bfc6efe658418096e2fa04556ce90",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [],
+      "independentHighRiskStrata": [],
+      "agreedHighRiskStrata": [],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S19-0054",
+      "sourceUnitOrdinal": 53,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 53,
+        "end": 53,
+        "label": "speaker-block-53"
+      },
+      "segmentFingerprint": "sha256:13e48f0de77ba30a67f87555fcf5123c6387419ef8d74702eadaaec097e80444",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [
+        "biography",
+        "boundary"
+      ],
+      "independentHighRiskStrata": [
+        "biography",
+        "boundary"
+      ],
+      "agreedHighRiskStrata": [
+        "biography",
+        "boundary"
+      ],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S19-0056",
+      "sourceUnitOrdinal": 55,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 55,
+        "end": 55,
+        "label": "speaker-block-55"
+      },
+      "segmentFingerprint": "sha256:d1b8c2a88655d658e63c16fcda419b978510625ff9da210ffd30d81863741f37",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [
+        "belief",
+        "biography",
+        "grief-or-hurt"
+      ],
+      "independentHighRiskStrata": [
+        "belief",
+        "biography",
+        "contradiction",
+        "grief-or-hurt",
+        "identity-trait"
+      ],
+      "agreedHighRiskStrata": [
+        "belief",
+        "biography",
+        "grief-or-hurt"
+      ],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S19-0058",
+      "sourceUnitOrdinal": 57,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 57,
+        "end": 57,
+        "label": "speaker-block-57"
+      },
+      "segmentFingerprint": "sha256:58bd6045615d232a93e159a5a93be91cdf4fa1db34e335595a56ef035142a182",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [
+        "biography",
+        "grief-or-hurt",
+        "humor",
+        "identity-trait"
+      ],
+      "independentHighRiskStrata": [
+        "biography",
+        "grief-or-hurt",
+        "identity-trait"
+      ],
+      "agreedHighRiskStrata": [
+        "biography",
+        "grief-or-hurt",
+        "identity-trait"
+      ],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S19-0060",
+      "sourceUnitOrdinal": 59,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 59,
+        "end": 59,
+        "label": "speaker-block-59"
+      },
+      "segmentFingerprint": "sha256:6cc6dcb46a3a0efd66c2a70882af899fdb811b1408ffa2af15339a6e96c2de0b",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [
+        "voice-adjacent"
+      ],
+      "independentHighRiskStrata": [
+        "voice-adjacent"
+      ],
+      "agreedHighRiskStrata": [
+        "voice-adjacent"
+      ],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S19-0062",
+      "sourceUnitOrdinal": 61,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 61,
+        "end": 61,
+        "label": "speaker-block-61"
+      },
+      "segmentFingerprint": "sha256:dd1a3f877cc562480d6236abfbcfce00f4348ab25a00615d29e8288041f3c12f",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [
+        "biography",
+        "contradiction",
+        "identity-trait"
+      ],
+      "independentHighRiskStrata": [
+        "biography",
+        "contradiction",
+        "identity-trait"
+      ],
+      "agreedHighRiskStrata": [
+        "biography",
+        "contradiction",
+        "identity-trait"
+      ],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S19-0064",
+      "sourceUnitOrdinal": 63,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 63,
+        "end": 63,
+        "label": "speaker-block-63"
+      },
+      "segmentFingerprint": "sha256:d20e4c1f93e7fcffd97d293d706050f73735beb5feb8ebdb5211d63c00c1a15e",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [
+        "biography",
+        "grief-or-hurt",
+        "voice-adjacent"
+      ],
+      "independentHighRiskStrata": [
+        "biography",
+        "voice-adjacent"
+      ],
+      "agreedHighRiskStrata": [
+        "biography",
+        "voice-adjacent"
+      ],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S19-0066",
+      "sourceUnitOrdinal": 65,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 65,
+        "end": 65,
+        "label": "speaker-block-65"
+      },
+      "segmentFingerprint": "sha256:dd0261e322618e0342a5dfdbd583cfb6fbf90bd75ef76f6034d3959271bfc39d",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [
+        "biography"
+      ],
+      "independentHighRiskStrata": [],
+      "agreedHighRiskStrata": [],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S19-0068",
+      "sourceUnitOrdinal": 67,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 67,
+        "end": 67,
+        "label": "speaker-block-67"
+      },
+      "segmentFingerprint": "sha256:a070d0e2564c2759b33f2bdb6a7f5e0c480809d0e0ed8467bfe6b8f804294281",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [
+        "belief"
+      ],
+      "independentHighRiskStrata": [
+        "belief"
+      ],
+      "agreedHighRiskStrata": [
+        "belief"
+      ],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S19-0070",
+      "sourceUnitOrdinal": 69,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 69,
+        "end": 69,
+        "label": "speaker-block-69"
+      },
+      "segmentFingerprint": "sha256:59ee502381ceef0b3811512c2f890edeefd5cd9049be0de2496841638c51b223",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [
+        "belief",
+        "biography",
+        "boundary",
+        "contradiction",
+        "grief-or-hurt"
+      ],
+      "independentHighRiskStrata": [
+        "belief",
+        "biography",
+        "boundary",
+        "grief-or-hurt"
+      ],
+      "agreedHighRiskStrata": [
+        "belief",
+        "biography",
+        "boundary",
+        "grief-or-hurt"
+      ],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S19-0072",
+      "sourceUnitOrdinal": 71,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 71,
+        "end": 71,
+        "label": "speaker-block-71"
+      },
+      "segmentFingerprint": "sha256:911404b9d46d1ec4f8345a6499275a75e338d042c70ade1c5fb81509fb914d3a",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [
+        "biography",
+        "identity-trait"
+      ],
+      "independentHighRiskStrata": [
+        "biography"
+      ],
+      "agreedHighRiskStrata": [
+        "biography"
+      ],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S19-0074",
+      "sourceUnitOrdinal": 73,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 73,
+        "end": 73,
+        "label": "speaker-block-73"
+      },
+      "segmentFingerprint": "sha256:0f7db49c28f3e00b34c1b435d793997ac7dd6b3904f303e7c5cdd3927ef55f88",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [
+        "biography",
+        "contradiction",
+        "grief-or-hurt",
+        "identity-trait"
+      ],
+      "independentHighRiskStrata": [
+        "biography",
+        "grief-or-hurt"
+      ],
+      "agreedHighRiskStrata": [
+        "biography",
+        "grief-or-hurt"
+      ],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S19-0076",
+      "sourceUnitOrdinal": 75,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 75,
+        "end": 75,
+        "label": "speaker-block-75"
+      },
+      "segmentFingerprint": "sha256:819c7da4f3f8da69140714cdb3018f3663a38d1c63cf9daa416a32d58b7333e1",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [
+        "biography",
+        "boundary",
+        "contradiction",
+        "grief-or-hurt"
+      ],
+      "independentHighRiskStrata": [
+        "biography",
+        "boundary"
+      ],
+      "agreedHighRiskStrata": [
+        "biography",
+        "boundary"
+      ],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S19-0078",
+      "sourceUnitOrdinal": 77,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 77,
+        "end": 77,
+        "label": "speaker-block-77"
+      },
+      "segmentFingerprint": "sha256:35048702fbb2c694c5ba38bd1a383057ec11ed1aafb8db0dd86924ba0f155aaf",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [
+        "biography",
+        "boundary",
+        "identity-trait",
+        "politics"
+      ],
+      "independentHighRiskStrata": [
+        "biography",
+        "boundary"
+      ],
+      "agreedHighRiskStrata": [
+        "biography",
+        "boundary"
+      ],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S19-0080",
+      "sourceUnitOrdinal": 79,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 79,
+        "end": 79,
+        "label": "speaker-block-79"
+      },
+      "segmentFingerprint": "sha256:9ea102aa8ec0519188c71bc9639290125be57c803fe1af4bb2391824765ee11f",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [
+        "biography"
+      ],
+      "independentHighRiskStrata": [
+        "biography"
+      ],
+      "agreedHighRiskStrata": [
+        "biography"
+      ],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S19-0082",
+      "sourceUnitOrdinal": 81,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 81,
+        "end": 81,
+        "label": "speaker-block-81"
+      },
+      "segmentFingerprint": "sha256:79295c826969e43518b4c8a0648582f3c8d10fab53583ccbaff2c762be38dbc5",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [
+        "boundary",
+        "contradiction",
+        "identity-trait"
+      ],
+      "independentHighRiskStrata": [
+        "boundary"
+      ],
+      "agreedHighRiskStrata": [
+        "boundary"
+      ],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S19-0084",
+      "sourceUnitOrdinal": 83,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 83,
+        "end": 83,
+        "label": "speaker-block-83"
+      },
+      "segmentFingerprint": "sha256:47fd2dc958b6386799f9d477090771abbc3f600ce1f78f4521ac68e5d1f19e63",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [
+        "belief",
+        "biography",
+        "identity-trait"
+      ],
+      "independentHighRiskStrata": [
+        "biography"
+      ],
+      "agreedHighRiskStrata": [
+        "biography"
+      ],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S19-0086",
+      "sourceUnitOrdinal": 85,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 85,
+        "end": 85,
+        "label": "speaker-block-85"
+      },
+      "segmentFingerprint": "sha256:0a654743317631483bdb046455f2c1b7b19a15ae9dbe7ba218f14f34f9d587aa",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [
+        "biography",
+        "boundary",
+        "humor",
+        "workplace-sexual-boundary"
+      ],
+      "independentHighRiskStrata": [
+        "biography",
+        "workplace-sexual-boundary"
+      ],
+      "agreedHighRiskStrata": [
+        "biography",
+        "workplace-sexual-boundary"
+      ],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S19-0088",
+      "sourceUnitOrdinal": 87,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 87,
+        "end": 87,
+        "label": "speaker-block-87"
+      },
+      "segmentFingerprint": "sha256:9f047581b274510b765a81f08c4dccb03a9d8c624c8f9e1ee0571c74ef418a2c",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [
+        "biography"
+      ],
+      "independentHighRiskStrata": [
+        "biography",
+        "politics"
+      ],
+      "agreedHighRiskStrata": [
+        "biography"
+      ],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S19-0090",
+      "sourceUnitOrdinal": 89,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 89,
+        "end": 89,
+        "label": "speaker-block-89"
+      },
+      "segmentFingerprint": "sha256:14bfaf9491a4e3e07b6e44fa504c9815cb54bc78c00342a46babdc02251da1e0",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [
+        "biography",
+        "identity-trait",
+        "voice-adjacent"
+      ],
+      "independentHighRiskStrata": [
+        "voice-adjacent"
+      ],
+      "agreedHighRiskStrata": [
+        "voice-adjacent"
+      ],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S19-0092",
+      "sourceUnitOrdinal": 91,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 91,
+        "end": 91,
+        "label": "speaker-block-91"
+      },
+      "segmentFingerprint": "sha256:f908c4d74c185dfae64bdcd3493b68651941368358d1365620827951204d9f98",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [
+        "biography"
+      ],
+      "independentHighRiskStrata": [
+        "biography"
+      ],
+      "agreedHighRiskStrata": [
+        "biography"
+      ],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S19-0094",
+      "sourceUnitOrdinal": 93,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 93,
+        "end": 93,
+        "label": "speaker-block-93"
+      },
+      "segmentFingerprint": "sha256:c0cc2a26e28aaacb49a9b908c384e91f9bd74d3ef07d6922902cda5c0472ae0b",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [
+        "biography"
+      ],
+      "independentHighRiskStrata": [
+        "biography"
+      ],
+      "agreedHighRiskStrata": [
+        "biography"
+      ],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S19-0096",
+      "sourceUnitOrdinal": 95,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 95,
+        "end": 95,
+        "label": "speaker-block-95"
+      },
+      "segmentFingerprint": "sha256:c86ee18510a1162cfea5fad0bad209b629eae3fb99bbd1377410fef2df634a2a",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [
+        "biography",
+        "identity-trait"
+      ],
+      "independentHighRiskStrata": [
+        "biography"
+      ],
+      "agreedHighRiskStrata": [
+        "biography"
+      ],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S19-0098",
+      "sourceUnitOrdinal": 97,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 97,
+        "end": 97,
+        "label": "speaker-block-97"
+      },
+      "segmentFingerprint": "sha256:707a1a8ac2b76110156f53e00ee440a82da98491dddb6b13cab88ffa663ec1de",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [],
+      "independentHighRiskStrata": [],
+      "agreedHighRiskStrata": [],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S19-0100",
+      "sourceUnitOrdinal": 99,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 99,
+        "end": 99,
+        "label": "speaker-block-99"
+      },
+      "segmentFingerprint": "sha256:d7ad0c53f6c5441904ea3b163ef616f30a2e02337883f90838af50433d31e51f",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [
+        "biography"
+      ],
+      "independentHighRiskStrata": [
+        "biography"
+      ],
+      "agreedHighRiskStrata": [
+        "biography"
+      ],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S19-0102",
+      "sourceUnitOrdinal": 101,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 101,
+        "end": 101,
+        "label": "speaker-block-101"
+      },
+      "segmentFingerprint": "sha256:fa4b5f7075c75cb09ac38206b7c4cf3d1e4cbbdcbfd0605bd6551f1464248ab6",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [
+        "belief",
+        "biography",
+        "contradiction",
+        "identity-trait"
+      ],
+      "independentHighRiskStrata": [
+        "biography"
+      ],
+      "agreedHighRiskStrata": [
+        "biography"
+      ],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S19-0104",
+      "sourceUnitOrdinal": 103,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 103,
+        "end": 103,
+        "label": "speaker-block-103"
+      },
+      "segmentFingerprint": "sha256:3ba92fa74df79399fd7c8af63e8a0ff93579998dca15dee60eb3a2acb5cf2a35",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [
+        "biography"
+      ],
+      "independentHighRiskStrata": [
+        "biography"
+      ],
+      "agreedHighRiskStrata": [
+        "biography"
+      ],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S19-0106",
+      "sourceUnitOrdinal": 105,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 105,
+        "end": 105,
+        "label": "speaker-block-105"
+      },
+      "segmentFingerprint": "sha256:d105daea580ec72a12ee2efe73fd052d282b251909b2bd6fe12ca28e295e3a4c",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [
+        "belief",
+        "identity-trait",
+        "politics"
+      ],
+      "independentHighRiskStrata": [
+        "belief",
+        "politics"
+      ],
+      "agreedHighRiskStrata": [
+        "belief",
+        "politics"
+      ],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S19-0108",
+      "sourceUnitOrdinal": 107,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 107,
+        "end": 107,
+        "label": "speaker-block-107"
+      },
+      "segmentFingerprint": "sha256:e218aa79150869abfb5498415434692f3dd6db5ddba02d8faef597bf01a10214",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [
+        "belief",
+        "biography",
+        "boundary"
+      ],
+      "independentHighRiskStrata": [
+        "biography",
+        "politics"
+      ],
+      "agreedHighRiskStrata": [
+        "biography"
+      ],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S19-0110",
+      "sourceUnitOrdinal": 109,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 109,
+        "end": 109,
+        "label": "speaker-block-109"
+      },
+      "segmentFingerprint": "sha256:713f3fcb2b3f174879ac20859b3045d7867c5c6bdbd603833b60936d29d2eecc",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [
+        "voice-adjacent"
+      ],
+      "independentHighRiskStrata": [
+        "biography"
+      ],
+      "agreedHighRiskStrata": [],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S19-0112",
+      "sourceUnitOrdinal": 111,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 111,
+        "end": 111,
+        "label": "speaker-block-111"
+      },
+      "segmentFingerprint": "sha256:451f49601630d4dbaf29c5f35d330fd1da6feef58cbf0c9adc38f94a136be03c",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [],
+      "independentHighRiskStrata": [],
+      "agreedHighRiskStrata": [],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S19-0114",
+      "sourceUnitOrdinal": 113,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 113,
+        "end": 113,
+        "label": "speaker-block-113"
+      },
+      "segmentFingerprint": "sha256:8430ef0f3fdc68459c33fc5758feedbdb745e7442b7f74780382483f5a79c8e2",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [],
+      "independentHighRiskStrata": [],
+      "agreedHighRiskStrata": [],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "uncertainty-withheld"
+    },
+    {
+      "unitId": "C-S19-0116",
+      "sourceUnitOrdinal": 115,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 115,
+        "end": 115,
+        "label": "speaker-block-115"
+      },
+      "segmentFingerprint": "sha256:685449ae149fdacab24cbf3d931e173859f3005414dd36b4dc1451f1e9c90414",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [
+        "biography",
+        "contradiction",
+        "grief-or-hurt"
+      ],
+      "independentHighRiskStrata": [
+        "contradiction",
+        "grief-or-hurt"
+      ],
+      "agreedHighRiskStrata": [
+        "contradiction",
+        "grief-or-hurt"
+      ],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S19-0118",
+      "sourceUnitOrdinal": 117,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 117,
+        "end": 117,
+        "label": "speaker-block-117"
+      },
+      "segmentFingerprint": "sha256:7ce0820373e454fda2359923c732d5f21f50a46bf9b200b13ae57ec66630a492",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [
+        "boundary",
+        "identity-trait"
+      ],
+      "independentHighRiskStrata": [
+        "boundary",
+        "identity-trait"
+      ],
+      "agreedHighRiskStrata": [
+        "boundary",
+        "identity-trait"
+      ],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    }
+  ],
+  "excludedRanges": [
+    {
+      "exclusionId": "CX-S19-0001",
+      "sourceUnitStart": 0,
+      "sourceUnitEnd": 0,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 0,
+        "end": 0,
+        "label": "speaker-block-0-0"
+      },
+      "segmentFingerprint": "sha256:2af8b5835dcc2494071ab53c4ad20e74616d9eaabc67fdbefe26d563af3d302b",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S19-0002",
+      "sourceUnitStart": 2,
+      "sourceUnitEnd": 2,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 2,
+        "end": 2,
+        "label": "speaker-block-2-2"
+      },
+      "segmentFingerprint": "sha256:7298cfa8bffc05f6d2a3721739fb9e8b4092f9e9514bc778d7030a57cfcdd3ad",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S19-0003",
+      "sourceUnitStart": 4,
+      "sourceUnitEnd": 4,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 4,
+        "end": 4,
+        "label": "speaker-block-4-4"
+      },
+      "segmentFingerprint": "sha256:9e8993e73b41f0222a23a61dd899209f8c9ba75d1ebed21760a553c18efd9b06",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S19-0004",
+      "sourceUnitStart": 6,
+      "sourceUnitEnd": 7,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 6,
+        "end": 7,
+        "label": "speaker-block-6-7"
+      },
+      "segmentFingerprint": "sha256:a5da5bfabf83e669e59de801acf3f86366aaf712ebd3c4dfecb288c0661586e3",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S19-0005",
+      "sourceUnitStart": 9,
+      "sourceUnitEnd": 9,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 9,
+        "end": 9,
+        "label": "speaker-block-9-9"
+      },
+      "segmentFingerprint": "sha256:c122f40c28ab4966f67dd8e50b9bd3a08212cf841a307e27c382b78e601360e9",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S19-0006",
+      "sourceUnitStart": 11,
+      "sourceUnitEnd": 11,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 11,
+        "end": 11,
+        "label": "speaker-block-11-11"
+      },
+      "segmentFingerprint": "sha256:49d07901919d50023f5f3a487d2fb7d68c3ddcf1f6055659ae9ffb758b77881d",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S19-0007",
+      "sourceUnitStart": 13,
+      "sourceUnitEnd": 13,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 13,
+        "end": 13,
+        "label": "speaker-block-13-13"
+      },
+      "segmentFingerprint": "sha256:0df42d269f378a83ce43d9dcba7dba2320cd4fd6359984cf464b8dc73f71e3ea",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S19-0008",
+      "sourceUnitStart": 15,
+      "sourceUnitEnd": 15,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 15,
+        "end": 15,
+        "label": "speaker-block-15-15"
+      },
+      "segmentFingerprint": "sha256:2b5aa01096bed246b94faca4054fa2d513f78bd3b181bf7f9d443c00c89adb8c",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S19-0009",
+      "sourceUnitStart": 17,
+      "sourceUnitEnd": 18,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 17,
+        "end": 18,
+        "label": "speaker-block-17-18"
+      },
+      "segmentFingerprint": "sha256:615675e4047a8d4670ecbf58bbf7347e02702c594744f1aff2fd1b4c1eb27124",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S19-0010",
+      "sourceUnitStart": 20,
+      "sourceUnitEnd": 20,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 20,
+        "end": 20,
+        "label": "speaker-block-20-20"
+      },
+      "segmentFingerprint": "sha256:a1269e3733e27d04fe378ea5ccec6a6d1ad5448f0d4282042f05ad5476aba8c5",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S19-0011",
+      "sourceUnitStart": 22,
+      "sourceUnitEnd": 22,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 22,
+        "end": 22,
+        "label": "speaker-block-22-22"
+      },
+      "segmentFingerprint": "sha256:9afa7346208e8330f22cea36192b61d8142f4607e24e688c439ff9a65504416a",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S19-0012",
+      "sourceUnitStart": 24,
+      "sourceUnitEnd": 24,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 24,
+        "end": 24,
+        "label": "speaker-block-24-24"
+      },
+      "segmentFingerprint": "sha256:cce0bdbe7908e548a4f3f961fc49cb9c867aff6bd9ec9d8d07d7319c0c25bf5d",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S19-0013",
+      "sourceUnitStart": 26,
+      "sourceUnitEnd": 26,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 26,
+        "end": 26,
+        "label": "speaker-block-26-26"
+      },
+      "segmentFingerprint": "sha256:8003c06bc4736a9ebac63728b8e24461ef097225aed7db90c204f151db3b35ba",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S19-0014",
+      "sourceUnitStart": 28,
+      "sourceUnitEnd": 28,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 28,
+        "end": 28,
+        "label": "speaker-block-28-28"
+      },
+      "segmentFingerprint": "sha256:9a6e2e54f20a2826137d2154ed811c48013f3ed19662d87d554a366f0eb7b340",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S19-0015",
+      "sourceUnitStart": 30,
+      "sourceUnitEnd": 30,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 30,
+        "end": 30,
+        "label": "speaker-block-30-30"
+      },
+      "segmentFingerprint": "sha256:f3c7754af7d0045fc2916878049c0558e4f695c164d9684a10b69b961c5be9f0",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S19-0016",
+      "sourceUnitStart": 32,
+      "sourceUnitEnd": 32,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 32,
+        "end": 32,
+        "label": "speaker-block-32-32"
+      },
+      "segmentFingerprint": "sha256:e154b5d8a0a70117e3f8a4f0631832ab5bcf8518c2be7537382b47c546c83542",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S19-0017",
+      "sourceUnitStart": 34,
+      "sourceUnitEnd": 34,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 34,
+        "end": 34,
+        "label": "speaker-block-34-34"
+      },
+      "segmentFingerprint": "sha256:1986d3b4264dad712d2065d0ef1fd8c013995b2432bdc99728eeb7f267370428",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S19-0018",
+      "sourceUnitStart": 36,
+      "sourceUnitEnd": 36,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 36,
+        "end": 36,
+        "label": "speaker-block-36-36"
+      },
+      "segmentFingerprint": "sha256:78a5446597ee3a5400d7fc948625359fd4f68eee4c7c6be9f6852c1ae728e9f5",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S19-0019",
+      "sourceUnitStart": 38,
+      "sourceUnitEnd": 38,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 38,
+        "end": 38,
+        "label": "speaker-block-38-38"
+      },
+      "segmentFingerprint": "sha256:bc30b9b3c075c60c150366a6abdfa551600db600017f39ab9a88cc0efb0f057e",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S19-0020",
+      "sourceUnitStart": 40,
+      "sourceUnitEnd": 40,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 40,
+        "end": 40,
+        "label": "speaker-block-40-40"
+      },
+      "segmentFingerprint": "sha256:e4850c7c36b5f624dffa1e7aecfdb81ca1d272e75f0e37faa09c518b01a9f8db",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S19-0021",
+      "sourceUnitStart": 42,
+      "sourceUnitEnd": 42,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 42,
+        "end": 42,
+        "label": "speaker-block-42-42"
+      },
+      "segmentFingerprint": "sha256:cf2efc8b3c8292affab24ccd34878dac779dc0daaf9cd16862b6a83e1a6dc955",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S19-0022",
+      "sourceUnitStart": 44,
+      "sourceUnitEnd": 44,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 44,
+        "end": 44,
+        "label": "speaker-block-44-44"
+      },
+      "segmentFingerprint": "sha256:58300620330533b6b2d8d999ce4cfb7f2c056981a143531f13b0b758dcc08589",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S19-0023",
+      "sourceUnitStart": 46,
+      "sourceUnitEnd": 46,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 46,
+        "end": 46,
+        "label": "speaker-block-46-46"
+      },
+      "segmentFingerprint": "sha256:d3e20d98a16f78cdaafbfa6a91697a49d3b532b0ec61376c4c463309b13f9fb5",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S19-0024",
+      "sourceUnitStart": 48,
+      "sourceUnitEnd": 48,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 48,
+        "end": 48,
+        "label": "speaker-block-48-48"
+      },
+      "segmentFingerprint": "sha256:56e66ae97c39b87fe32493e51347030bf5cb61dd058725dbaff3c6acfa7dda05",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S19-0025",
+      "sourceUnitStart": 50,
+      "sourceUnitEnd": 50,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 50,
+        "end": 50,
+        "label": "speaker-block-50-50"
+      },
+      "segmentFingerprint": "sha256:1c5f7b268b3a105248a4eaf522e164a4a5dcf8a8ae1b3c213a7ce3a896eed25b",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S19-0026",
+      "sourceUnitStart": 52,
+      "sourceUnitEnd": 52,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 52,
+        "end": 52,
+        "label": "speaker-block-52-52"
+      },
+      "segmentFingerprint": "sha256:35ee53f265d0a5ac9a05fca7aafba110f17abf655476f669fdae8cdbc6013d19",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S19-0027",
+      "sourceUnitStart": 54,
+      "sourceUnitEnd": 54,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 54,
+        "end": 54,
+        "label": "speaker-block-54-54"
+      },
+      "segmentFingerprint": "sha256:e48f21c43283b8809f727cba6bc781a1310abb8de5608822472d83ce523c8a5b",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S19-0028",
+      "sourceUnitStart": 56,
+      "sourceUnitEnd": 56,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 56,
+        "end": 56,
+        "label": "speaker-block-56-56"
+      },
+      "segmentFingerprint": "sha256:fd0de6322e9d8f98f92bbdfbcba9fb39131296951094094d58f7ba099ff1098f",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S19-0029",
+      "sourceUnitStart": 58,
+      "sourceUnitEnd": 58,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 58,
+        "end": 58,
+        "label": "speaker-block-58-58"
+      },
+      "segmentFingerprint": "sha256:8706647fec1c7ebb145e167892b0c6042f76d0a87727faa802accc985f10bba2",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S19-0030",
+      "sourceUnitStart": 60,
+      "sourceUnitEnd": 60,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 60,
+        "end": 60,
+        "label": "speaker-block-60-60"
+      },
+      "segmentFingerprint": "sha256:0d3843a89c8cc62ad7ac2c243e3486c4c1692648497fc5ea90be35c21b9e93cd",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S19-0031",
+      "sourceUnitStart": 62,
+      "sourceUnitEnd": 62,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 62,
+        "end": 62,
+        "label": "speaker-block-62-62"
+      },
+      "segmentFingerprint": "sha256:95d2db8562c605a27065ba9bf2408289bcd6debbc141534086218c0618b9106a",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S19-0032",
+      "sourceUnitStart": 64,
+      "sourceUnitEnd": 64,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 64,
+        "end": 64,
+        "label": "speaker-block-64-64"
+      },
+      "segmentFingerprint": "sha256:496b5cf286c9df4489333752c127cd3def25917b80ca312342ae44bccd72b014",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S19-0033",
+      "sourceUnitStart": 66,
+      "sourceUnitEnd": 66,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 66,
+        "end": 66,
+        "label": "speaker-block-66-66"
+      },
+      "segmentFingerprint": "sha256:ef63bcb8e2b65435715d34ae357107019827c0028b64a974e4a059617c146f1e",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S19-0034",
+      "sourceUnitStart": 68,
+      "sourceUnitEnd": 68,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 68,
+        "end": 68,
+        "label": "speaker-block-68-68"
+      },
+      "segmentFingerprint": "sha256:b1f5d68ad0977ad07680e5de194ecbefc0dc2c0030ea92902623bc0d67bd5d57",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S19-0035",
+      "sourceUnitStart": 70,
+      "sourceUnitEnd": 70,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 70,
+        "end": 70,
+        "label": "speaker-block-70-70"
+      },
+      "segmentFingerprint": "sha256:38d41e97370cfcb89e56701549854e5f14e395dbd556ebe0bad1e1b462eebe2e",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S19-0036",
+      "sourceUnitStart": 72,
+      "sourceUnitEnd": 72,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 72,
+        "end": 72,
+        "label": "speaker-block-72-72"
+      },
+      "segmentFingerprint": "sha256:fe681d63ad7c605032a5dd6af1d2b47ac1f1daaae23cbdee500445f60b8f91a0",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S19-0037",
+      "sourceUnitStart": 74,
+      "sourceUnitEnd": 74,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 74,
+        "end": 74,
+        "label": "speaker-block-74-74"
+      },
+      "segmentFingerprint": "sha256:fecaff9c5432ba9adb95825b65fda2b2fdd60e47ba1acf8077d7446a27cbd2d9",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S19-0038",
+      "sourceUnitStart": 76,
+      "sourceUnitEnd": 76,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 76,
+        "end": 76,
+        "label": "speaker-block-76-76"
+      },
+      "segmentFingerprint": "sha256:189b1d52f3b26fa39e28be3b15fae86dc8c54e2c8496389c15188ce48e78d88e",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S19-0039",
+      "sourceUnitStart": 78,
+      "sourceUnitEnd": 78,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 78,
+        "end": 78,
+        "label": "speaker-block-78-78"
+      },
+      "segmentFingerprint": "sha256:1c0973a3d205e37bc8c3b06fda53c2c7ae329abf32c842391eabb5cb39661af8",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S19-0040",
+      "sourceUnitStart": 80,
+      "sourceUnitEnd": 80,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 80,
+        "end": 80,
+        "label": "speaker-block-80-80"
+      },
+      "segmentFingerprint": "sha256:1d6b79f5c218467c091b636d10b71314788fadda8931244f8cd39434a30a2eec",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S19-0041",
+      "sourceUnitStart": 82,
+      "sourceUnitEnd": 82,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 82,
+        "end": 82,
+        "label": "speaker-block-82-82"
+      },
+      "segmentFingerprint": "sha256:1ccee8db16637236ee314e46793c969ee3471efb3a11a223df799864d07ff6cd",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S19-0042",
+      "sourceUnitStart": 84,
+      "sourceUnitEnd": 84,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 84,
+        "end": 84,
+        "label": "speaker-block-84-84"
+      },
+      "segmentFingerprint": "sha256:858aae32bd4e39705f412ffc725ef76b6093e518f89ab6f321bbce43173a547e",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S19-0043",
+      "sourceUnitStart": 86,
+      "sourceUnitEnd": 86,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 86,
+        "end": 86,
+        "label": "speaker-block-86-86"
+      },
+      "segmentFingerprint": "sha256:178a77b00f672fadd33a966480378bd20e48db4eabc91ce5428ad9436771f594",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S19-0044",
+      "sourceUnitStart": 88,
+      "sourceUnitEnd": 88,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 88,
+        "end": 88,
+        "label": "speaker-block-88-88"
+      },
+      "segmentFingerprint": "sha256:462490e3ebf6d22722cbb026fe5625899525a29de8f3e57c0654922cdc316d68",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S19-0045",
+      "sourceUnitStart": 90,
+      "sourceUnitEnd": 90,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 90,
+        "end": 90,
+        "label": "speaker-block-90-90"
+      },
+      "segmentFingerprint": "sha256:a110fc7e7c26825f41d57794c91c233c6a548a00cf751d2e1fe38e5dddc7e9c3",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S19-0046",
+      "sourceUnitStart": 92,
+      "sourceUnitEnd": 92,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 92,
+        "end": 92,
+        "label": "speaker-block-92-92"
+      },
+      "segmentFingerprint": "sha256:2682116033e510d6da092151f8822005ca025394cbd0d13d15af75eee4206cdf",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S19-0047",
+      "sourceUnitStart": 94,
+      "sourceUnitEnd": 94,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 94,
+        "end": 94,
+        "label": "speaker-block-94-94"
+      },
+      "segmentFingerprint": "sha256:85f8638fb5ffa21640171d9e7bdf47c03e41262d930e30b040c33791f187d45d",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S19-0048",
+      "sourceUnitStart": 96,
+      "sourceUnitEnd": 96,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 96,
+        "end": 96,
+        "label": "speaker-block-96-96"
+      },
+      "segmentFingerprint": "sha256:6a91d70ef0eef93fcc110229d74b42116750be6ede31a68c15dd14666a0e46bc",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S19-0049",
+      "sourceUnitStart": 98,
+      "sourceUnitEnd": 98,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 98,
+        "end": 98,
+        "label": "speaker-block-98-98"
+      },
+      "segmentFingerprint": "sha256:d14d1b34c0ac7da957eba9bea48c835aa85d88aba3cc99adbd72e04c364dafee",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S19-0050",
+      "sourceUnitStart": 100,
+      "sourceUnitEnd": 100,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 100,
+        "end": 100,
+        "label": "speaker-block-100-100"
+      },
+      "segmentFingerprint": "sha256:999194a4876983de10c75917338e878df370122ac73afec4b507bd8fed349053",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S19-0051",
+      "sourceUnitStart": 102,
+      "sourceUnitEnd": 102,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 102,
+        "end": 102,
+        "label": "speaker-block-102-102"
+      },
+      "segmentFingerprint": "sha256:634b82bedec840460dfc18e83949e785a8e472b9bf4c0246dc2f7897debf4b69",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S19-0052",
+      "sourceUnitStart": 104,
+      "sourceUnitEnd": 104,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 104,
+        "end": 104,
+        "label": "speaker-block-104-104"
+      },
+      "segmentFingerprint": "sha256:f027c7432930b7c9db93310ed1c35273d5292b4dee09651f18b8a037d6d763cc",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S19-0053",
+      "sourceUnitStart": 106,
+      "sourceUnitEnd": 106,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 106,
+        "end": 106,
+        "label": "speaker-block-106-106"
+      },
+      "segmentFingerprint": "sha256:2d558fbd8994c05219798ec3ab8caeddba6b383d75ac225c33e61fdf8bc3ec10",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S19-0054",
+      "sourceUnitStart": 108,
+      "sourceUnitEnd": 108,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 108,
+        "end": 108,
+        "label": "speaker-block-108-108"
+      },
+      "segmentFingerprint": "sha256:2d9adcfb0bc7fe485284674a926439a7b5979665dda194597a8fb02d0860b3b1",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S19-0055",
+      "sourceUnitStart": 110,
+      "sourceUnitEnd": 110,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 110,
+        "end": 110,
+        "label": "speaker-block-110-110"
+      },
+      "segmentFingerprint": "sha256:2322aed16a247e533e335eb28b29c0fd8c112c31d1aea9db324751ffe4bc7066",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S19-0056",
+      "sourceUnitStart": 112,
+      "sourceUnitEnd": 112,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 112,
+        "end": 112,
+        "label": "speaker-block-112-112"
+      },
+      "segmentFingerprint": "sha256:41c9dc881d98ee67f587385bdbb984e74157e1310e5ba4e59ab0ce78fcef35fd",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S19-0057",
+      "sourceUnitStart": 114,
+      "sourceUnitEnd": 114,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 114,
+        "end": 114,
+        "label": "speaker-block-114-114"
+      },
+      "segmentFingerprint": "sha256:4ce6b1e7fe31725f088ea7211e418310d204a789d65d54d51b7e9524a7847fd6",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S19-0058",
+      "sourceUnitStart": 116,
+      "sourceUnitEnd": 116,
+      "locator": {
+        "kind": "speaker-block-index",
+        "start": 116,
+        "end": 116,
+        "label": "speaker-block-116-116"
+      },
+      "segmentFingerprint": "sha256:812b82bbb84b761fe47c20c4c56e7a9042cebf31dd5d3f37e09a8052ad1bca32",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    }
+  ],
+  "sourceContentStored": false,
+  "frozenBeforeAllocation": true,
+  "selectionPerformed": false,
+  "observationCodingPerformed": false,
+  "runtimeActivation": "prohibited"
+}

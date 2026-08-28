@@ -1,0 +1,1317 @@
+{
+  "schemaVersion": "jolene.personality-preallocation-capacity-ledger.v1",
+  "status": "independently-reviewed-before-allocation",
+  "sourceRegisterFingerprint": "sha256:29dcfbe68ffc7b7be13758be298739179146dab5041ff73ee9e49fc74218481f",
+  "boundaryProtocolFingerprint": "sha256:7ef6eba7a8eee9fde9be225f4e4b3dc7045a5165974091e008e41a592330bda7",
+  "highRiskTaxonomyFingerprint": "sha256:e56f2bd612a511a18eb9c1b47fc51b51715cdf1ed0e6bd6209f700c72351ee07",
+  "sourceRegisterId": "S05",
+  "sourceEventId": "E005",
+  "sourceContentFingerprint": "sha256:9c0e43d1f051e69bd26feb9a18da6d2ea1c8151660b94dfd7b9c72982e3edd1b",
+  "boundaryManifestFingerprint": "sha256:62a3319871080059754f464d1628bc41076336d996d43c7d15172ca639912c35",
+  "ledgerFingerprintMapFingerprint": "sha256:34ace012322a116caabb7dcc7624584e021344069175b37e2bc92c46317c6c55",
+  "policyAmendmentFingerprint": null,
+  "primaryReviewFingerprint": "sha256:6278149911dd7336e3fad8aa6994a35df1ae138c9c28adcd9f13e0a43808507d",
+  "independentReviewFingerprint": "sha256:0ac4bf1cd3c8d02c9bb25d58c5831d183bc1f9b58322ddaf6e455789c38e4484",
+  "segmentationRule": "paragraph-speaker-blocks-v1",
+  "sourceBoundaryUnitCount": 72,
+  "frozenAt": "2026-08-28T07:10:00Z",
+  "primaryReviewer": {
+    "reviewerId": "codex-primary-data-methodology-reviewer",
+    "reviewerType": "ai",
+    "tool": "Codex independent live-boundary audit plus OpenAI Responses API structured semantic review; store=false",
+    "modelVersion": "gpt-5.6-terra",
+    "reviewedAt": "2026-08-28T07:08:15.518Z"
+  },
+  "independentReviewer": {
+    "reviewerId": "independent-trust-rights-reviewer",
+    "reviewerType": "ai",
+    "tool": "Codex read-only live-boundary reproduction plus OpenAI Responses API semantic adjudication",
+    "modelVersion": "gpt-5.6-terra",
+    "reviewedAt": "2026-08-28T07:01:13.020Z"
+  },
+  "eligibleUnits": [
+    {
+      "unitId": "C-S05-0004",
+      "sourceUnitOrdinal": 3,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 3,
+        "end": 3,
+        "label": "paragraph-3"
+      },
+      "segmentFingerprint": "sha256:a50d2beca5b36565325f63e47283137a82472eb4aae886db17e848f173c63879",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [
+        "voice-adjacent"
+      ],
+      "independentHighRiskStrata": [
+        "voice-adjacent"
+      ],
+      "agreedHighRiskStrata": [
+        "voice-adjacent"
+      ],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S05-0007",
+      "sourceUnitOrdinal": 6,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 6,
+        "end": 6,
+        "label": "paragraph-6"
+      },
+      "segmentFingerprint": "sha256:e445cd86288a43083d11532f958b66af84e23deced49a576bd0483d72f222a9d",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [
+        "humor"
+      ],
+      "independentHighRiskStrata": [
+        "humor"
+      ],
+      "agreedHighRiskStrata": [
+        "humor"
+      ],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S05-0009",
+      "sourceUnitOrdinal": 8,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 8,
+        "end": 8,
+        "label": "paragraph-8"
+      },
+      "segmentFingerprint": "sha256:4b77bf6ab20fecfbe5dfa7ca177e986309c890c80fdbbae7844b6a0bb5746c23",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [
+        "biography"
+      ],
+      "independentHighRiskStrata": [
+        "biography"
+      ],
+      "agreedHighRiskStrata": [
+        "biography"
+      ],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S05-0012",
+      "sourceUnitOrdinal": 11,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 11,
+        "end": 11,
+        "label": "paragraph-11"
+      },
+      "segmentFingerprint": "sha256:f01547804baeef00195f1211e0605ed2a8bc92ae0020d52872c7f8341b4e1749",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [
+        "belief",
+        "biography",
+        "boundary"
+      ],
+      "independentHighRiskStrata": [
+        "belief",
+        "biography"
+      ],
+      "agreedHighRiskStrata": [
+        "belief",
+        "biography"
+      ],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S05-0016",
+      "sourceUnitOrdinal": 15,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 15,
+        "end": 15,
+        "label": "paragraph-15"
+      },
+      "segmentFingerprint": "sha256:427a78eb3a11960aaa716c44e2a60a1dfa2c5f10a8211ff79f1a928fb8199079",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [
+        "voice-adjacent"
+      ],
+      "independentHighRiskStrata": [
+        "voice-adjacent"
+      ],
+      "agreedHighRiskStrata": [
+        "voice-adjacent"
+      ],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S05-0019",
+      "sourceUnitOrdinal": 18,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 18,
+        "end": 18,
+        "label": "paragraph-18"
+      },
+      "segmentFingerprint": "sha256:b16f7790f9097f3d90e30da4e06ca1d4c832eeffaefdc047bd3b4291f92421c9",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [
+        "biography"
+      ],
+      "independentHighRiskStrata": [
+        "biography"
+      ],
+      "agreedHighRiskStrata": [
+        "biography"
+      ],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S05-0022",
+      "sourceUnitOrdinal": 21,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 21,
+        "end": 21,
+        "label": "paragraph-21"
+      },
+      "segmentFingerprint": "sha256:e4c4fe5e8857c60bcbb93759102c2512a6616f1956655c94798ee32c729d59c6",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [
+        "voice-adjacent"
+      ],
+      "independentHighRiskStrata": [],
+      "agreedHighRiskStrata": [],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S05-0024",
+      "sourceUnitOrdinal": 23,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 23,
+        "end": 23,
+        "label": "paragraph-23"
+      },
+      "segmentFingerprint": "sha256:695cd6f476db80bbcdc311323694b02e978b1b66100bd74c747a617075fb9721",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [],
+      "independentHighRiskStrata": [],
+      "agreedHighRiskStrata": [],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S05-0026",
+      "sourceUnitOrdinal": 25,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 25,
+        "end": 25,
+        "label": "paragraph-25"
+      },
+      "segmentFingerprint": "sha256:6df59c465e39640abe0eb768d1c85bd17035f5e7730d01bb4d6c723a10d7c8c7",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [],
+      "independentHighRiskStrata": [],
+      "agreedHighRiskStrata": [],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S05-0028",
+      "sourceUnitOrdinal": 27,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 27,
+        "end": 27,
+        "label": "paragraph-27"
+      },
+      "segmentFingerprint": "sha256:0fd21780fd079c9cde56fdd3364841557a3b75da420eb22859a98c09c47ee4de",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [
+        "grief-or-hurt",
+        "voice-adjacent"
+      ],
+      "independentHighRiskStrata": [
+        "belief",
+        "voice-adjacent"
+      ],
+      "agreedHighRiskStrata": [],
+      "consensusWithheldHighRiskStrata": [
+        "voice-adjacent"
+      ],
+      "highRiskReviewState": "uncertainty-withheld"
+    },
+    {
+      "unitId": "C-S05-0029",
+      "sourceUnitOrdinal": 28,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 28,
+        "end": 28,
+        "label": "paragraph-28"
+      },
+      "segmentFingerprint": "sha256:8ee6518f775227226d31b885796d01f3557635616c5bc23b9492f3a8a5d878ae",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [],
+      "independentHighRiskStrata": [
+        "grief-or-hurt"
+      ],
+      "agreedHighRiskStrata": [],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S05-0031",
+      "sourceUnitOrdinal": 30,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 30,
+        "end": 30,
+        "label": "paragraph-30"
+      },
+      "segmentFingerprint": "sha256:ffbd417a43e79819bd70ce987a223c43f7d5e1fe67c39854133772be10fb65b5",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [
+        "biography"
+      ],
+      "independentHighRiskStrata": [
+        "biography"
+      ],
+      "agreedHighRiskStrata": [
+        "biography"
+      ],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S05-0034",
+      "sourceUnitOrdinal": 33,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 33,
+        "end": 33,
+        "label": "paragraph-33"
+      },
+      "segmentFingerprint": "sha256:9a27edd2f2905bad685ea8fabb76432163b045df957c71057a966533df5216af",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [
+        "identity-trait"
+      ],
+      "independentHighRiskStrata": [
+        "identity-trait"
+      ],
+      "agreedHighRiskStrata": [
+        "identity-trait"
+      ],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S05-0036",
+      "sourceUnitOrdinal": 35,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 35,
+        "end": 35,
+        "label": "paragraph-35"
+      },
+      "segmentFingerprint": "sha256:995fc236707c5cff2aec792151c4771d655c48817c7d2978be2bc9ff537fd021",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [
+        "humor"
+      ],
+      "independentHighRiskStrata": [
+        "humor"
+      ],
+      "agreedHighRiskStrata": [
+        "humor"
+      ],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S05-0038",
+      "sourceUnitOrdinal": 37,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 37,
+        "end": 37,
+        "label": "paragraph-37"
+      },
+      "segmentFingerprint": "sha256:eb56ddb4e71b1484ecdd60f4768c1399206bd2a369c78d55f48228e0738bbb66",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [
+        "belief",
+        "boundary",
+        "identity-trait"
+      ],
+      "independentHighRiskStrata": [
+        "belief",
+        "boundary",
+        "identity-trait"
+      ],
+      "agreedHighRiskStrata": [
+        "belief",
+        "boundary",
+        "identity-trait"
+      ],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S05-0041",
+      "sourceUnitOrdinal": 40,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 40,
+        "end": 40,
+        "label": "paragraph-40"
+      },
+      "segmentFingerprint": "sha256:cc60a8b84d2e505cba947504ff5a2328e8174c4735fb725eafa3d06ab0c2989b",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [],
+      "independentHighRiskStrata": [],
+      "agreedHighRiskStrata": [],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S05-0044",
+      "sourceUnitOrdinal": 43,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 43,
+        "end": 43,
+        "label": "paragraph-43"
+      },
+      "segmentFingerprint": "sha256:fa3a4f38915ef6761c7eb0f181853b559c8759e363af95798b1692c4bc630179",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [],
+      "independentHighRiskStrata": [],
+      "agreedHighRiskStrata": [],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S05-0047",
+      "sourceUnitOrdinal": 46,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 46,
+        "end": 46,
+        "label": "paragraph-46"
+      },
+      "segmentFingerprint": "sha256:8a2a97c918b15314aa1bf0c2699129ac340c698cd670e1c59d00d8175b179f4f",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [
+        "voice-adjacent"
+      ],
+      "independentHighRiskStrata": [
+        "voice-adjacent"
+      ],
+      "agreedHighRiskStrata": [
+        "voice-adjacent"
+      ],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S05-0049",
+      "sourceUnitOrdinal": 48,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 48,
+        "end": 48,
+        "label": "paragraph-48"
+      },
+      "segmentFingerprint": "sha256:840d85e1902b1f5559ffd03efcb87ea14de0b96f3a61f18e42e4192f2e5d2e77",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [],
+      "independentHighRiskStrata": [],
+      "agreedHighRiskStrata": [],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S05-0051",
+      "sourceUnitOrdinal": 50,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 50,
+        "end": 50,
+        "label": "paragraph-50"
+      },
+      "segmentFingerprint": "sha256:506d31e45c4bd20e201fc46479d845a45797d3fa711b42ea0e19b91261a284b1",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [
+        "biography"
+      ],
+      "independentHighRiskStrata": [
+        "biography"
+      ],
+      "agreedHighRiskStrata": [
+        "biography"
+      ],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S05-0054",
+      "sourceUnitOrdinal": 53,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 53,
+        "end": 53,
+        "label": "paragraph-53"
+      },
+      "segmentFingerprint": "sha256:676f6f12fe9292d1d7c89a6064cbb1f5d8a4f2d1bc47477dfa47ff8fe8173443",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [],
+      "independentHighRiskStrata": [],
+      "agreedHighRiskStrata": [],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S05-0056",
+      "sourceUnitOrdinal": 55,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 55,
+        "end": 55,
+        "label": "paragraph-55"
+      },
+      "segmentFingerprint": "sha256:f36a8168e5817a404b56fba77a4b6876404eeb1cd091a47234c7d8c44cd45b40",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [
+        "biography",
+        "contradiction"
+      ],
+      "independentHighRiskStrata": [
+        "biography"
+      ],
+      "agreedHighRiskStrata": [
+        "biography"
+      ],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S05-0058",
+      "sourceUnitOrdinal": 57,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 57,
+        "end": 57,
+        "label": "paragraph-57"
+      },
+      "segmentFingerprint": "sha256:970c146b8fec4bde69be72025ec4e25361c3752aa0e32d1017c493b02ff80d5c",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [
+        "belief",
+        "biography"
+      ],
+      "independentHighRiskStrata": [
+        "biography"
+      ],
+      "agreedHighRiskStrata": [
+        "biography"
+      ],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S05-0060",
+      "sourceUnitOrdinal": 59,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 59,
+        "end": 59,
+        "label": "paragraph-59"
+      },
+      "segmentFingerprint": "sha256:80ea031d26a8287053fa22b6c441b5a7304d83b930c746e0284b39231703ba6c",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [
+        "belief"
+      ],
+      "independentHighRiskStrata": [
+        "belief"
+      ],
+      "agreedHighRiskStrata": [
+        "belief"
+      ],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S05-0062",
+      "sourceUnitOrdinal": 61,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 61,
+        "end": 61,
+        "label": "paragraph-61"
+      },
+      "segmentFingerprint": "sha256:f69799f67d6ec84a89b9b0a0f2c8a01ee29ca4e5cc253765ada639ab70724f90",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [
+        "belief"
+      ],
+      "independentHighRiskStrata": [
+        "belief"
+      ],
+      "agreedHighRiskStrata": [
+        "belief"
+      ],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S05-0066",
+      "sourceUnitOrdinal": 65,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 65,
+        "end": 65,
+        "label": "paragraph-65"
+      },
+      "segmentFingerprint": "sha256:004d6afb214af9ca55a9d85cb0ad31849052f357ecfb3b95717b20bb72082215",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [
+        "belief",
+        "contradiction",
+        "grief-or-hurt",
+        "politics"
+      ],
+      "independentHighRiskStrata": [
+        "belief",
+        "grief-or-hurt",
+        "politics"
+      ],
+      "agreedHighRiskStrata": [
+        "belief",
+        "grief-or-hurt",
+        "politics"
+      ],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S05-0068",
+      "sourceUnitOrdinal": 67,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 67,
+        "end": 67,
+        "label": "paragraph-67"
+      },
+      "segmentFingerprint": "sha256:cceb8c1d4e97de72989f1480228f32e790e0b0de9fd8d20038e418a5c842084b",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [],
+      "independentHighRiskStrata": [],
+      "agreedHighRiskStrata": [],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S05-0070",
+      "sourceUnitOrdinal": 69,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 69,
+        "end": 69,
+        "label": "paragraph-69"
+      },
+      "segmentFingerprint": "sha256:1708a7db05b9df082a4a7d76c27cbfdb9cd520f21c4af66fd444bf8748c2ce36",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [],
+      "independentHighRiskStrata": [],
+      "agreedHighRiskStrata": [],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S05-0072",
+      "sourceUnitOrdinal": 71,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 71,
+        "end": 71,
+        "label": "paragraph-71"
+      },
+      "segmentFingerprint": "sha256:aa5958ff69499d163955738c4000b156db939ade862f00b509559d25d29dc276",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [
+        "voice-adjacent"
+      ],
+      "independentHighRiskStrata": [
+        "voice-adjacent"
+      ],
+      "agreedHighRiskStrata": [
+        "voice-adjacent"
+      ],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    }
+  ],
+  "excludedRanges": [
+    {
+      "exclusionId": "CX-S05-0001",
+      "sourceUnitStart": 0,
+      "sourceUnitEnd": 0,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 0,
+        "end": 0,
+        "label": "paragraph-0-0"
+      },
+      "segmentFingerprint": "sha256:f2db2d86888d94b3e67f8839649390f72f20cfc9a261a32ed8127f2fbdb11705",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S05-0002",
+      "sourceUnitStart": 1,
+      "sourceUnitEnd": 2,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 1,
+        "end": 2,
+        "label": "paragraph-1-2"
+      },
+      "segmentFingerprint": "sha256:4dc213261a84741cba43f7aabe98b7f4deb2160b7d05fc54f5179b896a5a7524",
+      "primaryReason": "speaker-attribution-unclear",
+      "independentReason": "speaker-attribution-unclear",
+      "agreedReason": "speaker-attribution-unclear"
+    },
+    {
+      "exclusionId": "CX-S05-0003",
+      "sourceUnitStart": 4,
+      "sourceUnitEnd": 4,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 4,
+        "end": 4,
+        "label": "paragraph-4-4"
+      },
+      "segmentFingerprint": "sha256:4f1b672415aead11586993fc0c230eb85942a6f874f7e9916b3194760933c52d",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S05-0004",
+      "sourceUnitStart": 5,
+      "sourceUnitEnd": 5,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 5,
+        "end": 5,
+        "label": "paragraph-5-5"
+      },
+      "segmentFingerprint": "sha256:364e0895ea47c757519af5681c62fd1f8dfdd2915fc8789cb6ab0c70bf394d3e",
+      "primaryReason": "speaker-attribution-unclear",
+      "independentReason": "speaker-attribution-unclear",
+      "agreedReason": "speaker-attribution-unclear"
+    },
+    {
+      "exclusionId": "CX-S05-0005",
+      "sourceUnitStart": 7,
+      "sourceUnitEnd": 7,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 7,
+        "end": 7,
+        "label": "paragraph-7-7"
+      },
+      "segmentFingerprint": "sha256:4fdc4dc9d0ea6a9712bd3653732567960411b032a5b57c8c839503634813af6c",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S05-0006",
+      "sourceUnitStart": 9,
+      "sourceUnitEnd": 9,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 9,
+        "end": 9,
+        "label": "paragraph-9-9"
+      },
+      "segmentFingerprint": "sha256:f88ffded03f5ceaee2654d7039c3eb8a7eee44b1816e792b2253c148c24099dc",
+      "primaryReason": "speaker-attribution-unclear",
+      "independentReason": "speaker-attribution-unclear",
+      "agreedReason": "speaker-attribution-unclear"
+    },
+    {
+      "exclusionId": "CX-S05-0007",
+      "sourceUnitStart": 10,
+      "sourceUnitEnd": 10,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 10,
+        "end": 10,
+        "label": "paragraph-10-10"
+      },
+      "segmentFingerprint": "sha256:afccd7633f9ea6084c93271ec0462e382180db11b18a9568bb3b465b0b4edc8f",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S05-0008",
+      "sourceUnitStart": 12,
+      "sourceUnitEnd": 12,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 12,
+        "end": 12,
+        "label": "paragraph-12-12"
+      },
+      "segmentFingerprint": "sha256:afab03ce6690ac1ec7935f177e5f415583b57e5daeca4c93a877fcaf881964e0",
+      "primaryReason": "speaker-attribution-unclear",
+      "independentReason": "speaker-attribution-unclear",
+      "agreedReason": "speaker-attribution-unclear"
+    },
+    {
+      "exclusionId": "CX-S05-0009",
+      "sourceUnitStart": 13,
+      "sourceUnitEnd": 13,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 13,
+        "end": 13,
+        "label": "paragraph-13-13"
+      },
+      "segmentFingerprint": "sha256:db97204ca9593183df2c81a49a5c30a47963a8746e4ab851cbdf37dbf8a2dd90",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S05-0010",
+      "sourceUnitStart": 14,
+      "sourceUnitEnd": 14,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 14,
+        "end": 14,
+        "label": "paragraph-14-14"
+      },
+      "segmentFingerprint": "sha256:e0639c99d5a9782ebfb400cadb836d1cdd6b8babd2a6583f66697a3f035157ef",
+      "primaryReason": "speaker-attribution-unclear",
+      "independentReason": "speaker-attribution-unclear",
+      "agreedReason": "speaker-attribution-unclear"
+    },
+    {
+      "exclusionId": "CX-S05-0011",
+      "sourceUnitStart": 16,
+      "sourceUnitEnd": 16,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 16,
+        "end": 16,
+        "label": "paragraph-16-16"
+      },
+      "segmentFingerprint": "sha256:c279136dae11ef40505db39751ece252e111b3390c3a0ee60b42cbd74c1ec3ef",
+      "primaryReason": "speaker-attribution-unclear",
+      "independentReason": "speaker-attribution-unclear",
+      "agreedReason": "speaker-attribution-unclear"
+    },
+    {
+      "exclusionId": "CX-S05-0012",
+      "sourceUnitStart": 17,
+      "sourceUnitEnd": 17,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 17,
+        "end": 17,
+        "label": "paragraph-17-17"
+      },
+      "segmentFingerprint": "sha256:76851b63828f8c9a6dd601c0b0aa5dbc3ee08005441bafbf4d7147f370ab2cde",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S05-0013",
+      "sourceUnitStart": 19,
+      "sourceUnitEnd": 19,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 19,
+        "end": 19,
+        "label": "paragraph-19-19"
+      },
+      "segmentFingerprint": "sha256:c280a7285955656ce1ade605cdf12bdf45d29c003421d1dda87f40dbc3a1d41e",
+      "primaryReason": "speaker-attribution-unclear",
+      "independentReason": "speaker-attribution-unclear",
+      "agreedReason": "speaker-attribution-unclear"
+    },
+    {
+      "exclusionId": "CX-S05-0014",
+      "sourceUnitStart": 20,
+      "sourceUnitEnd": 20,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 20,
+        "end": 20,
+        "label": "paragraph-20-20"
+      },
+      "segmentFingerprint": "sha256:80a12a93e91021b52c78055a992d43dd819a012cf0ecc505636a486141548f9a",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S05-0015",
+      "sourceUnitStart": 22,
+      "sourceUnitEnd": 22,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 22,
+        "end": 22,
+        "label": "paragraph-22-22"
+      },
+      "segmentFingerprint": "sha256:21a5d7bca64c540313f925a952101898c6ff856f89026d5344c20cccea8cfb8d",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S05-0016",
+      "sourceUnitStart": 24,
+      "sourceUnitEnd": 24,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 24,
+        "end": 24,
+        "label": "paragraph-24-24"
+      },
+      "segmentFingerprint": "sha256:9423fbc41d8aada06ee183122d4ee9fa68d04ed770df4011e1f4429ef7d45622",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S05-0017",
+      "sourceUnitStart": 26,
+      "sourceUnitEnd": 26,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 26,
+        "end": 26,
+        "label": "paragraph-26-26"
+      },
+      "segmentFingerprint": "sha256:5133af62f4f36c84ef799435e91f94b8f9cbbb76577d8fd8c07e5ec4a1811466",
+      "primaryReason": "speaker-attribution-unclear",
+      "independentReason": "speaker-attribution-unclear",
+      "agreedReason": "speaker-attribution-unclear"
+    },
+    {
+      "exclusionId": "CX-S05-0018",
+      "sourceUnitStart": 29,
+      "sourceUnitEnd": 29,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 29,
+        "end": 29,
+        "label": "paragraph-29-29"
+      },
+      "segmentFingerprint": "sha256:38f850bfd5a995dc5256ae3a1a1ed516eebbd74883cfb9d6369aa1894f6a7893",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S05-0019",
+      "sourceUnitStart": 31,
+      "sourceUnitEnd": 31,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 31,
+        "end": 31,
+        "label": "paragraph-31-31"
+      },
+      "segmentFingerprint": "sha256:9698df50a1c5d952722b8e0dd3c9b0d72b3801e353e7806664dc4404025c6a17",
+      "primaryReason": "speaker-attribution-unclear",
+      "independentReason": "speaker-attribution-unclear",
+      "agreedReason": "speaker-attribution-unclear"
+    },
+    {
+      "exclusionId": "CX-S05-0020",
+      "sourceUnitStart": 32,
+      "sourceUnitEnd": 32,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 32,
+        "end": 32,
+        "label": "paragraph-32-32"
+      },
+      "segmentFingerprint": "sha256:0021b4834f36ed76d3bded70335e546a9569d96c4ec38e91dae1544daa831f66",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S05-0021",
+      "sourceUnitStart": 34,
+      "sourceUnitEnd": 34,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 34,
+        "end": 34,
+        "label": "paragraph-34-34"
+      },
+      "segmentFingerprint": "sha256:912f4f85015e29a0e393ede4015eba917a5a607648ee96d8207385878c9e5d51",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S05-0022",
+      "sourceUnitStart": 36,
+      "sourceUnitEnd": 36,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 36,
+        "end": 36,
+        "label": "paragraph-36-36"
+      },
+      "segmentFingerprint": "sha256:36586366f477105bfe187a66b15a900f77475380708fef877e4bc4dd0b1680ef",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S05-0023",
+      "sourceUnitStart": 38,
+      "sourceUnitEnd": 38,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 38,
+        "end": 38,
+        "label": "paragraph-38-38"
+      },
+      "segmentFingerprint": "sha256:1351d9eb92261cd00a5c433e23dfdcc595c82b82d41bb69ffc83933bc6932163",
+      "primaryReason": "speaker-attribution-unclear",
+      "independentReason": "speaker-attribution-unclear",
+      "agreedReason": "speaker-attribution-unclear"
+    },
+    {
+      "exclusionId": "CX-S05-0024",
+      "sourceUnitStart": 39,
+      "sourceUnitEnd": 39,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 39,
+        "end": 39,
+        "label": "paragraph-39-39"
+      },
+      "segmentFingerprint": "sha256:d95661d7fa9333a007b8c83889a8b3132d70135e38e45090c17db02eb4749ee8",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S05-0025",
+      "sourceUnitStart": 41,
+      "sourceUnitEnd": 41,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 41,
+        "end": 41,
+        "label": "paragraph-41-41"
+      },
+      "segmentFingerprint": "sha256:82155832b22ca93d418fe577bf0a54a59e35c3b91097f217a558b6ed2798a4d7",
+      "primaryReason": "speaker-attribution-unclear",
+      "independentReason": "speaker-attribution-unclear",
+      "agreedReason": "speaker-attribution-unclear"
+    },
+    {
+      "exclusionId": "CX-S05-0026",
+      "sourceUnitStart": 42,
+      "sourceUnitEnd": 42,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 42,
+        "end": 42,
+        "label": "paragraph-42-42"
+      },
+      "segmentFingerprint": "sha256:e26059e21a2c726e631e9c2fd1815788d1829ce16159dd6d999ea649fcedbf98",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S05-0027",
+      "sourceUnitStart": 44,
+      "sourceUnitEnd": 44,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 44,
+        "end": 44,
+        "label": "paragraph-44-44"
+      },
+      "segmentFingerprint": "sha256:d2b0889f946b67828606cc40ecf31616e6978568073e18373436efef5f5e974d",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S05-0028",
+      "sourceUnitStart": 45,
+      "sourceUnitEnd": 45,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 45,
+        "end": 45,
+        "label": "paragraph-45-45"
+      },
+      "segmentFingerprint": "sha256:6c4c67761857e30ab870d77de48a0c972ae535e5fb86b3d9d9ac26620dbd03f9",
+      "primaryReason": "speaker-attribution-unclear",
+      "independentReason": "speaker-attribution-unclear",
+      "agreedReason": "speaker-attribution-unclear"
+    },
+    {
+      "exclusionId": "CX-S05-0029",
+      "sourceUnitStart": 47,
+      "sourceUnitEnd": 47,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 47,
+        "end": 47,
+        "label": "paragraph-47-47"
+      },
+      "segmentFingerprint": "sha256:352fa0ffe021e2ce42e230473408117a80366684625cddeebad4753910dd0f97",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S05-0030",
+      "sourceUnitStart": 49,
+      "sourceUnitEnd": 49,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 49,
+        "end": 49,
+        "label": "paragraph-49-49"
+      },
+      "segmentFingerprint": "sha256:ade2cd4616f90148cb3991bfad55cdce63abf37ddeb39730bd7533728477821e",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S05-0031",
+      "sourceUnitStart": 51,
+      "sourceUnitEnd": 51,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 51,
+        "end": 51,
+        "label": "paragraph-51-51"
+      },
+      "segmentFingerprint": "sha256:1b01b962f71252359131315de6a855030a36a52436c36c542ec128791a3c01f1",
+      "primaryReason": "speaker-attribution-unclear",
+      "independentReason": "speaker-attribution-unclear",
+      "agreedReason": "speaker-attribution-unclear"
+    },
+    {
+      "exclusionId": "CX-S05-0032",
+      "sourceUnitStart": 52,
+      "sourceUnitEnd": 52,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 52,
+        "end": 52,
+        "label": "paragraph-52-52"
+      },
+      "segmentFingerprint": "sha256:a47a8315d0f5cc33d8945452b5ed1554784d08cd6a9d0e20efb1e8eced83a3af",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S05-0033",
+      "sourceUnitStart": 54,
+      "sourceUnitEnd": 54,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 54,
+        "end": 54,
+        "label": "paragraph-54-54"
+      },
+      "segmentFingerprint": "sha256:151611827213649ad754aeebea8ef5b8aa9afd6ab3487fe3c049f6d3c987557b",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S05-0034",
+      "sourceUnitStart": 56,
+      "sourceUnitEnd": 56,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 56,
+        "end": 56,
+        "label": "paragraph-56-56"
+      },
+      "segmentFingerprint": "sha256:ee3ec179e7101b989979a84889cac763723ef553d27c7b19090d256ebc1cc09b",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S05-0035",
+      "sourceUnitStart": 58,
+      "sourceUnitEnd": 58,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 58,
+        "end": 58,
+        "label": "paragraph-58-58"
+      },
+      "segmentFingerprint": "sha256:6cff5dbd655619d87f28cc3d2af29844a49fc7b67f2b59eb0c9f730c0d3f8c44",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S05-0036",
+      "sourceUnitStart": 60,
+      "sourceUnitEnd": 60,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 60,
+        "end": 60,
+        "label": "paragraph-60-60"
+      },
+      "segmentFingerprint": "sha256:b115834c69da45c2f34255c35f0a9fbced88608833fbb261e07bbf9c9de4a6d8",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S05-0037",
+      "sourceUnitStart": 62,
+      "sourceUnitEnd": 63,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 62,
+        "end": 63,
+        "label": "paragraph-62-63"
+      },
+      "segmentFingerprint": "sha256:32584ac6cda9bbb2c8997d245ebb712eb378a387fb86c1e144fc818b7f6b0432",
+      "primaryReason": "speaker-attribution-unclear",
+      "independentReason": "speaker-attribution-unclear",
+      "agreedReason": "speaker-attribution-unclear"
+    },
+    {
+      "exclusionId": "CX-S05-0038",
+      "sourceUnitStart": 64,
+      "sourceUnitEnd": 64,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 64,
+        "end": 64,
+        "label": "paragraph-64-64"
+      },
+      "segmentFingerprint": "sha256:83744deea9cfc7591741018e074443371ea66adf0e1264f29fc1a33911793ca1",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S05-0039",
+      "sourceUnitStart": 66,
+      "sourceUnitEnd": 66,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 66,
+        "end": 66,
+        "label": "paragraph-66-66"
+      },
+      "segmentFingerprint": "sha256:7106a3aa4091e44f75de52cff08281c6e53a7bc0305a96f461bbbf3c5509df00",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S05-0040",
+      "sourceUnitStart": 68,
+      "sourceUnitEnd": 68,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 68,
+        "end": 68,
+        "label": "paragraph-68-68"
+      },
+      "segmentFingerprint": "sha256:b1a282bf19141dee9852cf562e2a360f47820c95c20b52028979543e93e9a9ff",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S05-0041",
+      "sourceUnitStart": 70,
+      "sourceUnitEnd": 70,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 70,
+        "end": 70,
+        "label": "paragraph-70-70"
+      },
+      "segmentFingerprint": "sha256:0d9b7e72813a45c3d7d544e9fce344bfd1b822c6882ff74a204635742f5fedc0",
+      "primaryReason": "speaker-attribution-unclear",
+      "independentReason": "speaker-attribution-unclear",
+      "agreedReason": "speaker-attribution-unclear"
+    }
+  ],
+  "sourceContentStored": false,
+  "frozenBeforeAllocation": true,
+  "selectionPerformed": false,
+  "observationCodingPerformed": false,
+  "runtimeActivation": "prohibited"
+}

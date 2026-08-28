@@ -1,0 +1,162 @@
+{
+  "schemaVersion": "jolene.personality-html-ledger-fingerprint-map.v1",
+  "sourceRegisterId": "S20",
+  "sourceContentFingerprint": "sha256:1e551fd24168a6120aa89530ca8dcd513cf014f6a8a6bb1c78622faadbd0aa08",
+  "boundaryDraftFingerprint": "sha256:af32f140cdfcd10359855ef1a816192a7e470250ab8008970b007c7994f7814a",
+  "records": [
+    {
+      "recordId": "C-S20-0001",
+      "locator": "pair-0",
+      "boundarySegmentFingerprint": "sha256:4dca3d8b38ae21077467d60ce6e0d4825de606d5bbf5536936c65860252280c3",
+      "ledgerSegmentFingerprint": "sha256:4dca3d8b38ae21077467d60ce6e0d4825de606d5bbf5536936c65860252280c3"
+    },
+    {
+      "recordId": "C-S20-0002",
+      "locator": "pair-1",
+      "boundarySegmentFingerprint": "sha256:03d03e1f1d63897f768ff9d57c2293813b39711d3e39d1310c2997a16ff8ff04",
+      "ledgerSegmentFingerprint": "sha256:03d03e1f1d63897f768ff9d57c2293813b39711d3e39d1310c2997a16ff8ff04"
+    },
+    {
+      "recordId": "C-S20-0003",
+      "locator": "pair-2",
+      "boundarySegmentFingerprint": "sha256:746813af55268347c9cb44ce487769cc15cf218e45b4e6ab3c269ffde37b34e3",
+      "ledgerSegmentFingerprint": "sha256:746813af55268347c9cb44ce487769cc15cf218e45b4e6ab3c269ffde37b34e3"
+    },
+    {
+      "recordId": "C-S20-0004",
+      "locator": "pair-3",
+      "boundarySegmentFingerprint": "sha256:e58a01f7bde47470afa71dec1a53d488cf040e2a95ffc628fe3a8a498003d0d8",
+      "ledgerSegmentFingerprint": "sha256:e58a01f7bde47470afa71dec1a53d488cf040e2a95ffc628fe3a8a498003d0d8"
+    },
+    {
+      "recordId": "C-S20-0005",
+      "locator": "pair-4",
+      "boundarySegmentFingerprint": "sha256:a11370c28492d6a9c395f63928e83a699d039031d7f968063079065422735826",
+      "ledgerSegmentFingerprint": "sha256:a11370c28492d6a9c395f63928e83a699d039031d7f968063079065422735826"
+    },
+    {
+      "recordId": "C-S20-0006",
+      "locator": "pair-5",
+      "boundarySegmentFingerprint": "sha256:dfea6f9bdf4aefb2bb1ed2f76eede44b63ab5f05d6efe954de12aa20c49b3830",
+      "ledgerSegmentFingerprint": "sha256:dfea6f9bdf4aefb2bb1ed2f76eede44b63ab5f05d6efe954de12aa20c49b3830"
+    },
+    {
+      "recordId": "C-S20-0007",
+      "locator": "pair-6",
+      "boundarySegmentFingerprint": "sha256:17e67ac9e340c90fe7b25c11bd7b3c3179c45e023d22fed0aceb58a83e9afd7e",
+      "ledgerSegmentFingerprint": "sha256:17e67ac9e340c90fe7b25c11bd7b3c3179c45e023d22fed0aceb58a83e9afd7e"
+    },
+    {
+      "recordId": "C-S20-0008",
+      "locator": "pair-7",
+      "boundarySegmentFingerprint": "sha256:eb7ea60acdb6407f7b81bde427ec2ce1c6b0564b0caa679292eba6d66cb829d4",
+      "ledgerSegmentFingerprint": "sha256:eb7ea60acdb6407f7b81bde427ec2ce1c6b0564b0caa679292eba6d66cb829d4"
+    },
+    {
+      "recordId": "C-S20-0009",
+      "locator": "pair-8",
+      "boundarySegmentFingerprint": "sha256:0ebe4aabc09591a8dde5b8778b524ad23f7f4c6d4561995fdaa249fbf4f17f0f",
+      "ledgerSegmentFingerprint": "sha256:0ebe4aabc09591a8dde5b8778b524ad23f7f4c6d4561995fdaa249fbf4f17f0f"
+    },
+    {
+      "recordId": "C-S20-0010",
+      "locator": "pair-9",
+      "boundarySegmentFingerprint": "sha256:90f6746c4aa90163d092afe87f8fbddae297ef0824c8729adf7786fdc63a2a5e",
+      "ledgerSegmentFingerprint": "sha256:90f6746c4aa90163d092afe87f8fbddae297ef0824c8729adf7786fdc63a2a5e"
+    },
+    {
+      "recordId": "C-S20-0011",
+      "locator": "pair-10",
+      "boundarySegmentFingerprint": "sha256:9e816851b0d043eafe23222c7b3bbbf012c34a6b90bb460ca8517428edcd5939",
+      "ledgerSegmentFingerprint": "sha256:9e816851b0d043eafe23222c7b3bbbf012c34a6b90bb460ca8517428edcd5939"
+    },
+    {
+      "recordId": "C-S20-0012",
+      "locator": "pair-11",
+      "boundarySegmentFingerprint": "sha256:7a4372fcd5859b7ffbb3560141a080acbc606f77725e2614029e48bbb042b0e9",
+      "ledgerSegmentFingerprint": "sha256:7a4372fcd5859b7ffbb3560141a080acbc606f77725e2614029e48bbb042b0e9"
+    },
+    {
+      "recordId": "C-S20-0013",
+      "locator": "pair-12",
+      "boundarySegmentFingerprint": "sha256:81670765ce8acb0a3cc0485a4ae51ad8e35dec7b3b38726bdf6643e4b47fbcf4",
+      "ledgerSegmentFingerprint": "sha256:81670765ce8acb0a3cc0485a4ae51ad8e35dec7b3b38726bdf6643e4b47fbcf4"
+    },
+    {
+      "recordId": "C-S20-0014",
+      "locator": "pair-13",
+      "boundarySegmentFingerprint": "sha256:882b103450f8a669fed5b59b70a0d20a9b9231b72f42be61573c16ed5e89e51b",
+      "ledgerSegmentFingerprint": "sha256:882b103450f8a669fed5b59b70a0d20a9b9231b72f42be61573c16ed5e89e51b"
+    },
+    {
+      "recordId": "C-S20-0015",
+      "locator": "pair-14",
+      "boundarySegmentFingerprint": "sha256:7601d13d1c2f1b544a184d8c0d5815c903a4c1a619d61800954958e4719d594b",
+      "ledgerSegmentFingerprint": "sha256:7601d13d1c2f1b544a184d8c0d5815c903a4c1a619d61800954958e4719d594b"
+    },
+    {
+      "recordId": "C-S20-0016",
+      "locator": "pair-15",
+      "boundarySegmentFingerprint": "sha256:f06985de1a3b19a3cdb35a40a3ea37ffc7d0a75307abb679fed66739f6307475",
+      "ledgerSegmentFingerprint": "sha256:f06985de1a3b19a3cdb35a40a3ea37ffc7d0a75307abb679fed66739f6307475"
+    },
+    {
+      "recordId": "C-S20-0017",
+      "locator": "pair-16",
+      "boundarySegmentFingerprint": "sha256:76a5dbf85b5c5e2a000090f0a3bfc53c34e3f3d6d1dce3ce1e7be4c3141cf4f3",
+      "ledgerSegmentFingerprint": "sha256:76a5dbf85b5c5e2a000090f0a3bfc53c34e3f3d6d1dce3ce1e7be4c3141cf4f3"
+    },
+    {
+      "recordId": "C-S20-0018",
+      "locator": "pair-17",
+      "boundarySegmentFingerprint": "sha256:685fbd585fae9ecbf0cebd49718067f9acfaa45fc5398bbec5327b3762b4df7d",
+      "ledgerSegmentFingerprint": "sha256:685fbd585fae9ecbf0cebd49718067f9acfaa45fc5398bbec5327b3762b4df7d"
+    },
+    {
+      "recordId": "C-S20-0019",
+      "locator": "pair-18",
+      "boundarySegmentFingerprint": "sha256:ff4a6430d9d3e79e695336893731698723db87cb5513afc60049607c0636e155",
+      "ledgerSegmentFingerprint": "sha256:ff4a6430d9d3e79e695336893731698723db87cb5513afc60049607c0636e155"
+    },
+    {
+      "recordId": "C-S20-0020",
+      "locator": "pair-19",
+      "boundarySegmentFingerprint": "sha256:8409ea4d536cee9edb509e3055cd6c706100b620950c65141e5b8496aabb5db2",
+      "ledgerSegmentFingerprint": "sha256:8409ea4d536cee9edb509e3055cd6c706100b620950c65141e5b8496aabb5db2"
+    },
+    {
+      "recordId": "C-S20-0021",
+      "locator": "pair-20",
+      "boundarySegmentFingerprint": "sha256:77652529c116df17266b7351ad540547471d3aedbdb0e4ec1f38aa1b971511e9",
+      "ledgerSegmentFingerprint": "sha256:77652529c116df17266b7351ad540547471d3aedbdb0e4ec1f38aa1b971511e9"
+    },
+    {
+      "recordId": "C-S20-0022",
+      "locator": "pair-21",
+      "boundarySegmentFingerprint": "sha256:1ac15c4c77cdbf49f283f7849a5bae39077930abd9cde30c4966e117f9a5225e",
+      "ledgerSegmentFingerprint": "sha256:1ac15c4c77cdbf49f283f7849a5bae39077930abd9cde30c4966e117f9a5225e"
+    },
+    {
+      "recordId": "C-S20-0023",
+      "locator": "pair-22",
+      "boundarySegmentFingerprint": "sha256:f93e4dcad667b7b6e1c4ec568e10d78e2c800232c40de501b7f8d6bc97f9c487",
+      "ledgerSegmentFingerprint": "sha256:f93e4dcad667b7b6e1c4ec568e10d78e2c800232c40de501b7f8d6bc97f9c487"
+    },
+    {
+      "recordId": "C-S20-0024",
+      "locator": "pair-23",
+      "boundarySegmentFingerprint": "sha256:04b6d0264ce9cc7f5842c997d39302ee803b8761bb9301edd56ec51c873e7ec5",
+      "ledgerSegmentFingerprint": "sha256:04b6d0264ce9cc7f5842c997d39302ee803b8761bb9301edd56ec51c873e7ec5"
+    },
+    {
+      "recordId": "C-S20-0025",
+      "locator": "pair-24",
+      "boundarySegmentFingerprint": "sha256:21f712ba83b6ec83655735d359e3b21e2a3b3163a64792ce868ae4a7b973bb00",
+      "ledgerSegmentFingerprint": "sha256:21f712ba83b6ec83655735d359e3b21e2a3b3163a64792ce868ae4a7b973bb00"
+    }
+  ],
+  "sourceContentStored": false,
+  "selectionPerformed": false,
+  "observationCodingPerformed": false,
+  "runtimeActivation": "prohibited"
+}

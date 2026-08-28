@@ -33,8 +33,8 @@ then strips nonverbal and unreadable cues from the remaining blocks. The reviewe
 is 45, not 48 or 49. The versioned amendment and its 101-unit metadata-only manifest must bind
 every future S04 ledger; the failed v3 plan and predecessor audit remain immutable.
 
-The four PDF ledgers are now frozen under the reviewed amendment and canonical fingerprint
-conversion:
+All ten source ledgers are now frozen under independently reviewed boundaries and canonical
+fingerprint conversion. The four PDF ledgers are:
 
 - S04: 101 boundary units, 45 eligible, 56 excluded;
 - S08: 199 boundary units, 88 eligible, 111 excluded;
@@ -49,6 +49,21 @@ reviewer ambiguity or cross-run instability are explicitly marked `uncertainty-w
 uncertain tag is admitted to consensus. The review-evidence artifact binds the two external
 metadata-only review-report fingerprints without storing source content.
 
+The six HTML ledgers are:
+
+- S02: 257 boundary units, 43 eligible, 214 excluded;
+- S03: 543 boundary units, 270 eligible, 273 excluded;
+- S05: 72 boundary units, 29 eligible, 43 excluded;
+- S13: 61 boundary units, 23 eligible, 38 excluded;
+- S19: 118 boundary units, 58 eligible, 60 excluded;
+- S20: 25 boundary units, 25 eligible, 0 excluded.
+
+Both HTML reviewers independently reproduced all 1,076 boundary units, all 448 eligible
+dispositions, all grouped exclusions, and all 953 canonical fingerprint-map records with zero
+discrepancies. Exact tag intersection admits consensus labels. The union of 41 reviewer ambiguity
+records is marked `uncertainty-withheld`; uncertain consensus labels are not admitted. The frozen
+evidence artifact binds each draft, map, and external metadata-only review report by SHA-256.
+
 Regenerating these ledgers requires explicit paths to the two independently produced review
 reports:
 
@@ -58,6 +73,15 @@ JOLENE_INDEPENDENT_PDF_REVIEW=/secure/path/independent.json \
 npx tsx scripts/generate-personality-pdf-capacity-ledgers.ts
 ```
 
+HTML regeneration is likewise fail-closed on the exact two review reports bound by
+`html-capacity-review-evidence-v1.yaml`:
+
+```sh
+JOLENE_PRIMARY_HTML_REVIEW=/secure/path/primary.json \
+JOLENE_INDEPENDENT_HTML_REVIEW=/secure/path/independent.json \
+npx tsx scripts/generate-personality-html-capacity-ledgers.ts
+```
+
 These ledgers do not select turns, code observations, admit traits, or activate runtime
-behavior. The remaining six source ledgers and aggregate manifest must still be completed
-before a prospective v4 sampling plan can be frozen.
+behavior. The aggregate ten-source capacity manifest remains a separate required gate before a
+prospective v4 sampling plan can be frozen.
