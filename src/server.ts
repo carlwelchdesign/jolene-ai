@@ -87,6 +87,11 @@ const privateControl = createPrivateControlRequestGuard({
   token: config.privateControlToken,
   ownerActorId: config.ownerActorId,
   ownerWorkspaceId: config.ownerWorkspaceId,
+  audit(event) {
+    process.stdout.write(
+      `Private control authentication: ${event.outcome}:${event.reasonCode}\n`,
+    );
+  },
 });
 
 const server = createServer(async (request, response) => {

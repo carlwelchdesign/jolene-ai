@@ -13,7 +13,7 @@ if (
   || !config.slackOwnerTeamId
 ) {
   throw new Error(
-    "Slack is not configured. Provide Slack bot/app credentials directly or through secret files, plus SLACK_OWNER_USER_ID.",
+    "Slack is not configured. Provide Slack bot/app credentials directly or through secret files, plus the SLACK_OWNER_TEAM_ID/SLACK_OWNER_USER_ID pair.",
   );
 }
 const ownerUserId = config.slackOwnerUserId;

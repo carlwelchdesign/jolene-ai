@@ -1324,3 +1324,18 @@ Prompt-injection threat-model checkpoint:
 | Control boundary | The model distinguishes deterministic/isolation/process controls from prompt-only guidance and records every current limitation; reviewed or approved content always remains non-authoritative data |
 | Delivery sequence | `JOL-SEC-004A` authenticated private ingress → `JOL-SEC-004` typed untrusted envelopes → `JOL-SEC-005` intent-bound tools → `JOL-SEC-007` private RAG/egress/quarantine → `JOL-SEC-006` public semantic grounding → `JOL-SEC-008` adversarial gates → `JOL-SEC-009` telemetry/recovery |
 | Release boundary | This checkpoint is an implementation-ready security plan, not proof that injection is impossible. It adds no tool, provider call, runtime mutation, push, deployment, promotion, or launch authorization. |
+
+Private-ingress authentication checkpoint:
+
+| Field | Evidence |
+|---|---|
+| Asana | Parent `JOL-SEC-004A` with four implementation subtasks; one parent plus its current subtasks may be In Progress, and each completed subtask moves immediately to Complete |
+| Branch | `codex/jol-sec-004a-private-ingress-auth` |
+| Private HTTP identity | Dedicated at-least-43-character secret; Bearer API access and browser-native Basic access; immutable server-derived Carl actor/workspace, `private_chat`, and `local_private` scope |
+| Network containment | Every private UI/control route is authenticated before routing; Host must be loopback and browser Origin must match; minimized `/health` is the only credential-free route |
+| Chat boundary | Caller JSON cannot supply actor, workspace, channel kind, or disclosure authority; strict extra-field rejection occurs before model execution |
+| Slack identity | Private Slack scope requires the exact configured workspace/member pair at authenticated event mapping and domain scope resolution; a member-only or wrong-workspace match is ignored before model execution/posting |
+| Secret isolation | Private Compose gives the private-control secret only to `jolene-api`; migration generates a non-printing 256-bit token when absent and preserves mode `0600`/idempotence |
+| Audit boundary | Authentication records only policy version, outcome, and fixed reason code; responses are sanitized and no credential, header, address, path, query, prompt, or payload is logged |
+| Residual boundary | The reusable possession credential must be rotated after plausible exposure; domain capability/approval rules remain required after authentication |
+| Release boundary | Local development and verification only. No service creation/restart, secret migration against Carl's live files, Slack message, push, deployment, promotion, or production verification is included. |

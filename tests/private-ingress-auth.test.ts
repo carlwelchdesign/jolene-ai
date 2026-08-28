@@ -11,10 +11,12 @@ import {
 const token = "local-control-token-with-at-least-forty-three-characters";
 
 describe("private ingress authentication contract", () => {
+  const auditEvents: unknown[] = [];
   const authenticator = createPrivateIngressAuthenticator({
     token,
     ownerActorId: "carl",
     ownerWorkspaceId: "personal",
+    audit(event) { auditEvents.push(event); },
   });
 
   it("derives an immutable private principal from a valid bearer", () => {
@@ -81,6 +83,26 @@ describe("private ingress authentication contract", () => {
     expect(() => privateControlTokenSchema.parse("short")).toThrow();
     expect(() => privateControlTokenSchema.parse(`${token}\nsecond`)).toThrow();
     expect(() => privateControlTokenSchema.parse(`${token} space`)).toThrow();
+  });
+
+  it("emits content-minimizing versioned reason codes", () => {
+    auditEvents.length = 0;
+    authenticator.authenticate({ authorization: `Bearer ${token}` });
+    expect(() => authenticator.authenticate({ authorization: "Bearer wrong" }))
+      .toThrow(PrivateIngressAuthenticationError);
+    expect(auditEvents).toEqual([
+      {
+        policyVersion: "jolene.private-control-auth.v1",
+        outcome: "authorized",
+        reasonCode: "credential_accepted_bearer",
+      },
+      {
+        policyVersion: "jolene.private-control-auth.v1",
+        outcome: "denied",
+        reasonCode: "credential_mismatch",
+      },
+    ]);
+    expect(JSON.stringify(auditEvents)).not.toContain(token);
   });
 
   it("derives chat authority server-side and rejects caller authority fields", () => {

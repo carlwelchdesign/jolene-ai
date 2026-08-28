@@ -127,13 +127,20 @@ async function availablePort(): Promise<number> {
 
 async function waitUntilListening(process: ChildProcess): Promise<void> {
   if (!process.stdout || !process.stderr) throw new Error("Expected child pipes.");
-  let stdout = "";
-  let stderr = "";
-  process.stderr.on("data", (chunk: Buffer) => { stderr += chunk.toString("utf8"); });
-  for await (const chunk of process.stdout) {
-    stdout += (chunk as Buffer).toString("utf8");
-    if (stdout.includes("Jolene is listening")) return;
-    if (process.exitCode !== null) break;
-  }
-  throw new Error(`Private server did not start: ${stderr}`);
+  await new Promise<void>((resolvePromise, reject) => {
+    let stdout = "";
+    let stderr = "";
+    process.stdout!.on("data", (chunk: Buffer) => {
+      stdout += chunk.toString("utf8");
+      if (stdout.includes("Jolene is listening")) resolvePromise();
+    });
+    process.stderr!.on("data", (chunk: Buffer) => {
+      stderr += chunk.toString("utf8");
+    });
+    process.once("exit", () => {
+      if (!stdout.includes("Jolene is listening")) {
+        reject(new Error(`Private server did not start: ${stderr}`));
+      }
+    });
+  });
 }

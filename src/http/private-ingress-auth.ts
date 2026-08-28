@@ -7,6 +7,7 @@ import type { ChatRequest } from "../application/jolene-service.js";
 import { assertPrivateControlHost, assertSameOrigin } from "./request-origin.js";
 
 export const PRIVATE_CONTROL_AUTH_SCHEME = "JolenePrivateV1";
+export const PRIVATE_CONTROL_AUTH_POLICY_VERSION = "jolene.private-control-auth.v1";
 
 export const privateControlTokenSchema = z.string()
   .min(43)
@@ -48,6 +49,16 @@ export interface PrivateIngressAuthenticatorOptions {
   readonly token: string;
   readonly ownerActorId: string;
   readonly ownerWorkspaceId: string;
+  readonly audit?: (event: PrivateIngressAuthenticationEvent) => void;
+}
+
+export interface PrivateIngressAuthenticationEvent {
+  readonly policyVersion: typeof PRIVATE_CONTROL_AUTH_POLICY_VERSION;
+  readonly outcome: "authorized" | "denied";
+  readonly reasonCode:
+    | PrivateIngressAuthenticationFailureCode
+    | "credential_accepted_bearer"
+    | "credential_accepted_basic";
 }
 
 export interface PrivateControlRequestGuard {
@@ -72,11 +83,29 @@ export function createPrivateIngressAuthenticator(
 
   return Object.freeze({
     authenticate(headers: IncomingHttpHeaders): PrivateIngressPrincipal {
-      const candidate = parseAuthorization(headers.authorization);
-      if (!constantTimeEqual(candidate, token)) {
-        throw new PrivateIngressAuthenticationError("credential_mismatch");
+      try {
+        const candidate = parseAuthorization(headers.authorization);
+        if (!constantTimeEqual(candidate.token, token)) {
+          throw new PrivateIngressAuthenticationError("credential_mismatch");
+        }
+        options.audit?.({
+          policyVersion: PRIVATE_CONTROL_AUTH_POLICY_VERSION,
+          outcome: "authorized",
+          reasonCode: candidate.method === "bearer"
+            ? "credential_accepted_bearer"
+            : "credential_accepted_basic",
+        });
+        return principal;
+      } catch (error) {
+        if (error instanceof PrivateIngressAuthenticationError) {
+          options.audit?.({
+            policyVersion: PRIVATE_CONTROL_AUTH_POLICY_VERSION,
+            outcome: "denied",
+            reasonCode: error.code,
+          });
+        }
+        throw error;
       }
-      return principal;
     },
   });
 }
@@ -108,7 +137,9 @@ export function derivePrivateHttpChatRequest(
   };
 }
 
-function parseAuthorization(header: string | undefined): string {
+function parseAuthorization(
+  header: string | undefined,
+): { readonly token: string; readonly method: "bearer" | "basic" } {
   if (!header) {
     throw new PrivateIngressAuthenticationError("credential_missing");
   }
@@ -116,7 +147,7 @@ function parseAuthorization(header: string | undefined): string {
   if (parts.length !== 2 || !parts[1]) {
     throw new PrivateIngressAuthenticationError("credential_malformed");
   }
-  if (parts[0] === "Bearer") return parts[1];
+  if (parts[0] === "Bearer") return { token: parts[1], method: "bearer" };
   if (parts[0] !== "Basic") {
     throw new PrivateIngressAuthenticationError("credential_malformed");
   }
@@ -131,7 +162,7 @@ function parseAuthorization(header: string | undefined): string {
   if (separator < 0 || decoded.slice(0, separator) !== "jolene") {
     throw new PrivateIngressAuthenticationError("credential_malformed");
   }
-  return decoded.slice(separator + 1);
+  return { token: decoded.slice(separator + 1), method: "basic" };
 }
 
 function constantTimeEqual(left: string, right: string): boolean {

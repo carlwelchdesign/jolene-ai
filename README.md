@@ -246,6 +246,9 @@ Prerequisite: Node.js 22 or newer.
    from the authenticated server configuration. Supplying any of those fields
    in the JSON body is rejected.
 
+   Configuration, browser/API usage, rotation, and failure behavior are
+   documented in [Private control authentication](docs/private-control-authentication.md).
+
    Task and memory-management endpoints are documented in [Task and memory API](docs/task-memory-api.md).
    The six reviewable work types and their lifecycle are documented in
    [Personal work workflows](docs/personal-workflows.md).

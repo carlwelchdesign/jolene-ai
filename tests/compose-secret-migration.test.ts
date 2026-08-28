@@ -39,6 +39,7 @@ describe("migrateComposeSecrets", () => {
         "OPENAI_API_KEY",
         "SLACK_APP_TOKEN",
         "SLACK_BOT_TOKEN",
+        "JOLENE_PRIVATE_CONTROL_TOKEN",
       ],
       runtimeEnvironmentCreated: true,
     });
@@ -53,9 +54,16 @@ describe("migrateComposeSecrets", () => {
       .toBe("private-app-value\n");
     expect(await readFile(path.join(secretsPath, "slack-bot-token"), "utf8"))
       .toBe("private-bot-value\n");
+    expect((await readFile(path.join(secretsPath, "private-control-token"), "utf8")).trim())
+      .toMatch(/^[A-Za-z0-9_-]{43}$/);
     expect((await stat(runtimePath)).mode & 0o777).toBe(0o600);
     expect((await stat(secretsPath)).mode & 0o777).toBe(0o700);
-    for (const name of ["openai-api-key", "slack-app-token", "slack-bot-token"]) {
+    for (const name of [
+      "openai-api-key",
+      "slack-app-token",
+      "slack-bot-token",
+      "private-control-token",
+    ]) {
       expect((await stat(path.join(secretsPath, name))).mode & 0o777).toBe(0o600);
     }
   });
@@ -82,6 +90,10 @@ describe("migrateComposeSecrets", () => {
       runtimeEnvironmentPath: runtimePath,
       secretsDirectory: secretsPath,
     })).resolves.toMatchObject({ runtimeEnvironmentCreated: true });
+    const firstPrivateControlToken = await readFile(
+      path.join(secretsPath, "private-control-token"),
+      "utf8",
+    );
     expect(await readFile(path.join(secretsPath, "openai-api-key"), "utf8"))
       .toBe("first-openai\n");
 
@@ -104,5 +116,7 @@ describe("migrateComposeSecrets", () => {
     });
     expect(await readFile(path.join(secretsPath, "openai-api-key"), "utf8"))
       .toBe("replacement-openai\n");
+    expect(await readFile(path.join(secretsPath, "private-control-token"), "utf8"))
+      .toBe(firstPrivateControlToken);
   });
 });
