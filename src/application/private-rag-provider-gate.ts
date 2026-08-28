@@ -173,7 +173,7 @@ function detectPrivateRagRiskSignalsText(
   text: string,
 ): readonly PrivateRagRiskSignal[] {
   const signals = new Set<PrivateRagRiskSignal>();
-  if (/(?:^|\b)(?:system|developer|assistant)\s*(?::|message|instruction)|ignore\s+(?:all\s+)?(?:previous|prior)\s+instructions?|reveal\s+(?:the\s+)?(?:prompt|secret)|call\s+(?:a\s+|the\s+)?tool\b/iu.test(text)) {
+  if (/(?:^|\b)(?:system|developer|assistant)\s*(?::|message|instruction)|[<\[]\/?(?:system|developer)(?:\s|>|\])|["']role["']\s*:\s*["'](?:system|developer)["']|ignore\s+(?:all\s+)?(?:previous|prior)\s+instructions?|(?:ignora|ignorez|ignoriere)\s+(?:las\s+|les\s+|die\s+)?(?:instrucciones|instructions|anweisungen)\s+(?:anteriores|pr[eé]c[eé]dentes|vorherigen)|reveal\s+(?:the\s+)?(?:prompt|secret)|(?:revela|r[eé]v[eè]le|enth[uü]lle)\s+(?:el\s+|le\s+|den\s+)?(?:prompt|secreto|secret|geheimnis)|call\s+(?:a\s+|the\s+)?tool\b/iu.test(text)) {
     signals.add("instruction_like");
   }
   if (/\b(?:owner|carl|administrator)\s+(?:has\s+)?(?:approved|authorized|permitted)|\b(?:policy|rules?)\s+(?:now\s+)?(?:allow|require|override)/iu.test(text)) {

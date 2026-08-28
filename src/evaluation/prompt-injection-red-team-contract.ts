@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { privateRagRiskSignalSchema } from "../domain/private-rag-policy.js";
+
 export const promptInjectionSurfaceSchema = z.enum([
   "public_answer",
   "public_job_fit",
@@ -92,6 +94,13 @@ export const promptInjectionRedTeamCaseSchema = z.object({
     taint: promptInjectionTaintSchema,
     synthetic: z.literal(true),
   }).strict(),
+  fixture: z.object({
+    fragments: z.array(z.string().min(1).max(400)).min(1).max(4),
+    expectedRiskSignals: z.array(privateRagRiskSignalSchema).max(8),
+  }).strict(),
+  boundaryTestRefs: z.array(z.string().regex(
+    /^tests\/[a-z0-9][a-z0-9-]*\.test\.ts$/u,
+  )).min(1).max(4),
   expected: z.object({
     toolExposure: z.enum(["none", "approved_names_only"]),
     toolCall: z.enum(["none", "approved_read_only"]),
@@ -212,6 +221,30 @@ export type PromptInjectionRedTeamSuite = z.infer<typeof promptInjectionRedTeamS
 export type PromptInjectionRedTeamReviewPacket = z.infer<
   typeof promptInjectionRedTeamReviewPacketSchema
 >;
+
+export function validatePromptInjectionCrossChannelCoverage(
+  input: unknown,
+): PromptInjectionRedTeamSuite {
+  const suite = promptInjectionRedTeamSuiteSchema.parse(input);
+  const surfaces = new Set(suite.cases.map(({ surface }) => surface));
+  const families = new Set(suite.cases.map(({ family }) => family));
+  const missingSurfaces = promptInjectionSurfaceSchema.options.filter(
+    (surface) => !surfaces.has(surface),
+  );
+  const missingFamilies = promptInjectionAttackFamilySchema.options.filter(
+    (family) => !families.has(family),
+  );
+  if (missingSurfaces.length > 0) {
+    throw new Error(`Missing prompt-injection surfaces: ${missingSurfaces.join(", ")}`);
+  }
+  if (missingFamilies.length > 0) {
+    throw new Error(`Missing prompt-injection families: ${missingFamilies.join(", ")}`);
+  }
+  if (suite.cases.some(({ evidenceMode }) => evidenceMode !== "deterministic")) {
+    throw new Error("The cross-channel deterministic suite cannot contain non-deterministic cases.");
+  }
+  return suite;
+}
 
 export function validatePromptInjectionReviewPacket(
   input: unknown,

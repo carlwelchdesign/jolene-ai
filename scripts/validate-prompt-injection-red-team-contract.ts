@@ -1,20 +1,32 @@
 import { readFile } from "node:fs/promises";
 
-import { promptInjectionRedTeamSuiteSchema } from
+import {
+  promptInjectionRedTeamSuiteSchema,
+  validatePromptInjectionCrossChannelCoverage,
+} from
   "../src/evaluation/prompt-injection-red-team-contract.js";
 
-const source = new URL(
+const contractSource = new URL(
   "../evaluations/prompt-injection-red-team-contract-v1.json",
   import.meta.url,
 );
-const suite = promptInjectionRedTeamSuiteSchema.parse(
-  JSON.parse(await readFile(source, "utf8")),
+const crossChannelSource = new URL(
+  "../evaluations/prompt-injection-cross-channel-v1.json",
+  import.meta.url,
+);
+const contract = promptInjectionRedTeamSuiteSchema.parse(
+  JSON.parse(await readFile(contractSource, "utf8")),
+);
+const crossChannel = validatePromptInjectionCrossChannelCoverage(
+  JSON.parse(await readFile(crossChannelSource, "utf8")),
 );
 
 process.stdout.write(`${JSON.stringify({
-  schemaVersion: suite.schemaVersion,
-  suiteVersion: suite.suiteVersion,
-  suiteId: suite.suiteId,
-  cases: suite.cases.length,
+  schemaVersion: contract.schemaVersion,
+  contractVersion: contract.suiteVersion,
+  crossChannelVersion: crossChannel.suiteVersion,
+  crossChannelCases: crossChannel.cases.length,
+  surfaces: new Set(crossChannel.cases.map(({ surface }) => surface)).size,
+  attackFamilies: new Set(crossChannel.cases.map(({ family }) => family)).size,
   gateThresholdBps: 10_000,
 })}\n`);
