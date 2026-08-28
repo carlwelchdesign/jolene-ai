@@ -91,7 +91,9 @@ describe("private RAG provider gate", () => {
       queryTermCount: 3,
     });
     expect(result.providerEnvelopes).toEqual([]);
-    expect(result.fallbackReason).toBe("all_results_denied");
+    expect(result.fallbackReason).toBe("all_results_quarantined");
+    expect(result.quarantineCandidates[0]?.riskSignals)
+      .toContain("provider_payload_drift");
   });
 });
 

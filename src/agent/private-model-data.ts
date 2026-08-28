@@ -22,9 +22,25 @@ type PrivateModelScope = Pick<
 
 export function serializePrivateRunData(request: AgentRequest): string {
   const envelopes: UntrustedContentEnvelope[] = [
+    ...privateRunContextEnvelopes(request),
+    currentUserMessageEnvelope(request),
+  ];
+  return serializeCollection(envelopes);
+}
+
+export function privateRunContextEnvelopes(
+  request: AgentRequest,
+): readonly UntrustedContentEnvelope[] {
+  return [
     ...conversationEnvelopes(request),
     ...workContextEnvelopes(request.workContext, request),
-    createPrivateEnvelope({
+  ];
+}
+
+export function currentUserMessageEnvelope(
+  request: AgentRequest,
+): UntrustedContentEnvelope {
+  return createPrivateEnvelope({
       originKind: "user_message",
       sourceId: `event:${request.eventId}:current-message`,
       request,
@@ -32,9 +48,7 @@ export function serializePrivateRunData(request: AgentRequest): string {
       classification: "private",
       payload: { kind: "text", text: request.message },
       observedAt: request.receivedAt,
-    }),
-  ];
-  return serializeCollection(envelopes);
+    });
 }
 
 export function serializeKnowledgeToolResults(
@@ -108,7 +122,19 @@ export function serializeWorkStatusToolResult(
   request: AgentRequest,
   observedAt: string,
 ): string {
-  return serializeCollection([createPrivateEnvelope({
+  return serializeCollection(workStatusToolResultEnvelopes(
+    snapshot,
+    request,
+    observedAt,
+  ));
+}
+
+export function workStatusToolResultEnvelopes(
+  snapshot: WorkStatusSnapshot,
+  request: AgentRequest,
+  observedAt: string,
+): readonly UntrustedContentEnvelope[] {
+  return [createPrivateEnvelope({
     originKind: "tool_result",
     sourceId: `work-status:${request.eventId}`,
     request,
@@ -116,7 +142,7 @@ export function serializeWorkStatusToolResult(
     classification: "private",
     payload: { kind: "json", value: toJsonValue(snapshot) },
     observedAt,
-  })]);
+  })];
 }
 
 export function serializeWatchedProjectList(
@@ -124,7 +150,19 @@ export function serializeWatchedProjectList(
   request: AgentRequest,
   observedAt: string,
 ): string {
-  return serializeCollection(projects.map((project) => createPrivateEnvelope({
+  return serializeCollection(watchedProjectListEnvelopes(
+    projects,
+    request,
+    observedAt,
+  ));
+}
+
+export function watchedProjectListEnvelopes(
+  projects: readonly WatchedProjectSummary[],
+  request: AgentRequest,
+  observedAt: string,
+): readonly UntrustedContentEnvelope[] {
+  return projects.map((project) => createPrivateEnvelope({
     originKind: "project_snapshot",
     sourceId: `watched-project:${project.id}:configuration`,
     request,
@@ -132,14 +170,21 @@ export function serializeWatchedProjectList(
     classification: "private",
     payload: { kind: "json", value: toJsonValue(project) },
     observedAt,
-  })));
+  }));
 }
 
 export function serializeWatchedProjectSnapshot(
   snapshot: WatchedProjectSnapshot,
   request: AgentRequest,
 ): string {
-  return serializeCollection([createPrivateEnvelope({
+  return serializeCollection(watchedProjectSnapshotEnvelopes(snapshot, request));
+}
+
+export function watchedProjectSnapshotEnvelopes(
+  snapshot: WatchedProjectSnapshot,
+  request: AgentRequest,
+): readonly UntrustedContentEnvelope[] {
+  return [createPrivateEnvelope({
     originKind: "project_snapshot",
     sourceId: `watched-project:${snapshot.id}:${snapshot.checkedAt}`,
     request,
@@ -148,7 +193,7 @@ export function serializeWatchedProjectSnapshot(
     payload: { kind: "json", value: toJsonValue(snapshot) },
     observedAt: snapshot.checkedAt,
     freshnessStatus: "fresh",
-  })]);
+  })];
 }
 
 function conversationEnvelopes(request: AgentRequest): UntrustedContentEnvelope[] {

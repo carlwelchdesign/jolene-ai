@@ -3,6 +3,7 @@ import {
   evaluatePrivateRagIngress,
   privateRagTurnPolicySchema,
   type PrivateRagNamespace,
+  type PrivateRagProviderPayloadClass,
   type PrivateRagRiskSignal,
   type PrivateRagTurnPolicy,
 } from "../domain/private-rag-policy.js";
@@ -19,7 +20,7 @@ export type PrivateRetrievalProviderEgress = "local_only" | "approved_openai";
 export interface PrivateRagProviderEntry {
   readonly namespace: PrivateRagNamespace;
   readonly envelope: UntrustedContentEnvelope;
-  readonly providerPayloadClass: "reviewed_excerpt" | "reviewed_career_claim";
+  readonly providerPayloadClass: PrivateRagProviderPayloadClass;
 }
 
 export interface PrivateRagQuarantineCandidate {
@@ -49,9 +50,7 @@ export function createPrivateRagTurnPolicy(input: {
   readonly maxResultItems: number;
   readonly maxResultCharacters: number;
   readonly providerEgress: PrivateRetrievalProviderEgress;
-  readonly providerPayloadClasses: readonly (
-    "reviewed_excerpt" | "reviewed_career_claim"
-  )[];
+  readonly providerPayloadClasses: readonly PrivateRagProviderPayloadClass[];
 }): PrivateRagTurnPolicy {
   return privateRagTurnPolicySchema.parse({
     version: PRIVATE_RAG_POLICY_VERSION,
@@ -94,8 +93,22 @@ export function gatePrivateRagProviderPayload(input: {
 }): PrivateRagProviderGateResult {
   const providerEnvelopes: UntrustedContentEnvelope[] = [];
   const quarantineCandidates: PrivateRagQuarantineCandidate[] = [];
+  const totalCharacterCount = input.entries.reduce(
+    (total, entry) =>
+      total + serializeUntrustedContentEnvelope(entry.envelope).length,
+    0,
+  );
+  const collectionRiskSignals = detectPrivateRagCollectionRiskSignals(
+    input.entries.map((entry) => entry.envelope),
+  );
   for (const entry of input.entries) {
-    const riskSignals = new Set(detectPrivateRagRiskSignals(entry.envelope));
+    const riskSignals = new Set([
+      ...detectPrivateRagRiskSignals(entry.envelope),
+      ...collectionRiskSignals,
+    ]);
+    if (!payloadClassMatchesOrigin(entry)) {
+      riskSignals.add("provider_payload_drift");
+    }
     if (entry.envelope.lineage.taintIds.some((taintId) =>
       input.blockedTaintIds?.has(taintId)
     )) {
@@ -108,7 +121,7 @@ export function gatePrivateRagProviderPayload(input: {
       riskSignals: orderedRiskSignals,
       queryTermCount: input.queryTermCount,
       resultItemCount: input.entries.length,
-      resultCharacterCount: serializeUntrustedContentEnvelope(entry.envelope).length,
+      resultCharacterCount: totalCharacterCount,
       providerPayloadClass: entry.providerPayloadClass,
     });
     if (decision.localUse === "quarantine") {
@@ -142,6 +155,23 @@ export function detectPrivateRagRiskSignals(
   envelope: UntrustedContentEnvelope,
 ): readonly PrivateRagRiskSignal[] {
   const text = `${envelope.origin.sourceId}\n${JSON.stringify(envelope.payload)}`;
+  return detectPrivateRagRiskSignalsText(text);
+}
+
+export function detectPrivateRagCollectionRiskSignals(
+  envelopes: readonly UntrustedContentEnvelope[],
+): readonly PrivateRagRiskSignal[] {
+  if (envelopes.length < 2) return Object.freeze([]);
+  return detectPrivateRagRiskSignalsText(envelopes.map((envelope) =>
+    envelope.payload.kind === "text"
+      ? envelope.payload.text
+      : JSON.stringify(envelope.payload.value)
+  ).join(" "));
+}
+
+function detectPrivateRagRiskSignalsText(
+  text: string,
+): readonly PrivateRagRiskSignal[] {
   const signals = new Set<PrivateRagRiskSignal>();
   if (/(?:^|\b)(?:system|developer|assistant)\s*(?::|message|instruction)|ignore\s+(?:all\s+)?(?:previous|prior)\s+instructions?|reveal\s+(?:the\s+)?(?:prompt|secret)|call\s+(?:a\s+|the\s+)?tool\b/iu.test(text)) {
     signals.add("instruction_like");
@@ -149,7 +179,7 @@ export function detectPrivateRagRiskSignals(
   if (/\b(?:owner|carl|administrator)\s+(?:has\s+)?(?:approved|authorized|permitted)|\b(?:policy|rules?)\s+(?:now\s+)?(?:allow|require|override)/iu.test(text)) {
     signals.add("policy_or_authority_claim");
   }
-  if (/\b(?:search|retrieve|open|read|scan|load|query)\s+(?:all|another|other|unrelated|every)(?:\s+(?:other|unrelated))?\s+(?:notes?|files?|sources?|namespaces?|records?)/iu.test(text)) {
+  if (/\b(?:search(?:ing)?|retriev(?:e|ing)|open(?:ing)?|read(?:ing)?|scann?ing|scan|load(?:ing)?|query(?:ing)?)\s+(?:all|another|other|unrelated|every)(?:\s+(?:other|unrelated))?\s+(?:notes?|files?|sources?|namespaces?|records?)/iu.test(text)) {
     signals.add("cross_source_directive");
   }
   if (text !== text.normalize("NFKC") || /%(?:[0-9a-f]{2})|&#(?:x[0-9a-f]+|\d+);|\\u[0-9a-f]{4}|(?:[A-Za-z0-9+/]{24,}={1,2})/iu.test(text)) {
@@ -158,13 +188,31 @@ export function detectPrivateRagRiskSignals(
   if (/-----BEGIN [A-Z ]*PRIVATE KEY-----|\b(?:OPENAI_API_KEY|SLACK_(?:BOT|APP)_TOKEN|AWS_SECRET_ACCESS_KEY)\s*=|\b(?:sk-[A-Za-z0-9_-]{16,}|xox[baprs]-[A-Za-z0-9-]{10,}|ghp_[A-Za-z0-9]{20,})\b/u.test(text)) {
     signals.add("credential_like");
   }
-  if (/(?:^|[^A-Za-z0-9])\/(?:Users|home|private|var|Volumes)\/|\b[A-Za-z]:\\(?:Users|Documents|Desktop|AppData)\\|\b(?:file|obsidian):\/\/|\bhttps?:\/\/(?:localhost|[^/\s]+\.(?:local|internal))\b/iu.test(text)) {
+  if (/(?:^|[^A-Za-z0-9])\/(?:Users|home|private|var|Volumes)\/|\b[A-Za-z]:\\(?:Users|Documents|Desktop|AppData)\\|\b(?:file|obsidian):\/\/|\bhttps?:\/\/(?:localhost|(?:10|127)\.\d{1,3}\.\d{1,3}\.\d{1,3}|192\.168\.\d{1,3}\.\d{1,3}|172\.(?:1[6-9]|2\d|3[01])\.\d{1,3}\.\d{1,3}|[^/\s]+\.(?:local|internal))\b/iu.test(text)) {
     signals.add("private_locator");
   }
   if (/\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/iu.test(text) || /(?:\+?1[\s.-]?)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}\b/u.test(text)) {
     signals.add("disallowed_contact_data");
   }
   return Object.freeze([...signals].sort());
+}
+
+function payloadClassMatchesOrigin(entry: PrivateRagProviderEntry): boolean {
+  const expected: Partial<Record<
+    UntrustedContentOriginKind,
+    PrivateRagProviderPayloadClass
+  >> = {
+    obsidian_excerpt: "reviewed_excerpt",
+    career_evidence: "reviewed_career_claim",
+    recommendation: "reviewed_career_claim",
+    conversation_quotation: "conversation_context",
+    durable_memory: "work_context",
+    task_event: "work_context",
+    project_snapshot: "tool_observation",
+    tool_result: "tool_observation",
+    external_ai_text: "tool_observation",
+  };
+  return expected[entry.envelope.origin.kind] === entry.providerPayloadClass;
 }
 
 export function privateRagFallbackPayload(result: PrivateRagProviderGateResult): string {

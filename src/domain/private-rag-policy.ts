@@ -9,6 +9,18 @@ import {
 
 export const PRIVATE_RAG_POLICY_VERSION = "jolene.private-rag-policy.v1" as const;
 
+export const privateRagProviderPayloadClassSchema = z.enum([
+  "query_terms",
+  "reviewed_excerpt",
+  "reviewed_career_claim",
+  "conversation_context",
+  "work_context",
+  "tool_observation",
+]);
+export type PrivateRagProviderPayloadClass = z.infer<
+  typeof privateRagProviderPayloadClassSchema
+>;
+
 const identifierSchema = z.string().trim().min(1).max(512);
 const fingerprintSchema = z.string().regex(/^sha256:[a-f0-9]{64}$/u);
 
@@ -88,11 +100,7 @@ export const privateRagTurnPolicySchema = z.object({
     z.object({
       mode: z.literal("approved_provider"),
       providerId: identifierSchema,
-      allowedPayloadClasses: z.array(z.enum([
-        "query_terms",
-        "reviewed_excerpt",
-        "reviewed_career_claim",
-      ])).min(1),
+      allowedPayloadClasses: z.array(privateRagProviderPayloadClassSchema).min(1),
     }).strict(),
   ]),
 }).strict().superRefine((policy, context) => {
@@ -118,10 +126,7 @@ export interface PrivateRagIngressInput {
   readonly queryTermCount: number;
   readonly resultItemCount: number;
   readonly resultCharacterCount: number;
-  readonly providerPayloadClass?:
-    | "query_terms"
-    | "reviewed_excerpt"
-    | "reviewed_career_claim";
+  readonly providerPayloadClass?: PrivateRagProviderPayloadClass;
 }
 
 export interface PrivateRagIngressDecision {
