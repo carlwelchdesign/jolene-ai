@@ -60,6 +60,8 @@
     "research:personality:html-ledger-fingerprints:v1": "tsx scripts/generate-personality-html-ledger-fingerprint-maps.ts",
     "research:personality:html-capacity-ledgers:v1": "tsx scripts/validate-personality-html-capacity-ledgers.ts",
     "research:personality:html-capacity-ledgers:generate": "tsx scripts/generate-personality-html-capacity-ledgers.ts",
+    "research:personality:capacity-manifest:v1": "tsx scripts/validate-personality-preallocation-capacity-manifest.ts",
+    "research:personality:capacity-manifest:generate": "tsx scripts/generate-personality-preallocation-capacity-manifest.ts",
     "research:personality:pdf-cue-audit:v1": "tsx scripts/validate-personality-pdf-cue-audit.ts",
     "research:personality:pdf-cue-amendment:v1": "tsx scripts/validate-personality-pdf-cue-amendment.ts",
     "research:personality:pdf-boundaries:v1": "tsx scripts/validate-personality-pdf-boundary-manifests.ts",
