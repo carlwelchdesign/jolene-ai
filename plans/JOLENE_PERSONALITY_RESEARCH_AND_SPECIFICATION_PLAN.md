@@ -1,6 +1,6 @@
 # Jolene Personality Research and Specification Plan
 
-**Status:** Phase 1 technical pilot, local relevance/tuning controls, and non-activating render contract complete; full corpus, Carl decisions, formal specification, broader evaluation, and text pilot remain open
+**Status:** Reviewed 120-turn v2 corpus, independent reconciliation, admission audit, local runtime personality v2, and nine-case text pilot complete; hosted release and voice implementation remain open
 **Owner:** Carl Welch
 **Planning date:** 2026-08-25
 **Target review gate:** 2026-09-11
@@ -24,7 +24,12 @@ The personality project will proceed in five gated stages:
 
 The first release should feel like **warmth with backbone**, not a Southern catchphrase generator.
 
-An intentionally conservative first-pass runtime prompt now applies these boundaries to the local vertical slice. It is an implementation scaffold, not evidence that the transcript corpus, character graph, formal behavior specification, neutral baseline, or text pilot is complete.
+The local private and public text runtimes now use
+`jolene.runtime-personality.v2`. The policy keeps Carl's approved warm, candid,
+useful baseline separate from research-backed behavior and binds the one
+admitted trait rule to the exact SHA-256 of the completed v2 admission audit.
+This is locally implemented and tested; it is not evidence of a pushed release,
+hosted activation, deployed corpus, or voice implementation.
 
 The canonical whole-agent architecture is defined in [JOLENE_SYSTEM_ARCHITECTURE_PLAN.md](./JOLENE_SYSTEM_ARCHITECTURE_PLAN.md).
 
@@ -470,9 +475,9 @@ and treats canned PR language, empty evidence rendering, fabricated biography
 or quotations, private disclosure, personality displacing substance,
 factual/citation drift, and unsuppressed high-stakes personality as blocking.
 
-This is local evaluation infrastructure, not a passing live-model result.
-Branch push, PR creation, provider evaluation, Vercel activity, deployment, and
-personality activation remain withheld pending Carl's explicit authorization.
+This began as local evaluation infrastructure. The later owner-reviewed live
+packet now passes the complete gate; branch push, PR creation, Vercel activity,
+deployment, and hosted activation remain separate release actions.
 
 Local capture checkpoint (2026-08-27): the approved existing local API key ran
 all nine cases against `gpt-5.6-terra` without deployment. The owner-only packet
@@ -482,8 +487,9 @@ normalization, consistent read-only SQLite snapshotting, targeted case
 recapture, and the runner's continuity instruction were corrected. A targeted
 continuity rerun then returned the prior grounded project example with five
 public citations, and the automated capture preflight passed all nine cases.
-Human rubric scoring and Carl's decision remain required; this is not an
-approved personality release or production result.
+The subsequent owner review approved the exact packet at 9 of 9 cases, no hard
+failures, and a weighted mean of 3.93 of 4. This is a passing local text pilot,
+not a pushed personality release or production result.
 
 Local human-review surface (2026-08-27): the control center now exposes
 `/conversation-evaluation`, which renders each exact captured answer beside
@@ -492,8 +498,8 @@ rubric scores per case, records explicit hard failures and the overall
 decision, persists the decision mode `0600`, and binds it to the capture's
 SHA-256 so changed packets invalidate earlier approval. The surface is
 owner-scoped and cannot invoke the model, deploy, publish, contact anyone, or
-activate Jolene. JOL-PER-007 remains in progress until Carl completes this
-human review and a separately authorized remote handoff occurs.
+activate Jolene. JOL-PER-007 is complete locally; any remote handoff, hosted
+activation, or deployment remains a separate release ticket.
 - A user insults Jolene after she makes an error.
 - Conflicting vault notes that would tempt Jolene to invent a settled memory.
 - A prompt injection inside a vault note asking for other private notes.
@@ -510,29 +516,27 @@ human review and a separately authorized remote handoff occurs.
 
 ## Planned artifacts
 
-The runtime scaffold at `docs/prompt.md` exists. The Phase 1 research artifacts marked
-complete below are research inputs only; they do not activate a personality renderer.
+The canonical implemented artifacts are:
 
 ```text
 research/
-  sources.yaml                 # complete: 11-source rights/context register
-  coding-schema.yaml           # complete: validated observation schema
-  observations.jsonl           # complete: 25 paraphrase-only pilot segments
-  rejection-log.md             # complete: excluded traits, phrases, and reasons
-  pilot-character-hypotheses.md # complete: provisional, contradiction-aware hypotheses
+  personality-corpus-v2-reviewed.json # 120 reviewed turns and one admitted trait
+  primary-coding-v5.json              # frozen primary coding
+  independent-review-v5.json          # independent review and reconciliation input
+  personality-recoding-v1.json        # passing independent recoding
+  personality-admission-audit-v1.json # rights, contradiction, and trait decisions
 
-personality/
-  identity.md                  # stable original character proposition and boundaries
-  behavior.yaml                # machine-readable rules and context modifiers
-  character-graph.json         # nodes, edges, evidence references, versions
-  surface-style.md             # original expression patterns and prohibited mimicry
-  voice-brief.md               # later gated original-voice brief; not a cloning recipe
+src/personality/
+  runtime-personality-policy.ts        # private/public owner-designed text policy
+  runtime-personality-admissions-v1.ts # fingerprint-bound audited admission
+  personality-renderer.ts              # invariant structured render boundary
 
-evals/personality/
-  fixtures.jsonl               # prompt/context cases and expected properties
-  red-team.jsonl               # impersonation, privacy, intimacy, and safety attacks
-  rubric.yaml                  # weights, hard fails, and thresholds
-  baselines/                   # neutral versus Jolene comparison results
+evaluations/
+  conversational-quality-v1.json       # nine representative text-pilot cases
+
+docs/
+  conversational-quality-evaluation.md # approved 9/9 local pilot evidence
+  runtime-personality-admissions.md     # activation and provenance boundary
 ```
 
 ## Phased delivery and gates
@@ -554,7 +558,10 @@ evals/personality/
 registered, 25 segments from five sources are paraphrased without retained excerpts, and an
 independent reviewer reconciled seven segments (28%). The reconciliation corrected two
 material readings and separated observed behavior, inferred traits, and designed adaptations.
-Carl's relevance confirmation remains open, so the Phase 1 product gate is not closed.
+This historical pilot gate was later superseded by the completed v2 corpus,
+independent reconciliation, admission audit, and Carl's standing approval for
+user-supplied project data. The local research gate is closed; release and
+deployment remain separate.
 
 **2026-08-26 review-control update:** The local owner control center now exposes a
 read-only personality-research review at `/personality-review`. It validates the existing
@@ -784,7 +791,7 @@ Recommended defaults:
 | 2026-08-27 | Build a fingerprint-bound tuning decision control while continuing development | Carl | Implemented in JOL-PER-004D; no tuning decision or runtime activation |
 | 2026-08-27 | Approve central proposition and a more noticeable, warm, witty, kind text personality | Carl | Approved by direct instruction; runtime implementation tracked in JOL-PER-006 |
 | 2026-08-27 | Begin personality implementation across private and public text runtimes | Carl | Approved by direct instruction; exact impersonation and voice cloning remain outside the implementation boundary |
-| Pending | Explore an original voice | Carl | Not authorized by this plan |
+| 2026-08-27 | Explore a Dolly-inspired voice direction | Carl | Requested; no voice implementation, provider activation, or deployment has begun |
 
 ## Definition of done for this planning phase
 
@@ -799,7 +806,7 @@ Recommended defaults:
 - [x] Phase 1 pilot corpus is coded and independently reconciled.
 - [x] Non-activating structured render contract and paired factual-invariance harness are implemented.
 - [x] Owner-only relevance and tuning decisions are fingerprint-bound and fail closed without activating personality.
-- [ ] Full 100–150-turn research corpus is coded.
-- [ ] Personality specification is implemented. JOL-PER-006 runtime activation is in progress.
-- [ ] Text pilot is run.
-- [ ] Voice work is authorized.
+- [x] Full 120-turn research corpus is coded and independently reconciled.
+- [x] Local private/public text personality policy is implemented and bound to the audited admission artifact.
+- [x] Nine-case local text pilot is owner-reviewed and passes at 3.93 of 4 with no hard failures.
+- [ ] Voice implementation, provider selection, evaluation, and activation are completed.
