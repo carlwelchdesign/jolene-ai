@@ -59,6 +59,7 @@
     "research:personality:boundary-drafts:html": "tsx scripts/generate-personality-html-boundary-drafts.ts",
     "research:personality:pdf-cue-audit:v1": "tsx scripts/validate-personality-pdf-cue-audit.ts",
     "research:personality:pdf-cue-amendment:v1": "tsx scripts/validate-personality-pdf-cue-amendment.ts",
+    "research:personality:pdf-boundaries:v1": "tsx scripts/validate-personality-pdf-boundary-manifests.ts",
     "security:prompt-injection:validate": "tsx scripts/validate-prompt-injection-threat-model.ts",
     "security:prompt-injection:red-team:validate": "tsx scripts/validate-prompt-injection-red-team-contract.ts",
     "security:operations:tabletop": "tsx scripts/run-security-tabletop.ts",

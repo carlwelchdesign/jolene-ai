@@ -1,0 +1,2621 @@
+{
+  "schema_version": "personality-pdf-boundary-manifest-v1",
+  "generated_at": "2026-08-28T06:02:00Z",
+  "source_register_id": "S08",
+  "source_event_id": "E007",
+  "source_url": "https://danratherjournalist.org/sites/default/files/documents/2014%20The_Big_Interview_210%20on%2004%2015%20Dolly%20Parton.pdf",
+  "source_content_fingerprint": "sha256:13f4a6112aa8ef9f9f552e0fc52df3f3bcb527d6e8817caed77e3d32ef974321",
+  "runtime": {
+    "python": "3.12.13",
+    "pdfplumber": "0.11.9",
+    "pdfminer_six": "20251230",
+    "pypdf": "6.10.0"
+  },
+  "rule_id": "pdf-speaker-label-blocks-v2",
+  "counts": {
+    "boundary_units": 199,
+    "eligible_units": 88,
+    "excluded_units": 111
+  },
+  "source_content_stored": false,
+  "selection_performed": false,
+  "runtime_activation": "prohibited",
+  "units": [
+    {
+      "ordinal": 0,
+      "locator": "pdf-prelabel-1",
+      "unit_fingerprint": "sha256:20368f08fcf7265fc7770b642544f0c308cce722f03723e6ae256fa44eed0d3e",
+      "speaker_class": "prelabel",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "prelabel-non-dialogue",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 1,
+      "locator": "pdf-page-1-speaker-block-1",
+      "unit_fingerprint": "sha256:2f219b8a9a8804f107a9b8959427b64d8dd56e72e1956e2753c8bb67a4f30b9d",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 2,
+      "locator": "pdf-page-1-speaker-block-2",
+      "unit_fingerprint": "sha256:4cfe7a6713abeeec525d727e0665534edeb2851ffb907516c86efe619f0aea33",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 3,
+      "locator": "pdf-page-1-speaker-block-3",
+      "unit_fingerprint": "sha256:799ce6b2e782f97f27afc201d6327209b7d004e542d0535c7fb37b3db470116c",
+      "speaker_class": "target",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 16,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 4,
+      "locator": "pdf-page-1-speaker-block-4",
+      "unit_fingerprint": "sha256:358d65b63bf7886fbbdfa0af8f28fcffa055cc58d73bcf482fb63da974dccc98",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 5,
+      "locator": "pdf-page-1-speaker-block-5",
+      "unit_fingerprint": "sha256:e5ee658fd54c32de2113b3ea56cdf8de1deabdbeaddd1ac3623d715a871cf9e2",
+      "speaker_class": "other",
+      "cue_categories": [
+        "nonverbal"
+      ],
+      "cue_occurrences": {
+        "LAUGHTER": 1
+      },
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 6,
+      "locator": "pdf-page-1-speaker-block-6",
+      "unit_fingerprint": "sha256:cbe4644a0f60a248c28b26a09ec2b749c21a7e451b0b172dd4256d25e3158afc",
+      "speaker_class": "target",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 18,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 7,
+      "locator": "pdf-page-1-speaker-block-7",
+      "unit_fingerprint": "sha256:4cd72c4f1b90de3fe0b3a11269fd7104769f70245000615f408a969200e2e530",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 8,
+      "locator": "pdf-page-1-speaker-block-8",
+      "unit_fingerprint": "sha256:05bfb2990f1365deb08ce2bf15c3a5de6edde5bd9dc137888ba60f81884c68a1",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 9,
+      "locator": "pdf-page-2-speaker-block-9",
+      "unit_fingerprint": "sha256:df287dfc1406ed2b692e1c2c783bb5cec97eac53151ee1d9810397aa0afa0d89",
+      "speaker_class": "target",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 3,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 10,
+      "locator": "pdf-page-2-speaker-block-10",
+      "unit_fingerprint": "sha256:a8e7b2b3b3697d5e70bf7145dc8db5f2cd17e5b04563e369bf32698d037de96a",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 11,
+      "locator": "pdf-page-2-speaker-block-11",
+      "unit_fingerprint": "sha256:6737de02ce29a2cbd0f1ceada966b2bc018f1d9c9b7526fe001e2d452334e54c",
+      "speaker_class": "target",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 3,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 12,
+      "locator": "pdf-page-2-speaker-block-12",
+      "unit_fingerprint": "sha256:98e3441f39344752d1299065c6033e07ecb43f46868e9683d2fb621990321f80",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 13,
+      "locator": "pdf-page-2-speaker-block-13",
+      "unit_fingerprint": "sha256:e75cb385fd00220b475f2e60c62ec46245f9f8f069f18a5417f63b7ef21c705e",
+      "speaker_class": "target",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 8,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 14,
+      "locator": "pdf-page-2-speaker-block-14",
+      "unit_fingerprint": "sha256:ba23dd6386d115390e4ce10da0120c757b625ef70aa537683dfefea6ee340bf8",
+      "speaker_class": "other",
+      "cue_categories": [
+        "nonverbal"
+      ],
+      "cue_occurrences": {
+        "LAUGHTER": 1
+      },
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 15,
+      "locator": "pdf-page-2-speaker-block-15",
+      "unit_fingerprint": "sha256:c088144f2e36929196c7f551dbae857ba2c428d1d44494d35394e517af389e43",
+      "speaker_class": "target",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 6,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 16,
+      "locator": "pdf-page-2-speaker-block-16",
+      "unit_fingerprint": "sha256:3def639e3b5bf789d178bf9dac1a5f3674a1f0291cdd4205613bff301fb6b977",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 17,
+      "locator": "pdf-page-3-speaker-block-17",
+      "unit_fingerprint": "sha256:4a2624b12254e34add4b2371815b6a3eb4c881cbc872289f326ac9fff2c705d4",
+      "speaker_class": "target",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 6,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 18,
+      "locator": "pdf-page-3-speaker-block-18",
+      "unit_fingerprint": "sha256:2e2c4fb2f680e9738cf0674d56ed2add7ebbe08bb407eebe1590859c1b6df1ba",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 19,
+      "locator": "pdf-page-3-speaker-block-19",
+      "unit_fingerprint": "sha256:6b41d673cb5e78e1eec6c077579b2d7030612a95ce79d794bbc37e34beb22920",
+      "speaker_class": "target",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 5,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 20,
+      "locator": "pdf-page-3-speaker-block-20",
+      "unit_fingerprint": "sha256:ff8f9d0343bfe0706f92c2093e2edd31cc831e44858cda4f7dc37b74d5e6946b",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 21,
+      "locator": "pdf-page-3-speaker-block-21",
+      "unit_fingerprint": "sha256:2d7534b5a28087f286646773bafb458ea381559abb01cecbef4d5a38a8346141",
+      "speaker_class": "target",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 4,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 22,
+      "locator": "pdf-page-3-speaker-block-22",
+      "unit_fingerprint": "sha256:edfacfa5bd20b65fc2ac21e927307960245c24d778a9c8d144d97ee408e8888a",
+      "speaker_class": "other",
+      "cue_categories": [
+        "unreadable"
+      ],
+      "cue_occurrences": {
+        "INAUDIBLE": 1
+      },
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 23,
+      "locator": "pdf-page-3-speaker-block-23",
+      "unit_fingerprint": "sha256:bfd56b629386b0ee413a50bab8f262c65f33089595c6d051c236859f745cefda",
+      "speaker_class": "target",
+      "cue_categories": [
+        "nonverbal"
+      ],
+      "cue_occurrences": {
+        "LAUGHTER": 1
+      },
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 14,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 24,
+      "locator": "pdf-page-3-speaker-block-24",
+      "unit_fingerprint": "sha256:4c5bf5900a30488e272db96701a44d7d19a9061efe626489f5dadda4cbfcc0b8",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 25,
+      "locator": "pdf-page-3-speaker-block-25",
+      "unit_fingerprint": "sha256:43478ccdacff83900b515ba1b53a65b97f71519a4d43dc7a156e9218e5463852",
+      "speaker_class": "target",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 4,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 26,
+      "locator": "pdf-page-3-speaker-block-26",
+      "unit_fingerprint": "sha256:8c5611d76169b454f38e5f8f32647b1618fd8e80c53e03c2aa786188d2183f0d",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 27,
+      "locator": "pdf-page-3-speaker-block-27",
+      "unit_fingerprint": "sha256:93c24d5a91307e4308f91a349874eceb4c041005fc06ee31101e7242c1a32be1",
+      "speaker_class": "target",
+      "cue_categories": [
+        "nonverbal"
+      ],
+      "cue_occurrences": {
+        "LAUGHTER": 1
+      },
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 18,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 28,
+      "locator": "pdf-page-4-speaker-block-28",
+      "unit_fingerprint": "sha256:fae53fb80918e1f745b8c22e703fee3154a7b526954d7f416fc26649ee679d65",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 29,
+      "locator": "pdf-page-4-speaker-block-29",
+      "unit_fingerprint": "sha256:71c86b312b1940d095579f77dead353220441d7d00b120576c4532a987ee91cc",
+      "speaker_class": "target",
+      "cue_categories": [
+        "nonverbal"
+      ],
+      "cue_occurrences": {
+        "LAUGHTER": 1
+      },
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 8,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 30,
+      "locator": "pdf-page-4-speaker-block-30",
+      "unit_fingerprint": "sha256:4de2d31891cc02d2aee9d11d7cb0463b036905cc653e12722c72590bd1650ff9",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 31,
+      "locator": "pdf-page-4-speaker-block-31",
+      "unit_fingerprint": "sha256:910e082953a872d6a7c85b2f16431e5306cc265a005e1fc8bd37676984e32816",
+      "speaker_class": "target",
+      "cue_categories": [
+        "nonverbal"
+      ],
+      "cue_occurrences": {
+        "LAUGHTER": 2
+      },
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 147,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 32,
+      "locator": "pdf-page-4-speaker-block-32",
+      "unit_fingerprint": "sha256:75134f3ecd51659fdcf4f12763ed7bf7793830308cd8bb8377bdecf1734e5df3",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 33,
+      "locator": "pdf-page-4-speaker-block-33",
+      "unit_fingerprint": "sha256:ba8b9d1cf495303d89634b32d55d45cc78f94827715db33ea7775d5534892779",
+      "speaker_class": "target",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 9,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 34,
+      "locator": "pdf-page-4-speaker-block-34",
+      "unit_fingerprint": "sha256:83e8489f6047f7bf3248495798e15884530c5283cd812fcad91e0a1c243e85fe",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 35,
+      "locator": "pdf-page-4-speaker-block-35",
+      "unit_fingerprint": "sha256:6361894519815026b50c2a32b8bd106c21818418f493edf39025f12ef6c47409",
+      "speaker_class": "target",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 5,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 36,
+      "locator": "pdf-page-4-speaker-block-36",
+      "unit_fingerprint": "sha256:1ede62842975e1c34b11243787845a7726d81ef1c5598dd4a048782d32a28922",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 37,
+      "locator": "pdf-page-5-speaker-block-37",
+      "unit_fingerprint": "sha256:5f9a2b795615ba6a3d5455fd5624d773fbca5bcd16249c421fd37411dc9837da",
+      "speaker_class": "target",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "closed-set-fragment",
+      "residual_token_count": 1,
+      "fragment_result": "excluded"
+    },
+    {
+      "ordinal": 38,
+      "locator": "pdf-page-5-speaker-block-38",
+      "unit_fingerprint": "sha256:9cd063eb85174a2bb21142eec71ff28d92421d7bf400f26e32a2b521f11690dd",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 39,
+      "locator": "pdf-page-5-speaker-block-39",
+      "unit_fingerprint": "sha256:218f641ce2174cbc1db9c6ebcc521df63e1e7f7dbf25e840e1a3891aa4b15408",
+      "speaker_class": "target",
+      "cue_categories": [
+        "nonverbal"
+      ],
+      "cue_occurrences": {
+        "LAUGHTER": 2
+      },
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 214,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 40,
+      "locator": "pdf-page-5-speaker-block-40",
+      "unit_fingerprint": "sha256:bc0bd824db964b0b9ae6472f4e79b669899814ed22713cdc17c6271018ab18d7",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 41,
+      "locator": "pdf-page-5-speaker-block-41",
+      "unit_fingerprint": "sha256:7ab6f39e9771bf8568500001b6a5ab806dc3e4fc15204850ea7689dc2281356a",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 42,
+      "locator": "pdf-page-5-speaker-block-42",
+      "unit_fingerprint": "sha256:27cf9fc360a9b9e766db2589221a121997cd8094b50796baeeaf140870b79a0c",
+      "speaker_class": "target",
+      "cue_categories": [
+        "nonverbal"
+      ],
+      "cue_occurrences": {
+        "LAUGHTER": 1
+      },
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 142,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 43,
+      "locator": "pdf-page-6-speaker-block-43",
+      "unit_fingerprint": "sha256:57a025c6121a0b9a4def56b8411f850654d9717470a6903c637c2eb3813d316d",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 44,
+      "locator": "pdf-page-6-speaker-block-44",
+      "unit_fingerprint": "sha256:4d5fdd357f4953a9aa2ed376e0258266374c6fe2b7959213b0b10a8fdfb18bec",
+      "speaker_class": "target",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 138,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 45,
+      "locator": "pdf-page-6-speaker-block-45",
+      "unit_fingerprint": "sha256:4954eda5affd30e72788897633fba89870ae0215527e5f500aa0ef3994c04fa3",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 46,
+      "locator": "pdf-page-6-speaker-block-46",
+      "unit_fingerprint": "sha256:545d62879235503857e890f0653578dd9c46be6d403acb1e766307ee7f8744d8",
+      "speaker_class": "target",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 208,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 47,
+      "locator": "pdf-page-6-speaker-block-47",
+      "unit_fingerprint": "sha256:490f626b5df490c78d51069a8e009edf821bbfb9b93e3f0b01ef25c451228f1f",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 48,
+      "locator": "pdf-page-6-speaker-block-48",
+      "unit_fingerprint": "sha256:767a9536c43c590eeb5333a50ba02fcf60f576db77d2888433ae8f5961941fc9",
+      "speaker_class": "target",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 84,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 49,
+      "locator": "pdf-page-7-speaker-block-49",
+      "unit_fingerprint": "sha256:3fb1e8ff4f97bba4b37df9614d27da330e48ae52e70365642c55cfcc29f766c9",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 50,
+      "locator": "pdf-page-7-speaker-block-50",
+      "unit_fingerprint": "sha256:7d392434dfb62c5f19c1b7b8b2bfa714c0e03ac06eb072f7402e20885ee50f62",
+      "speaker_class": "target",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 3,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 51,
+      "locator": "pdf-page-7-speaker-block-51",
+      "unit_fingerprint": "sha256:94fbf2fa34882e29e465bea9fa73b2567ae08f92bfef922d351abc6f3fcdd7d3",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 52,
+      "locator": "pdf-page-7-speaker-block-52",
+      "unit_fingerprint": "sha256:f2dd21fcfcbcc5063b63bc26a4a1a7f6f16108614f280afff876b3bfa43bf591",
+      "speaker_class": "target",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "closed-set-fragment",
+      "residual_token_count": 1,
+      "fragment_result": "excluded"
+    },
+    {
+      "ordinal": 53,
+      "locator": "pdf-page-7-speaker-block-53",
+      "unit_fingerprint": "sha256:e41976f049444c47aa308e1f3577e5f566f98397125d36592ae81ec98d3e3e55",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 54,
+      "locator": "pdf-page-7-speaker-block-54",
+      "unit_fingerprint": "sha256:41bf5938773a47c660a3c1550a90f936a125229648c9a5e1f7d31ed568fe35f3",
+      "speaker_class": "target",
+      "cue_categories": [
+        "nonverbal"
+      ],
+      "cue_occurrences": {
+        "LAUGHTER": 1
+      },
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 111,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 55,
+      "locator": "pdf-page-7-speaker-block-55",
+      "unit_fingerprint": "sha256:51bdacc1370519a3cc3f40f90e5e273a3458b9331524bacbdab20d4705c5f8d5",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 56,
+      "locator": "pdf-page-7-speaker-block-56",
+      "unit_fingerprint": "sha256:bcf48e078bb0c0ad50319c18fb1a9375fb5a5617b8835cc03057b374722cce5b",
+      "speaker_class": "target",
+      "cue_categories": [
+        "nonverbal"
+      ],
+      "cue_occurrences": {
+        "LAUGHTER": 2
+      },
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 157,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 57,
+      "locator": "pdf-page-8-speaker-block-57",
+      "unit_fingerprint": "sha256:3bb0d863db54ff9a3ea8b7d08bfe4bd33a33c61d0613b8b55da7c6d80907aafe",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 58,
+      "locator": "pdf-page-8-speaker-block-58",
+      "unit_fingerprint": "sha256:e1e945f1386b5efcdc9fe79bdae56b0ec3b44effb91dc8fbc189e0c620c11bb7",
+      "speaker_class": "target",
+      "cue_categories": [
+        "nonverbal"
+      ],
+      "cue_occurrences": {
+        "LAUGHTER": 1
+      },
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 47,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 59,
+      "locator": "pdf-page-8-speaker-block-59",
+      "unit_fingerprint": "sha256:59b4d00fd86e99e9aed8355f2e59e12fd7144c4537215119ff5382fdb53772f1",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 60,
+      "locator": "pdf-page-8-speaker-block-60",
+      "unit_fingerprint": "sha256:d17c707cd41640f98afed704fdbcc66681946823f0cdf956b5a9f208cbee877e",
+      "speaker_class": "target",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 91,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 61,
+      "locator": "pdf-page-8-speaker-block-61",
+      "unit_fingerprint": "sha256:371f24d4eee8e6aa354d83fa1022fd45d2518498e8388a3d9a6d00c95c62d298",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 62,
+      "locator": "pdf-page-8-speaker-block-62",
+      "unit_fingerprint": "sha256:017ae8b5fc315d39e0a3b2dc0181692e91c97d357451c3ffaf35f991089d2790",
+      "speaker_class": "target",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 44,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 63,
+      "locator": "pdf-page-8-speaker-block-63",
+      "unit_fingerprint": "sha256:bfb74b5f9ff9acd89c8c6fe182e1b544f59d455d080c8127fcb8930889b8fb01",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 64,
+      "locator": "pdf-page-8-speaker-block-64",
+      "unit_fingerprint": "sha256:4df27998808bb792a497945ec18f74f72c7f7e8fc8ace449875095d7fa1d3106",
+      "speaker_class": "target",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 4,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 65,
+      "locator": "pdf-page-9-speaker-block-65",
+      "unit_fingerprint": "sha256:1e8da33685870150039466e13db51fdd02aaae80e20d7b4535e06f2eea80c617",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 66,
+      "locator": "pdf-page-9-speaker-block-66",
+      "unit_fingerprint": "sha256:28053f761a76a8e7a69e1c564c690737345905d9278478738c0410e6a3d04813",
+      "speaker_class": "target",
+      "cue_categories": [
+        "nonverbal"
+      ],
+      "cue_occurrences": {
+        "LAUGHTER": 1
+      },
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 140,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 67,
+      "locator": "pdf-page-9-speaker-block-67",
+      "unit_fingerprint": "sha256:6c5db9654b368097996b5b4e8e6f682eb41e7035af5fd4d4c811990195fb559e",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 68,
+      "locator": "pdf-page-9-speaker-block-68",
+      "unit_fingerprint": "sha256:5f3351bdea0226d20d24063d7789b8a97c10ef7206650b1272fd3752efe7f63b",
+      "speaker_class": "target",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 7,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 69,
+      "locator": "pdf-page-9-speaker-block-69",
+      "unit_fingerprint": "sha256:b5289fc4acd4a9c18a5427cb2498d590a51f95295821df176c23cc609245c476",
+      "speaker_class": "other",
+      "cue_categories": [
+        "performance"
+      ],
+      "cue_occurrences": {
+        "SINGING": 1
+      },
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 70,
+      "locator": "pdf-page-9-speaker-block-70",
+      "unit_fingerprint": "sha256:b5289fc4acd4a9c18a5427cb2498d590a51f95295821df176c23cc609245c476",
+      "speaker_class": "target",
+      "cue_categories": [
+        "performance"
+      ],
+      "cue_occurrences": {
+        "SINGING": 1
+      },
+      "disposition": "excluded",
+      "reason": "performance-cue-whole-block",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 71,
+      "locator": "pdf-page-9-speaker-block-71",
+      "unit_fingerprint": "sha256:801db750dfdd357c8ea6c0943eaa803dbe4bbf8605d3ecc26f0a2475306ecfee",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 72,
+      "locator": "pdf-page-9-speaker-block-72",
+      "unit_fingerprint": "sha256:5f3a073295fe58a311901f9443701318e9736f5d83d5a881054c7995038485ee",
+      "speaker_class": "target",
+      "cue_categories": [
+        "unreadable"
+      ],
+      "cue_occurrences": {
+        "INAUDIBLE": 1
+      },
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 6,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 73,
+      "locator": "pdf-page-9-speaker-block-73",
+      "unit_fingerprint": "sha256:27574746bc48f7fd15f4031c9963e61df94bbe7027af59df9aad5033cd21642d",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 74,
+      "locator": "pdf-page-10-speaker-block-74",
+      "unit_fingerprint": "sha256:4b48cf940fcbd3a47825dfe5134d1e91681b68afdf5fa473ab0617916a4c570c",
+      "speaker_class": "target",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 1,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 75,
+      "locator": "pdf-page-10-speaker-block-75",
+      "unit_fingerprint": "sha256:833499217a4c02fa4440a7507a356c126f9719664f9fd87f081a0abff633b701",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 76,
+      "locator": "pdf-page-10-speaker-block-76",
+      "unit_fingerprint": "sha256:d416cef566efa41ca05028ef2be9962adb79e8b8ef30397ea8466203f4cc495d",
+      "speaker_class": "target",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 4,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 77,
+      "locator": "pdf-page-10-speaker-block-77",
+      "unit_fingerprint": "sha256:e311d979b5b14a4413a91d8a3fb943c774fa93630482034ab0c39d5735123650",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 78,
+      "locator": "pdf-page-10-speaker-block-78",
+      "unit_fingerprint": "sha256:848ddd8cc2537f74180973ca6c863cc99cf1937968143e27fbd8eae2c0fac290",
+      "speaker_class": "target",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 7,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 79,
+      "locator": "pdf-page-10-speaker-block-79",
+      "unit_fingerprint": "sha256:c3d8c554f61bb42fce5e09ccc3d451d7aead0c798fbe076b69cd4538ab09f1fa",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 80,
+      "locator": "pdf-page-10-speaker-block-80",
+      "unit_fingerprint": "sha256:b061bedae1541c0e4fc0064837cf9e3d1a38ebee5d477d3d52df0d27ed08d314",
+      "speaker_class": "target",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 5,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 81,
+      "locator": "pdf-page-10-speaker-block-81",
+      "unit_fingerprint": "sha256:cd365012078d563dd411393a80781c803864e31224512e4d971f7978c64aae15",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 82,
+      "locator": "pdf-page-10-speaker-block-82",
+      "unit_fingerprint": "sha256:5a072fdb4d85d6684fdd61be0bab0316b276b4b43cb97c237f3cfbd49fcd00c6",
+      "speaker_class": "target",
+      "cue_categories": [
+        "nonverbal"
+      ],
+      "cue_occurrences": {
+        "LAUGHTER": 1
+      },
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 11,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 83,
+      "locator": "pdf-page-10-speaker-block-83",
+      "unit_fingerprint": "sha256:39113e0ca914c0ea08e3958d8a3434e948e894e4f43a412163bb094e57823667",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 84,
+      "locator": "pdf-page-10-speaker-block-84",
+      "unit_fingerprint": "sha256:bf17e2e9f129550ed8825ec19fff8e862d66295adb3e4ec75597de373476619b",
+      "speaker_class": "target",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 2,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 85,
+      "locator": "pdf-page-11-speaker-block-85",
+      "unit_fingerprint": "sha256:28ba3d9c1ad9eb70f809e744e3e7dbdec159fc32a485c04850fbcaab96b10c7e",
+      "speaker_class": "other",
+      "cue_categories": [
+        "nonverbal"
+      ],
+      "cue_occurrences": {
+        "LAUGHTER": 1
+      },
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 86,
+      "locator": "pdf-page-11-speaker-block-86",
+      "unit_fingerprint": "sha256:34229fccf7ff792b12cd77247e01a472343b770717d601ca66aab9277fa3720e",
+      "speaker_class": "target",
+      "cue_categories": [
+        "nonverbal"
+      ],
+      "cue_occurrences": {
+        "LAUGHTER": 1
+      },
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 37,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 87,
+      "locator": "pdf-page-11-speaker-block-87",
+      "unit_fingerprint": "sha256:ddff6e34d261aa652f293680f61af3eb21030cdf0adc8c7484cd3936ae3adbf5",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 88,
+      "locator": "pdf-page-11-speaker-block-88",
+      "unit_fingerprint": "sha256:c3cbdffef0245274f598673e426685609450d9de281404f89d95cc829a484da7",
+      "speaker_class": "target",
+      "cue_categories": [
+        "nonverbal"
+      ],
+      "cue_occurrences": {
+        "LAUGHTER": 1
+      },
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 66,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 89,
+      "locator": "pdf-page-11-speaker-block-89",
+      "unit_fingerprint": "sha256:cd7ecaacc47f4a1771d0bb5260f3d11f3b74b36270196e64bf151055c16080bf",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 90,
+      "locator": "pdf-page-11-speaker-block-90",
+      "unit_fingerprint": "sha256:5a3ffad7f9504e2ca6224935137192794bc18ffdb1a4b1ada86ddab3fd57f1fa",
+      "speaker_class": "target",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "closed-set-fragment",
+      "residual_token_count": 1,
+      "fragment_result": "excluded"
+    },
+    {
+      "ordinal": 91,
+      "locator": "pdf-page-11-speaker-block-91",
+      "unit_fingerprint": "sha256:8262c1fb491e23ac5e1b1f28e05f2d8f58ff1b4e337e821f822cde88662fda34",
+      "speaker_class": "other",
+      "cue_categories": [
+        "nonverbal"
+      ],
+      "cue_occurrences": {
+        "LAUGHTER": 1
+      },
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 92,
+      "locator": "pdf-page-12-speaker-block-92",
+      "unit_fingerprint": "sha256:d897e7165861308757ee8c372929d03a7e6adb90d2d1ccf0b66fdf515042f2bc",
+      "speaker_class": "target",
+      "cue_categories": [
+        "nonverbal"
+      ],
+      "cue_occurrences": {
+        "LAUGHTER": 1
+      },
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 12,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 93,
+      "locator": "pdf-page-12-speaker-block-93",
+      "unit_fingerprint": "sha256:6863e231d1cdb417dcdd38b91218fc7f9dbd9451b9197c57b440d7ed30372315",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 94,
+      "locator": "pdf-page-12-speaker-block-94",
+      "unit_fingerprint": "sha256:51f6ecae149f9146afadec60c463aaadb96994441d44ca1009b34e8b33418867",
+      "speaker_class": "target",
+      "cue_categories": [
+        "nonverbal"
+      ],
+      "cue_occurrences": {
+        "LAUGHTER": 1
+      },
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 17,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 95,
+      "locator": "pdf-page-12-speaker-block-95",
+      "unit_fingerprint": "sha256:be388a268816116d1bf5e9f200e9d28e5c2ec8a85f5dc71528f97b12f2fad075",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 96,
+      "locator": "pdf-page-12-speaker-block-96",
+      "unit_fingerprint": "sha256:b72341ad6f1e285252d2b44a73581e1790c4bb9a6fb208e67a111b18396ddae6",
+      "speaker_class": "target",
+      "cue_categories": [
+        "nonverbal"
+      ],
+      "cue_occurrences": {
+        "LAUGHTER": 1
+      },
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 397,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 97,
+      "locator": "pdf-page-12-speaker-block-97",
+      "unit_fingerprint": "sha256:7d6e423c2a5460e42a5cbaddc4ec719753a1f537378ed85385502f85477630b1",
+      "speaker_class": "other",
+      "cue_categories": [
+        "nonverbal"
+      ],
+      "cue_occurrences": {
+        "LAUGHTER": 1
+      },
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 98,
+      "locator": "pdf-page-13-speaker-block-98",
+      "unit_fingerprint": "sha256:40f072f9059ab5e3fc95d22b969c57260979ec7cbd399309111755715a371d87",
+      "speaker_class": "target",
+      "cue_categories": [
+        "nonverbal"
+      ],
+      "cue_occurrences": {
+        "LAUGHTER": 1
+      },
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 395,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 99,
+      "locator": "pdf-page-13-speaker-block-99",
+      "unit_fingerprint": "sha256:733f104ba59e0c86f03265e63bc5330c43452b8c28eed128020a13c727b33906",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 100,
+      "locator": "pdf-page-13-speaker-block-100",
+      "unit_fingerprint": "sha256:5ccc8132b0ce6bd2b779b43bbf6f01a9ea1dc1da8b69ec550f0ef7df3869adcc",
+      "speaker_class": "target",
+      "cue_categories": [
+        "nonverbal"
+      ],
+      "cue_occurrences": {
+        "LAUGHTER": 1
+      },
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 77,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 101,
+      "locator": "pdf-page-13-speaker-block-101",
+      "unit_fingerprint": "sha256:183a78a31364121063cd5380092c58a5e1f8a8f3495ab5b694de6a5123d1fa5f",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 102,
+      "locator": "pdf-page-14-speaker-block-102",
+      "unit_fingerprint": "sha256:2d5ebfc047d418aed33de97824e1c658a996607608e62fd8e14c881548df7d83",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 103,
+      "locator": "pdf-page-14-speaker-block-103",
+      "unit_fingerprint": "sha256:6d192a6f031d9b1532964210b801472b4d6c03aa55dce50fa79ce2b9be56080b",
+      "speaker_class": "target",
+      "cue_categories": [
+        "nonverbal"
+      ],
+      "cue_occurrences": {
+        "LAUGHTER": 1
+      },
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 218,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 104,
+      "locator": "pdf-page-14-speaker-block-104",
+      "unit_fingerprint": "sha256:abb6a4612b2afbdf742dbfaa15554bbd1c6c5763324f1b773976d114981cc48d",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 105,
+      "locator": "pdf-page-14-speaker-block-105",
+      "unit_fingerprint": "sha256:19661e58969d96596cdcfc4a242466e5aac0a67a154b32f0dfdc4e3e1d8d8d13",
+      "speaker_class": "target",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 96,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 106,
+      "locator": "pdf-page-14-speaker-block-106",
+      "unit_fingerprint": "sha256:51093cb261caf5e158c3b424c6607429cef0a60790519c6d9d635c30ef744197",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 107,
+      "locator": "pdf-page-14-speaker-block-107",
+      "unit_fingerprint": "sha256:0edd49d8ef680636e0d0f82107f99d6d56b9f0cba24d0706f2b754366e1da949",
+      "speaker_class": "target",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 3,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 108,
+      "locator": "pdf-page-15-speaker-block-108",
+      "unit_fingerprint": "sha256:281c7c1e7ef3e74ee903f12890aa366fdf015990be9f09890431aabe0efd02fa",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 109,
+      "locator": "pdf-page-15-speaker-block-109",
+      "unit_fingerprint": "sha256:2226d523f12752bce1b284577ecfea95f97dfc6d335ffb4a53b69ff23f2c20af",
+      "speaker_class": "target",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 101,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 110,
+      "locator": "pdf-page-15-speaker-block-110",
+      "unit_fingerprint": "sha256:0cc342d41f436c39df3ed4d5d6f942ee34b776c47d49beb32c7262896b1247a7",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 111,
+      "locator": "pdf-page-15-speaker-block-111",
+      "unit_fingerprint": "sha256:b02d5e95d438f4379f7355c9eb77b6c7c7412e4c6a032ed07e2bce203b01dcc7",
+      "speaker_class": "target",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "closed-set-fragment",
+      "residual_token_count": 2,
+      "fragment_result": "excluded"
+    },
+    {
+      "ordinal": 112,
+      "locator": "pdf-page-15-speaker-block-112",
+      "unit_fingerprint": "sha256:16b9895aa17c5c1a7756e5bc6c451ced3029482c4fd7aebd85af4d8b6f82a837",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 113,
+      "locator": "pdf-page-15-speaker-block-113",
+      "unit_fingerprint": "sha256:44bea30a515ce97461480de2c1e0364e209c170040d900f0cba746968d737bc0",
+      "speaker_class": "target",
+      "cue_categories": [
+        "nonverbal"
+      ],
+      "cue_occurrences": {
+        "LAUGHTER": 1
+      },
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 58,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 114,
+      "locator": "pdf-page-15-speaker-block-114",
+      "unit_fingerprint": "sha256:53a017c7ac71400fe251a31bd77ca5412834b03fe7a7a06b1893523e152911b1",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 115,
+      "locator": "pdf-page-15-speaker-block-115",
+      "unit_fingerprint": "sha256:2b94d82696a0e035bc8fdebf7ec155d38c0573859b0e61538eed7c4828e3bb7b",
+      "speaker_class": "target",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 15,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 116,
+      "locator": "pdf-page-16-speaker-block-116",
+      "unit_fingerprint": "sha256:cf4ef0a0f227db99a699ae27a4c2d67b7dbd86a28ef3464382a39ac2146f9d0d",
+      "speaker_class": "target",
+      "cue_categories": [
+        "performance",
+        "nonverbal"
+      ],
+      "cue_occurrences": {
+        "SINGING": 1,
+        "LAUGHTER": 3
+      },
+      "disposition": "excluded",
+      "reason": "performance-cue-whole-block",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 117,
+      "locator": "pdf-page-16-speaker-block-117",
+      "unit_fingerprint": "sha256:7aee69f0b7263ec35fc59c05a7c8c2017338bbd621923c3fb9f69fdc98ff2e0d",
+      "speaker_class": "target",
+      "cue_categories": [
+        "nonverbal"
+      ],
+      "cue_occurrences": {
+        "LAUGHTER": 1
+      },
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 173,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 118,
+      "locator": "pdf-page-16-speaker-block-118",
+      "unit_fingerprint": "sha256:0964eaaae1a0370715daa5915fae634b730a78250bc4c73616c7db8e6446548c",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 119,
+      "locator": "pdf-page-17-speaker-block-119",
+      "unit_fingerprint": "sha256:a4833bd3705a74f8eda6e7207bfac5f7c21e9f7624af3441cdffdd549daee0a9",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 120,
+      "locator": "pdf-page-17-speaker-block-120",
+      "unit_fingerprint": "sha256:60ffcaf82bd6f168780827787a3218dc34686d145cc95b5bbbecfbd101d13458",
+      "speaker_class": "target",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 62,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 121,
+      "locator": "pdf-page-17-speaker-block-121",
+      "unit_fingerprint": "sha256:d89ed3fe91c9ed2c8018721126de9eda3ec3e9ce828f551f2c915abc139300ea",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 122,
+      "locator": "pdf-page-17-speaker-block-122",
+      "unit_fingerprint": "sha256:165a7f57edab702a54b18ef79da5c5c652d5091faf3c58104ea472bdd8a970b5",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 123,
+      "locator": "pdf-page-17-speaker-block-123",
+      "unit_fingerprint": "sha256:81853ae5a04913520f5233bfac94da6cd1e18643e9410c76ae48c7a10dee674f",
+      "speaker_class": "target",
+      "cue_categories": [
+        "nonverbal"
+      ],
+      "cue_occurrences": {
+        "LAUGHTER": 1
+      },
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 170,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 124,
+      "locator": "pdf-page-17-speaker-block-124",
+      "unit_fingerprint": "sha256:63a7037a68795197933a3c34664fb8f480c56c38639c5246a4fd58a95ea7f485",
+      "speaker_class": "target",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 8,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 125,
+      "locator": "pdf-page-17-speaker-block-125",
+      "unit_fingerprint": "sha256:417ed1433259d1a0dda686f12bce7f1a6d9c5b3ee211f14826bfe9d2eda17c04",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 126,
+      "locator": "pdf-page-18-speaker-block-126",
+      "unit_fingerprint": "sha256:1632bac7dad2116011d74e58217a4f74f2cc00b92b8582fb278c6a3fddfea536",
+      "speaker_class": "target",
+      "cue_categories": [
+        "nonverbal"
+      ],
+      "cue_occurrences": {
+        "LAUGHTER": 2
+      },
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 104,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 127,
+      "locator": "pdf-page-18-speaker-block-127",
+      "unit_fingerprint": "sha256:bd6ab8d27979d594553ca0db79af01d7b926f2e60a50055eda0309b37088c290",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 128,
+      "locator": "pdf-page-18-speaker-block-128",
+      "unit_fingerprint": "sha256:0ec822614c3fa7e4949f7ee4f5cfbe02a5bd25235f986bee99e08b7c3920d403",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 129,
+      "locator": "pdf-page-18-speaker-block-129",
+      "unit_fingerprint": "sha256:aea4a09acd48bab7007953ba59b7e1a8baaf8af77ff63c8ec54910c1a6d7e4a9",
+      "speaker_class": "target",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 18,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 130,
+      "locator": "pdf-page-18-speaker-block-130",
+      "unit_fingerprint": "sha256:7f0271eac301ecc196898d640a8dc0abcc3bad3d470d990e6cd0b0718460743d",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 131,
+      "locator": "pdf-page-18-speaker-block-131",
+      "unit_fingerprint": "sha256:e2f32e10e131ed1f21f9cef9fa9631c2e25f09c9cd6312fde9b76f063f65f3c8",
+      "speaker_class": "target",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 9,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 132,
+      "locator": "pdf-page-18-speaker-block-132",
+      "unit_fingerprint": "sha256:8d1724e1601f1941b8fa0f0c5b9d5a0dd8f295ab172706b8f2a3769221605aba",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 133,
+      "locator": "pdf-page-18-speaker-block-133",
+      "unit_fingerprint": "sha256:36c81a76b306a994d8b79b510bcaa6ecc3c17607e9212b18be02cfe7c2763ac9",
+      "speaker_class": "target",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 168,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 134,
+      "locator": "pdf-page-19-speaker-block-134",
+      "unit_fingerprint": "sha256:78cf02fc9a77a0a1cd68faba5d8d0c4cf4deef0cd7976225d82f0f0d5a3154b8",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 135,
+      "locator": "pdf-page-19-speaker-block-135",
+      "unit_fingerprint": "sha256:32bf32e6f8a8dd1c730e5b3dd483d6bbe16e6d82aab6d4015a70af0315f70a68",
+      "speaker_class": "target",
+      "cue_categories": [
+        "nonverbal"
+      ],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "closed-set-fragment",
+      "residual_token_count": 2,
+      "fragment_result": "excluded"
+    },
+    {
+      "ordinal": 136,
+      "locator": "pdf-page-19-speaker-block-136",
+      "unit_fingerprint": "sha256:6a9340f4e9c47af64dd411624627638097609cfda68c1852155a8f13465fe3fd",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 137,
+      "locator": "pdf-page-19-speaker-block-137",
+      "unit_fingerprint": "sha256:368e0c6b14c4ad05915e8b6691322630682c04d499d0ee015d49f01ccb7c145b",
+      "speaker_class": "target",
+      "cue_categories": [
+        "nonverbal"
+      ],
+      "cue_occurrences": {
+        "LAUGHTER": 1
+      },
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 12,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 138,
+      "locator": "pdf-page-19-speaker-block-138",
+      "unit_fingerprint": "sha256:31d4cea0c5c3aae5e6a0d63818b16436d30ce8b32059aef6e4f4511ae4a2c404",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 139,
+      "locator": "pdf-page-19-speaker-block-139",
+      "unit_fingerprint": "sha256:e8b09a7f5180d355fa57f65d84266e131afc897f2fa586fdc95c218088c93cb8",
+      "speaker_class": "target",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 3,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 140,
+      "locator": "pdf-page-19-speaker-block-140",
+      "unit_fingerprint": "sha256:d99091b9d1cc6d3e4e1a92302d4e6ad2305e7678e86dd63f5588795f15477374",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 141,
+      "locator": "pdf-page-19-speaker-block-141",
+      "unit_fingerprint": "sha256:3dbe26cbe55b997ec5f80fb831e8c1a5ca9e09a437b32dca0a25b65ef2c6e766",
+      "speaker_class": "target",
+      "cue_categories": [
+        "nonverbal"
+      ],
+      "cue_occurrences": {
+        "LAUGHTER": 2
+      },
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 241,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 142,
+      "locator": "pdf-page-20-speaker-block-142",
+      "unit_fingerprint": "sha256:c622f1b7b02f661caccbdae5cac7ccda052d42df77217fe3a373dd5ec0dd9460",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 143,
+      "locator": "pdf-page-20-speaker-block-143",
+      "unit_fingerprint": "sha256:b5b3e8033ddac6bd910376583d94c55738e835e2c56b2a8736428eb37bed7b82",
+      "speaker_class": "target",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 98,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 144,
+      "locator": "pdf-page-20-speaker-block-144",
+      "unit_fingerprint": "sha256:dbd737bb1cb589bf4da9343b1b24d8ff91e8cceea504d95e2a63ab7f87bb8796",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 145,
+      "locator": "pdf-page-20-speaker-block-145",
+      "unit_fingerprint": "sha256:f05552054dda237fc8a39b4582e3f0374a11864e4ea614ee7afd95f0bdfdbeeb",
+      "speaker_class": "target",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 40,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 146,
+      "locator": "pdf-page-20-speaker-block-146",
+      "unit_fingerprint": "sha256:602ef527e602ec1dc893d664b3c8cc72800228eeed80c2a2f655d43ef7b1f34b",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 147,
+      "locator": "pdf-page-20-speaker-block-147",
+      "unit_fingerprint": "sha256:e7de7e9551e4d0cd0f96da1a6dba14fdffd2e15626343b37d6bf75d113f585b4",
+      "speaker_class": "target",
+      "cue_categories": [
+        "nonverbal"
+      ],
+      "cue_occurrences": {
+        "LAUGHTER": 3
+      },
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 164,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 148,
+      "locator": "pdf-page-21-speaker-block-148",
+      "unit_fingerprint": "sha256:825a0b958f0716c5288e44758a73e149e8fd693f9ab6d5c5feca7979c0ab01df",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 149,
+      "locator": "pdf-page-21-speaker-block-149",
+      "unit_fingerprint": "sha256:2deb3c13cc6f89352504b211c92471caa7b786117cf19cc42744dd6c30e9f60f",
+      "speaker_class": "target",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 1,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 150,
+      "locator": "pdf-page-21-speaker-block-150",
+      "unit_fingerprint": "sha256:03142ccf7619625580220adb0adebf8eff9c915969509433575c12b5421b7c88",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 151,
+      "locator": "pdf-page-21-speaker-block-151",
+      "unit_fingerprint": "sha256:f28607fe9aa3009d8f4155def5ab1830e35e15cba4c59244055f130b20787a13",
+      "speaker_class": "target",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 3,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 152,
+      "locator": "pdf-page-21-speaker-block-152",
+      "unit_fingerprint": "sha256:27ced039be53f2427aed4f07246182b0ed221d2dbbe2eddc466270c6559bc495",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 153,
+      "locator": "pdf-page-21-speaker-block-153",
+      "unit_fingerprint": "sha256:bc1ac69c18b7c6c2566f34baa38cc0a83b4f57dd04baf955d2f702147e69b489",
+      "speaker_class": "target",
+      "cue_categories": [
+        "nonverbal"
+      ],
+      "cue_occurrences": {
+        "LAUGHTER": 2
+      },
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 246,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 154,
+      "locator": "pdf-page-22-speaker-block-154",
+      "unit_fingerprint": "sha256:ec7cfccddb0217692d2cbc72fca228feaeeb83983d777f9accdbb4821402ecdd",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 155,
+      "locator": "pdf-page-22-speaker-block-155",
+      "unit_fingerprint": "sha256:62043576dc7cbb3cc789952f3122b0f55dca3214b8ee5380c131db33f549226a",
+      "speaker_class": "target",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 131,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 156,
+      "locator": "pdf-page-22-speaker-block-156",
+      "unit_fingerprint": "sha256:6a1749aa273fcd556ff816cf331db769bdf2e45ad2901144abeccf752d9f0345",
+      "speaker_class": "other",
+      "cue_categories": [
+        "nonverbal"
+      ],
+      "cue_occurrences": {
+        "LAUGHTER": 1
+      },
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 157,
+      "locator": "pdf-page-22-speaker-block-157",
+      "unit_fingerprint": "sha256:a3319a37015b6b925bc67518b9553a3b90ff3e482a3290acbe708a64c7c9dd91",
+      "speaker_class": "target",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 11,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 158,
+      "locator": "pdf-page-22-speaker-block-158",
+      "unit_fingerprint": "sha256:0af6f902ce0ea99bc9192190ce73a6dd0e7e364e696134be8a5fc41834b6f3e5",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 159,
+      "locator": "pdf-page-22-speaker-block-159",
+      "unit_fingerprint": "sha256:18a3227fdcbba1dd4a2f52284d1fd4dd23decdd46f5da1812264d36e12deaec6",
+      "speaker_class": "target",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 3,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 160,
+      "locator": "pdf-page-22-speaker-block-160",
+      "unit_fingerprint": "sha256:4bbd94c7fe153403cd7f664eeb7fbc730320bdef5c0028c254194b3fc3e63098",
+      "speaker_class": "other",
+      "cue_categories": [
+        "nonverbal"
+      ],
+      "cue_occurrences": {
+        "LAUGHTER": 1
+      },
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 161,
+      "locator": "pdf-page-22-speaker-block-161",
+      "unit_fingerprint": "sha256:9179bbf8973b3aeb61f15b4636e37e7567491f1efddce099a28173bda8dcaa71",
+      "speaker_class": "target",
+      "cue_categories": [
+        "nonverbal"
+      ],
+      "cue_occurrences": {
+        "LAUGHTER": 1
+      },
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 15,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 162,
+      "locator": "pdf-page-23-speaker-block-162",
+      "unit_fingerprint": "sha256:3bb142cf6fdf9401fd2f2fbd2d06a374b8d6f8a9428c6e5281d37b397c9aaea7",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 163,
+      "locator": "pdf-page-23-speaker-block-163",
+      "unit_fingerprint": "sha256:e6d78a0ebb8c7b38540109bb8f6b271e27425de5b0c9930dbaf556ea5542e3ca",
+      "speaker_class": "other",
+      "cue_categories": [
+        "nonverbal"
+      ],
+      "cue_occurrences": {
+        "LAUGHTER": 1
+      },
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 164,
+      "locator": "pdf-page-23-speaker-block-164",
+      "unit_fingerprint": "sha256:f0a51261a64d7e5d785f0e995787f0d356a9a17cceeacef54762ad14f221dac1",
+      "speaker_class": "target",
+      "cue_categories": [
+        "nonverbal"
+      ],
+      "cue_occurrences": {
+        "LAUGHTER": 1
+      },
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 144,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 165,
+      "locator": "pdf-page-23-speaker-block-165",
+      "unit_fingerprint": "sha256:4cfe7a6713abeeec525d727e0665534edeb2851ffb907516c86efe619f0aea33",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 166,
+      "locator": "pdf-page-23-speaker-block-166",
+      "unit_fingerprint": "sha256:8e28fe8aae4e11ceb2a5b90df28d0c24a8ee12c5b291673645c432b1a01a4a78",
+      "speaker_class": "target",
+      "cue_categories": [
+        "nonverbal"
+      ],
+      "cue_occurrences": {
+        "LAUGHTER": 1
+      },
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 155,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 167,
+      "locator": "pdf-page-23-speaker-block-167",
+      "unit_fingerprint": "sha256:e8aa46a08bd83e4fb8847e78001c20ebc992a961c11919c1d92afc7564844ec1",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 168,
+      "locator": "pdf-page-24-speaker-block-168",
+      "unit_fingerprint": "sha256:6a1511cc91c482741ac1c617c62a6e3522c3c34e5cf49e7beea82911af673652",
+      "speaker_class": "target",
+      "cue_categories": [
+        "nonverbal"
+      ],
+      "cue_occurrences": {
+        "LAUGHTER": 2
+      },
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 126,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 169,
+      "locator": "pdf-page-24-speaker-block-169",
+      "unit_fingerprint": "sha256:d0218f6c7071f677827f6f68582ed511809d92883944fee12d249204bc4ab978",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 170,
+      "locator": "pdf-page-24-speaker-block-170",
+      "unit_fingerprint": "sha256:dcc2549f143c1b72e1c741fcf00a1f9740b76f5b1017846dd479779f3fd0d309",
+      "speaker_class": "target",
+      "cue_categories": [
+        "nonverbal"
+      ],
+      "cue_occurrences": {
+        "LAUGHTER": 1
+      },
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 55,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 171,
+      "locator": "pdf-page-24-speaker-block-171",
+      "unit_fingerprint": "sha256:84b8f568b63f74d4b84f4ca210ec399f9f4c59e85995580978a25f2c381e2529",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 172,
+      "locator": "pdf-page-24-speaker-block-172",
+      "unit_fingerprint": "sha256:859a13e8baf28902dab5fae7568ef263c64240b628fe4de6cc6889be614e9286",
+      "speaker_class": "target",
+      "cue_categories": [
+        "nonverbal"
+      ],
+      "cue_occurrences": {
+        "LAUGHTER": 2
+      },
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 144,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 173,
+      "locator": "pdf-page-24-speaker-block-173",
+      "unit_fingerprint": "sha256:cfc872e26703b66f8124acf9fb40e382897c023b1b1665d9db3290398e119bbe",
+      "speaker_class": "other",
+      "cue_categories": [
+        "nonverbal"
+      ],
+      "cue_occurrences": {
+        "LAUGHTER": 1
+      },
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 174,
+      "locator": "pdf-page-24-speaker-block-174",
+      "unit_fingerprint": "sha256:268b207c74248e6573fb9ac73df68494e133294da7ccef7b7d1e6cc76dcd62d5",
+      "speaker_class": "target",
+      "cue_categories": [
+        "nonverbal"
+      ],
+      "cue_occurrences": {
+        "LAUGHTER": 1
+      },
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 200,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 175,
+      "locator": "pdf-page-25-speaker-block-175",
+      "unit_fingerprint": "sha256:ea0ef51194bd9d8ae8098fbf1b29f6635d0e9ecccf9a8b0766caf110a227dcc0",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 176,
+      "locator": "pdf-page-25-speaker-block-176",
+      "unit_fingerprint": "sha256:e8a44a4dfd08d7c8a6120e3ec74363bdc4e281b624477115f74fc67a97d35e86",
+      "speaker_class": "target",
+      "cue_categories": [
+        "nonverbal"
+      ],
+      "cue_occurrences": {
+        "LAUGHTER": 1
+      },
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 4,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 177,
+      "locator": "pdf-page-25-speaker-block-177",
+      "unit_fingerprint": "sha256:61eaedd4d63debbd3a1bc816a301f838406891a1553d430caf962d126ef95b2f",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 178,
+      "locator": "pdf-page-25-speaker-block-178",
+      "unit_fingerprint": "sha256:ef97c8f1b2830993b0d79588f45654fc60177e80f08c544116471878c8bd7e0b",
+      "speaker_class": "target",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 51,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 179,
+      "locator": "pdf-page-25-speaker-block-179",
+      "unit_fingerprint": "sha256:06ad5d5e1bcd05fc72cc53c18bc62e0e4612a6b9835d74c31e213223c8b33b03",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 180,
+      "locator": "pdf-page-25-speaker-block-180",
+      "unit_fingerprint": "sha256:768ee45af7199460552c84e6ae5888ec52f6cb1c84e8bfe502daad2d7497a941",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 181,
+      "locator": "pdf-page-26-speaker-block-181",
+      "unit_fingerprint": "sha256:ab69906d43ec16715c167d906eac94f78a7a6f4c6e780c83f0c9f3b2381df03e",
+      "speaker_class": "target",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 192,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 182,
+      "locator": "pdf-page-26-speaker-block-182",
+      "unit_fingerprint": "sha256:1d2bb4a5e93a966bc0fb77850404650055e895f34a5226d9e9a012822de1a00e",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 183,
+      "locator": "pdf-page-26-speaker-block-183",
+      "unit_fingerprint": "sha256:ab9730e29d3294dfa3cbc39d593945e6b5c73cb7af60cd8e29523ee453b379d2",
+      "speaker_class": "target",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 93,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 184,
+      "locator": "pdf-page-26-speaker-block-184",
+      "unit_fingerprint": "sha256:9487130e847147fc9152e71e517321109778e14d2b8739794f57f8077a0a4fcd",
+      "speaker_class": "target",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 108,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 185,
+      "locator": "pdf-page-26-speaker-block-185",
+      "unit_fingerprint": "sha256:e1d437608b2ccb472d7a92c1bf728efbda0994714cdc20e4c9b5fedfa8fd06fb",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 186,
+      "locator": "pdf-page-26-speaker-block-186",
+      "unit_fingerprint": "sha256:03b25bed61dad2fc92bb7ca539a0f5abb89e97a767e3ca68789d47009f9fa5c3",
+      "speaker_class": "target",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "closed-set-fragment",
+      "residual_token_count": 1,
+      "fragment_result": "excluded"
+    },
+    {
+      "ordinal": 187,
+      "locator": "pdf-page-26-speaker-block-187",
+      "unit_fingerprint": "sha256:80495816f7f221579a472ca05647122a046f90846f2531202061c7eb7e7a8c8c",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 188,
+      "locator": "pdf-page-27-speaker-block-188",
+      "unit_fingerprint": "sha256:8586abc9ced635d4c1544996e6e0f753daff0933d32067f94e0089d75a2e79b7",
+      "speaker_class": "target",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 167,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 189,
+      "locator": "pdf-page-27-speaker-block-189",
+      "unit_fingerprint": "sha256:f7cfbf25b4b8edf094dcf77c28c15603686a6ecb2e3728ae8feb7ee86a49e581",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 190,
+      "locator": "pdf-page-27-speaker-block-190",
+      "unit_fingerprint": "sha256:0cbf0f2fe43da8fa2dcff7a293d6154a7a4a97aced82860dd0e2ee9447244943",
+      "speaker_class": "target",
+      "cue_categories": [
+        "nonverbal"
+      ],
+      "cue_occurrences": {
+        "LAUGHTER": 1
+      },
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 5,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 191,
+      "locator": "pdf-page-27-speaker-block-191",
+      "unit_fingerprint": "sha256:c803ffb109e2d47b789311412dc1eecd066e8323ad12a3f2063bf4107b683150",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 192,
+      "locator": "pdf-page-27-speaker-block-192",
+      "unit_fingerprint": "sha256:6f6eba50251ce40b986863d57c7a324f1bfe5fb2ff35865d1581f174404917f9",
+      "speaker_class": "target",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 106,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 193,
+      "locator": "pdf-page-27-speaker-block-193",
+      "unit_fingerprint": "sha256:12df6cab32b4236541f0e2111bf1e395a64899ed446c7c35b1e570515e05f920",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 194,
+      "locator": "pdf-page-27-speaker-block-194",
+      "unit_fingerprint": "sha256:b438be86ed395dcd68ab3129c8f58ea6931e584fd36f13e358f36111fe9f731f",
+      "speaker_class": "target",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 7,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 195,
+      "locator": "pdf-page-28-speaker-block-195",
+      "unit_fingerprint": "sha256:5f10d0bfbd4eb9bf17a9fcddf55f38260163bc2fffcf7a420633662580e456e5",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 196,
+      "locator": "pdf-page-28-speaker-block-196",
+      "unit_fingerprint": "sha256:124582292757a90741680318f62b9c868f9de1f2fdd1c09193c5b6241dbb6c09",
+      "speaker_class": "target",
+      "cue_categories": [
+        "nonverbal"
+      ],
+      "cue_occurrences": {
+        "LAUGHTER": 1
+      },
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 22,
+      "fragment_result": "passed"
+    },
+    {
+      "ordinal": 197,
+      "locator": "pdf-page-28-speaker-block-197",
+      "unit_fingerprint": "sha256:ba363127304b05c7f2b73a550d24e887c62ef8eea01250c613cf0bd0bcddfcce",
+      "speaker_class": "other",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "excluded",
+      "reason": "other-speaker",
+      "residual_token_count": null,
+      "fragment_result": "not-evaluated"
+    },
+    {
+      "ordinal": 198,
+      "locator": "pdf-page-28-speaker-block-198",
+      "unit_fingerprint": "sha256:04585233c22251f5a92510490e803cdb0f4e6bc5b5643eefa55ee942d00b9e73",
+      "speaker_class": "target",
+      "cue_categories": [],
+      "cue_occurrences": {},
+      "disposition": "eligible",
+      "reason": "spoken-payload",
+      "residual_token_count": 2,
+      "fragment_result": "passed"
+    }
+  ]
+}

@@ -70,6 +70,8 @@ export const preallocationCapacityLedgerSchema = z.object({
   sourceRegisterId: sourceIdSchema,
   sourceEventId: eventIdSchema,
   sourceContentFingerprint: sha256Schema,
+  boundaryEvidenceFingerprint: sha256Schema,
+  policyAmendmentFingerprint: sha256Schema.nullable(),
   segmentationRule: segmentationRuleSchema,
   sourceBoundaryUnitCount: z.number().int().positive(),
   frozenAt: z.string().datetime(),
@@ -80,6 +82,8 @@ export const preallocationCapacityLedgerSchema = z.object({
   sourceContentStored: z.literal(false),
   frozenBeforeAllocation: z.literal(true),
   selectionPerformed: z.literal(false),
+  observationCodingPerformed: z.literal(false),
+  runtimeActivation: z.literal("prohibited"),
 }).strict();
 
 export type PreallocationCapacityLedger = z.infer<typeof preallocationCapacityLedgerSchema>;
@@ -163,10 +167,6 @@ export function validatePreallocationCapacityLedger(
   }
   assertUnique(ledger.eligibleUnits.map((unit) => unit.unitId), "capacity unit ID");
   assertUnique(ledger.excludedRanges.map((unit) => unit.exclusionId), "capacity exclusion ID");
-  assertUnique([
-    ...ledger.eligibleUnits.map((unit) => unit.segmentFingerprint),
-    ...ledger.excludedRanges.map((unit) => unit.segmentFingerprint),
-  ], "capacity segment fingerprint");
   assertCompleteCoverage(ledger);
   return {
     sourceRegisterId: ledger.sourceRegisterId,
@@ -180,6 +180,8 @@ export function validatePreallocationCapacityLedger(
     ledgerFingerprint: fingerprint(ledger),
     sourceContentStored: ledger.sourceContentStored,
     selectionPerformed: ledger.selectionPerformed,
+    observationCodingPerformed: ledger.observationCodingPerformed,
+    runtimeActivation: ledger.runtimeActivation,
   };
 }
 

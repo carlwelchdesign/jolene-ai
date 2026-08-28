@@ -15,6 +15,7 @@ describe("personality preallocation capacity ledger", () => {
       excludedRanges: 2, agreedHighRiskUnits: 1,
       ledgerFingerprint: expect.stringMatching(/^sha256:[a-f0-9]{64}$/),
       sourceContentStored: false, selectionPerformed: false,
+      observationCodingPerformed: false, runtimeActivation: "prohibited",
     });
   });
 
@@ -77,6 +78,7 @@ function ledger(): PreallocationCapacityLedger {
     sourceRegisterFingerprint: hash(1), boundaryProtocolFingerprint: hash(3),
     highRiskTaxonomyFingerprint: hash(4), sourceRegisterId: "S02", sourceEventId: "E002",
     sourceContentFingerprint: hash(2), segmentationRule: "paragraph-speaker-blocks-v1",
+    boundaryEvidenceFingerprint: hash(5), policyAmendmentFingerprint: null,
     sourceBoundaryUnitCount: 3, frozenAt: "2026-08-27T10:47:00Z",
     primaryReviewer: {
       reviewerId: "primary-reviewer", reviewerType: "ai", tool: "Codex",
@@ -110,5 +112,6 @@ function ledger(): PreallocationCapacityLedger {
       },
     ],
     sourceContentStored: false, frozenBeforeAllocation: true, selectionPerformed: false,
+    observationCodingPerformed: false, runtimeActivation: "prohibited",
   };
 }
