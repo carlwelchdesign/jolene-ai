@@ -58,6 +58,9 @@ describe("Docker runtime boundary", () => {
     expect(compose).toContain(
       "JOLENE_CAREER_EMBEDDINGS_ENABLED: ${JOLENE_CAREER_EMBEDDINGS_ENABLED:-false}",
     );
+    expect(compose).toContain(
+      "JOLENE_PRIVATE_RETRIEVAL_PROVIDER_EGRESS: ${JOLENE_PRIVATE_RETRIEVAL_PROVIDER_EGRESS:-local_only}",
+    );
     expect(compose).toContain("jolene-data:/data");
     expect(compose).toContain("JOLENE_PUBLIC_LIVE_REVIEW_PACKET_PATH: /review/public-live-model-review.json");
     expect(compose).toContain("JOLENE_PUBLIC_LIVE_REVIEW_DECISION_PATH: /data/evaluations/public-live-model-decision.json");

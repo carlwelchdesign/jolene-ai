@@ -22,6 +22,7 @@ describe("private runtime configuration", () => {
     );
 
     expect(config.careerEmbeddingsEnabled).toBe(false);
+    expect(config.privateRetrievalProviderEgress).toBe("local_only");
     expect(config.openaiApiKey).toBe("test-key");
     expect(config.publicLiveReviewPacketPath).toBe(
       "/tmp/jolene-config-test/.jolene/evaluations/public-live-model-review.json",
@@ -60,11 +61,17 @@ describe("private runtime configuration", () => {
       configEnvironment({
         OPENAI_API_KEY: "test-key",
         JOLENE_CAREER_EMBEDDINGS_ENABLED: "true",
+        JOLENE_PRIVATE_RETRIEVAL_PROVIDER_EGRESS: "approved_openai",
       }),
       "/tmp/jolene-config-test",
     );
 
     expect(enabled.careerEmbeddingsEnabled).toBe(true);
+    expect(enabled.privateRetrievalProviderEgress).toBe("approved_openai");
+    expect(() => parseConfig(configEnvironment({
+      OPENAI_API_KEY: "test-key",
+      JOLENE_CAREER_EMBEDDINGS_ENABLED: "true",
+    }))).toThrow(/require explicit approved private retrieval provider egress/u);
     expect(() =>
       parseConfig(
         configEnvironment({

@@ -270,6 +270,7 @@ embedding-provider request even when the private runtime has an OpenAI API key.
 To opt in deliberately, configure:
 
 ```dotenv
+JOLENE_PRIVATE_RETRIEVAL_PROVIDER_EGRESS=approved_openai
 JOLENE_CAREER_EMBEDDINGS_ENABLED=true
 OPENAI_EMBEDDING_MODEL=text-embedding-3-small
 ```

@@ -44,6 +44,10 @@ const envSchema = z.object({
   JOLENE_OWNER_WORKSPACE_ID: z.string().trim().min(1).default("personal"),
   JOLENE_CAREER_WORKSPACE_ID: z.string().trim().min(1).default("professional"),
   JOLENE_CAREER_EMBEDDINGS_ENABLED: z.enum(["true", "false"]).default("false"),
+  JOLENE_PRIVATE_RETRIEVAL_PROVIDER_EGRESS: z.enum([
+    "local_only",
+    "approved_openai",
+  ]).default("local_only"),
   OPENAI_EMBEDDING_MODEL: z.string().trim().min(1).default("text-embedding-3-small"),
   JOLENE_MAX_HISTORY_TURNS: z.coerce.number().int().min(2).max(100).default(16),
   JOLENE_MAX_MEMORY_ITEMS: z.coerce.number().int().min(1).max(100).default(24),
@@ -82,6 +86,7 @@ export interface AppConfig {
   readonly careerOwnerActorId: string;
   readonly careerWorkspaceId: string;
   readonly careerEmbeddingsEnabled: boolean;
+  readonly privateRetrievalProviderEgress: "local_only" | "approved_openai";
   readonly embeddingModel: string;
   readonly maxHistoryTurns: number;
   readonly maxMemoryItems: number;
@@ -159,6 +164,14 @@ export function parseConfig(
       "SLACK_OWNER_USER_ID and SLACK_OWNER_TEAM_ID must be configured together.",
     );
   }
+  if (
+    env.JOLENE_CAREER_EMBEDDINGS_ENABLED === "true" &&
+    env.JOLENE_PRIVATE_RETRIEVAL_PROVIDER_EGRESS !== "approved_openai"
+  ) {
+    throw new Error(
+      "Career embeddings require explicit approved private retrieval provider egress.",
+    );
+  }
 
   return {
     openaiApiKey: env.OPENAI_API_KEY,
@@ -208,6 +221,8 @@ export function parseConfig(
     careerOwnerActorId: env.JOLENE_OWNER_ACTOR_ID,
     careerWorkspaceId: env.JOLENE_CAREER_WORKSPACE_ID,
     careerEmbeddingsEnabled: env.JOLENE_CAREER_EMBEDDINGS_ENABLED === "true",
+    privateRetrievalProviderEgress:
+      env.JOLENE_PRIVATE_RETRIEVAL_PROVIDER_EGRESS,
     embeddingModel: env.OPENAI_EMBEDDING_MODEL,
     maxHistoryTurns: env.JOLENE_MAX_HISTORY_TURNS,
     maxMemoryItems: env.JOLENE_MAX_MEMORY_ITEMS,

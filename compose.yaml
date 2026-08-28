@@ -19,6 +19,7 @@ x-jolene-runtime: &jolene-runtime
     JOLENE_PRIVATE_BRIEFING: >-
       {"enabled":true,"destination":"slack_owner_dm","frequency":"daily","dayOfWeek":null,"localHour":8,"localMinute":0,"timeZone":"America/Los_Angeles","maxDeliveriesPerDay":1,"stopAfterDeliveries":365,"historyLimit":90,"maxAttempts":5}
     JOLENE_CAREER_EMBEDDINGS_ENABLED: ${JOLENE_CAREER_EMBEDDINGS_ENABLED:-false}
+    JOLENE_PRIVATE_RETRIEVAL_PROVIDER_EGRESS: ${JOLENE_PRIVATE_RETRIEVAL_PROVIDER_EGRESS:-local_only}
     JOLENE_PUBLIC_LIVE_REVIEW_PACKET_PATH: /review/public-live-model-review.json
     JOLENE_PUBLIC_LIVE_REVIEW_DECISION_PATH: /data/evaluations/public-live-model-decision.json
     JOLENE_PERSONALITY_RESEARCH_DECISION_PATH: /data/personality/research-decision.json

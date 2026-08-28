@@ -5,6 +5,12 @@ import { z } from "zod";
 import type { CapabilityInvocationAuditor } from
   "../application/capability-invocation-auditor.js";
 import {
+  createPrivateRagTurnPolicy,
+  gatePrivateRagProviderPayload,
+  privateRagFallbackPayload,
+  type PrivateRetrievalProviderEgress,
+} from "../application/private-rag-provider-gate.js";
+import {
   canExposeModelCapability,
   requireModelCapability,
   type CapabilityId,
@@ -32,9 +38,10 @@ import {
 import { buildPrivateJoleneInstructions } from
   "../personality/runtime-personality-policy.js";
 import {
-  serializeCareerToolResults,
-  serializeKnowledgeToolResults,
+  careerToolResultEnvelopes,
+  knowledgeToolResultEnvelopes,
   serializePrivateRunData,
+  serializePrivateModelEnvelopes,
   serializeWatchedProjectList,
   serializeWatchedProjectSnapshot,
   serializeWorkStatusToolResult,
@@ -68,6 +75,7 @@ export interface OpenAIJoleneRunnerOptions {
   readonly workStatus: WorkStatusSource;
   readonly projectWatch: PrivateWatchedProjectSource;
   readonly capabilityAudit: CapabilityInvocationAuditor;
+  readonly privateRetrievalProviderEgress: PrivateRetrievalProviderEgress;
 }
 
 export class OpenAIJoleneRunner implements JoleneAgentRunner {
@@ -178,10 +186,48 @@ export class OpenAIJoleneRunner implements JoleneAgentRunner {
               },
               limit,
             );
-
+            const envelopes = knowledgeToolResultEnvelopes(
+              results,
+              request,
+              now(),
+            );
+            const gated = gatePrivateRagProviderPayload({
+              policy: createPrivateRagTurnPolicy({
+                request,
+                currentIntentFingerprint:
+                  authorizer.authorization.currentIntent.fingerprint,
+                namespaces: [
+                  "obsidian.career",
+                  "obsidian.projects",
+                  "obsidian.engineering",
+                  "obsidian.personal",
+                  "obsidian.sources",
+                ],
+                origins: ["obsidian_excerpt"],
+                classifications: ["private", "sensitive"],
+                maxQueryTerms: 24,
+                maxResultItems: 8,
+                maxResultCharacters: 40_000,
+                providerEgress: this.options.privateRetrievalProviderEgress ??
+                  "local_only",
+                providerPayloadClasses: ["reviewed_excerpt"],
+              }),
+              entries: envelopes.map((envelope, index) => ({
+                namespace: knowledgeNamespace(
+                  results[index]?.namespace ?? "other",
+                ),
+                envelope,
+                providerPayloadClass: "reviewed_excerpt" as const,
+              })),
+              queryTermCount: meaningfulQueryTermCount(query),
+            });
             return {
-              serialized: serializeKnowledgeToolResults(results, request, now()),
-              itemCount: results.length,
+              serialized: gated.providerEnvelopes.length > 0
+                ? serializePrivateModelEnvelopes(gated.providerEnvelopes)
+                : privateRagFallbackPayload(gated),
+              itemCount: gated.providerEnvelopes.length > 0
+                ? gated.providerEnvelopes.length
+                : gated.localResultCount > 0 ? 1 : 0,
             };
           },
         );
@@ -222,9 +268,36 @@ export class OpenAIJoleneRunner implements JoleneAgentRunner {
               limit,
               context: request,
             });
+            const envelopes = careerToolResultEnvelopes(response, request, now());
+            const gated = gatePrivateRagProviderPayload({
+              policy: createPrivateRagTurnPolicy({
+                request,
+                currentIntentFingerprint:
+                  authorizer.authorization.currentIntent.fingerprint,
+                namespaces: ["career_evidence"],
+                origins: ["career_evidence", "recommendation"],
+                classifications: ["public", "internal"],
+                maxQueryTerms: 32,
+                maxResultItems: 8,
+                maxResultCharacters: 50_000,
+                providerEgress: this.options.privateRetrievalProviderEgress ??
+                  "local_only",
+                providerPayloadClasses: ["reviewed_career_claim"],
+              }),
+              entries: envelopes.map((envelope) => ({
+                namespace: "career_evidence" as const,
+                envelope,
+                providerPayloadClass: "reviewed_career_claim" as const,
+              })),
+              queryTermCount: meaningfulQueryTermCount(query),
+            });
             return {
-              serialized: serializeCareerToolResults(response, request, now()),
-              itemCount: response.results.length,
+              serialized: gated.providerEnvelopes.length > 0
+                ? serializePrivateModelEnvelopes(gated.providerEnvelopes)
+                : privateRagFallbackPayload(gated),
+              itemCount: gated.providerEnvelopes.length > 0
+                ? gated.providerEnvelopes.length
+                : gated.localResultCount > 0 ? 1 : 0,
             };
           },
         );
@@ -529,4 +602,26 @@ function isModelArgumentRejection(error: unknown): boolean {
   return error instanceof z.ZodError ||
     error instanceof SyntaxError ||
     (error instanceof Error && error.name === "InvalidToolInputError");
+}
+
+function meaningfulQueryTermCount(query: string): number {
+  return new Set(query.normalize("NFKC").toLocaleLowerCase("en-US")
+    .match(/[\p{L}\p{N}_-]{2,}/gu) ?? []).size;
+}
+
+function knowledgeNamespace(namespace: string) {
+  switch (namespace) {
+    case "career":
+      return "obsidian.career" as const;
+    case "projects":
+      return "obsidian.projects" as const;
+    case "engineering":
+      return "obsidian.engineering" as const;
+    case "personal":
+      return "obsidian.personal" as const;
+    case "sources":
+      return "obsidian.sources" as const;
+    default:
+      return "obsidian.other" as const;
+  }
 }

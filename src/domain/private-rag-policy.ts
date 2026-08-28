@@ -18,6 +18,7 @@ export const privateRagNamespaceSchema = z.enum([
   "obsidian.engineering",
   "obsidian.personal",
   "obsidian.sources",
+  "obsidian.other",
   "career_evidence",
   "durable_memory",
   "conversation_history",

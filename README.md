@@ -281,9 +281,12 @@ Prerequisite: Node.js 22 or newer.
 
    This is deterministic lexical indexing by default. Semantic embeddings are
    a separate private-data egress decision: set
+   `JOLENE_PRIVATE_RETRIEVAL_PROVIDER_EGRESS=approved_openai` together with
    `JOLENE_CAREER_EMBEDDINGS_ENABLED=true` only when you intend to send eligible
-   reviewed chunks and private search queries to the configured OpenAI
-   embedding model.
+   reviewed chunks, private search queries, and policy-approved retrieved
+   evidence to the configured OpenAI provider. The default `local_only` mode
+   keeps retrieved evidence out of provider tool results and returns only fixed
+   fallback metadata.
 
    Generate the local deny-by-default public handoff artifact with:
 

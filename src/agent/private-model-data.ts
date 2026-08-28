@@ -42,7 +42,19 @@ export function serializeKnowledgeToolResults(
   request: AgentRequest,
   observedAt: string,
 ): string {
-  return serializeCollection(results.map((result) => createPrivateEnvelope({
+  return serializePrivateModelEnvelopes(knowledgeToolResultEnvelopes(
+    results,
+    request,
+    observedAt,
+  ));
+}
+
+export function knowledgeToolResultEnvelopes(
+  results: readonly KnowledgeResult[],
+  request: AgentRequest,
+  observedAt: string,
+): readonly UntrustedContentEnvelope[] {
+  return results.map((result) => createPrivateEnvelope({
     originKind: "obsidian_excerpt",
     sourceId: `obsidian:${result.notePath}#${result.heading}`,
     request,
@@ -52,7 +64,7 @@ export function serializeKnowledgeToolResults(
     observedAt,
     reviewedAt: result.modifiedAt,
     freshnessStatus: "unknown",
-  })));
+  }));
 }
 
 export function serializeCareerToolResults(
@@ -60,7 +72,19 @@ export function serializeCareerToolResults(
   request: AgentRequest,
   observedAt: string,
 ): string {
-  return serializeCollection(response.results.map((result) => createPrivateEnvelope({
+  return serializePrivateModelEnvelopes(careerToolResultEnvelopes(
+    response,
+    request,
+    observedAt,
+  ));
+}
+
+export function careerToolResultEnvelopes(
+  response: CareerRetrievalResponse,
+  request: AgentRequest,
+  observedAt: string,
+): readonly UntrustedContentEnvelope[] {
+  return response.results.map((result) => createPrivateEnvelope({
     originKind: result.citation.sourceTitle.toLocaleLowerCase("en-US")
         .includes("recommendation")
       ? "recommendation"
@@ -76,7 +100,7 @@ export function serializeCareerToolResults(
     observedAt,
     reviewedAt: result.citation.reviewedAt,
     freshnessStatus: "fresh",
-  })));
+  }));
 }
 
 export function serializeWorkStatusToolResult(
@@ -246,6 +270,12 @@ function createPrivateEnvelope(input: {
 
 function serializeCollection(envelopes: readonly UntrustedContentEnvelope[]): string {
   return `[${envelopes.map(serializeUntrustedContentEnvelope).join(",")}]`;
+}
+
+export function serializePrivateModelEnvelopes(
+  envelopes: readonly UntrustedContentEnvelope[],
+): string {
+  return serializeCollection(envelopes);
 }
 
 function toJsonValue(input: unknown): JsonValue {

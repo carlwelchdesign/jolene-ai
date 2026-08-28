@@ -195,6 +195,7 @@ export async function createApplication(
     workStatus,
     projectWatch: new OwnerWatchedProjectSource(watchedProjects, ownerScope),
     capabilityAudit: new CapabilityInvocationAuditor(capabilityInvocationStore),
+    privateRetrievalProviderEgress: config.privateRetrievalProviderEgress,
   });
   const service = new JoleneService({
     store,
