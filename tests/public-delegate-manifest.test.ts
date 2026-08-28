@@ -576,7 +576,14 @@ describe("public delegate manifest boundary", () => {
     const model = await start(await writeArtifact(artifact), {
       audits,
       answers: new GroundedPublicAnswerService({
-        generate: async () => "A concise grounded model answer.",
+        generate: async (input) => ({
+          contractVersion: "1.0.0",
+          corpusVersion: input.corpusVersion,
+          segments: [{
+            text: "Carl builds typed React product systems with explicit review boundaries.",
+            supportIds: [input.evidence[0]!.evidenceId],
+          }],
+        }),
       }),
     });
     const fallback = await start(await writeArtifact(artifact), {

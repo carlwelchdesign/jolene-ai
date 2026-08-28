@@ -13,6 +13,10 @@ import {
   type PortfolioAnswerResponse,
 } from "../domain/public-portfolio-contract.js";
 import type { PublicModelRequestBudget } from "./public-model-request-budget.js";
+import {
+  PublicAnswerGroundingValidator,
+  type PublicAnswerGroundingValidatorLike,
+} from "./public-answer-grounding-validator.js";
 
 export interface PublicPortfolioAnswerer {
   execute(
@@ -28,7 +32,9 @@ export interface PublicAnswerExecution {
 
 export interface GroundedPublicAnswerInput {
   readonly question: string;
+  readonly corpusVersion: string;
   readonly evidence: readonly {
+    readonly evidenceId: string;
     readonly claimText: string;
     readonly limitations: readonly string[];
     readonly citationTitle: string;
@@ -36,7 +42,7 @@ export interface GroundedPublicAnswerInput {
 }
 
 export interface PublicAnswerTextGenerator {
-  generate(input: GroundedPublicAnswerInput): Promise<string>;
+  generate(input: GroundedPublicAnswerInput): Promise<unknown>;
 }
 
 export interface PublicEvidenceRetriever {
@@ -109,6 +115,7 @@ export class GroundedPublicAnswerService implements PublicPortfolioAnswerer {
   readonly #baseline: DeterministicPublicAnswerService;
   readonly #budget: PublicModelRequestBudget | undefined;
   readonly #retriever: PublicEvidenceRetriever | undefined;
+  readonly #validator: PublicAnswerGroundingValidatorLike;
 
   constructor(
     private readonly generator: PublicAnswerTextGenerator,
@@ -116,11 +123,13 @@ export class GroundedPublicAnswerService implements PublicPortfolioAnswerer {
       readonly baseline?: DeterministicPublicAnswerService;
       readonly budget?: PublicModelRequestBudget;
       readonly retriever?: PublicEvidenceRetriever;
+      readonly validator?: PublicAnswerGroundingValidatorLike;
     } = {},
   ) {
     this.#baseline = options.baseline ?? new DeterministicPublicAnswerService();
     this.#budget = options.budget;
     this.#retriever = options.retriever;
+    this.#validator = options.validator ?? new PublicAnswerGroundingValidator();
   }
 
   async execute(
@@ -165,14 +174,21 @@ export class GroundedPublicAnswerService implements PublicPortfolioAnswerer {
       }
     }
     try {
-      const answer = generatedAnswerSchema.parse(await this.generator.generate({
+      const generation = await this.generator.generate({
         question: request.question,
+        corpusVersion: baseline.corpusVersion,
         evidence: baseline.claims.map((claim, index) => ({
+          evidenceId: baseline.citations[index]?.evidenceId ?? "missing",
           claimText: claim.text,
           limitations: claim.limitations,
           citationTitle: baseline.citations[index]?.title ?? "Reviewed evidence",
         })),
-      }));
+      });
+      const validation = this.#validator.validate(artifact, baseline, generation);
+      if (validation.status === "rejected") {
+        return { response: baseline, mode: "fallback" };
+      }
+      const answer = generatedAnswerSchema.parse(validation.answer);
       return {
         mode: "model",
         response: portfolioAnswerResponseSchema.parse({

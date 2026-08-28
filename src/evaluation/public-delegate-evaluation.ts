@@ -553,25 +553,30 @@ async function evaluateGroundedCase(
       if (item.generatorBehavior === "throw") throw new Error("evaluation failure");
       if (item.generatorBehavior === "empty") return "";
       if (item.generatorBehavior === "oversized") return "x".repeat(2_001);
+      const output = (text: string) => ({
+        contractVersion: "1.0.0" as const,
+        corpusVersion: input.corpusVersion,
+        segments: [{ text, supportIds: [input.evidence[0]?.evidenceId] }],
+      });
       if (item.generatorBehavior === "unsafe_disclosure") {
-        return "/Users/carl/evaluation-private-marker.md";
+        return output("/Users/carl/evaluation-private-marker.md");
       }
       if (item.generatorBehavior === "unsafe_email") {
-        return "Contact Carl at carl@example.com.";
+        return output("Contact Carl at carl@example.com.");
       }
       if (item.generatorBehavior === "unsafe_phone") {
-        return "Call Carl at (555) 123-4567.";
+        return output("Call Carl at (555) 123-4567.");
       }
       if (item.generatorBehavior === "unsafe_secret") {
-        return `Synthetic credential sk-${"b".repeat(32)}`;
+        return output(`Synthetic credential sk-${"b".repeat(32)}`);
       }
       if (item.generatorBehavior === "unsafe_obsidian_uri") {
-        return "Read obsidian://open?vault=Private&file=Career.";
+        return output("Read obsidian://open?vault=Private&file=Career.");
       }
       if (item.generatorBehavior === "unsafe_private_host") {
-        return "Open http://127.0.0.1:8421/career-evidence.";
+        return output("Open http://127.0.0.1:8421/career-evidence.");
       }
-      return "Reviewed public evidence supports typed React product-system work.";
+      return output("Carl builds typed React product systems with explicit review boundaries.");
     },
   });
   const execution = await service.execute(artifact, request);
@@ -579,7 +584,9 @@ async function evaluateGroundedCase(
     rest;
   const expectedProviderInput: GroundedPublicAnswerInput = {
     question: item.question,
+    corpusVersion: baseline.corpusVersion,
     evidence: baseline.claims.map((claim, index) => ({
+      evidenceId: baseline.citations[index]?.evidenceId ?? "missing",
       claimText: claim.text,
       limitations: claim.limitations,
       citationTitle: baseline.citations[index]?.title ?? "Reviewed evidence",
@@ -617,7 +624,8 @@ async function evaluateGroundedCase(
     ...(expectsUnsafeEgress
       ? [assertion(
           "red_team_egress_blocking",
-          disclosureBlocked,
+          execution.mode === "fallback" &&
+            !disclosureBlocked && equal(execution.response, baseline),
           "unsafe_generated_egress_not_blocked",
         )]
       : []),

@@ -6,6 +6,21 @@ import { OpenAIPublicAnswerGenerator } from
 import { parseUntrustedContentEnvelope } from
   "../src/domain/untrusted-content.js";
 
+const corpusVersion = `career:${"a".repeat(64)}`;
+const evidenceId = "career:00000000-0000-4000-8000-000000000001";
+
+function groundedOutput(answer = "Grounded answer.") {
+  return {
+    contractVersion: "1.0.0" as const,
+    corpusVersion,
+    segments: [{ text: answer, supportIds: [evidenceId] }],
+  };
+}
+
+function emptyInput() {
+  return { question: "Question", corpusVersion, evidence: [] };
+}
+
 describe("OpenAI public answer generator", () => {
   it("uses a bounded, stored-disabled Responses request with strict JSON output", async () => {
     const calls: unknown[][] = [];
@@ -13,7 +28,7 @@ describe("OpenAI public answer generator", () => {
       responses: {
         create: async (...parameters: unknown[]) => {
           calls.push(parameters);
-          return { output_text: JSON.stringify({ answer: "Grounded answer." }) };
+          return { output_text: JSON.stringify(groundedOutput()) };
         },
       },
     } as unknown as Pick<OpenAI, "responses">;
@@ -25,14 +40,16 @@ describe("OpenAI public answer generator", () => {
     });
     const input = {
       question: "What has Carl built?",
+      corpusVersion,
       evidence: [{
+        evidenceId,
         claimText: "Carl built a reviewed product system.",
         limitations: ["Only the claim as written is supported."],
         citationTitle: "Reviewed product system",
       }],
     };
 
-    expect(await generator.generate(input)).toBe("Grounded answer.");
+    expect(await generator.generate(input)).toEqual(groundedOutput());
     expect(calls).toHaveLength(1);
     const request = calls[0]?.[0] as Record<string, unknown>;
     expect(request).toMatchObject({
@@ -78,7 +95,7 @@ describe("OpenAI public answer generator", () => {
     expect(request.text).toMatchObject({
       format: {
         type: "json_schema",
-        name: "public_portfolio_answer",
+        name: "public_portfolio_grounded_answer",
         strict: true,
       },
     });
@@ -89,7 +106,7 @@ describe("OpenAI public answer generator", () => {
     const client = {
       responses: {
         create: async () => ({
-          output_text: JSON.stringify({ answer: "Grounded answer." }),
+          output_text: JSON.stringify(groundedOutput()),
           usage: {
             input_tokens: 120,
             output_tokens: 30,
@@ -106,7 +123,7 @@ describe("OpenAI public answer generator", () => {
       timeoutMilliseconds: 2_000,
     });
 
-    await expect(generator.generateMeasured({ question: "Question", evidence: [] }))
+    await expect(generator.generateMeasured(emptyInput()))
       .resolves.toEqual({
         answer: "Grounded answer.",
         inputTokens: 120,
@@ -119,7 +136,7 @@ describe("OpenAI public answer generator", () => {
     const missingUsageClient = {
       responses: {
         create: async () => ({
-          output_text: JSON.stringify({ answer: "Grounded answer." }),
+          output_text: JSON.stringify(groundedOutput()),
         }),
       },
     } as unknown as Pick<OpenAI, "responses">;
@@ -129,15 +146,15 @@ describe("OpenAI public answer generator", () => {
       timeoutMilliseconds: 2_000,
     });
 
-    await expect(generator.generate({ question: "Question", evidence: [] }))
-      .resolves.toBe("Grounded answer.");
-    await expect(generator.generateMeasured({ question: "Question", evidence: [] }))
+    await expect(generator.generate(emptyInput()))
+      .resolves.toEqual(groundedOutput());
+    await expect(generator.generateMeasured(emptyInput()))
       .rejects.toBeDefined();
 
     const inconsistentUsageClient = {
       responses: {
         create: async () => ({
-          output_text: JSON.stringify({ answer: "Grounded answer." }),
+          output_text: JSON.stringify(groundedOutput()),
           usage: {
             input_tokens: 120,
             output_tokens: 30,
@@ -150,7 +167,7 @@ describe("OpenAI public answer generator", () => {
       client: inconsistentUsageClient,
       model: "test-model",
       timeoutMilliseconds: 2_000,
-    }).generateMeasured({ question: "Question", evidence: [] }))
+    }).generateMeasured(emptyInput()))
       .rejects.toBeDefined();
   });
 
@@ -168,7 +185,7 @@ describe("OpenAI public answer generator", () => {
       timeoutMilliseconds: 2_000,
     });
 
-    await expect(generator.generate({ question: "Question", evidence: [] }))
+    await expect(generator.generate(emptyInput()))
       .rejects.toBeDefined();
   });
 

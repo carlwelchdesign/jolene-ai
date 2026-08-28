@@ -63,7 +63,9 @@ export function validateUntrustedContentEnvelopes():
 
   const publicParents = publicGroundedAnswerEnvelopes({
     question: adversarialFixtures[0],
+    corpusVersion: `career:${"a".repeat(64)}`,
     evidence: [{
+      evidenceId: "career:00000000-0000-4000-8000-000000000001",
       claimText: adversarialFixtures[1],
       limitations: [adversarialFixtures[2]],
       citationTitle: "Reviewed fixture",

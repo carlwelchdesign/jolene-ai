@@ -285,7 +285,9 @@ export async function evaluatePublicLiveModelSuite(
 
     const groundedInput: GroundedPublicAnswerInput = {
       question: item.question,
+      corpusVersion: artifact.manifest.corpusVersion,
       evidence: evidence.map((record) => ({
+        evidenceId: record.evidenceId,
         claimText: record.claimText,
         limitations: record.limitations,
         citationTitle: record.citationTitle,

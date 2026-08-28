@@ -24,6 +24,7 @@ export const PUBLIC_ANSWER_GROUNDING_REASON_CODES = [
   "output_schema_invalid",
   "no_selected_evidence",
   "support_id_not_selected",
+  "support_substitution",
   "support_id_revoked",
   "support_id_conflicted",
   "unsupported_segment",
