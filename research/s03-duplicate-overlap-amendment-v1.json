@@ -1,0 +1,73 @@
+{
+  "schemaVersion": "jolene.personality-s03-duplicate-overlap-amendment.v1",
+  "status": "independently-reviewed-before-new-plan",
+  "frozenAt": "2026-08-28T07:48:21.074Z",
+  "sourceRegisterId": "S03",
+  "sourceEventId": "E003",
+  "auditFingerprint": "sha256:b9dd86435cdf1b51d77070fba7f880fcbe08bc2e3d42acde96d41ffc15c6e425",
+  "prerequisites": {
+    "sourceRegisterFingerprint": "sha256:29dcfbe68ffc7b7be13758be298739179146dab5041ff73ee9e49fc74218481f",
+    "boundaryProtocolFingerprint": "sha256:7ef6eba7a8eee9fde9be225f4e4b3dc7045a5165974091e008e41a592330bda7",
+    "highRiskTaxonomyFingerprint": "sha256:e56f2bd612a511a18eb9c1b47fc51b51715cdf1ed0e6bd6209f700c72351ee07",
+    "capacityManifestFingerprint": "sha256:9cd75872581f9b6776fe39c64dd81df2330ea083828eca9b3f2d28e86d283bf7",
+    "capacityLedgerArtifactFingerprint": "sha256:d193b8134b986443079b7eeed79f204e71d2ff0c5e91f667ccd9d5af00497fa4",
+    "capacityLedgerFingerprint": "sha256:21a609a44e3dcd8c92485f3b13479fc78441a24785b8a644048d6d2bd8b0bf51",
+    "samplingPlanV4OutcomeFingerprint": "sha256:7e2221cd2cc6db054eac580bda4760b45b8e030779446a2cf108997b6c23bdc5",
+    "sourceContentFingerprint": "sha256:61a049d29ada1bb6aae3a0700336bb11a1f4ba151139c1db0e12032d5ea4931b",
+    "boundaryManifestFingerprint": "sha256:d183dbd7fe537a717a28990e96cff5702221f71590679080d5f2edad8e95746b",
+    "ledgerFingerprintMapFingerprint": "sha256:51f73ff647d97d147d0d4afcc733caca720ee6580a5cc66a6e7fb8952322a217"
+  },
+  "policy": {
+    "equivalence": "exact-canonical-segment-fingerprint",
+    "representative": "lowest-source-unit-ordinal-then-capacity-unit-id",
+    "consensusAdmission": "all-members-consensus-and-identical-agreed-strata-else-withhold-entire-group",
+    "conflictResult": "withhold-entire-group-never-union",
+    "blindToFameQuotabilityAndTraitOutcome": true
+  },
+  "counts": {
+    "eligibleOccurrences": 270,
+    "uniqueFingerprintGroups": 133,
+    "duplicateFingerprintGroups": 133,
+    "duplicateOccurrencesBeyondRepresentative": 137,
+    "cleanConsensusGroups": 70,
+    "uncertaintyWithheldGroups": 63,
+    "metadataConflictGroups": 41,
+    "groupsContainingPriorUncertainty": 28,
+    "proposedAdmittedHighRiskGroups": 49
+  },
+  "reviews": [
+    {
+      "reviewRole": "primary",
+      "reportFingerprint": "sha256:7b77960721fe5975216a7c6dbc91ac861c5c3e0a08f8e8b3956d25f2492254f0",
+      "reviewerId": "codex-primary-s03-duplicate-methodology-reviewer",
+      "tool": "Codex deterministic local artifact reproduction",
+      "model": "gpt-5.6-sol",
+      "reviewedAt": "2026-08-28T07:43:50.074Z",
+      "verdict": "pass",
+      "discrepancyCount": 0
+    },
+    {
+      "reviewRole": "independent",
+      "reportFingerprint": "sha256:05689d44efb5ecb01b997cea1a26a497e51dd2651c6e41705d7bd0e954bd973a",
+      "reviewerId": "independent-trust-rights-reviewer",
+      "tool": "Codex read-only deterministic metadata audit",
+      "model": "gpt-5.6-sol",
+      "reviewedAt": "2026-08-28T07:44:38.810Z",
+      "verdict": "pass",
+      "discrepancyCount": 0
+    }
+  ],
+  "rights": {
+    "repositoryStorage": "metadata-hashes-identifiers-locators-and-controlled-labels-only",
+    "sourceContent": "prohibited",
+    "excerpts": "prohibited",
+    "transcripts": "prohibited",
+    "recognizableExpression": "prohibited"
+  },
+  "sourceContentStored": false,
+  "selectionPerformed": false,
+  "observationCodingPerformed": false,
+  "traitAdmission": "prohibited",
+  "runtimeActivation": "prohibited",
+  "nextAction": "derive-unique-capacity-view-and-freeze-new-sampling-plan-version"
+}
