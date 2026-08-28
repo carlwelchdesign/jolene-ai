@@ -45,6 +45,7 @@ describe("private control server boundary", () => {
           SLACK_BOT_TOKEN: "",
           SLACK_APP_TOKEN: "",
           SLACK_OWNER_USER_ID: "",
+          SLACK_OWNER_TEAM_ID: "",
         },
         stdio: ["ignore", "pipe", "pipe"],
       },
