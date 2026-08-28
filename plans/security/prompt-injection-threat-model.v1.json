@@ -630,12 +630,12 @@
     {
       "id": "C27",
       "name": "Intent-bound per-turn capability and tool-argument authorization",
-      "phase": "planned",
+      "phase": "current",
       "kind": "deterministic",
       "ownerTicket": "JOL-SEC-005",
-      "implementationRefs": ["src/agent/agent-runner.ts", "src/domain/capability-registry.ts", "src/application/capability-invocation-auditor.ts"],
-      "evidenceRefs": ["JOL-SEC-005 acceptance criteria"],
-      "limitations": ["Intent binding must fail closed without logging the raw user request or tool content."]
+      "implementationRefs": ["src/agent/agent-runner.ts", "src/domain/tool-call-authorization.ts", "src/application/capability-invocation-auditor.ts", "src/persistence/sqlite-capability-invocation-store.ts"],
+      "evidenceRefs": ["docs/tool-call-authorization.md", "tests/tool-call-authorization.test.ts", "tests/capability-invocation-audit.test.ts", "scripts/validate-tool-call-authorization.ts"],
+      "limitations": ["Authenticated ingress remains a prerequisite; this control does not sanitize or quarantine retrieved content used for answer prose."]
     },
     {
       "id": "C28",
@@ -761,9 +761,9 @@
       "assets": ["private_knowledge", "tool_authority", "answer_integrity"],
       "impact": 5,
       "likelihood": 4,
-      "currentControlIds": ["C02", "C05", "C08", "C09", "C10"],
+      "currentControlIds": ["C02", "C05", "C08", "C09", "C10", "C26", "C27"],
       "residualRisk": "critical",
-      "residualReason": "Raw note excerpts are model-visible; current untrusted-data language is prompt-only and read-tool arguments are not intent-bound.",
+      "residualReason": "Tool calls are intent-bound outside the model, but raw note excerpts remain model-visible and private-RAG instruction-risk quarantine is not yet implemented.",
       "preventionControlIds": ["C26", "C27", "C29"],
       "detectionControlIds": ["C30", "C31"],
       "containmentControlIds": ["C05", "C27", "C29"],
