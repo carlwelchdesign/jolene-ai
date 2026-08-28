@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import { z } from "zod";
 
 import { resolveSecretValue } from "./config-secret-files.js";
+import { privateControlTokenSchema } from "./http/private-ingress-auth.js";
 import type { WatchedProjectDefinition } from "./domain/watched-project.js";
 import type { PrivateBriefingPolicy } from "./domain/private-briefing.js";
 
@@ -13,6 +14,7 @@ const envSchema = z.object({
   JOLENE_MODEL: z.string().trim().min(1).default("gpt-5.6-terra"),
   JOLENE_HOST: z.string().trim().min(1).default("127.0.0.1"),
   JOLENE_PORT: z.coerce.number().int().min(1).max(65_535).default(8421),
+  JOLENE_PRIVATE_CONTROL_TOKEN: privateControlTokenSchema,
   JOLENE_DATABASE_PATH: z
     .string()
     .trim()
@@ -60,6 +62,7 @@ export interface AppConfig {
   readonly model: string;
   readonly host: string;
   readonly port: number;
+  readonly privateControlToken: string;
   readonly databasePath: string;
   readonly contactQueuePath: string;
   readonly contactRetentionDays: number;
@@ -121,6 +124,12 @@ export function parseConfig(
       "SLACK_APP_TOKEN_FILE",
       { required: false, workingDirectory },
     ),
+    JOLENE_PRIVATE_CONTROL_TOKEN: resolveSecretValue(
+      environment,
+      "JOLENE_PRIVATE_CONTROL_TOKEN",
+      "JOLENE_PRIVATE_CONTROL_TOKEN_FILE",
+      { required: true, workingDirectory },
+    ),
   });
 
   return {
@@ -128,6 +137,7 @@ export function parseConfig(
     model: env.JOLENE_MODEL,
     host: env.JOLENE_HOST,
     port: env.JOLENE_PORT,
+    privateControlToken: env.JOLENE_PRIVATE_CONTROL_TOKEN,
     databasePath: path.resolve(workingDirectory, env.JOLENE_DATABASE_PATH),
     contactQueuePath: path.resolve(
       workingDirectory,

@@ -235,7 +235,9 @@ impossible.
 
 ## Delivery sequence
 
-Only one ticket may be in progress.
+Only one parent Jolene ticket may be in progress. Its implementation subtasks
+may also be in progress; each subtask moves to Complete as soon as its defined
+scope and tests finish.
 
 1. `JOL-SEC-003` — freeze and validate this model.
 2. `JOL-SEC-004A` — authenticate private ingress and derive scope.
