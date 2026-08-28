@@ -28,6 +28,7 @@ describe("FileSecurityTelemetryLedger", () => {
     await ledger.record({
       kind: "retrieval_suspicious",
       surface: "private_retrieval",
+      capability: "private_retrieval",
       outcome: "quarantined",
       reasonCode: "retrieval_injection_detected",
       correlationId,
@@ -50,6 +51,7 @@ describe("FileSecurityTelemetryLedger", () => {
     const stored = JSON.parse(await readFile(filePath, "utf8"));
     expect(securityTelemetryLedgerSchema.parse(stored).events).toHaveLength(1);
     expect(Object.keys(stored.events[0]).sort()).toEqual([
+      "capability",
       "correlationId",
       "counts",
       "durationMs",
@@ -72,6 +74,7 @@ describe("FileSecurityTelemetryLedger", () => {
     const base = {
       kind: "provider_egress_blocked",
       surface: "external_ai_exchange",
+      capability: "external_ai_exchange",
       outcome: "blocked",
       reasonCode: "provider_boundary_violation",
       correlationId,
@@ -98,6 +101,7 @@ describe("FileSecurityTelemetryLedger", () => {
     await expect(ledger.record({
       kind: "private_auth_denial",
       surface: "private_api",
+      capability: "private_retrieval",
       outcome: "denied",
       reasonCode: "actor_not_authorized",
       correlationId: "Carl's private request",
@@ -125,6 +129,7 @@ describe("FileSecurityTelemetryLedger", () => {
     await Promise.all(Array.from({ length: 3 }, (_, index) => ledger.record({
       kind: "rate_limit",
       surface: "public_delegate",
+      capability: "public_delegate",
       outcome: "denied",
       reasonCode: "request_rate_exceeded",
       correlationId: `correlation:${String(index).padStart(32, "0")}`,

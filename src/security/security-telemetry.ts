@@ -4,6 +4,8 @@ import path from "node:path";
 
 import { z } from "zod";
 
+import { operationalCapabilitySchema } from "./operations-governance.js";
+
 const opaqueIdentifierSchema = z.string().regex(/^[a-z][a-z0-9_]{1,31}:[a-f0-9]{32}$/);
 const sha256Schema = z.string().regex(/^[a-f0-9]{64}$/);
 
@@ -82,6 +84,7 @@ export const securityTelemetryEventSchema = z.object({
   occurredAt: z.string().datetime({ offset: true }),
   kind: securityEventKindSchema,
   surface: securitySurfaceSchema,
+  capability: operationalCapabilitySchema,
   outcome: securityOutcomeSchema,
   reasonCode: securityReasonCodeSchema,
   correlationId: opaqueIdentifierSchema,

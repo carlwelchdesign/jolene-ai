@@ -4,6 +4,9 @@ import { createServer, type Server } from "node:http";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { createVercelPublicDelegateHandler } from "../src/public/vercel-public-delegate.js";
+import { FixedWindowPublicRequestAdmission } from "../src/public/public-request-admission.js";
+import { InMemoryPublicModelRequestBudget } from "../src/public/public-model-request-budget.js";
+import { InMemoryPublicOperationalTelemetry } from "../src/public/public-operational-telemetry.js";
 import { createPublicEvidenceArtifact } from "./helpers/public-evidence-fixture.js";
 
 const openServers: Server[] = [];
@@ -63,7 +66,7 @@ describe("Vercel public delegate adapter", () => {
       JOLENE_PUBLIC_API_TOKEN: token,
       JOLENE_PUBLIC_ARTIFACT_URL: "https://example.test/public-career-evidence.json",
       JOLENE_PUBLIC_EXPECTED_CORPUS_VERSION: artifact.manifest.corpusVersion,
-    });
+    }, sharedCoordination());
     const server = createServer(handler);
     openServers.push(server);
     server.listen(0, "127.0.0.1");
@@ -104,7 +107,46 @@ describe("Vercel public delegate adapter", () => {
     });
     expect(contact.status).toBe(503);
   });
+
+  it("fails closed when shared hosted coordination is not injected", async () => {
+    const artifact = createPublicEvidenceArtifact();
+    const handler = createVercelPublicDelegateHandler({
+      JOLENE_PUBLIC_ENABLED: "true",
+      JOLENE_PUBLIC_AUTH_MODE: "bearer",
+      JOLENE_PUBLIC_API_TOKEN: "test-token-with-at-least-thirty-two-characters",
+      JOLENE_PUBLIC_ARTIFACT_URL: "https://example.test/public-career-evidence.json",
+      JOLENE_PUBLIC_EXPECTED_CORPUS_VERSION: artifact.manifest.corpusVersion,
+    });
+    const server = createServer(handler);
+    openServers.push(server);
+    server.listen(0, "127.0.0.1");
+    await once(server, "listening");
+    const address = server.address();
+    if (!address || typeof address === "string") throw new Error("Missing port.");
+
+    const health = await nativeFetch(`http://127.0.0.1:${address.port}/api/health`);
+    expect(health.status).toBe(503);
+    await expect(health.json()).resolves.toMatchObject({
+      code: "unavailable",
+    });
+  });
 });
+
+function sharedCoordination() {
+  return {
+    scope: "shared" as const,
+    admissions: new FixedWindowPublicRequestAdmission({
+      requestsPerWindow: 60,
+      maxConcurrentRequests: 8,
+    }),
+    modelBudget: new InMemoryPublicModelRequestBudget({
+      maxRequestsPerWindow: 500,
+      windowMilliseconds: 24 * 60 * 60 * 1_000,
+    }),
+    audits: { record: async () => undefined },
+    telemetry: new InMemoryPublicOperationalTelemetry(),
+  };
+}
 
 async function close(server: Server): Promise<void> {
   if (!server.listening) return;

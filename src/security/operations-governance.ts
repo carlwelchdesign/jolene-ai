@@ -138,13 +138,22 @@ const capabilityEnvironmentVariables: Readonly<Record<OperationalCapability, str
 
 export type OperationalCapabilityState = Readonly<Record<OperationalCapability, boolean>>;
 
+const sourceSwitchIdentifierSchema = z.string().regex(/^source:[a-f0-9]{32}$/);
+
 export class OperationalKillSwitches {
   readonly #state: OperationalCapabilityState;
+  readonly #enabledSourceIds: ReadonlySet<string>;
 
-  constructor(state: Partial<Record<OperationalCapability, boolean>> = {}) {
+  constructor(
+    state: Partial<Record<OperationalCapability, boolean>> = {},
+    enabledSourceIds: readonly string[] = [],
+  ) {
     this.#state = Object.freeze(Object.fromEntries(
       operationalCapabilitySchema.options.map((capability) => [capability, state[capability] === true]),
     ) as Record<OperationalCapability, boolean>);
+    this.#enabledSourceIds = new Set(
+      enabledSourceIds.map((sourceId) => sourceSwitchIdentifierSchema.parse(sourceId)),
+    );
   }
 
   static fromEnvironment(environment: NodeJS.ProcessEnv): OperationalKillSwitches {
@@ -165,6 +174,17 @@ export class OperationalKillSwitches {
 
   requireEnabled(capability: OperationalCapability): void {
     if (!this.isEnabled(capability)) throw new OperationalCapabilityDisabledError(capability);
+  }
+
+  isSourceEnabled(sourceId: string): boolean {
+    const parsed = sourceSwitchIdentifierSchema.parse(sourceId);
+    return this.isEnabled("source_ingestion") && this.#enabledSourceIds.has(parsed);
+  }
+
+  requireSourceEnabled(sourceId: string): void {
+    if (!this.isSourceEnabled(sourceId)) {
+      throw new OperationalCapabilityDisabledError("source_ingestion");
+    }
   }
 
   snapshot(): OperationalCapabilityState {

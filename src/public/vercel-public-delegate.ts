@@ -20,10 +20,12 @@ import { OpenAIPublicEmbeddingProvider } from
   "./openai-public-embedding-provider.js";
 import { HybridPublicEvidenceRetriever } from
   "./public-hybrid-evidence-retriever.js";
-import { InMemoryPublicModelRequestBudget } from
+import type { PublicModelRequestBudget } from
   "./public-model-request-budget.js";
-import { FixedWindowPublicRequestAdmission } from "./public-request-admission.js";
+import type { PublicRequestAdmissionController } from "./public-request-admission.js";
+import type { PublicAuditRecorder } from "./public-audit-ledger.js";
 import { PublicContactQueueUnavailableError } from "./public-contact-intent-queue.js";
+import type { PublicOperationalTelemetry } from "./public-operational-telemetry.js";
 
 const vercelPublicEnvironmentSchema = z.object({
   JOLENE_PUBLIC_ENABLED: z.literal("true"),
@@ -80,6 +82,7 @@ const vercelPublicEnvironmentSchema = z.object({
 
 export function createVercelPublicDelegateHandler(
   environment: Record<string, string | undefined> = process.env,
+  coordination?: HostedPublicCoordination,
 ) {
   const config = vercelPublicEnvironmentSchema.parse(environment);
   const artifacts = new HttpsPublicArtifactSource({
@@ -89,19 +92,22 @@ export function createVercelPublicDelegateHandler(
   });
 
   return createPublicDelegateRequestHandler({
-    enabled: true,
+    enabled: coordination?.scope === "shared",
     artifacts,
-    answers: createAnswerService(config),
+    answers: createAnswerService(
+      config,
+      coordination?.modelBudget ?? new FailClosedPublicModelBudget(),
+    ),
     jobFit: new DeterministicPublicJobFitService(),
     contactIntents: {
       stage: async () => {
         throw new PublicContactQueueUnavailableError();
       },
     },
-    admissions: new FixedWindowPublicRequestAdmission({
-      requestsPerWindow: config.JOLENE_PUBLIC_REQUESTS_PER_MINUTE,
-      maxConcurrentRequests: config.JOLENE_PUBLIC_MAX_CONCURRENT_REQUESTS,
-    }),
+    admissions: coordination?.admissions ?? new FailClosedHostedAdmission(),
+    ...(coordination
+      ? { audits: coordination.audits, telemetry: coordination.telemetry }
+      : {}),
     clientKey: vercelClientKey,
     apiToken: config.JOLENE_PUBLIC_API_TOKEN,
   });
@@ -109,6 +115,7 @@ export function createVercelPublicDelegateHandler(
 
 function createAnswerService(
   config: z.infer<typeof vercelPublicEnvironmentSchema>,
+  modelBudget: PublicModelRequestBudget,
 ): PublicPortfolioAnswerer {
   if (config.JOLENE_PUBLIC_ANSWER_MODE === "deterministic") {
     return new DeterministicPublicAnswerService();
@@ -118,10 +125,7 @@ function createAnswerService(
     model: config.JOLENE_PUBLIC_OPENAI_MODEL,
     timeoutMilliseconds: config.JOLENE_PUBLIC_OPENAI_TIMEOUT_MS,
   }), {
-    budget: new InMemoryPublicModelRequestBudget({
-      maxRequestsPerWindow: config.JOLENE_PUBLIC_OPENAI_REQUESTS_PER_DAY,
-      windowMilliseconds: 24 * 60 * 60 * 1_000,
-    }),
+    budget: modelBudget,
     ...(config.JOLENE_PUBLIC_RETRIEVAL_MODE === "hybrid"
       ? {
         retriever: new HybridPublicEvidenceRetriever(
@@ -133,6 +137,31 @@ function createAnswerService(
       }
       : {}),
   });
+}
+
+export interface HostedPublicCoordination {
+  readonly scope: "shared";
+  readonly admissions: PublicRequestAdmissionController;
+  readonly modelBudget: PublicModelRequestBudget;
+  readonly audits: PublicAuditRecorder;
+  readonly telemetry: PublicOperationalTelemetry;
+}
+
+class FailClosedHostedAdmission implements PublicRequestAdmissionController {
+  acquire() {
+    return {
+      accepted: false as const,
+      status: 503 as const,
+      code: "public_delegate_busy" as const,
+      retryAfterSeconds: 60,
+    };
+  }
+}
+
+class FailClosedPublicModelBudget implements PublicModelRequestBudget {
+  async reserve(): Promise<boolean> {
+    return false;
+  }
 }
 
 function requireOpenAIApiKey(value: string | undefined): string {

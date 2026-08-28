@@ -182,7 +182,14 @@ retention, deletion, and review operations are approved and implemented.
 The bearer token is server-to-server only. It belongs in the portfolio BFF's
 server environment and must never use a browser-visible prefix, appear in
 client code, or be logged. Vercel's per-instance admission controller is a
-defense-in-depth bound, not a distributed edge rate limiter.
+defense-in-depth bound, not a distributed edge rate limiter. The current source
+now fails closed when the Vercel adapter is constructed without an injected
+`HostedPublicCoordination` boundary providing shared admission, model budget,
+audit persistence, and telemetry. Process-local implementations may be used by
+tests, but must not be passed as hosted coordination. Until a real shared
+implementation is supplied and verified, a future deployment of this source
+returns the disabled `503` envelope. The existing production deployment is a
+separate, older release and is not changed by this local work.
 
 ## Routes
 

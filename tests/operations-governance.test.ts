@@ -131,4 +131,21 @@ describe("OperationalKillSwitches", () => {
       JOLENE_ENABLE_SLACK: "true",
     })).toThrow("JOLENE_ENABLE_SLACK must be either enabled or disabled");
   });
+
+  it("requires both the global ingestion switch and an exact per-source switch", () => {
+    const sourceA = `source:${"a".repeat(32)}`;
+    const sourceB = `source:${"b".repeat(32)}`;
+    const enabled = new OperationalKillSwitches(
+      { source_ingestion: true },
+      [sourceA],
+    );
+    expect(enabled.isSourceEnabled(sourceA)).toBe(true);
+    expect(enabled.isSourceEnabled(sourceB)).toBe(false);
+    expect(() => enabled.requireSourceEnabled(sourceB)).toThrow(
+      OperationalCapabilityDisabledError,
+    );
+    expect(new OperationalKillSwitches({}, [sourceA]).isSourceEnabled(sourceA))
+      .toBe(false);
+    expect(() => enabled.isSourceEnabled("my-private-file.md")).toThrow();
+  });
 });
