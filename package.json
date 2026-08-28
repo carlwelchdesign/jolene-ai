@@ -5,9 +5,18 @@
   "type": "module",
   "description": "A private, policy-gated personal chief-of-staff agent for Carl.",
   "engines": {
-    "node": ">=22"
+    "node": ">=22 <23"
+  },
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": ">=22 <23",
+      "onFail": "error"
+    }
   },
   "scripts": {
+    "runtime:check": "node scripts/verify-node-runtime.mjs",
+    "prebuild": "npm run runtime:check",
     "build": "npm run clean && tsc -p tsconfig.build.json",
     "career:import-portfolio": "tsx scripts/import-portfolio-evidence.ts",
     "career:import-portfolio:audit": "tsx scripts/import-portfolio-evidence.ts --audit",
@@ -19,10 +28,13 @@
     "career:export-public": "docker compose --profile tools run --rm --build jolene-career-export",
     "career:export-public:host": "tsx scripts/export-public-career-evidence.ts",
     "check": "npm run typecheck && npm test",
+    "predev": "npm run runtime:check",
     "chat": "tsx src/cli.ts",
     "clean": "node --eval \"require('node:fs').rmSync('dist', { recursive: true, force: true })\"",
     "dev": "tsx watch src/server.ts",
+    "predev:public": "npm run runtime:check",
     "dev:public": "tsx watch src/public-server.ts",
+    "predev:monitor": "npm run runtime:check",
     "dev:monitor": "tsx watch src/project-monitor.ts",
     "eval:public": "tsx scripts/evaluate-public-delegate.ts",
     "eval:public:live": "tsx scripts/evaluate-public-live-model.ts",
@@ -50,8 +62,10 @@
     "start:monitor": "node dist/project-monitor.js",
     "start:mcp:career": "node dist/private-career-mcp.js",
     "start:slack": "node dist/slack.js",
+    "pretest": "npm run runtime:check",
     "test": "vitest run",
     "test:watch": "vitest",
+    "pretypecheck": "npm run runtime:check",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
