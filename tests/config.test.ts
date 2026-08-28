@@ -4,7 +4,7 @@ import path from "node:path";
 
 import { describe, expect, it } from "vitest";
 
-import { parseConfig } from "../src/config.js";
+import { parseConfig, parsePrivateControlToken } from "../src/config.js";
 
 const privateControlToken = "test-private-control-token-with-at-least-forty-three-characters";
 
@@ -23,7 +23,6 @@ describe("private runtime configuration", () => {
 
     expect(config.careerEmbeddingsEnabled).toBe(false);
     expect(config.openaiApiKey).toBe("test-key");
-    expect(config.privateControlToken).toBe(privateControlToken);
     expect(config.publicLiveReviewPacketPath).toBe(
       "/tmp/jolene-config-test/.jolene/evaluations/public-live-model-review.json",
     );
@@ -45,13 +44,15 @@ describe("private runtime configuration", () => {
   });
 
   it("requires a high-entropy private control credential", () => {
-    expect(() => parseConfig({ OPENAI_API_KEY: "test-key" })).toThrow(
+    expect(() => parsePrivateControlToken({})).toThrow(
       /JOLENE_PRIVATE_CONTROL_TOKEN is required as a direct value or secret file/,
     );
-    expect(() => parseConfig({
-      OPENAI_API_KEY: "test-key",
+    expect(() => parsePrivateControlToken({
       JOLENE_PRIVATE_CONTROL_TOKEN: "too-short",
     })).toThrow();
+    expect(parsePrivateControlToken({
+      JOLENE_PRIVATE_CONTROL_TOKEN: privateControlToken,
+    })).toBe(privateControlToken);
   });
 
   it("requires an exact explicit opt-in for career embeddings", () => {
@@ -107,6 +108,9 @@ describe("private runtime configuration", () => {
     expect(config.slackBotToken).toBe("file-bot-token");
     expect(config.slackAppToken).toBe("file-app-token");
     expect(config.openaiApiKey).toBe("file-openai-key");
+    expect(parsePrivateControlToken({
+      JOLENE_PRIVATE_CONTROL_TOKEN_FILE: "private-control",
+    }, root)).toBe(privateControlToken);
   });
 
   it("fails closed on ambiguous or malformed secret-file configuration", () => {

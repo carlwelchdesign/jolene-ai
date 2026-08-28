@@ -14,7 +14,6 @@ const envSchema = z.object({
   JOLENE_MODEL: z.string().trim().min(1).default("gpt-5.6-terra"),
   JOLENE_HOST: z.string().trim().min(1).default("127.0.0.1"),
   JOLENE_PORT: z.coerce.number().int().min(1).max(65_535).default(8421),
-  JOLENE_PRIVATE_CONTROL_TOKEN: privateControlTokenSchema,
   JOLENE_DATABASE_PATH: z
     .string()
     .trim()
@@ -62,7 +61,6 @@ export interface AppConfig {
   readonly model: string;
   readonly host: string;
   readonly port: number;
-  readonly privateControlToken: string;
   readonly databasePath: string;
   readonly contactQueuePath: string;
   readonly contactRetentionDays: number;
@@ -100,6 +98,31 @@ export function loadConfig(): AppConfig {
   return parseConfig(process.env);
 }
 
+export function loadPrivateServerConfig(): AppConfig & {
+  readonly privateControlToken: string;
+} {
+  dotenv.config({
+    path: path.resolve(process.cwd(), ".env.local"),
+    quiet: true,
+  });
+  return {
+    ...parseConfig(process.env),
+    privateControlToken: parsePrivateControlToken(process.env),
+  };
+}
+
+export function parsePrivateControlToken(
+  environment: Record<string, string | undefined>,
+  workingDirectory = process.cwd(),
+): string {
+  return privateControlTokenSchema.parse(resolveSecretValue(
+    environment,
+    "JOLENE_PRIVATE_CONTROL_TOKEN",
+    "JOLENE_PRIVATE_CONTROL_TOKEN_FILE",
+    { required: true, workingDirectory },
+  ));
+}
+
 export function parseConfig(
   environment: Record<string, string | undefined>,
   workingDirectory = process.cwd(),
@@ -124,12 +147,6 @@ export function parseConfig(
       "SLACK_APP_TOKEN_FILE",
       { required: false, workingDirectory },
     ),
-    JOLENE_PRIVATE_CONTROL_TOKEN: resolveSecretValue(
-      environment,
-      "JOLENE_PRIVATE_CONTROL_TOKEN",
-      "JOLENE_PRIVATE_CONTROL_TOKEN_FILE",
-      { required: true, workingDirectory },
-    ),
   });
 
   return {
@@ -137,7 +154,6 @@ export function parseConfig(
     model: env.JOLENE_MODEL,
     host: env.JOLENE_HOST,
     port: env.JOLENE_PORT,
-    privateControlToken: env.JOLENE_PRIVATE_CONTROL_TOKEN,
     databasePath: path.resolve(workingDirectory, env.JOLENE_DATABASE_PATH),
     contactQueuePath: path.resolve(
       workingDirectory,

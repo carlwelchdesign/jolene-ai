@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   createPrivateIngressAuthenticator,
+  createPrivateControlRequestGuard,
   derivePrivateHttpChatRequest,
   PrivateIngressAuthenticationError,
   privateControlTokenSchema,
@@ -34,7 +35,7 @@ describe("private ingress authentication contract", () => {
   it.each([
     [{}, "credential_missing"],
     [{ authorization: token }, "credential_malformed"],
-    [{ authorization: `Basic ${token}` }, "credential_malformed"],
+    [{ authorization: `Basic ${Buffer.from(`other:${token}`).toString("base64")}` }, "credential_malformed"],
     [{ authorization: "Bearer wrong-but-similarly-shaped-private-control-token" }, "credential_mismatch"],
   ] as const)("fails closed without disclosing credential material", (headers, code) => {
     try {
@@ -46,6 +47,34 @@ describe("private ingress authentication contract", () => {
       expect((error as Error).message).toBe("Private control authentication failed.");
       expect(JSON.stringify(error)).not.toContain(token);
     }
+  });
+
+  it("accepts browser-native basic auth for the fixed Jolene principal", () => {
+    const authorization = Buffer.from(`jolene:${token}`).toString("base64");
+    expect(authenticator.authenticate({ authorization: `Basic ${authorization}` }))
+      .toMatchObject({ actorId: "carl", workspaceId: "personal" });
+  });
+
+  it("combines loopback host, same-origin, and credential checks", () => {
+    const guard = createPrivateControlRequestGuard({
+      token,
+      ownerActorId: "carl",
+      ownerWorkspaceId: "personal",
+    });
+    expect(guard.authorize({
+      host: "127.0.0.1:8421",
+      origin: "http://127.0.0.1:8421",
+      authorization: `Bearer ${token}`,
+    })).toMatchObject({ disclosureScope: "local_private" });
+    expect(() => guard.authorize({
+      host: "127.0.0.1:8421",
+      origin: "https://untrusted.example",
+      authorization: `Bearer ${token}`,
+    })).toThrow();
+    expect(() => guard.authorize({
+      host: "192.168.1.4:8421",
+      authorization: `Bearer ${token}`,
+    })).toThrow();
   });
 
   it("rejects secrets that are too short, multiline, or whitespace-bearing", () => {

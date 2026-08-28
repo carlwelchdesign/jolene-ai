@@ -4,6 +4,7 @@ import type { IncomingHttpHeaders } from "node:http";
 import { z } from "zod";
 
 import type { ChatRequest } from "../application/jolene-service.js";
+import { assertPrivateControlHost, assertSameOrigin } from "./request-origin.js";
 
 export const PRIVATE_CONTROL_AUTH_SCHEME = "JolenePrivateV1";
 
@@ -49,6 +50,10 @@ export interface PrivateIngressAuthenticatorOptions {
   readonly ownerWorkspaceId: string;
 }
 
+export interface PrivateControlRequestGuard {
+  authorize(headers: IncomingHttpHeaders): PrivateIngressPrincipal;
+}
+
 export interface PrivateIngressAuthenticator {
   authenticate(headers: IncomingHttpHeaders): PrivateIngressPrincipal;
 }
@@ -76,6 +81,19 @@ export function createPrivateIngressAuthenticator(
   });
 }
 
+export function createPrivateControlRequestGuard(
+  options: PrivateIngressAuthenticatorOptions,
+): PrivateControlRequestGuard {
+  const authenticator = createPrivateIngressAuthenticator(options);
+  return Object.freeze({
+    authorize(headers: IncomingHttpHeaders): PrivateIngressPrincipal {
+      assertPrivateControlHost(headers);
+      assertSameOrigin(headers);
+      return authenticator.authenticate(headers);
+    },
+  });
+}
+
 export function derivePrivateHttpChatRequest(
   input: unknown,
   principal: PrivateIngressPrincipal,
@@ -95,10 +113,25 @@ function parseAuthorization(header: string | undefined): string {
     throw new PrivateIngressAuthenticationError("credential_missing");
   }
   const parts = header.split(" ");
-  if (parts.length !== 2 || parts[0] !== "Bearer" || !parts[1]) {
+  if (parts.length !== 2 || !parts[1]) {
     throw new PrivateIngressAuthenticationError("credential_malformed");
   }
-  return parts[1];
+  if (parts[0] === "Bearer") return parts[1];
+  if (parts[0] !== "Basic") {
+    throw new PrivateIngressAuthenticationError("credential_malformed");
+  }
+
+  let decoded: string;
+  try {
+    decoded = Buffer.from(parts[1], "base64").toString("utf8");
+  } catch {
+    throw new PrivateIngressAuthenticationError("credential_malformed");
+  }
+  const separator = decoded.indexOf(":");
+  if (separator < 0 || decoded.slice(0, separator) !== "jolene") {
+    throw new PrivateIngressAuthenticationError("credential_malformed");
+  }
+  return decoded.slice(separator + 1);
 }
 
 function constantTimeEqual(left: string, right: string): boolean {

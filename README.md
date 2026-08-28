@@ -190,6 +190,13 @@ Prerequisite: Node.js 22 or newer.
 
    After a production build, use `npm start` instead.
 
+   The private control plane requires `JOLENE_PRIVATE_CONTROL_TOKEN` (or its
+   `_FILE` alternative) and rejects non-loopback hostnames. API clients send
+   `Authorization: Bearer $JOLENE_PRIVATE_CONTROL_TOKEN`. A browser uses its
+   native HTTP authentication prompt: enter `jolene` as the username and the
+   private control token as the password. The unauthenticated `/health` route
+   exposes only the fixed local readiness summary.
+
    Open [http://127.0.0.1:8421/memory](http://127.0.0.1:8421/memory) to review
    Jolene's pending proposals, retained memory, and durable task timeline. The
    Task timeline tab can switch between scoped tasks and record factual
@@ -227,9 +234,6 @@ Prerequisite: Node.js 22 or newer.
    ```json
    {
      "eventId": "local-001",
-     "actorId": "carl",
-     "workspaceId": "personal",
-     "channelKind": "private_chat",
      "channelId": "local",
      "threadId": "main",
      "taskId": "00000000-0000-4000-8000-000000000001",
@@ -237,6 +241,10 @@ Prerequisite: Node.js 22 or newer.
      "message": "Summarize the current Jolene project direction."
    }
    ```
+
+   Actor, workspace, private channel kind, and disclosure scope are derived
+   from the authenticated server configuration. Supplying any of those fields
+   in the JSON body is rejected.
 
    Task and memory-management endpoints are documented in [Task and memory API](docs/task-memory-api.md).
    The six reviewable work types and their lifecycle are documented in
@@ -354,6 +362,9 @@ and thread.
 - Obsidian access is read-only and limited to configured relative path prefixes.
 - Knowledge-search audit records retain scope, outcome, query fingerprints, and citations—but never raw queries or note excerpts.
 - Shared channels receive no Obsidian search tool.
+- Every private control/UI route except content-minimizing `/health` requires a
+  dedicated high-entropy credential; loopback and same-origin checks are
+  additional containment and do not establish identity.
 - Slack DMs from anyone except the configured owner are ignored.
 - Completed Slack deliveries survive restarts and suppress duplicate replies.
 - Pending and rejected memory proposals are never supplied to the model.
