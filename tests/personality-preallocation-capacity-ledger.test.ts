@@ -78,7 +78,9 @@ function ledger(): PreallocationCapacityLedger {
     sourceRegisterFingerprint: hash(1), boundaryProtocolFingerprint: hash(3),
     highRiskTaxonomyFingerprint: hash(4), sourceRegisterId: "S02", sourceEventId: "E002",
     sourceContentFingerprint: hash(2), segmentationRule: "paragraph-speaker-blocks-v1",
-    boundaryEvidenceFingerprint: hash(5), policyAmendmentFingerprint: null,
+    boundaryManifestFingerprint: hash(5), ledgerFingerprintMapFingerprint: hash(6),
+    policyAmendmentFingerprint: null,
+    primaryReviewFingerprint: hash(7), independentReviewFingerprint: hash(8),
     sourceBoundaryUnitCount: 3, frozenAt: "2026-08-27T10:47:00Z",
     primaryReviewer: {
       reviewerId: "primary-reviewer", reviewerType: "ai", tool: "Codex",
@@ -94,6 +96,8 @@ function ledger(): PreallocationCapacityLedger {
       segmentFingerprint: hash(11), primaryEligibility: "eligible",
       independentEligibility: "eligible", primaryHighRiskStrata: ["boundary", "humor"],
       independentHighRiskStrata: ["boundary"], agreedHighRiskStrata: ["boundary"],
+      consensusWithheldHighRiskStrata: [],
+      highRiskReviewState: "consensus",
     }],
     excludedRanges: [
       {

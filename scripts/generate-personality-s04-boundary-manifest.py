@@ -50,6 +50,17 @@ def sha256(value: bytes | str) -> str:
     return f"sha256:{hashlib.sha256(payload).hexdigest()}"
 
 
+def ledger_fingerprint(segments: list[str]) -> str:
+    digest = hashlib.sha256()
+    for segment in segments:
+        payload = normalized(segment).encode("utf-8")
+        if not payload:
+            raise SystemExit("Canonical ledger fingerprint contains an empty segment")
+        digest.update(len(payload).to_bytes(8, byteorder="big", signed=False))
+        digest.update(payload)
+    return f"sha256:{digest.hexdigest()}"
+
+
 def normalized(value: str) -> str:
     return " ".join(unicodedata.normalize("NFC", value).split())
 
@@ -100,7 +111,7 @@ def fetch_source() -> tuple[bytes, str, str]:
         return content, response.geturl(), response.headers.get_content_type()
 
 
-def extract_units(pdf_path: str) -> list[dict[str, object]]:
+def extract_units(pdf_path: str) -> tuple[list[dict[str, object]], list[dict[str, str]]]:
     lines: list[dict[str, object]] = []
     with pdfplumber.open(pdf_path) as document:
         for page_number, page in enumerate(document.pages, 1):
@@ -119,6 +130,11 @@ def extract_units(pdf_path: str) -> list[dict[str, object]]:
                         "text": text,
                         "page_height": float(page.height),
                     })
+
+    lines = sorted(lines, key=lambda line: (
+        int(line["page"]), float(line["top"]), float(line["x0"]),
+        int(line["original_index"]),
+    ))
 
     repeated_margin_lines: dict[str, set[int]] = defaultdict(set)
     for line in lines:
@@ -158,10 +174,11 @@ def extract_units(pdf_path: str) -> list[dict[str, object]]:
     if current is not None:
         blocks.append(current)
 
+    prelabel_text = normalized(" ".join(prelabel))
     units: list[dict[str, object]] = [{
         "ordinal": 1,
         "locator": "pdf-prelabel-1",
-        "unit_fingerprint": sha256(normalized(" ".join(prelabel))),
+        "unit_fingerprint": sha256(prelabel_text),
         "speaker_class": "prelabel",
         "cue_categories": [],
         "cue_occurrences": {},
@@ -169,6 +186,11 @@ def extract_units(pdf_path: str) -> list[dict[str, object]]:
         "reason": "prelabel-non-dialogue",
         "residual_token_count": None,
         "fragment_result": "not-evaluated",
+    }]
+    fingerprint_map = [{
+        "locator": "pdf-prelabel-1",
+        "boundary_unit_fingerprint": sha256(prelabel_text),
+        "ledger_segment_fingerprint": ledger_fingerprint(prelabel),
     }]
     for block_index, block in enumerate(blocks, 1):
         text = normalized(" ".join(block["parts"]))  # type: ignore[arg-type]
@@ -193,10 +215,12 @@ def extract_units(pdf_path: str) -> list[dict[str, object]]:
                 disposition = "eligible"
                 reason = "spoken-payload"
                 fragment_result = "passed"
+        locator = f"pdf-page-{block['page']}-speaker-block-{block_index}"
+        unit_fingerprint = sha256(text)
         units.append({
             "ordinal": block_index + 1,
-            "locator": f"pdf-page-{block['page']}-speaker-block-{block_index}",
-            "unit_fingerprint": sha256(text),
+            "locator": locator,
+            "unit_fingerprint": unit_fingerprint,
             "speaker_class": "target" if target else "other",
             "cue_categories": categories,
             "cue_occurrences": {key: value for key, value in counts.items() if value},
@@ -205,7 +229,12 @@ def extract_units(pdf_path: str) -> list[dict[str, object]]:
             "residual_token_count": residual_token_count,
             "fragment_result": fragment_result,
         })
-    return units
+        fingerprint_map.append({
+            "locator": locator,
+            "boundary_unit_fingerprint": unit_fingerprint,
+            "ledger_segment_fingerprint": ledger_fingerprint(block["parts"]),
+        })
+    return units, fingerprint_map
 
 
 def main() -> None:
@@ -223,7 +252,7 @@ def main() -> None:
     with tempfile.NamedTemporaryFile(suffix=".pdf") as temporary:
         temporary.write(source)
         temporary.flush()
-        units = extract_units(temporary.name)
+        units, fingerprint_map = extract_units(temporary.name)
 
     target = [unit for unit in units if unit["speaker_class"] == "target"]
     performance = [unit for unit in target if "performance" in unit["cue_categories"]]
@@ -268,6 +297,21 @@ def main() -> None:
     output = Path("research/pdf-boundary-manifests-v1/source-S04.json")
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
+    manifest_fingerprint = sha256(output.read_bytes())
+    map_output = Path("research/pdf-ledger-fingerprint-maps-v1/source-S04.json")
+    map_output.parent.mkdir(parents=True, exist_ok=True)
+    map_output.write_text(json.dumps({
+        "schema_version": "personality-pdf-ledger-fingerprint-map-v1",
+        "generated_at": "2026-08-28T06:20:00Z",
+        "source_register_id": "S04",
+        "boundary_manifest_fingerprint": manifest_fingerprint,
+        "boundary_fingerprint_method": "normalized-joined-text-sha256-v1",
+        "ledger_fingerprint_method": "normalized-length-prefixed-ordered-segments-sha256-v1",
+        "source_content_stored": False,
+        "selection_performed": False,
+        "runtime_activation": "prohibited",
+        "units": fingerprint_map,
+    }, indent=2) + "\n", encoding="utf-8")
     print(json.dumps({
         "output": str(output), "source_fingerprint": f"sha256:{SOURCE_SHA256}",
         "boundary_units": len(units), "eligible_target_blocks": len(eligible),

@@ -83,6 +83,17 @@ def sha256(value: bytes | str) -> str:
     return f"sha256:{hashlib.sha256(payload).hexdigest()}"
 
 
+def ledger_fingerprint(segments: list[str]) -> str:
+    digest = hashlib.sha256()
+    for segment in segments:
+        payload = normalized(segment).encode("utf-8")
+        if not payload:
+            raise SystemExit("Canonical ledger fingerprint contains an empty segment")
+        digest.update(len(payload).to_bytes(8, byteorder="big", signed=False))
+        digest.update(payload)
+    return f"sha256:{digest.hexdigest()}"
+
+
 def normalized(value: str) -> str:
     return " ".join(unicodedata.normalize("NFC", value).split())
 
@@ -137,7 +148,9 @@ def remove_spans(text: str, spans: list[tuple[int, int]]) -> str:
     return normalized(result)
 
 
-def labeled_units(pdf_path: str, source: dict[str, object]) -> list[dict[str, object]]:
+def labeled_units(
+    pdf_path: str, source: dict[str, object]
+) -> tuple[list[dict[str, object]], list[dict[str, str]]]:
     lines: list[dict[str, object]] = []
     with pdfplumber.open(pdf_path) as document:
         for page_number, page in enumerate(document.pages, 1):
@@ -149,8 +162,10 @@ def labeled_units(pdf_path: str, source: dict[str, object]) -> list[dict[str, ob
                 text = normalized(str(item["text"]))
                 if text:
                     lines.append({"page": page_number, "top": float(item.get("top", 0)),
+                                  "x0": float(item.get("x0", 0)),
                                   "original_index": original_index, "text": text,
                                   "page_height": float(page.height)})
+    lines = order_lines(lines)
     margins: dict[str, set[int]] = defaultdict(set)
     for line in lines:
         if float(line["top"]) <= float(line["page_height"]) * 0.10 or \
@@ -180,14 +195,24 @@ def labeled_units(pdf_path: str, source: dict[str, object]) -> list[dict[str, ob
     if current is not None:
         blocks.append(current)
     units = [unit_record(0, "prelabel", normalized(" ".join(prelabel)), 1, "prelabel")]
+    fingerprints = [fingerprint_record(units[0], prelabel)]
     for index, block in enumerate(blocks, 1):
         text = normalized(" ".join(block["parts"]))  # type: ignore[arg-type]
         speaker_class = "target" if block["speaker"] in source["target"] else "other"
-        units.append(unit_record(index, speaker_class, text, int(block["page"]), "speaker-block"))
-    return units
+        unit = unit_record(index, speaker_class, text, int(block["page"]), "speaker-block")
+        units.append(unit)
+        fingerprints.append(fingerprint_record(unit, block["parts"]))
+    return units, fingerprints
 
 
-def statement_units(pdf_path: str) -> list[dict[str, object]]:
+def order_lines(lines: list[dict[str, object]]) -> list[dict[str, object]]:
+    return sorted(lines, key=lambda line: (
+        int(line["page"]), float(line["top"]), float(line["x0"]),
+        int(line["original_index"]),
+    ))
+
+
+def statement_units(pdf_path: str) -> tuple[list[dict[str, object]], list[dict[str, str]]]:
     page_paragraphs: list[list[str]] = []
     reader = pypdf.PdfReader(pdf_path)
     for page in reader.pages:
@@ -215,13 +240,24 @@ def statement_units(pdf_path: str) -> list[dict[str, object]]:
         re.IGNORECASE,
     )
     units: list[dict[str, object]] = []
+    fingerprints: list[dict[str, str]] = []
     prior_target = False
     for index, (page_number, text) in enumerate(paragraphs):
         target = bool(named.search(text) or (prior_target and continuation.search(text)))
-        units.append(unit_record(index, "target" if target else "other", text,
-                                 page_number, "paragraph"))
+        unit = unit_record(index, "target" if target else "other", text,
+                           page_number, "paragraph")
+        units.append(unit)
+        fingerprints.append(fingerprint_record(unit, [text]))
         prior_target = target
-    return units
+    return units, fingerprints
+
+
+def fingerprint_record(unit: dict[str, object], segments: list[str]) -> dict[str, str]:
+    return {
+        "locator": str(unit["locator"]),
+        "boundary_unit_fingerprint": str(unit["unit_fingerprint"]),
+        "ledger_segment_fingerprint": ledger_fingerprint(segments),
+    }
 
 
 def unit_record(index: int, speaker_class: str, text: str, page: int,
@@ -266,8 +302,8 @@ def main() -> None:
         with tempfile.NamedTemporaryFile(suffix=".pdf") as temporary:
             temporary.write(content)
             temporary.flush()
-            units = (statement_units(temporary.name) if source_id == "S18"
-                     else labeled_units(temporary.name, source))
+            units, fingerprint_map = (statement_units(temporary.name) if source_id == "S18"
+                                      else labeled_units(temporary.name, source))
         eligible = [unit for unit in units if unit["disposition"] == "eligible"]
         actual = (len(units), len(eligible))
         expected = (source["boundary"], source["eligible"])
@@ -289,8 +325,25 @@ def main() -> None:
         }
         output = output_root / f"source-{source_id}.json"
         output.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
+        manifest_fingerprint = sha256(output.read_bytes())
+        map_output = Path("research/pdf-ledger-fingerprint-maps-v1") / f"source-{source_id}.json"
+        map_output.parent.mkdir(parents=True, exist_ok=True)
+        map_output.write_text(json.dumps({
+            "schema_version": "personality-pdf-ledger-fingerprint-map-v1",
+            "generated_at": "2026-08-28T06:20:00Z",
+            "source_register_id": source_id,
+            "boundary_manifest_fingerprint": manifest_fingerprint,
+            "boundary_fingerprint_method": "normalized-joined-text-sha256-v1",
+            "ledger_fingerprint_method":
+                "normalized-length-prefixed-ordered-segments-sha256-v1",
+            "source_content_stored": False,
+            "selection_performed": False,
+            "runtime_activation": "prohibited",
+            "units": fingerprint_map,
+        }, indent=2) + "\n", encoding="utf-8")
         summaries.append({"source": source_id, "boundary": len(units),
-                          "eligible": len(eligible), "manifest": sha256(output.read_bytes())})
+                          "eligible": len(eligible), "manifest": manifest_fingerprint,
+                          "fingerprint_map": sha256(map_output.read_bytes())})
     print(json.dumps(summaries, indent=2))
 
 

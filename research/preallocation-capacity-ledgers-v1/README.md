@@ -32,3 +32,32 @@ excludes all four performance-bearing target blocks before any residual-payload 
 then strips nonverbal and unreadable cues from the remaining blocks. The reviewed S04 capacity
 is 45, not 48 or 49. The versioned amendment and its 101-unit metadata-only manifest must bind
 every future S04 ledger; the failed v3 plan and predecessor audit remain immutable.
+
+The four PDF ledgers are now frozen under the reviewed amendment and canonical fingerprint
+conversion:
+
+- S04: 101 boundary units, 45 eligible, 56 excluded;
+- S08: 199 boundary units, 88 eligible, 111 excluded;
+- S09: 11 boundary units, 5 eligible, 6 excluded;
+- S18: 19 boundary units, 2 eligible, 17 excluded.
+
+Each ledger binds both the reviewed boundary-manifest fingerprint and a separately reviewed
+map to the frozen normalized, length-prefixed, ordered-segment ledger fingerprint. Both
+reviewers reproduced all 330 mappings with zero discrepancies. High-risk labels retain each
+reviewer's metadata-only judgment and admit only exact tag intersections. Nine units with
+reviewer ambiguity or cross-run instability are explicitly marked `uncertainty-withheld`; no
+uncertain tag is admitted to consensus. The review-evidence artifact binds the two external
+metadata-only review-report fingerprints without storing source content.
+
+Regenerating these ledgers requires explicit paths to the two independently produced review
+reports:
+
+```sh
+JOLENE_PRIMARY_PDF_REVIEW=/secure/path/primary.json \
+JOLENE_INDEPENDENT_PDF_REVIEW=/secure/path/independent.json \
+npx tsx scripts/generate-personality-pdf-capacity-ledgers.ts
+```
+
+These ledgers do not select turns, code observations, admit traits, or activate runtime
+behavior. The remaining six source ledgers and aggregate manifest must still be completed
+before a prospective v4 sampling plan can be frozen.

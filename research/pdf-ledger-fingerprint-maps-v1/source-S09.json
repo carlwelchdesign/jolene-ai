@@ -1,0 +1,68 @@
+{
+  "schema_version": "personality-pdf-ledger-fingerprint-map-v1",
+  "generated_at": "2026-08-28T06:20:00Z",
+  "source_register_id": "S09",
+  "boundary_manifest_fingerprint": "sha256:4860c15eb40d0de055d1b1521dc99d06109428250a7a6f4f77765871e4d505cb",
+  "boundary_fingerprint_method": "normalized-joined-text-sha256-v1",
+  "ledger_fingerprint_method": "normalized-length-prefixed-ordered-segments-sha256-v1",
+  "source_content_stored": false,
+  "selection_performed": false,
+  "runtime_activation": "prohibited",
+  "units": [
+    {
+      "locator": "pdf-prelabel-1",
+      "boundary_unit_fingerprint": "sha256:6f43c58738212125ede15e9285e8f0c802f89f4b5fca7471d6cf311bce1f5bfd",
+      "ledger_segment_fingerprint": "sha256:81b6858011a7901edc91d1eff4a09b95c4fc49ada7959accd74f61c08ac4ba8c"
+    },
+    {
+      "locator": "pdf-page-1-speaker-block-1",
+      "boundary_unit_fingerprint": "sha256:0e1b96e1a016671740cb279698caa0dd53babf45bd76cf513861d129773a5043",
+      "ledger_segment_fingerprint": "sha256:a37f13b4ab0115f7969819fe0c80c750f4409da371cf06a8b3d194e1f23b39ee"
+    },
+    {
+      "locator": "pdf-page-1-speaker-block-2",
+      "boundary_unit_fingerprint": "sha256:db354f6c11da9e5d9e71cac7e5a7e918e63a05ae175b2cbb98ec86e18883c386",
+      "ledger_segment_fingerprint": "sha256:13d35da12c2f1ef31a45a9737a47676d13ad542f10588163ee5639f25c45a410"
+    },
+    {
+      "locator": "pdf-page-2-speaker-block-3",
+      "boundary_unit_fingerprint": "sha256:97652526acb23ca24d30fd239fd57a40e4c59731c7fd3d75b3d58ff5b8eb1ece",
+      "ledger_segment_fingerprint": "sha256:62345276ea6cd09b7dcfbee2676578d1400598b6a96335080547555daf176097"
+    },
+    {
+      "locator": "pdf-page-2-speaker-block-4",
+      "boundary_unit_fingerprint": "sha256:383bee57ee39c52e874c63dc5fb9e371784dd3a9772465843a3f33880fa323ce",
+      "ledger_segment_fingerprint": "sha256:f32e3964f57741927a29a8074fc0d6b72783cadc8988bf6e0398d4abd2caecd0"
+    },
+    {
+      "locator": "pdf-page-2-speaker-block-5",
+      "boundary_unit_fingerprint": "sha256:83dc1e06112d1e7331ee9566487475b9451b423347e4e36e29a7a45a9743cef0",
+      "ledger_segment_fingerprint": "sha256:b15c1376b4a3fee46be0dc06e4592cad05f5072abfdd71e144d87452777f0f91"
+    },
+    {
+      "locator": "pdf-page-2-speaker-block-6",
+      "boundary_unit_fingerprint": "sha256:20cda51802565d30b2d145942b754212e4b7ff114e532430ca1fdf0bbb947e68",
+      "ledger_segment_fingerprint": "sha256:361501fe972cbff0ddd3abb67d670d96284d4cb6d58e35d098880324207525e0"
+    },
+    {
+      "locator": "pdf-page-2-speaker-block-7",
+      "boundary_unit_fingerprint": "sha256:36d06594d9e5265ff1d55f32cdc132d73c31197d0b0028d1cff6db8e93f1dabb",
+      "ledger_segment_fingerprint": "sha256:471fbb502cd5a2417e86df42ca97c7b8991abbf0b9bd117415e0684687b7848e"
+    },
+    {
+      "locator": "pdf-page-2-speaker-block-8",
+      "boundary_unit_fingerprint": "sha256:fad1a85dc12cc41da8bf02dc014b715adc13819ad79aa6c644bcc055061cf668",
+      "ledger_segment_fingerprint": "sha256:453bd186075b5d7506c3d5d33a69747a41c765846237f24a32f1e07c228614a8"
+    },
+    {
+      "locator": "pdf-page-2-speaker-block-9",
+      "boundary_unit_fingerprint": "sha256:f087dc1d2bb856823dd5c018ba2fa6746077011152230d9108bb4064bb36604e",
+      "ledger_segment_fingerprint": "sha256:d0576629ec5ef475517a5f2bb51707251b2a38081aff0b63337f93952f0af675"
+    },
+    {
+      "locator": "pdf-page-2-speaker-block-10",
+      "boundary_unit_fingerprint": "sha256:fc0e4cbd81f7722ecf500c13f34fede214e1286b618b32137b9e577483690df2",
+      "ledger_segment_fingerprint": "sha256:6c26d64cbc5018ddd28487b986dff05843e90a7d00d74c2bede99913ef4849ef"
+    }
+  ]
+}

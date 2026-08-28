@@ -1,0 +1,340 @@
+{
+  "schemaVersion": "jolene.personality-preallocation-capacity-ledger.v1",
+  "status": "independently-reviewed-before-allocation",
+  "sourceRegisterFingerprint": "sha256:29dcfbe68ffc7b7be13758be298739179146dab5041ff73ee9e49fc74218481f",
+  "boundaryProtocolFingerprint": "sha256:7ef6eba7a8eee9fde9be225f4e4b3dc7045a5165974091e008e41a592330bda7",
+  "highRiskTaxonomyFingerprint": "sha256:e56f2bd612a511a18eb9c1b47fc51b51715cdf1ed0e6bd6209f700c72351ee07",
+  "sourceRegisterId": "S18",
+  "sourceEventId": "E014",
+  "sourceContentFingerprint": "sha256:84a71eb6ff4ad76c571cceb1ba2517857bf1226971585dcbf0915d1f6ef32666",
+  "boundaryManifestFingerprint": "sha256:3383e7219a1d0b65b90f4fac04f2c6e543c107af0c6ce15acd4292269014311c",
+  "ledgerFingerprintMapFingerprint": "sha256:f4dc0a00300daf23759cb0dd55959999411849153d4198b8cbf3b30058e31a92",
+  "policyAmendmentFingerprint": null,
+  "primaryReviewFingerprint": "sha256:1cb417256851445baef563a89cf90bb286792d4a7e1e07342e567b3dc33598fb",
+  "independentReviewFingerprint": "sha256:5bdffb5125f8380b30ae91772a140797c005b2645fed4ae5a7984fdbead53b23",
+  "segmentationRule": "pdf-attributed-statement-blocks-v2",
+  "sourceBoundaryUnitCount": 19,
+  "frozenAt": "2026-08-28T06:30:00Z",
+  "primaryReviewer": {
+    "reviewerId": "codex-primary-data-methodology-reviewer",
+    "reviewerType": "ai",
+    "tool": "OpenAI Responses API structured classification over transient units; store=false",
+    "modelVersion": "gpt-5.6-terra",
+    "reviewedAt": "2026-08-28T06:27:58Z"
+  },
+  "independentReviewer": {
+    "reviewerId": "independent-trust-rights-reviewer",
+    "reviewerType": "ai",
+    "tool": "Codex read-only boundary reproduction plus OpenAI Responses API semantic adjudication",
+    "modelVersion": "gpt-5.6-terra",
+    "reviewedAt": "2026-08-28T06:12:01.923809Z"
+  },
+  "eligibleUnits": [
+    {
+      "unitId": "C-S18-0001",
+      "sourceUnitOrdinal": 6,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 6,
+        "end": 6,
+        "label": "paragraph-6"
+      },
+      "segmentFingerprint": "sha256:6971131c45cc6ebf4f38a33841a48c876132a4e896d35ef390fe62dc4a7c1020",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [],
+      "independentHighRiskStrata": [
+        "biography"
+      ],
+      "agreedHighRiskStrata": [],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    },
+    {
+      "unitId": "C-S18-0002",
+      "sourceUnitOrdinal": 7,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 7,
+        "end": 7,
+        "label": "paragraph-7"
+      },
+      "segmentFingerprint": "sha256:e71df479356ebb006050d075b4be4bfba783e6b9bb4e9feec1ce9da47897391a",
+      "primaryEligibility": "eligible",
+      "independentEligibility": "eligible",
+      "primaryHighRiskStrata": [
+        "grief-or-hurt"
+      ],
+      "independentHighRiskStrata": [
+        "grief-or-hurt"
+      ],
+      "agreedHighRiskStrata": [
+        "grief-or-hurt"
+      ],
+      "consensusWithheldHighRiskStrata": [],
+      "highRiskReviewState": "consensus"
+    }
+  ],
+  "excludedRanges": [
+    {
+      "exclusionId": "CX-S18-0001",
+      "sourceUnitStart": 0,
+      "sourceUnitEnd": 0,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 0,
+        "end": 0,
+        "label": "paragraph-0"
+      },
+      "segmentFingerprint": "sha256:011bb2b89482545ac507abc3fa6f719e17127dfec2991243c41132a708c34459",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S18-0002",
+      "sourceUnitStart": 1,
+      "sourceUnitEnd": 1,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 1,
+        "end": 1,
+        "label": "paragraph-1"
+      },
+      "segmentFingerprint": "sha256:1ab5ecc7ab345364b957976bd0996a3e62226a01562b28c125478184ee937fb8",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S18-0003",
+      "sourceUnitStart": 2,
+      "sourceUnitEnd": 2,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 2,
+        "end": 2,
+        "label": "paragraph-2"
+      },
+      "segmentFingerprint": "sha256:ac14d89791834b940a5461daf75b6df3f20fbdab37446a0386b0000921db8ed3",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S18-0004",
+      "sourceUnitStart": 3,
+      "sourceUnitEnd": 3,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 3,
+        "end": 3,
+        "label": "paragraph-3"
+      },
+      "segmentFingerprint": "sha256:b836ab71b3eea8e311192c47cb8ad79e3632cfc0cf4b09885db8fcbd1fc8248f",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S18-0005",
+      "sourceUnitStart": 4,
+      "sourceUnitEnd": 4,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 4,
+        "end": 4,
+        "label": "paragraph-4"
+      },
+      "segmentFingerprint": "sha256:ea790679da8510ecfa9670d0af59437f77e12e765d1d9a6f3a12571cf8da95ac",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S18-0006",
+      "sourceUnitStart": 5,
+      "sourceUnitEnd": 5,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 5,
+        "end": 5,
+        "label": "paragraph-5"
+      },
+      "segmentFingerprint": "sha256:72900c9f3fa0119e8c9853b5aa65f3707bf75a389e076e0d4b46542af3a6545e",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S18-0007",
+      "sourceUnitStart": 8,
+      "sourceUnitEnd": 8,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 8,
+        "end": 8,
+        "label": "paragraph-8"
+      },
+      "segmentFingerprint": "sha256:6484394509973548ec6b7742a295241e01aeafc454a8a00024253e0184a16bab",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S18-0008",
+      "sourceUnitStart": 9,
+      "sourceUnitEnd": 9,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 9,
+        "end": 9,
+        "label": "paragraph-9"
+      },
+      "segmentFingerprint": "sha256:27683b9d7eebac40248b78d4d8eb0ec6bcb81a122883afb3142e7cac0536a2d5",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S18-0009",
+      "sourceUnitStart": 10,
+      "sourceUnitEnd": 10,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 10,
+        "end": 10,
+        "label": "paragraph-10"
+      },
+      "segmentFingerprint": "sha256:c5e09c4bc8e8f5ae4a5828af55075f801451f0763c4a1087b9e68fa6ab148a29",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S18-0010",
+      "sourceUnitStart": 11,
+      "sourceUnitEnd": 11,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 11,
+        "end": 11,
+        "label": "paragraph-11"
+      },
+      "segmentFingerprint": "sha256:b57d133b595834956c3f1f207b98a379650261fc701e082276e067f8a821e218",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S18-0011",
+      "sourceUnitStart": 12,
+      "sourceUnitEnd": 12,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 12,
+        "end": 12,
+        "label": "paragraph-12"
+      },
+      "segmentFingerprint": "sha256:999a5b865625a87e9ac0085dbaeddcee383189d7a2122a85118db8d811796711",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S18-0012",
+      "sourceUnitStart": 13,
+      "sourceUnitEnd": 13,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 13,
+        "end": 13,
+        "label": "paragraph-13"
+      },
+      "segmentFingerprint": "sha256:efa876c0f194829cb44cc2181447e9698a111aa7160d2d04d1ff31a0ea1e192b",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S18-0013",
+      "sourceUnitStart": 14,
+      "sourceUnitEnd": 14,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 14,
+        "end": 14,
+        "label": "paragraph-14"
+      },
+      "segmentFingerprint": "sha256:ae16680fc3a39201e9f4e79ddbd4faa79a135f060ea10948b3d1fcdbc33410b8",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S18-0014",
+      "sourceUnitStart": 15,
+      "sourceUnitEnd": 15,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 15,
+        "end": 15,
+        "label": "paragraph-15"
+      },
+      "segmentFingerprint": "sha256:d9e5e5b6ad1f007d85a98068488a055dcfadd7580df2b9d0607915aea4a3f4ee",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S18-0015",
+      "sourceUnitStart": 16,
+      "sourceUnitEnd": 16,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 16,
+        "end": 16,
+        "label": "paragraph-16"
+      },
+      "segmentFingerprint": "sha256:48ae1eb142549ea4e60f902e04dfe32a5f0f2601adff9ba4cade57ba7938c77e",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S18-0016",
+      "sourceUnitStart": 17,
+      "sourceUnitEnd": 17,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 17,
+        "end": 17,
+        "label": "paragraph-17"
+      },
+      "segmentFingerprint": "sha256:3dd5a833950e6e01c4913c0a5d6e5a65db8082a847bf8b7240845babfd6766c7",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    },
+    {
+      "exclusionId": "CX-S18-0017",
+      "sourceUnitStart": 18,
+      "sourceUnitEnd": 18,
+      "locator": {
+        "kind": "paragraph-index",
+        "start": 18,
+        "end": 18,
+        "label": "paragraph-18"
+      },
+      "segmentFingerprint": "sha256:0f9bff2652bc83a960e1c0767b22e3ef55610c480172008b23990334f56b33b3",
+      "primaryReason": "interviewer-or-other-speaker",
+      "independentReason": "interviewer-or-other-speaker",
+      "agreedReason": "interviewer-or-other-speaker"
+    }
+  ],
+  "sourceContentStored": false,
+  "frozenBeforeAllocation": true,
+  "selectionPerformed": false,
+  "observationCodingPerformed": false,
+  "runtimeActivation": "prohibited"
+}

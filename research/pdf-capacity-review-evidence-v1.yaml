@@ -1,0 +1,48 @@
+schema_version: personality-pdf-capacity-review-evidence-v1
+created_at: 2026-08-28T06:30:00Z
+source_register_fingerprint: sha256:29dcfbe68ffc7b7be13758be298739179146dab5041ff73ee9e49fc74218481f
+boundary_protocol_fingerprint: sha256:7ef6eba7a8eee9fde9be225f4e4b3dc7045a5165974091e008e41a592330bda7
+high_risk_taxonomy_fingerprint: sha256:e56f2bd612a511a18eb9c1b47fc51b51715cdf1ed0e6bd6209f700c72351ee07
+s04_cue_amendment_fingerprint: sha256:54eb9da7b852607dd9337d421faae003e3aa24a3424c046b1b363fca9068c801
+primary_review:
+  fingerprint: sha256:1cb417256851445baef563a89cf90bb286792d4a7e1e07342e567b3dc33598fb
+  reviewer_id: codex-primary-data-methodology-reviewer
+  reviewer_type: ai
+  tool: OpenAI Responses API structured classification over transient units; store=false
+  model_version: gpt-5.6-terra
+  reviewed_at: 2026-08-28T06:27:58Z
+  all_eligible_units_reviewed: 140
+  source_content_stored: false
+independent_review:
+  fingerprint: sha256:5bdffb5125f8380b30ae91772a140797c005b2645fed4ae5a7984fdbead53b23
+  reviewer_id: independent-trust-rights-reviewer
+  reviewer_type: ai
+  tool: Codex read-only boundary reproduction plus OpenAI Responses API semantic adjudication
+  model_version: gpt-5.6-terra
+  reviewed_at: 2026-08-28T06:12:01.923809Z
+  all_eligible_units_reviewed: 140
+  source_content_stored: false
+consensus_rule: exact-stratum-intersection-with-uncertainty-withheld
+uncertain_units:
+  - { source_register_id: S04, locator: pdf-page-18-speaker-block-67, boundary_unit_fingerprint: sha256:083dbfdb81a9e688df913eb7fa0258853ba48eb0d4967aadec96c2606d3408d6 }
+  - { source_register_id: S08, locator: pdf-page-10-speaker-block-74, boundary_unit_fingerprint: sha256:4b48cf940fcbd3a47825dfe5134d1e91681b68afdf5fa473ab0617916a4c570c }
+  - { source_register_id: S08, locator: pdf-page-10-speaker-block-78, boundary_unit_fingerprint: sha256:848ddd8cc2537f74180973ca6c863cc99cf1937968143e27fbd8eae2c0fac290 }
+  - { source_register_id: S08, locator: pdf-page-17-speaker-block-124, boundary_unit_fingerprint: sha256:63a7037a68795197933a3c34664fb8f480c56c38639c5246a4fd58a95ea7f485 }
+  - { source_register_id: S08, locator: pdf-page-19-speaker-block-139, boundary_unit_fingerprint: sha256:e8b09a7f5180d355fa57f65d84266e131afc897f2fa586fdc95c218088c93cb8 }
+  - { source_register_id: S08, locator: pdf-page-21-speaker-block-151, boundary_unit_fingerprint: sha256:f28607fe9aa3009d8f4155def5ab1830e35e15cba4c59244055f130b20787a13 }
+  - { source_register_id: S08, locator: pdf-page-3-speaker-block-25, boundary_unit_fingerprint: sha256:43478ccdacff83900b515ba1b53a65b97f71519a4d43dc7a156e9218e5463852 }
+  - { source_register_id: S08, locator: pdf-page-4-speaker-block-33, boundary_unit_fingerprint: sha256:ba8b9d1cf495303d89634b32d55d45cc78f94827715db33ea7775d5534892779 }
+  - { source_register_id: S08, locator: pdf-page-8-speaker-block-64, boundary_unit_fingerprint: sha256:4df27998808bb792a497945ec18f74f72c7f7e8fc8ace449875095d7fa1d3106 }
+fingerprint_map_reviews:
+  primary_verdict: pass
+  independent_verdict: pass
+  discrepancies: 0
+  source_map_fingerprints:
+    S04: sha256:d1fcc329c065156df0a60a251ca7da64e38f8072a8fed713bb344ecbc95ae123
+    S08: sha256:9a93670e2c15c20f1119641b3ea76ea08abe0fd020226db820d899dc5f3d1742
+    S09: sha256:38f384d5db5bdc000ff66b21396d9e1a559a49d1bcf505af10ffa6553de8924c
+    S18: sha256:f4dc0a00300daf23759cb0dd55959999411849153d4198b8cbf3b30058e31a92
+source_content_stored: false
+selection_performed: false
+observation_coding_performed: false
+runtime_activation: prohibited

@@ -47,6 +47,8 @@ const eligibleUnitSchema = z.object({
   primaryHighRiskStrata: z.array(highRiskSchema),
   independentHighRiskStrata: z.array(highRiskSchema),
   agreedHighRiskStrata: z.array(highRiskSchema),
+  consensusWithheldHighRiskStrata: z.array(highRiskSchema),
+  highRiskReviewState: z.enum(["consensus", "uncertainty-withheld"]),
 }).strict();
 
 const excludedRangeSchema = z.object({
@@ -70,8 +72,11 @@ export const preallocationCapacityLedgerSchema = z.object({
   sourceRegisterId: sourceIdSchema,
   sourceEventId: eventIdSchema,
   sourceContentFingerprint: sha256Schema,
-  boundaryEvidenceFingerprint: sha256Schema,
+  boundaryManifestFingerprint: sha256Schema,
+  ledgerFingerprintMapFingerprint: sha256Schema,
   policyAmendmentFingerprint: sha256Schema.nullable(),
+  primaryReviewFingerprint: sha256Schema,
+  independentReviewFingerprint: sha256Schema,
   segmentationRule: segmentationRuleSchema,
   sourceBoundaryUnitCount: z.number().int().positive(),
   frozenAt: z.string().datetime(),
@@ -151,10 +156,23 @@ export function validatePreallocationCapacityLedger(
     assertUnique(unit.primaryHighRiskStrata, `${unit.unitId} primary high-risk stratum`);
     assertUnique(unit.independentHighRiskStrata, `${unit.unitId} independent high-risk stratum`);
     assertUnique(unit.agreedHighRiskStrata, `${unit.unitId} agreed high-risk stratum`);
-    const consensus = unit.primaryHighRiskStrata.filter(
+    assertUnique(unit.consensusWithheldHighRiskStrata,
+      `${unit.unitId} consensus-withheld high-risk stratum`);
+    const rawConsensus = unit.primaryHighRiskStrata.filter(
       (stratum) => unit.independentHighRiskStrata.includes(stratum),
     ).sort();
-    if (JSON.stringify([...unit.agreedHighRiskStrata].sort()) !== JSON.stringify(consensus)) {
+    if (unit.consensusWithheldHighRiskStrata.some((stratum) =>
+      !rawConsensus.includes(stratum)
+    )) throw new Error(`${unit.unitId} withheld stratum was not reviewer consensus`);
+    if (unit.highRiskReviewState === "consensus" &&
+        unit.consensusWithheldHighRiskStrata.length > 0) {
+      throw new Error(`${unit.unitId} consensus state cannot withhold strata`);
+    }
+    const admittedConsensus = rawConsensus.filter(
+      (stratum) => !unit.consensusWithheldHighRiskStrata.includes(stratum),
+    );
+    if (JSON.stringify([...unit.agreedHighRiskStrata].sort()) !==
+        JSON.stringify(admittedConsensus)) {
       throw new Error(`${unit.unitId} agreed high-risk strata are not reviewer consensus`);
     }
   }
@@ -176,6 +194,9 @@ export function validatePreallocationCapacityLedger(
     excludedRanges: ledger.excludedRanges.length,
     agreedHighRiskUnits: ledger.eligibleUnits.filter(
       (unit) => unit.agreedHighRiskStrata.length > 0,
+    ).length,
+    uncertainHighRiskUnits: ledger.eligibleUnits.filter(
+      (unit) => unit.highRiskReviewState === "uncertainty-withheld",
     ).length,
     ledgerFingerprint: fingerprint(ledger),
     sourceContentStored: ledger.sourceContentStored,
