@@ -41,6 +41,7 @@ Run the tabletop and relevant security gates:
 
 ```bash
 npm run security:operations:tabletop
+npm run security:release:check
 npm run security:prompt-injection:red-team:validate
 npm run test:security:red-team
 npm run check
@@ -88,3 +89,9 @@ source, excludes and deletes a revoked export and derived index, limits restore
 to offline validation, requires regression capture, escalates to Carl, and
 reenables nothing without explicit approval. Its passing result is development
 evidence only.
+
+`npm run security:release:check` is stricter: it exits nonzero unless the exact
+release packet contains current, passing, hash-matched deterministic, live-model,
+privacy, owner-approval, and deployment evidence. Missing deployment evidence is
+expected to block local development work; it must never be relabeled as skipped
+or inferred from a local build.
