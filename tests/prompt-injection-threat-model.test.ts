@@ -66,8 +66,8 @@ describe("prompt-injection threat model", () => {
   it("rejects planned controls presented as current boundary protection", () => {
     const model = canonicalModel();
     const boundaries = model.boundaries as Array<Record<string, unknown>>;
-    boundaries[0]!.currentControlIds = ["C30"];
-    expect(() => validatePromptInjectionThreatModelData(model)).toThrow(/labels planned control C30 as current/);
+    boundaries[0]!.currentControlIds = ["C31"];
+    expect(() => validatePromptInjectionThreatModelData(model)).toThrow(/labels planned control C31 as current/);
   });
 
   it("rejects private paths and credential material", () => {

@@ -167,8 +167,10 @@ npm run test:security:red-team
 ```
 
 To prepare an authorized local run, create `.env.public.local` manually with
-`JOLENE_PUBLIC_ANSWER_MODE=openai`, the exact reviewed model, timeout, and a
-dedicated `OPENAI_API_KEY`. Do not copy the private Jolene environment. Then run:
+`JOLENE_PUBLIC_ANSWER_MODE=openai`, the exact reviewed model, and timeout. Supply
+the dedicated `OPENAI_API_KEY` either in that ignored owner-only file or as an
+ephemeral process variable. The harness never loads `.env.local`; do not copy the
+private Jolene environment. Then run:
 
 ```bash
 npm run eval:public:live -- --live

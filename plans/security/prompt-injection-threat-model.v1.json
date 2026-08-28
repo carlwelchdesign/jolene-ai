@@ -660,12 +660,12 @@
     {
       "id": "C30",
       "name": "Release-blocking deterministic and live-model adversarial suite",
-      "phase": "planned",
+      "phase": "current",
       "kind": "model_evaluation",
       "ownerTicket": "JOL-SEC-008",
-      "implementationRefs": ["src/evaluation", "evaluations"],
-      "evidenceRefs": ["JOL-SEC-008 acceptance criteria"],
-      "limitations": ["A passing finite suite reduces known risk but cannot prove absence of novel prompt injection."]
+      "implementationRefs": ["src/evaluation/prompt-injection-red-team-contract.ts", "src/evaluation/public-live-model-evaluation.ts", "src/application/private-rag-provider-gate.ts", "src/public/public-answer-grounding-validator.ts"],
+      "evidenceRefs": ["docs/prompt-injection-red-team.md", "evaluations/prompt-injection-cross-channel-v1.json", "evaluations/public-live-model-v1.json", "tests/prompt-injection-cross-channel.test.ts", "tests/public-live-model-evaluation.test.ts"],
+      "limitations": ["Finite deterministic and live suites reduce known risk but cannot prove absence of novel prompt injection; human review and deployment evidence remain separate release blockers."]
     },
     {
       "id": "C31",

@@ -8,7 +8,10 @@ import {
   evaluatePublicLiveModelSuite,
   publicLiveModelEvaluationSuiteSchema,
 } from "../src/evaluation/public-live-model-evaluation.js";
-import { writePublicLiveModelReviewPacket } from
+import {
+  writePublicLiveModelMachineReport,
+  writePublicLiveModelReviewPacket,
+} from
   "../src/evaluation/public-live-model-review-packet.js";
 
 const fixture = JSON.parse(await readFile(
@@ -162,6 +165,11 @@ describe("public live-model evaluation", () => {
       result.reviewPacket,
     );
     expect((await stat(filePath)).mode & 0o777).toBe(0o600);
+
+    const reportPath = path.join(directory, "nested", "report.json");
+    await writePublicLiveModelMachineReport(reportPath, result.report);
+    expect(JSON.parse(await readFile(reportPath, "utf8"))).toEqual(result.report);
+    expect((await stat(reportPath)).mode & 0o777).toBe(0o600);
   });
 
   it("fails semantic integrity when structured support does not entail the prose", async () => {
