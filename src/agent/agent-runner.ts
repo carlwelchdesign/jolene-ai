@@ -24,6 +24,11 @@ import type { WorkStatusSource } from "../domain/work-status.js";
 import type { PrivateWatchedProjectSource } from "../domain/watched-project.js";
 import type { KnowledgeSource } from "../knowledge/knowledge-source.js";
 import type { CareerKnowledgeSource } from "../domain/career-retrieval.js";
+import {
+  createToolIntentAuthorization,
+  IntentBoundToolAuthorizer,
+  ToolCallAuthorizationDeniedError,
+} from "../domain/tool-call-authorization.js";
 import { buildPrivateJoleneInstructions } from
   "../personality/runtime-personality-policy.js";
 import {
@@ -82,21 +87,30 @@ export class OpenAIJoleneRunner implements JoleneAgentRunner {
       workStatus: request.workScope !== null,
       projectWatch: this.options.projectWatch.canReview(request.workScope),
     }, request.retrievalPolicy));
+    const authorizer = enabled.size > 0
+      ? this.createRequestAuthorizer(request, [...enabled])
+      : null;
     const tools = [
       ...(enabled.has("knowledge.search")
-        ? [this.createKnowledgeTool(request)]
+        ? [this.createKnowledgeTool(request, requireAuthorizer(authorizer))]
         : []),
       ...(enabled.has("career_evidence.search")
-        ? [this.createCareerKnowledgeTool(request)]
+        ? [this.createCareerKnowledgeTool(request, requireAuthorizer(authorizer))]
         : []),
       ...(enabled.has("work_status.review")
-        ? [this.createWorkStatusTool(request)]
+        ? [this.createWorkStatusTool(request, requireAuthorizer(authorizer))]
         : []),
       ...(enabled.has("watched_projects.list")
-        ? [this.createListWatchedProjectsTool(request)]
+        ? [this.createListWatchedProjectsTool(
+            request,
+            requireAuthorizer(authorizer),
+          )]
         : []),
       ...(enabled.has("watched_projects.review")
-        ? [this.createWatchedProjectSnapshotTool(request)]
+        ? [this.createWatchedProjectSnapshotTool(
+            request,
+            requireAuthorizer(authorizer),
+          )]
         : []),
     ];
 
@@ -125,7 +139,10 @@ export class OpenAIJoleneRunner implements JoleneAgentRunner {
     return JSON.stringify(result.finalOutput);
   }
 
-  private createKnowledgeTool(request: AgentRequest) {
+  private createKnowledgeTool(
+    request: AgentRequest,
+    authorizer = this.createRequestAuthorizer(request, ["knowledge.search"]),
+  ) {
     const capability = requireModelCapability(
       "knowledge.search",
       request.channelKind,
@@ -138,11 +155,14 @@ export class OpenAIJoleneRunner implements JoleneAgentRunner {
         query: z.string().trim().min(3).max(500),
         limit: z.number().int().min(1).max(8).default(5),
       }),
-      errorFunction: () => this.auditToolFailure(capability.id, request),
+      errorFunction: (_context, error) =>
+        this.auditToolFailure(capability.id, request, error),
       execute: async ({ query, limit }) => {
-        return this.options.capabilityAudit.execute(
+        return this.executeAuthorizedTool(
           capability.id,
-          invocationContext(request),
+          request,
+          authorizer,
+          { query, limit },
           async () => {
             const results = await this.options.knowledge.search(
               query,
@@ -159,14 +179,23 @@ export class OpenAIJoleneRunner implements JoleneAgentRunner {
               limit,
             );
 
-            return serializeKnowledgeToolResults(results, request, now());
+            return {
+              serialized: serializeKnowledgeToolResults(results, request, now()),
+              itemCount: results.length,
+            };
           },
         );
       },
     });
   }
 
-  private createCareerKnowledgeTool(request: AgentRequest) {
+  private createCareerKnowledgeTool(
+    request: AgentRequest,
+    authorizer = this.createRequestAuthorizer(
+      request,
+      ["career_evidence.search"],
+    ),
+  ) {
     const capability = requireModelCapability(
       "career_evidence.search",
       request.channelKind,
@@ -179,26 +208,34 @@ export class OpenAIJoleneRunner implements JoleneAgentRunner {
         query: z.string().trim().min(2).max(1_000),
         limit: z.number().int().min(1).max(8).default(5),
       }),
-      errorFunction: () => this.auditToolFailure(capability.id, request),
+      errorFunction: (_context, error) =>
+        this.auditToolFailure(capability.id, request, error),
       execute: async ({ query, limit }) => {
-        return this.options.capabilityAudit.execute(
+        return this.executeAuthorizedTool(
           capability.id,
-          invocationContext(request),
-          async () => serializeCareerToolResults(
-            await this.options.careerKnowledge.search({
+          request,
+          authorizer,
+          { query, limit },
+          async () => {
+            const response = await this.options.careerKnowledge.search({
               query,
               limit,
               context: request,
-            }),
-            request,
-            now(),
-          ),
+            });
+            return {
+              serialized: serializeCareerToolResults(response, request, now()),
+              itemCount: response.results.length,
+            };
+          },
         );
       },
     });
   }
 
-  private createWorkStatusTool(request: AgentRequest) {
+  private createWorkStatusTool(
+    request: AgentRequest,
+    authorizer = this.createRequestAuthorizer(request, ["work_status.review"]),
+  ) {
     const capability = requireModelCapability(
       "work_status.review",
       request.channelKind,
@@ -211,30 +248,38 @@ export class OpenAIJoleneRunner implements JoleneAgentRunner {
         statuses: z.array(taskStatusSchema).min(1).max(7).nullable().default(null),
         limit: z.number().int().min(1).max(20).default(10),
       }),
-      errorFunction: () => this.auditToolFailure(capability.id, request),
+      errorFunction: (_context, error) =>
+        this.auditToolFailure(capability.id, request, error),
       execute: async ({ statuses, limit }) => {
         const workScope = request.workScope;
         if (!workScope) {
           throw new Error("Private work scope is unavailable.");
         }
-        return this.options.capabilityAudit.execute(
+        return this.executeAuthorizedTool(
           capability.id,
-          invocationContext(request),
-          () => serializeWorkStatusToolResult(
-            this.options.workStatus.review({
+          request,
+          authorizer,
+          { statuses, limit },
+          () => {
+            const snapshot = this.options.workStatus.review({
               ...workScope,
               ...(statuses ? { statuses } : {}),
               limit,
-            }),
-            request,
-            now(),
-          ),
+            });
+            return {
+              serialized: serializeWorkStatusToolResult(snapshot, request, now()),
+              itemCount: snapshot.tasks.length,
+            };
+          },
         );
       },
     });
   }
 
-  private createListWatchedProjectsTool(request: AgentRequest) {
+  private createListWatchedProjectsTool(
+    request: AgentRequest,
+    authorizer = this.createRequestAuthorizer(request, ["watched_projects.list"]),
+  ) {
     const capability = requireModelCapability(
       "watched_projects.list",
       request.channelKind,
@@ -244,26 +289,37 @@ export class OpenAIJoleneRunner implements JoleneAgentRunner {
       description:
         "List the projects Carl explicitly configured for private, read-only awareness. Results omit local root paths. Use this before requesting a project snapshot when the exact project ID is unknown.",
       parameters: z.object({}),
-      errorFunction: () => this.auditToolFailure(capability.id, request),
+      errorFunction: (_context, error) =>
+        this.auditToolFailure(capability.id, request, error),
       execute: async () => {
         const workScope = request.workScope;
         if (!workScope) {
           throw new Error("Private work scope is unavailable.");
         }
-        return this.options.capabilityAudit.execute(
+        return this.executeAuthorizedTool(
           capability.id,
-          invocationContext(request),
-          () => serializeWatchedProjectList(
-            this.options.projectWatch.list(workScope),
-            request,
-            now(),
-          ),
+          request,
+          authorizer,
+          {},
+          () => {
+            const projects = this.options.projectWatch.list(workScope);
+            return {
+              serialized: serializeWatchedProjectList(projects, request, now()),
+              itemCount: projects.length,
+            };
+          },
         );
       },
     });
   }
 
-  private createWatchedProjectSnapshotTool(request: AgentRequest) {
+  private createWatchedProjectSnapshotTool(
+    request: AgentRequest,
+    authorizer = this.createRequestAuthorizer(
+      request,
+      ["watched_projects.review"],
+    ),
+  ) {
     const capability = requireModelCapability(
       "watched_projects.review",
       request.channelKind,
@@ -275,19 +331,25 @@ export class OpenAIJoleneRunner implements JoleneAgentRunner {
       parameters: z.object({
         projectId: z.string().trim().min(1).max(120),
       }),
-      errorFunction: () => this.auditToolFailure(capability.id, request),
+      errorFunction: (_context, error) =>
+        this.auditToolFailure(capability.id, request, error),
       execute: async ({ projectId }) => {
         const workScope = request.workScope;
         if (!workScope) {
           throw new Error("Private work scope is unavailable.");
         }
-        return this.options.capabilityAudit.execute(
+        return this.executeAuthorizedTool(
           capability.id,
-          invocationContext(request),
-          async () => serializeWatchedProjectSnapshot(
-            await this.options.projectWatch.snapshot(projectId, workScope),
-            request,
-          ),
+          request,
+          authorizer,
+          { projectId },
+          async () => ({
+            serialized: serializeWatchedProjectSnapshot(
+              await this.options.projectWatch.snapshot(projectId, workScope),
+              request,
+            ),
+            itemCount: 1,
+          }),
         );
       },
     });
@@ -296,12 +358,78 @@ export class OpenAIJoleneRunner implements JoleneAgentRunner {
   private auditToolFailure(
     capabilityId: CapabilityId,
     request: AgentRequest,
+    error: unknown,
   ): string {
+    if (isModelArgumentRejection(error)) {
+      this.options.capabilityAudit.recordArgumentRejection(
+        capabilityId,
+        invocationContext(request),
+      );
+    }
     this.options.capabilityAudit.recordFailure(
       capabilityId,
       invocationContext(request),
     );
     return "The private capability could not be completed.";
+  }
+
+  private createRequestAuthorizer(
+    request: AgentRequest,
+    capabilityIds: readonly CapabilityId[],
+  ): IntentBoundToolAuthorizer {
+    const disclosureCeiling = request.retrievalPolicy.disclosureScope;
+    if (
+      disclosureCeiling !== "local_private" &&
+      disclosureCeiling !== "verified_owner_dm"
+    ) {
+      throw new ToolCallAuthorizationDeniedError("scope_mismatch");
+    }
+    return new IntentBoundToolAuthorizer(createToolIntentAuthorization({
+      eventId: request.eventId,
+      actorId: request.actorId,
+      workspaceId: request.workspaceId,
+      channelKind: request.channelKind,
+      channelId: request.channelId,
+      threadId: request.threadId,
+      disclosureCeiling,
+      currentMessage: request.message,
+      receivedAt: request.receivedAt,
+      availableCapabilityIds: capabilityIds,
+    }));
+  }
+
+  private executeAuthorizedTool(
+    capabilityId: CapabilityId,
+    request: AgentRequest,
+    authorizer: IntentBoundToolAuthorizer,
+    args: unknown,
+    operation: () => Promise<{
+      readonly serialized: string;
+      readonly itemCount: number;
+    }> | {
+      readonly serialized: string;
+      readonly itemCount: number;
+    },
+  ): Promise<string> {
+    const permit = this.options.capabilityAudit.authorize(
+      capabilityId,
+      invocationContext(request),
+      authorizer,
+      args,
+      now(),
+    );
+    return this.options.capabilityAudit.execute(
+      capabilityId,
+      invocationContext(request),
+      async () => {
+        const result = await operation();
+        authorizer.recordResult(permit, {
+          itemCount: result.itemCount,
+          characterCount: result.serialized.length,
+        }, now());
+        return result.serialized;
+      },
+    );
   }
 }
 
@@ -388,4 +516,17 @@ function formatRetrievalPolicy(policy: ChannelRetrievalPolicy): string {
 
 function now(): string {
   return new Date().toISOString();
+}
+
+function requireAuthorizer(
+  authorizer: IntentBoundToolAuthorizer | null,
+): IntentBoundToolAuthorizer {
+  if (!authorizer) throw new ToolCallAuthorizationDeniedError("scope_mismatch");
+  return authorizer;
+}
+
+function isModelArgumentRejection(error: unknown): boolean {
+  return error instanceof z.ZodError ||
+    error instanceof SyntaxError ||
+    (error instanceof Error && error.name === "InvalidToolInputError");
 }

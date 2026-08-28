@@ -89,10 +89,11 @@ export const toolIntentAuthorizationSchema = z.object({
     disclosureCeiling: z.enum(["local_private", "verified_owner_dm"]),
   }).strict(),
   currentIntent: z.object({
+    status: z.enum(["missing", "ambiguous", "clear"]),
     source: z.literal("authenticated_current_user_turn"),
     authority: z.literal("user"),
     fingerprint: fingerprintSchema,
-    terms: z.array(identifierSchema).min(1).max(200),
+    terms: z.array(identifierSchema).max(200),
     taintIds: z.array(z.never()).length(0),
     derivationIds: z.array(z.never()).length(0),
     receivedAt: isoTimestampSchema,
@@ -176,9 +177,6 @@ export function createToolIntentAuthorization(
     throw new ToolCallAuthorizationDeniedError("scope_mismatch");
   }
   const terms = meaningfulTerms(input.currentMessage);
-  if (terms.length === 0) {
-    throw new ToolCallAuthorizationDeniedError("intent_missing");
-  }
   const intentSource = input.intentSource ?? {
     source: "authenticated_current_user_turn" as const,
     authority: "user" as const,
@@ -204,6 +202,11 @@ export function createToolIntentAuthorization(
       input.channelKind,
       input.disclosureCeiling,
     ));
+  const status = terms.length === 0
+    ? "missing" as const
+    : grants.length === 0
+      ? "ambiguous" as const
+      : "clear" as const;
   return deepFreeze(toolIntentAuthorizationSchema.parse({
     version: TOOL_CALL_AUTHORIZATION_VERSION,
     authorizationId: (input.createId ?? randomUUID)(),
@@ -221,6 +224,7 @@ export function createToolIntentAuthorization(
     },
     currentIntent: {
       ...intentSource,
+      status,
       fingerprint: sha256(input.currentMessage),
       terms,
       receivedAt,
@@ -272,9 +276,11 @@ export class IntentBoundToolAuthorizer {
     );
     if (!grant) {
       throw new ToolCallAuthorizationDeniedError(
-        this.#authorization.grants.length === 0
-          ? "intent_ambiguous"
-          : "capability_not_intended",
+        this.#authorization.currentIntent.status === "missing"
+          ? "intent_missing"
+          : this.#authorization.currentIntent.status === "ambiguous"
+            ? "intent_ambiguous"
+            : "capability_not_intended",
       );
     }
     if (grant.disclosureCeiling !== this.#authorization.channel.disclosureCeiling) {

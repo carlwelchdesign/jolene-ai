@@ -22,4 +22,14 @@ export class CapabilityInvocationAuditService {
       ...(parsed.eventId ? { eventId: parsed.eventId } : {}),
     });
   }
+
+  listAuthorizations(input: unknown) {
+    const parsed = listInputSchema.parse(input);
+    return this.store.listAuthorizations({
+      actorId: parsed.actorId,
+      workspaceId: parsed.workspaceId,
+      limit: parsed.limit,
+      ...(parsed.eventId ? { eventId: parsed.eventId } : {}),
+    });
+  }
 }

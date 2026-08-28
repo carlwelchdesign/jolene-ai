@@ -17,10 +17,16 @@ import {
 } from "../src/application/capability-invocation-auditor.js";
 import { CapabilityContextError } from
   "../src/domain/capability-registry.js";
+import {
+  createToolIntentAuthorization,
+  IntentBoundToolAuthorizer,
+} from "../src/domain/tool-call-authorization.js";
 import type {
+  CapabilityAuthorizationRecord,
   CapabilityInvocationRecord,
   CapabilityInvocationStore,
   ListCapabilityInvocationsInput,
+  RecordCapabilityAuthorizationInput,
   RecordCapabilityInvocationInput,
 } from "../src/domain/capability-invocation.js";
 import { SqliteCapabilityInvocationStore } from
@@ -43,6 +49,15 @@ describe("capability invocation audit", () => {
     );
     const auditor = new CapabilityInvocationAuditor(store);
     const context = invocationContext();
+    const authorizer = intentAuthorizer();
+
+    auditor.authorize(
+      "knowledge.search",
+      context,
+      authorizer,
+      { query: "approved project context", limit: 3 },
+      "2026-08-27T05:30:00.000Z",
+    );
 
     await expect(auditor.execute(
       "knowledge.search",
@@ -75,6 +90,23 @@ describe("capability invocation audit", () => {
       expect(serialized).not.toContain("query");
       expect(serialized).not.toContain("channel-private-id");
       expect(serialized).not.toContain("thread-private-id");
+      const authorizationRecords = restarted.listAuthorizations({
+        actorId: "carl",
+        workspaceId: "personal",
+        eventId: "event-capability-1",
+        limit: 20,
+      });
+      expect(authorizationRecords).toMatchObject([{
+        capabilityId: "knowledge.search",
+        toolName: "search_obsidian",
+        outcome: "allowed",
+        reasonCode: null,
+      }]);
+      const serializedAuthorizations = JSON.stringify(authorizationRecords);
+      expect(serializedAuthorizations).not.toContain("approved project context");
+      expect(serializedAuthorizations).not.toContain("Private result prose");
+      expect(serializedAuthorizations).not.toContain("channel-private-id");
+      expect(serializedAuthorizations).not.toContain("thread-private-id");
     } finally {
       restarted.close();
     }
@@ -92,6 +124,22 @@ describe("capability invocation audit", () => {
         "capability_id",
         "tool_name",
         "outcome",
+        "created_at",
+      ]);
+      const authorizationColumns = database.pragma(
+        "table_info(capability_authorizations)",
+      ) as Array<{ readonly name: string }>;
+      expect(authorizationColumns.map(({ name }) => name)).toEqual([
+        "id",
+        "event_id",
+        "actor_id",
+        "workspace_id",
+        "capability_id",
+        "tool_name",
+        "outcome",
+        "reason_code",
+        "authorization_id",
+        "arguments_fingerprint",
         "created_at",
       ]);
     } finally {
@@ -151,7 +199,7 @@ describe("capability invocation audit", () => {
     try {
       await expect(knowledgeTool.invoke(
         {},
-        JSON.stringify({ query: "private invalid x", limit: 3 }),
+        JSON.stringify({ query: "x", limit: 3 }),
       )).resolves.toBe("The private capability could not be completed.");
       const records = store.listInvocations({
         actorId: "carl",
@@ -164,6 +212,17 @@ describe("capability invocation audit", () => {
         outcome: "failed",
       }]);
       expect(JSON.stringify(records)).not.toContain("private invalid x");
+      expect(store.listAuthorizations({
+        actorId: "carl",
+        workspaceId: "personal",
+        limit: 20,
+      })).toMatchObject([{
+        capabilityId: "knowledge.search",
+        outcome: "denied",
+        reasonCode: "argument_invalid",
+        authorizationId: null,
+        argumentsFingerprint: null,
+      }]);
     } finally {
       store.close();
     }
@@ -199,6 +258,65 @@ describe("capability invocation audit", () => {
         toolName: "search_obsidian",
         outcome: "completed",
       }]);
+      expect(store.listAuthorizations({
+        actorId: "carl",
+        workspaceId: "personal",
+        limit: 20,
+      })).toMatchObject([{
+        capabilityId: "knowledge.search",
+        outcome: "allowed",
+        reasonCode: null,
+        argumentsFingerprint: expect.stringMatching(/^sha256:[a-f0-9]{64}$/u),
+      }]);
+    } finally {
+      store.close();
+    }
+  });
+
+  it("denies broadened and repeated calls before private source I/O", async () => {
+    const store = new SqliteCapabilityInvocationStore(":memory:");
+    let calls = 0;
+    const runner = new OpenAIJoleneRunner({
+      capabilityAudit: new CapabilityInvocationAuditor(store),
+      knowledge: {
+        async search() {
+          calls += 1;
+          return [];
+        },
+      },
+    } as unknown as OpenAIJoleneRunnerOptions);
+    const privateRunner = runner as unknown as {
+      createKnowledgeTool(request: AgentRequest): {
+        invoke(context: unknown, input: string): Promise<unknown>;
+      };
+    };
+    const broadenedTool = privateRunner.createKnowledgeTool(agentRequest());
+    try {
+      await expect(broadenedTool.invoke(
+        {},
+        JSON.stringify({ query: "approved project passwords", limit: 3 }),
+      )).resolves.toBe("The private capability could not be completed.");
+      expect(calls).toBe(0);
+
+      const repeatedTool = privateRunner.createKnowledgeTool(agentRequest());
+      const exactInput = JSON.stringify({
+        query: "approved project context",
+        limit: 3,
+      });
+      await expect(repeatedTool.invoke({}, exactInput)).resolves.toBe("[]");
+      await expect(repeatedTool.invoke({}, exactInput)).resolves.toBe(
+        "The private capability could not be completed.",
+      );
+      expect(calls).toBe(1);
+      expect(store.listAuthorizations({
+        actorId: "carl",
+        workspaceId: "personal",
+        limit: 20,
+      }).map((record) => [record.outcome, record.reasonCode])).toEqual([
+        ["denied", "call_budget_exhausted"],
+        ["allowed", null],
+        ["denied", "argument_broadened"],
+      ]);
     } finally {
       store.close();
     }
@@ -268,6 +386,12 @@ describe("capability invocation audit", () => {
 });
 
 class FailingStore implements CapabilityInvocationStore {
+  recordAuthorization(
+    _input: RecordCapabilityAuthorizationInput,
+  ): CapabilityAuthorizationRecord {
+    throw new Error("Synthetic capability audit failure");
+  }
+
   recordInvocation(
     _input: RecordCapabilityInvocationInput,
   ): CapabilityInvocationRecord {
@@ -277,6 +401,12 @@ class FailingStore implements CapabilityInvocationStore {
   listInvocations(
     _input: ListCapabilityInvocationsInput,
   ): readonly CapabilityInvocationRecord[] {
+    return [];
+  }
+
+  listAuthorizations(
+    _input: ListCapabilityInvocationsInput,
+  ): readonly CapabilityAuthorizationRecord[] {
     return [];
   }
 
@@ -300,16 +430,31 @@ function invocationContext() {
   };
 }
 
-function agentRequest(): AgentRequest {
-  return {
+function intentAuthorizer(): IntentBoundToolAuthorizer {
+  return new IntentBoundToolAuthorizer(createToolIntentAuthorization({
     eventId: "event-capability-1",
-    receivedAt: "2026-08-27T17:00:00.000Z",
     actorId: "carl",
     workspaceId: "personal",
     channelKind: "private_chat",
     channelId: "channel-private-id",
     threadId: "thread-private-id",
-    message: "Use private knowledge.",
+    disclosureCeiling: "local_private",
+    currentMessage: "Search private knowledge for approved project context.",
+    receivedAt: "2026-08-27T05:30:00.000Z",
+    availableCapabilityIds: ["knowledge.search"],
+  }));
+}
+
+function agentRequest(): AgentRequest {
+  return {
+    eventId: "event-capability-1",
+    receivedAt: new Date().toISOString(),
+    actorId: "carl",
+    workspaceId: "personal",
+    channelKind: "private_chat",
+    channelId: "channel-private-id",
+    threadId: "thread-private-id",
+    message: "Search private knowledge for approved project context.",
     history: [],
     workContext: { task: null, taskEvents: [], memories: [] },
     workScope: null,

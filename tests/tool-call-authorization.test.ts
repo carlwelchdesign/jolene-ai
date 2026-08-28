@@ -3,7 +3,6 @@ import { describe, expect, it } from "vitest";
 import {
   createToolIntentAuthorization,
   IntentBoundToolAuthorizer,
-  ToolCallAuthorizationDeniedError,
 } from "../src/domain/tool-call-authorization.js";
 
 const receivedAt = "2026-08-27T17:00:00.000Z";
@@ -143,8 +142,15 @@ describe("intent-bound tool authorization", () => {
   });
 
   it("fails closed when current intent is absent", () => {
-    expect(() => createAuthorization("the and please"))
-      .toThrow(ToolCallAuthorizationDeniedError);
+    const authorizer = new IntentBoundToolAuthorizer(
+      createAuthorization("the and please"),
+    );
+    expect(() => authorizer.authorize("knowledge.search", {
+      query: "recipe",
+      limit: 3,
+    }, duringIntent)).toThrow(expect.objectContaining({
+      reasonCode: "intent_missing",
+    }));
   });
 
   it("allows only local private or exact verified-owner Slack DM scope", () => {

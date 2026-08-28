@@ -5,6 +5,11 @@ import {
 import type { ChannelKind } from "../domain/conversation.js";
 import type { CapabilityInvocationStore } from
   "../domain/capability-invocation.js";
+import {
+  IntentBoundToolAuthorizer,
+  ToolCallAuthorizationDeniedError,
+  type ToolCallAuthorizationPermit,
+} from "../domain/tool-call-authorization.js";
 
 export interface CapabilityInvocationContext {
   readonly eventId: string;
@@ -37,6 +42,67 @@ export class CapabilityInvocationAuditor {
     return output;
   }
 
+  authorize(
+    capabilityId: CapabilityId,
+    context: CapabilityInvocationContext,
+    authorizer: IntentBoundToolAuthorizer,
+    args: unknown,
+    now: string,
+  ): ToolCallAuthorizationPermit {
+    const capability = requireModelCapability(
+      capabilityId,
+      context.channelKind,
+    );
+    try {
+      const permit = authorizer.authorize(capabilityId, args, now);
+      this.recordAuthorizationOrThrow({
+        eventId: context.eventId,
+        actorId: context.actorId,
+        workspaceId: context.workspaceId,
+        capabilityId,
+        toolName: capability.modelToolName,
+        outcome: "allowed",
+        reasonCode: null,
+        authorizationId: permit.authorizationId,
+        argumentsFingerprint: permit.argumentsFingerprint,
+      });
+      return permit;
+    } catch (error) {
+      if (error instanceof ToolCallAuthorizationDeniedError) {
+        this.recordAuthorizationOrThrow({
+          eventId: context.eventId,
+          actorId: context.actorId,
+          workspaceId: context.workspaceId,
+          capabilityId,
+          toolName: capability.modelToolName,
+          outcome: "denied",
+          reasonCode: error.reasonCode,
+          authorizationId: authorizer.authorization.authorizationId,
+          argumentsFingerprint: null,
+        });
+      }
+      throw error;
+    }
+  }
+
+  recordArgumentRejection(
+    capabilityId: CapabilityId,
+    context: CapabilityInvocationContext,
+  ): void {
+    const capability = requireModelCapability(capabilityId, context.channelKind);
+    this.recordAuthorizationOrThrow({
+      eventId: context.eventId,
+      actorId: context.actorId,
+      workspaceId: context.workspaceId,
+      capabilityId,
+      toolName: capability.modelToolName,
+      outcome: "denied",
+      reasonCode: "argument_invalid",
+      authorizationId: null,
+      argumentsFingerprint: null,
+    });
+  }
+
   recordFailure(
     capabilityId: CapabilityId,
     context: CapabilityInvocationContext,
@@ -60,6 +126,16 @@ export class CapabilityInvocationAuditor {
   >[0]): void {
     try {
       this.store.recordInvocation(input);
+    } catch {
+      throw new CapabilityInvocationAuditUnavailableError();
+    }
+  }
+
+  private recordAuthorizationOrThrow(input: Parameters<
+    CapabilityInvocationStore["recordAuthorization"]
+  >[0]): void {
+    try {
+      this.store.recordAuthorization(input);
     } catch {
       throw new CapabilityInvocationAuditUnavailableError();
     }
