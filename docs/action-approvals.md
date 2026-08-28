@@ -87,13 +87,24 @@ Decide a proposal:
 {
   "actorId": "carl",
   "workspaceId": "personal",
-  "decision": "approved"
+  "decision": "approved",
+  "payloadFingerprint": "<the exact 64-character fingerprint returned for the reviewed proposal>",
+  "authority": {
+    "source": "authenticated_owner_review_ui",
+    "authority": "user",
+    "taintIds": [],
+    "derivationIds": []
+  }
 }
 ```
 
 Repeated identical decisions are safe. Contradictory decisions return a
 conflict, expired approvals return `410`, and proposals from shared channels are
-denied. Approval does not imply or record delivery.
+denied. The decision is accepted only for the exact reviewed payload fingerprint
+and direct current-owner review authority. Conversation history, retrieved
+content, tool results, tasks, memories, another AI, and encoded or quoted claims
+of approval cannot supply this authority. Approval does not imply or record
+delivery.
 
 ## Current boundary
 
@@ -101,3 +112,6 @@ The internal one-time claim contract is available for a future trusted adapter,
 but it is deliberately absent from the HTTP API and model tools. There is no
 Slack, email, client-AI, publishing, purchasing, or other external execution in
 this slice. Delivery attempts and receipts remain a separate implementation gate.
+Any future consequential capability must remain proposal-only until it has the
+same exact-argument fingerprint, owner/workspace scope, bounded expiry, direct
+owner-review authority, one-time claim, and separate delivery-outcome audit.

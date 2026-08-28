@@ -112,6 +112,9 @@ export class SqliteActionApprovalStore implements ActionApprovalStore {
         input.workspaceId,
       );
       if (proposal.status === "expired") throw new ActionApprovalExpiredError();
+      if (proposal.payloadFingerprint !== input.payloadFingerprint) {
+        throw new ActionPayloadMismatchError();
+      }
       if (proposal.status === input.decision) return proposal;
       if (proposal.status !== "pending") throw new ActionProposalConflictError();
 
