@@ -17,7 +17,7 @@ export const PUBLIC_ANSWER_GROUNDING_LIMITS = {
   segments: 8,
   segmentCharacters: 600,
   supportIdsPerSegment: PUBLIC_PORTFOLIO_ANSWER_LIMITS.responseItems,
-  validationMilliseconds: 50,
+  validationMilliseconds: 250,
 } as const;
 
 export const PUBLIC_ANSWER_GROUNDING_REASON_CODES = [

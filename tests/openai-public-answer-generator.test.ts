@@ -100,6 +100,12 @@ describe("OpenAI public answer generator", () => {
     expect(request.instructions).toEqual(expect.stringContaining(
       "Do not add metaphors, analogies",
     ));
+    expect(request.instructions).toEqual(expect.stringContaining(
+      "already passed owner review",
+    ));
+    expect(request.instructions).toEqual(expect.stringContaining(
+      "exactly one evidenceId per segment",
+    ));
     expect(request.instructions).toEqual(expect.not.stringContaining(
       "Dolly Parton",
     ));

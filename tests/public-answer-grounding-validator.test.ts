@@ -31,6 +31,24 @@ describe("public answer grounding validator", () => {
     expect(JSON.stringify(result.audit)).not.toMatch(/typed|react|question|citation/iu);
   });
 
+  it("accepts a supported product claim about email operations without treating it as contact disclosure", () => {
+    const record = createPublicEvidenceRecord(1, {
+      text: "Job Search OS combines tracking and email operations in one product.",
+    });
+    const artifact = createPublicEvidenceArtifact([record]);
+    const baseline = new DeterministicPublicAnswerService().answerFromSelected(
+      artifact,
+      { question: "What did Carl build?" },
+      [record],
+    );
+
+    expect(new PublicAnswerGroundingValidator().validate(
+      artifact,
+      baseline,
+      generation(artifact, record.claim.text),
+    )).toMatchObject({ status: "accepted", answer: record.claim.text });
+  });
+
   it.each([
     ["wrong corpus", (artifact: PublicCareerEvidenceArtifact) => ({
       ...generation(artifact, artifact.evidence[0]!.claim.text),

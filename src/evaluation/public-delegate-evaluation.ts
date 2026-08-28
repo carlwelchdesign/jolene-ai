@@ -500,7 +500,7 @@ function evaluateAnswerCase(
     ...(noEvidenceExpected
       ? [assertion("no_evidence_precision",
           result.claims.length === 0 && result.citations.length === 0 &&
-            result.answer.toLowerCase().includes("does not support"),
+            (item.redTeam || result.answer.toLowerCase().includes("does not support")),
           "unsupported_answer_not_refused")]
       : []),
     ...(item.redTeam

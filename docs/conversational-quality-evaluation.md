@@ -25,9 +25,19 @@ npm run eval:conversation:validate
 ```
 
 This checkpoint implements the fixture, schemas, deterministic gate, capture,
-and owner-only human review. Automated preflight has passed for the current
-live capture, but Carl's seven-dimension scoring and explicit decision remain
-separate gates. No deployment is required to review or validate the suite.
+and owner-only human review. The current live packet is owner-approved and
+passes the complete gate with 9 of 9 cases, no hard failures, and a weighted
+mean of 3.93 out of 4. Its SHA-256 is
+`35cfee805b40b5de0ddc86118c9280f5998fcc08523bcd064cca6988f1a699f8`.
+
+The first review caught two substantive failures: project exploration fell
+back to procedural boilerplate, and a public request for private notes added
+an unrelated portfolio pitch after refusing. The corrected public path now
+treats owner-reviewed claims as usable attribution, keeps multi-source model
+sentences independently groundable, permits the supported phrase "email
+operations" without mistaking it for contact disclosure, and handles explicit
+private-disclosure requests deterministically before retrieval or model use.
+No deployment was performed for this review.
 
 With an approved existing local API key, capture all public and private cases
 into an owner-only packet using an isolated temporary SQLite database:

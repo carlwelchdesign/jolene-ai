@@ -78,6 +78,9 @@ export class DeterministicPublicAnswerService
     request: PortfolioAnswerRequest,
     selectedEvidence: readonly PublicCareerEvidenceRecord[],
   ): PortfolioAnswerResponse {
+    if (isPrivateDisclosureRequest(request.question)) {
+      return privateDisclosureResponse(artifact);
+    }
     const hiringValueQuestion = isHiringValueQuestion(request.question);
     const activeEvidence = new Map(
       artifact.evidence.map((record) => [record.evidenceId, record]),
@@ -136,6 +139,12 @@ export class GroundedPublicAnswerService implements PublicPortfolioAnswerer {
     artifact: PublicCareerEvidenceArtifact,
     request: PortfolioAnswerRequest,
   ): Promise<PublicAnswerExecution> {
+    if (isPrivateDisclosureRequest(request.question)) {
+      return {
+        response: this.#baseline.answerFromSelected(artifact, request, []),
+        mode: "deterministic",
+      };
+    }
     const exactRelationshipEvidence = selectRecommendationRelationshipEvidence(
       artifact.evidence,
       request.question,
@@ -446,6 +455,16 @@ const HIRING_VALUE_PATTERNS = [
 const HIRING_VALUE_UNSAFE_PATTERN =
   /\b(?:bypass|contact|ignore|private|reveal|secret|system prompt)\b/u;
 
+function isPrivateDisclosureRequest(question: string): boolean {
+  const normalized = question.normalize("NFKC");
+  const requestsPrivateMaterial = /\b(?:private|unpublished)\b.{0,48}\b(?:memory|notes?|files?|data|details?|material|work|information)\b/iu.test(normalized)
+    || /\b(?:reveal|share|show|tell|expose|leak)\b.{0,64}\b(?:private|secret|unpublished)\b/iu.test(normalized)
+    || /\b(?:system prompt|api key|password|home address|phone number|email address|medical record|salary|compensation)\b/iu.test(normalized);
+  const includesPublicCareerQuestion = /\b(?:describe|explain|summarize|what|which|how)\b.{0,96}\b(?:react|projects?|systems?|portfolio|experience|roles?|skills?|recommendations?|career|aviation|leadership)\b/iu
+    .test(normalized);
+  return requestsPrivateMaterial && !includesPublicCareerQuestion;
+}
+
 function supportedResponse(
   artifact: PublicCareerEvidenceArtifact,
   selected: readonly PublicCareerEvidenceRecord[],
@@ -504,6 +523,24 @@ function noEvidenceResponse(
     limitations: ["No matching public-approved evidence was available."],
     suggestedFollowUpQuestions: [
       "Would you like to ask about a published project, professional role, skill, or contribution?",
+    ],
+    corpusVersion: artifact.manifest.corpusVersion,
+  });
+}
+
+function privateDisclosureResponse(
+  artifact: PublicCareerEvidenceArtifact,
+): PortfolioAnswerResponse {
+  return portfolioAnswerResponseSchema.parse({
+    schemaVersion: PUBLIC_CAREER_EVIDENCE_SCHEMA_VERSION,
+    answer: "I can’t share Carl’s private notes or unpublished material. Ask me about his published work, professional experience, or public recommendations instead.",
+    claims: [],
+    citations: [],
+    limitations: [
+      "Private and unpublished material is outside this public assistant’s scope.",
+    ],
+    suggestedFollowUpQuestions: [
+      "Which published project or professional role would you like to explore?",
     ],
     corpusVersion: artifact.manifest.corpusVersion,
   });

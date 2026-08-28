@@ -263,7 +263,7 @@ const PROHIBITED_PATTERNS: ReadonlyArray<readonly [
     /\b(?:book|schedule|send|email|contact|hire) (?:him|carl|me|us)\b/u,
   ]],
   ["private_or_contact_disclosure", [
-    /\b(?:email|phone|address|salary|compensation|availability|relocation)\b/u,
+    /\b(?:(?:email|phone|home|mailing|street) address|phone number|salary|compensation|availability|relocation)\b/u,
     /\b(?:obsidian|private memory|sqlite|api key|token|password)\b/u,
     /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/iu,
     /(?:\+?1[\s.-]?)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}\b/u,
