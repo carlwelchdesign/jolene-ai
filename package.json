@@ -44,6 +44,8 @@
     "eval:career:relationships": "tsx scripts/evaluate-career-relationships.ts",
     "eval:conversation:validate": "tsx scripts/validate-conversational-quality-suite.ts",
     "eval:conversation:capture": "tsx scripts/capture-conversational-quality.ts",
+    "eval:personality:baseline:v1:generate": "tsx scripts/generate-personality-evaluation-baseline-v1.ts",
+    "eval:personality:baseline:v1": "tsx scripts/validate-personality-evaluation-baseline-v1.ts",
     "mcp:career:audit": "tsx scripts/inspect-private-career-mcp-audit.ts",
     "mcp:career:dev": "tsx src/private-career-mcp.ts",
     "research:personality:validate": "tsx scripts/validate-personality-research.ts",
