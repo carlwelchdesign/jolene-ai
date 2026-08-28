@@ -27,5 +27,8 @@ PDF generation is currently fail-closed before ledger creation. The metadata-onl
 `pdf-cue-adjudication-audit-v1.yaml` reproduces S04's exact bytes and 101-unit boundary, but
 shows that four literal readings of the frozen cue rules yield 40, 44, 45, or 49 eligible
 target blocks rather than the frozen 48. No exception was invented to force the count. A
-prospective cue-adjudication amendment requires two independent full-boundary reviews before
-any PDF draft or capacity ledger can be accepted.
+prospective cue-adjudication amendment now passes two independent full-boundary reviews. It
+excludes all four performance-bearing target blocks before any residual-payload evaluation,
+then strips nonverbal and unreadable cues from the remaining blocks. The reviewed S04 capacity
+is 45, not 48 or 49. The versioned amendment and its 101-unit metadata-only manifest must bind
+every future S04 ledger; the failed v3 plan and predecessor audit remain immutable.
