@@ -1,0 +1,4196 @@
+{
+  "schemaVersion": "jolene.personality-recoding.v1",
+  "status": "recoding-passed-awaiting-rights-and-trait-admission-audit",
+  "completedAt": "2026-08-28T20:51:47.962Z",
+  "primaryCodingFingerprint": "sha256:06c613bb907263b82b93ec301c8e6eaa850fc2d15ed87d7ac08e4bcfb2ce5d57",
+  "round1Fingerprint": "sha256:758d985edb6a5774ce85f8db9cc4320420d0d15700fc8745f4e0f2e52db75937",
+  "codebookFingerprint": "sha256:f2f358a4aea566a783c4c4c0841a407c5bdb530cb3a4c01ac4cbcca6299815df",
+  "recoderA": {
+    "reviewerId": "jolene-recoder-a-v1",
+    "reviewerType": "ai",
+    "tool": "OpenAI Responses API blinded categorical recoding A; store=false",
+    "modelVersion": "gpt-5.6-terra"
+  },
+  "recoderB": {
+    "reviewerId": "jolene-recoder-b-v1",
+    "reviewerType": "ai",
+    "tool": "OpenAI Responses API blinded categorical recoding B; store=false",
+    "modelVersion": "gpt-5.6-terra"
+  },
+  "adjudicator": {
+    "reviewerId": "jolene-recoding-adjudicator-v1",
+    "reviewerType": "ai",
+    "tool": "OpenAI Responses API blinded categorical recoding adjudication; store=false",
+    "modelVersion": "gpt-5.6-terra"
+  },
+  "rows": [
+    {
+      "observationId": "T001",
+      "selectionId": "SEL-S02-0001",
+      "sourceEventId": "E002",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "biography-or-belief"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:46:05.886Z",
+      "recoderACodedAt": "2026-08-28T20:46:33.355Z",
+      "recoderBAssignedAt": "2026-08-28T20:48:13.236Z",
+      "recoderBCodedAt": "2026-08-28T20:48:40.361Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "story",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "story",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "changedFields": [],
+      "reconciledCoding": {
+        "speechAct": "story",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "Both blinded recoders independently produced the same categorical assignment."
+    },
+    {
+      "observationId": "T002",
+      "selectionId": "SEL-S02-0002",
+      "sourceEventId": "E002",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "humor"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:46:05.886Z",
+      "recoderACodedAt": "2026-08-28T20:46:33.355Z",
+      "recoderBAssignedAt": "2026-08-28T20:48:13.236Z",
+      "recoderBCodedAt": "2026-08-28T20:48:40.361Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "story",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "joke",
+        "researchContext": "humor",
+        "traitFamilyId": "calibrated-wit",
+        "seriousnessPivot": false
+      },
+      "changedFields": [
+        "researchContext",
+        "speechAct",
+        "traitFamilyId"
+      ],
+      "reconciledCoding": {
+        "speechAct": "story",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "The turn is a first-person account of vocal presentation and preferred repertoire. A mildly self-deprecating phrase does not make humor the primary act."
+    },
+    {
+      "observationId": "T003",
+      "selectionId": "SEL-S02-0003",
+      "sourceEventId": "E002",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "biography-or-belief"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:46:05.886Z",
+      "recoderACodedAt": "2026-08-28T20:46:33.355Z",
+      "recoderBAssignedAt": "2026-08-28T20:48:13.236Z",
+      "recoderBCodedAt": "2026-08-28T20:48:40.361Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "reframe",
+        "researchContext": "care",
+        "traitFamilyId": "grounded-optimism",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "answer",
+        "researchContext": "care",
+        "traitFamilyId": "grounded-optimism",
+        "seriousnessPivot": false
+      },
+      "changedFields": [
+        "speechAct"
+      ],
+      "reconciledCoding": {
+        "speechAct": "answer",
+        "researchContext": "care",
+        "traitFamilyId": "grounded-optimism",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "The observable contribution is a sung response with consoling content. There is no clear reframing move in the excerpt itself."
+    },
+    {
+      "observationId": "T004",
+      "selectionId": "SEL-S02-0004",
+      "sourceEventId": "E002",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "biography-or-belief"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:46:05.886Z",
+      "recoderACodedAt": "2026-08-28T20:46:33.355Z",
+      "recoderBAssignedAt": "2026-08-28T20:48:13.236Z",
+      "recoderBCodedAt": "2026-08-28T20:48:40.361Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "reframe",
+        "researchContext": "recovery",
+        "traitFamilyId": "grounded-optimism",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "reframe",
+        "researchContext": "recovery",
+        "traitFamilyId": "grounded-optimism",
+        "seriousnessPivot": false
+      },
+      "changedFields": [],
+      "reconciledCoding": {
+        "speechAct": "reframe",
+        "researchContext": "recovery",
+        "traitFamilyId": "grounded-optimism",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "Both blinded recoders independently produced the same categorical assignment."
+    },
+    {
+      "observationId": "T005",
+      "selectionId": "SEL-S02-0005",
+      "sourceEventId": "E002",
+      "reviewReasons": [
+        "sensitive-stratum"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:46:05.886Z",
+      "recoderACodedAt": "2026-08-28T20:46:33.355Z",
+      "recoderBAssignedAt": "2026-08-28T20:48:13.236Z",
+      "recoderBCodedAt": "2026-08-28T20:48:40.361Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "joke",
+        "researchContext": "humor",
+        "traitFamilyId": "calibrated-wit",
+        "seriousnessPivot": true
+      },
+      "recoderB": {
+        "speechAct": "answer",
+        "researchContext": "recovery",
+        "traitFamilyId": "grounded-optimism",
+        "seriousnessPivot": false
+      },
+      "changedFields": [
+        "researchContext",
+        "seriousnessPivot",
+        "speechAct",
+        "traitFamilyId"
+      ],
+      "reconciledCoding": {
+        "speechAct": "joke",
+        "researchContext": "humor",
+        "traitFamilyId": "calibrated-wit",
+        "seriousnessPivot": true
+      },
+      "adjudicationRationale": "The brief sung line uses exaggerated harm language in a comic formulation, while retaining a reference to pain that creates a small seriousness contrast."
+    },
+    {
+      "observationId": "T006",
+      "selectionId": "SEL-S02-0006",
+      "sourceEventId": "E002",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "contradiction",
+        "biography-or-belief",
+        "boundary"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:46:05.886Z",
+      "recoderACodedAt": "2026-08-28T20:46:33.355Z",
+      "recoderBAssignedAt": "2026-08-28T20:48:13.236Z",
+      "recoderBCodedAt": "2026-08-28T20:48:40.361Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "story",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "story",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "changedFields": [],
+      "reconciledCoding": {
+        "speechAct": "story",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "Both blinded recoders independently produced the same categorical assignment."
+    },
+    {
+      "observationId": "T007",
+      "selectionId": "SEL-S02-0007",
+      "sourceEventId": "E002",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "boundary",
+        "trait-admission-candidate"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:46:05.886Z",
+      "recoderACodedAt": "2026-08-28T20:46:33.355Z",
+      "recoderBAssignedAt": "2026-08-28T20:48:13.236Z",
+      "recoderBCodedAt": "2026-08-28T20:48:40.361Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "boundary",
+        "researchContext": "attribution",
+        "traitFamilyId": "uncertainty-humility",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "boundary",
+        "researchContext": "attribution",
+        "traitFamilyId": "credit-aware-authority",
+        "seriousnessPivot": false
+      },
+      "changedFields": [
+        "traitFamilyId"
+      ],
+      "reconciledCoding": {
+        "speechAct": "boundary",
+        "researchContext": "attribution",
+        "traitFamilyId": "uncertainty-humility",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "The speaker clearly declines authorship and explicitly limits certainty about the actual writer. The uncertainty, rather than an assertion of authority, is most salient."
+    },
+    {
+      "observationId": "T008",
+      "selectionId": "SEL-S02-0008",
+      "sourceEventId": "E002",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "biography-or-belief"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:46:05.886Z",
+      "recoderACodedAt": "2026-08-28T20:46:33.355Z",
+      "recoderBAssignedAt": "2026-08-28T20:48:13.236Z",
+      "recoderBCodedAt": "2026-08-28T20:48:40.361Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "story",
+        "researchContext": "uncertainty",
+        "traitFamilyId": "uncertainty-humility",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "story",
+        "researchContext": "uncertainty",
+        "traitFamilyId": "uncertainty-humility",
+        "seriousnessPivot": false
+      },
+      "changedFields": [],
+      "reconciledCoding": {
+        "speechAct": "story",
+        "researchContext": "uncertainty",
+        "traitFamilyId": "uncertainty-humility",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "Both blinded recoders independently produced the same categorical assignment."
+    },
+    {
+      "observationId": "T009",
+      "selectionId": "SEL-S02-0009",
+      "sourceEventId": "E002",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "humor",
+        "boundary"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:46:05.886Z",
+      "recoderACodedAt": "2026-08-28T20:46:33.355Z",
+      "recoderBAssignedAt": "2026-08-28T20:48:13.236Z",
+      "recoderBCodedAt": "2026-08-28T20:48:40.361Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "joke",
+        "researchContext": "boundaries",
+        "traitFamilyId": "calibrated-wit",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "joke",
+        "researchContext": "humor",
+        "traitFamilyId": "calibrated-wit",
+        "seriousnessPivot": false
+      },
+      "changedFields": [
+        "researchContext"
+      ],
+      "reconciledCoding": {
+        "speechAct": "joke",
+        "researchContext": "boundaries",
+        "traitFamilyId": "calibrated-wit",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "A comic self-description opens the turn, but its extended point is comfort with personal presentation despite others' discomfort, making boundaries the stronger context."
+    },
+    {
+      "observationId": "T010",
+      "selectionId": "SEL-S02-0010",
+      "sourceEventId": "E002",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "humor",
+        "biography-or-belief"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:46:05.886Z",
+      "recoderACodedAt": "2026-08-28T20:46:33.355Z",
+      "recoderBAssignedAt": "2026-08-28T20:48:13.236Z",
+      "recoderBCodedAt": "2026-08-28T20:48:40.361Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "answer",
+        "researchContext": "humor",
+        "traitFamilyId": "grounded-optimism",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "story",
+        "researchContext": "recovery",
+        "traitFamilyId": "grounded-optimism",
+        "seriousnessPivot": true
+      },
+      "changedFields": [
+        "researchContext",
+        "seriousnessPivot",
+        "speechAct"
+      ],
+      "reconciledCoding": {
+        "speechAct": "story",
+        "researchContext": "recovery",
+        "traitFamilyId": "grounded-optimism",
+        "seriousnessPivot": true
+      },
+      "adjudicationRationale": "The speaker recounts formative material scarcity and a later self-description, explicitly moving from joking treatment to a serious account. This supports a biographical recovery-oriented story."
+    },
+    {
+      "observationId": "T011",
+      "selectionId": "SEL-S03-0001",
+      "sourceEventId": "E003",
+      "reviewReasons": [
+        "sensitive-stratum"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:46:05.886Z",
+      "recoderACodedAt": "2026-08-28T20:46:33.355Z",
+      "recoderBAssignedAt": "2026-08-28T20:48:13.236Z",
+      "recoderBCodedAt": "2026-08-28T20:48:40.361Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "acknowledge",
+        "researchContext": "care",
+        "traitFamilyId": "bounded-warmth",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "acknowledge",
+        "researchContext": "care",
+        "traitFamilyId": "operational-care",
+        "seriousnessPivot": false
+      },
+      "changedFields": [
+        "traitFamilyId"
+      ],
+      "reconciledCoding": {
+        "speechAct": "acknowledge",
+        "researchContext": "care",
+        "traitFamilyId": "operational-care",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "The turn recognizes a specific contribution from the other person and describes a responsive effort in return. The concrete reciprocal coordination supports operational care."
+    },
+    {
+      "observationId": "T012",
+      "selectionId": "SEL-S03-0002",
+      "sourceEventId": "E003",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "biography-or-belief"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:46:05.886Z",
+      "recoderACodedAt": "2026-08-28T20:46:33.355Z",
+      "recoderBAssignedAt": "2026-08-28T20:48:13.236Z",
+      "recoderBCodedAt": "2026-08-28T20:48:40.361Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "story",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "acknowledge",
+        "researchContext": "care",
+        "traitFamilyId": "grounded-optimism",
+        "seriousnessPivot": false
+      },
+      "changedFields": [
+        "researchContext",
+        "speechAct",
+        "traitFamilyId"
+      ],
+      "reconciledCoding": {
+        "speechAct": "story",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "This is a retrospective account of sustained professional activity and readiness to continue working. It is not principally an interpersonal acknowledgment."
+    },
+    {
+      "observationId": "T013",
+      "selectionId": "SEL-S03-0003",
+      "sourceEventId": "E003",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "biography-or-belief",
+        "boundary"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:46:05.886Z",
+      "recoderACodedAt": "2026-08-28T20:46:33.355Z",
+      "recoderBAssignedAt": "2026-08-28T20:48:13.236Z",
+      "recoderBCodedAt": "2026-08-28T20:48:40.361Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "story",
+        "researchContext": "boundaries",
+        "traitFamilyId": "bounded-warmth",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "joke",
+        "researchContext": "humor",
+        "traitFamilyId": "calibrated-wit",
+        "seriousnessPivot": false
+      },
+      "changedFields": [
+        "researchContext",
+        "speechAct",
+        "traitFamilyId"
+      ],
+      "reconciledCoding": {
+        "speechAct": "story",
+        "researchContext": "boundaries",
+        "traitFamilyId": "bounded-warmth",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "The speaker gives a relational account that pairs playful self-description with a clear statement of marital exclusivity. The boundary is conveyed through warm personal storytelling."
+    },
+    {
+      "observationId": "T014",
+      "selectionId": "SEL-S03-0004",
+      "sourceEventId": "E003",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "humor"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:46:05.886Z",
+      "recoderACodedAt": "2026-08-28T20:46:33.355Z",
+      "recoderBAssignedAt": "2026-08-28T20:48:13.236Z",
+      "recoderBCodedAt": "2026-08-28T20:48:40.361Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "joke",
+        "researchContext": "humor",
+        "traitFamilyId": "calibrated-wit",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "joke",
+        "researchContext": "humor",
+        "traitFamilyId": "calibrated-wit",
+        "seriousnessPivot": false
+      },
+      "changedFields": [],
+      "reconciledCoding": {
+        "speechAct": "joke",
+        "researchContext": "humor",
+        "traitFamilyId": "calibrated-wit",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "Both blinded recoders independently produced the same categorical assignment."
+    },
+    {
+      "observationId": "T015",
+      "selectionId": "SEL-S03-0005",
+      "sourceEventId": "E003",
+      "reviewReasons": [
+        "boundary"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:46:05.886Z",
+      "recoderACodedAt": "2026-08-28T20:46:33.355Z",
+      "recoderBAssignedAt": "2026-08-28T20:48:13.236Z",
+      "recoderBCodedAt": "2026-08-28T20:48:40.361Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "boundary",
+        "researchContext": "boundaries",
+        "traitFamilyId": "calibrated-wit",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "boundary",
+        "researchContext": "boundaries",
+        "traitFamilyId": "bounded-warmth",
+        "seriousnessPivot": true
+      },
+      "changedFields": [
+        "seriousnessPivot",
+        "traitFamilyId"
+      ],
+      "reconciledCoding": {
+        "speechAct": "boundary",
+        "researchContext": "boundaries",
+        "traitFamilyId": "calibrated-wit",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "The excerpt performs a refusal of unwanted advances through an overtly comic, exaggerated threat. The comic framing remains primary rather than pivoting into seriousness."
+    },
+    {
+      "observationId": "T016",
+      "selectionId": "SEL-S03-0006",
+      "sourceEventId": "E003",
+      "reviewReasons": [
+        "trait-admission-candidate"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:46:05.886Z",
+      "recoderACodedAt": "2026-08-28T20:46:33.355Z",
+      "recoderBAssignedAt": "2026-08-28T20:48:13.236Z",
+      "recoderBCodedAt": "2026-08-28T20:48:40.361Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "answer",
+        "researchContext": "uncertainty",
+        "traitFamilyId": "uncertainty-humility",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "answer",
+        "researchContext": "uncertainty",
+        "traitFamilyId": "uncertainty-humility",
+        "seriousnessPivot": false
+      },
+      "changedFields": [],
+      "reconciledCoding": {
+        "speechAct": "answer",
+        "researchContext": "uncertainty",
+        "traitFamilyId": "uncertainty-humility",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "Both blinded recoders independently produced the same categorical assignment."
+    },
+    {
+      "observationId": "T017",
+      "selectionId": "SEL-S03-0007",
+      "sourceEventId": "E003",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "humor",
+        "biography-or-belief",
+        "boundary"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:46:05.886Z",
+      "recoderACodedAt": "2026-08-28T20:46:33.355Z",
+      "recoderBAssignedAt": "2026-08-28T20:48:13.236Z",
+      "recoderBCodedAt": "2026-08-28T20:48:40.361Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "answer",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "boundary",
+        "researchContext": "boundaries",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "changedFields": [
+        "researchContext",
+        "speechAct"
+      ],
+      "reconciledCoding": {
+        "speechAct": "answer",
+        "researchContext": "boundaries",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "The speaker directly explains a deliberately limited approach and the criteria used to avoid an unwanted outcome. This is an answer about self-set limits, not a boundary directed at another person."
+    },
+    {
+      "observationId": "T018",
+      "selectionId": "SEL-S03-0008",
+      "sourceEventId": "E003",
+      "reviewReasons": [
+        "low-confidence",
+        "trait-admission-candidate"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:46:05.886Z",
+      "recoderACodedAt": "2026-08-28T20:46:33.355Z",
+      "recoderBAssignedAt": "2026-08-28T20:48:13.236Z",
+      "recoderBCodedAt": "2026-08-28T20:48:40.361Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "answer",
+        "researchContext": "uncertainty",
+        "traitFamilyId": "uncertainty-humility",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "answer",
+        "researchContext": "uncertainty",
+        "traitFamilyId": "uncertainty-humility",
+        "seriousnessPivot": false
+      },
+      "changedFields": [],
+      "reconciledCoding": {
+        "speechAct": "answer",
+        "researchContext": "uncertainty",
+        "traitFamilyId": "uncertainty-humility",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "Both blinded recoders independently produced the same categorical assignment."
+    },
+    {
+      "observationId": "T019",
+      "selectionId": "SEL-S03-0009",
+      "sourceEventId": "E003",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "contradiction",
+        "biography-or-belief"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:46:05.886Z",
+      "recoderACodedAt": "2026-08-28T20:46:33.355Z",
+      "recoderBAssignedAt": "2026-08-28T20:48:13.236Z",
+      "recoderBCodedAt": "2026-08-28T20:48:40.361Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "boundary",
+        "researchContext": "attribution",
+        "traitFamilyId": "credit-aware-authority",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "credit",
+        "researchContext": "attribution",
+        "traitFamilyId": "credit-aware-authority",
+        "seriousnessPivot": false
+      },
+      "changedFields": [
+        "speechAct"
+      ],
+      "reconciledCoding": {
+        "speechAct": "credit",
+        "researchContext": "attribution",
+        "traitFamilyId": "credit-aware-authority",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "Although the speaker corrects a false conflict account, the main action is acknowledging another performer's contribution and distinguishing interpretation from authorship."
+    },
+    {
+      "observationId": "T020",
+      "selectionId": "SEL-S03-0010",
+      "sourceEventId": "E003",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "boundary"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:46:05.886Z",
+      "recoderACodedAt": "2026-08-28T20:46:33.355Z",
+      "recoderBAssignedAt": "2026-08-28T20:48:13.236Z",
+      "recoderBCodedAt": "2026-08-28T20:48:40.361Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "boundary",
+        "researchContext": "boundaries",
+        "traitFamilyId": "bounded-warmth",
+        "seriousnessPivot": true
+      },
+      "recoderB": {
+        "speechAct": "boundary",
+        "researchContext": "boundaries",
+        "traitFamilyId": "bounded-warmth",
+        "seriousnessPivot": false
+      },
+      "changedFields": [
+        "seriousnessPivot"
+      ],
+      "reconciledCoding": {
+        "speechAct": "boundary",
+        "researchContext": "boundaries",
+        "traitFamilyId": "bounded-warmth",
+        "seriousnessPivot": true
+      },
+      "adjudicationRationale": "The turn establishes limits around public claims and escalates concern when harm extends to close others. That movement from dismissive humor to concern marks a seriousness pivot."
+    },
+    {
+      "observationId": "T021",
+      "selectionId": "SEL-S03-0011",
+      "sourceEventId": "E003",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "biography-or-belief"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:46:33.357Z",
+      "recoderACodedAt": "2026-08-28T20:46:54.205Z",
+      "recoderBAssignedAt": "2026-08-28T20:48:40.362Z",
+      "recoderBCodedAt": "2026-08-28T20:48:57.021Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "answer",
+        "researchContext": "care",
+        "traitFamilyId": "grounded-optimism",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "answer",
+        "researchContext": "care",
+        "traitFamilyId": "grounded-optimism",
+        "seriousnessPivot": false
+      },
+      "changedFields": [],
+      "reconciledCoding": {
+        "speechAct": "answer",
+        "researchContext": "care",
+        "traitFamilyId": "grounded-optimism",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "Both blinded recoders independently produced the same categorical assignment."
+    },
+    {
+      "observationId": "T022",
+      "selectionId": "SEL-S03-0012",
+      "sourceEventId": "E003",
+      "reviewReasons": [
+        "low-confidence"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:46:33.357Z",
+      "recoderACodedAt": "2026-08-28T20:46:54.205Z",
+      "recoderBAssignedAt": "2026-08-28T20:48:40.362Z",
+      "recoderBCodedAt": "2026-08-28T20:48:57.021Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "reframe",
+        "researchContext": "recovery",
+        "traitFamilyId": "grounded-optimism",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "reframe",
+        "researchContext": "recovery",
+        "traitFamilyId": "grounded-optimism",
+        "seriousnessPivot": false
+      },
+      "changedFields": [],
+      "reconciledCoding": {
+        "speechAct": "reframe",
+        "researchContext": "recovery",
+        "traitFamilyId": "grounded-optimism",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "Both blinded recoders independently produced the same categorical assignment."
+    },
+    {
+      "observationId": "T023",
+      "selectionId": "SEL-S03-0013",
+      "sourceEventId": "E003",
+      "reviewReasons": [
+        "trait-admission-candidate"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:46:33.357Z",
+      "recoderACodedAt": "2026-08-28T20:46:54.205Z",
+      "recoderBAssignedAt": "2026-08-28T20:48:40.362Z",
+      "recoderBCodedAt": "2026-08-28T20:48:57.021Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "reframe",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "story",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "changedFields": [
+        "speechAct"
+      ],
+      "reconciledCoding": {
+        "speechAct": "reframe",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "The speaker recasts criticism of expanding into other areas as a strategy for carrying an existing musical commitment into wider work. The central move is reframing, supported by career narrative."
+    },
+    {
+      "observationId": "T024",
+      "selectionId": "SEL-S03-0014",
+      "sourceEventId": "E003",
+      "reviewReasons": [
+        "trait-admission-candidate"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:46:33.357Z",
+      "recoderACodedAt": "2026-08-28T20:46:54.205Z",
+      "recoderBAssignedAt": "2026-08-28T20:48:40.362Z",
+      "recoderBCodedAt": "2026-08-28T20:48:57.021Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "answer",
+        "researchContext": "care",
+        "traitFamilyId": "operational-care",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "answer",
+        "researchContext": "care",
+        "traitFamilyId": "operational-care",
+        "seriousnessPivot": false
+      },
+      "changedFields": [],
+      "reconciledCoding": {
+        "speechAct": "answer",
+        "researchContext": "care",
+        "traitFamilyId": "operational-care",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "Both blinded recoders independently produced the same categorical assignment."
+    },
+    {
+      "observationId": "T025",
+      "selectionId": "SEL-S04-0001",
+      "sourceEventId": "E004",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "biography-or-belief",
+        "boundary"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:46:33.357Z",
+      "recoderACodedAt": "2026-08-28T20:46:54.205Z",
+      "recoderBAssignedAt": "2026-08-28T20:48:40.362Z",
+      "recoderBCodedAt": "2026-08-28T20:48:57.021Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "boundary",
+        "researchContext": "boundaries",
+        "traitFamilyId": "bounded-warmth",
+        "seriousnessPivot": true
+      },
+      "recoderB": {
+        "speechAct": "boundary",
+        "researchContext": "boundaries",
+        "traitFamilyId": "bounded-warmth",
+        "seriousnessPivot": true
+      },
+      "changedFields": [],
+      "reconciledCoding": {
+        "speechAct": "boundary",
+        "researchContext": "boundaries",
+        "traitFamilyId": "bounded-warmth",
+        "seriousnessPivot": true
+      },
+      "adjudicationRationale": "Both blinded recoders independently produced the same categorical assignment."
+    },
+    {
+      "observationId": "T026",
+      "selectionId": "SEL-S04-0002",
+      "sourceEventId": "E004",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "humor"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:46:33.357Z",
+      "recoderACodedAt": "2026-08-28T20:46:54.205Z",
+      "recoderBAssignedAt": "2026-08-28T20:48:40.362Z",
+      "recoderBCodedAt": "2026-08-28T20:48:57.021Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "joke",
+        "researchContext": "humor",
+        "traitFamilyId": "calibrated-wit",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "answer",
+        "researchContext": "humor",
+        "traitFamilyId": "calibrated-wit",
+        "seriousnessPivot": false
+      },
+      "changedFields": [
+        "speechAct"
+      ],
+      "reconciledCoding": {
+        "speechAct": "answer",
+        "researchContext": "humor",
+        "traitFamilyId": "calibrated-wit",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "The short remark functions as a direct reply, with laughter supplying the humorous framing. There is too little material to establish a distinct joke as the primary act."
+    },
+    {
+      "observationId": "T027",
+      "selectionId": "SEL-S04-0003",
+      "sourceEventId": "E004",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "humor",
+        "contradiction",
+        "biography-or-belief"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:46:33.357Z",
+      "recoderACodedAt": "2026-08-28T20:46:54.205Z",
+      "recoderBAssignedAt": "2026-08-28T20:48:40.362Z",
+      "recoderBCodedAt": "2026-08-28T20:48:57.021Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "reframe",
+        "researchContext": "leadership",
+        "traitFamilyId": "grounded-optimism",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "answer",
+        "researchContext": "leadership",
+        "traitFamilyId": "grounded-optimism",
+        "seriousnessPivot": true
+      },
+      "changedFields": [
+        "seriousnessPivot",
+        "speechAct"
+      ],
+      "reconciledCoding": {
+        "speechAct": "answer",
+        "researchContext": "leadership",
+        "traitFamilyId": "grounded-optimism",
+        "seriousnessPivot": true
+      },
+      "adjudicationRationale": "The speaker answers about workplace impact, progress, and employment responsibility, while acknowledging unresolved inequity. The turn shifts from comic remarks into sustained serious leadership commentary."
+    },
+    {
+      "observationId": "T028",
+      "selectionId": "SEL-S04-0004",
+      "sourceEventId": "E004",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "biography-or-belief"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:46:33.357Z",
+      "recoderACodedAt": "2026-08-28T20:46:54.205Z",
+      "recoderBAssignedAt": "2026-08-28T20:48:40.362Z",
+      "recoderBCodedAt": "2026-08-28T20:48:57.021Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "answer",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "answer",
+        "researchContext": "work-practice",
+        "traitFamilyId": "grounded-optimism",
+        "seriousnessPivot": false
+      },
+      "changedFields": [
+        "traitFamilyId"
+      ],
+      "reconciledCoding": {
+        "speechAct": "answer",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "The speaker directly addresses musical interests, career history, genres, recognition, and future artistic scope. These observable professional practices outweigh the more general positive framing."
+    },
+    {
+      "observationId": "T029",
+      "selectionId": "SEL-S04-0005",
+      "sourceEventId": "E004",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "biography-or-belief"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:46:33.357Z",
+      "recoderACodedAt": "2026-08-28T20:46:54.205Z",
+      "recoderBAssignedAt": "2026-08-28T20:48:40.362Z",
+      "recoderBCodedAt": "2026-08-28T20:48:57.021Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "story",
+        "researchContext": "recovery",
+        "traitFamilyId": "grounded-optimism",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "reframe",
+        "researchContext": "recovery",
+        "traitFamilyId": "grounded-optimism",
+        "seriousnessPivot": false
+      },
+      "changedFields": [
+        "speechAct"
+      ],
+      "reconciledCoding": {
+        "speechAct": "story",
+        "researchContext": "recovery",
+        "traitFamilyId": "grounded-optimism",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "The turn is organized as a childhood narrative of material hardship and family reassurance, ending in a values-based interpretation. Story is the primary act rather than reframing alone."
+    },
+    {
+      "observationId": "T030",
+      "selectionId": "SEL-S04-0006",
+      "sourceEventId": "E004",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "humor",
+        "biography-or-belief"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:46:33.357Z",
+      "recoderACodedAt": "2026-08-28T20:46:54.205Z",
+      "recoderBAssignedAt": "2026-08-28T20:48:40.362Z",
+      "recoderBCodedAt": "2026-08-28T20:48:57.021Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "credit",
+        "researchContext": "attribution",
+        "traitFamilyId": "credit-aware-authority",
+        "seriousnessPivot": true
+      },
+      "recoderB": {
+        "speechAct": "credit",
+        "researchContext": "attribution",
+        "traitFamilyId": "credit-aware-authority",
+        "seriousnessPivot": true
+      },
+      "changedFields": [],
+      "reconciledCoding": {
+        "speechAct": "credit",
+        "researchContext": "attribution",
+        "traitFamilyId": "credit-aware-authority",
+        "seriousnessPivot": true
+      },
+      "adjudicationRationale": "Both blinded recoders independently produced the same categorical assignment."
+    },
+    {
+      "observationId": "T031",
+      "selectionId": "SEL-S04-0007",
+      "sourceEventId": "E004",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "contradiction",
+        "biography-or-belief",
+        "boundary"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:46:33.357Z",
+      "recoderACodedAt": "2026-08-28T20:46:54.205Z",
+      "recoderBAssignedAt": "2026-08-28T20:48:40.362Z",
+      "recoderBCodedAt": "2026-08-28T20:48:57.021Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "boundary",
+        "researchContext": "boundaries",
+        "traitFamilyId": "bounded-warmth",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "boundary",
+        "researchContext": "boundaries",
+        "traitFamilyId": "bounded-warmth",
+        "seriousnessPivot": false
+      },
+      "changedFields": [],
+      "reconciledCoding": {
+        "speechAct": "boundary",
+        "researchContext": "boundaries",
+        "traitFamilyId": "bounded-warmth",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "Both blinded recoders independently produced the same categorical assignment."
+    },
+    {
+      "observationId": "T032",
+      "selectionId": "SEL-S04-0008",
+      "sourceEventId": "E004",
+      "reviewReasons": [
+        "trait-admission-candidate"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:46:33.357Z",
+      "recoderACodedAt": "2026-08-28T20:46:54.205Z",
+      "recoderBAssignedAt": "2026-08-28T20:48:40.362Z",
+      "recoderBCodedAt": "2026-08-28T20:48:57.021Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "credit",
+        "researchContext": "attribution",
+        "traitFamilyId": "credit-aware-authority",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "credit",
+        "researchContext": "attribution",
+        "traitFamilyId": "credit-aware-authority",
+        "seriousnessPivot": false
+      },
+      "changedFields": [],
+      "reconciledCoding": {
+        "speechAct": "credit",
+        "researchContext": "attribution",
+        "traitFamilyId": "credit-aware-authority",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "Both blinded recoders independently produced the same categorical assignment."
+    },
+    {
+      "observationId": "T033",
+      "selectionId": "SEL-S04-0009",
+      "sourceEventId": "E004",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "humor",
+        "biography-or-belief"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:46:33.357Z",
+      "recoderACodedAt": "2026-08-28T20:46:54.205Z",
+      "recoderBAssignedAt": "2026-08-28T20:48:40.362Z",
+      "recoderBCodedAt": "2026-08-28T20:48:57.021Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "credit",
+        "researchContext": "attribution",
+        "traitFamilyId": "credit-aware-authority",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "credit",
+        "researchContext": "attribution",
+        "traitFamilyId": "credit-aware-authority",
+        "seriousnessPivot": true
+      },
+      "changedFields": [
+        "seriousnessPivot"
+      ],
+      "reconciledCoding": {
+        "speechAct": "credit",
+        "researchContext": "attribution",
+        "traitFamilyId": "credit-aware-authority",
+        "seriousnessPivot": true
+      },
+      "adjudicationRationale": "After a humorous opening about others' labor, the speaker explicitly recognizes collaborators and traces different practical and creative influences. The shift into earnest attribution supports a seriousness pivot."
+    },
+    {
+      "observationId": "T034",
+      "selectionId": "SEL-S04-0010",
+      "sourceEventId": "E004",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "humor",
+        "trait-admission-candidate"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:46:33.357Z",
+      "recoderACodedAt": "2026-08-28T20:46:54.205Z",
+      "recoderBAssignedAt": "2026-08-28T20:48:40.362Z",
+      "recoderBCodedAt": "2026-08-28T20:48:57.021Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "boundary",
+        "researchContext": "boundaries",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "answer",
+        "researchContext": "work-practice",
+        "traitFamilyId": "operational-care",
+        "seriousnessPivot": false
+      },
+      "changedFields": [
+        "researchContext",
+        "speechAct",
+        "traitFamilyId"
+      ],
+      "reconciledCoding": {
+        "speechAct": "answer",
+        "researchContext": "work-practice",
+        "traitFamilyId": "operational-care",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "The speaker answers by describing preservation goals, shared rules, ongoing control efforts, and practical support for those carrying out the work. This is operational care within work practice, not a direct interpersonal boundary."
+    },
+    {
+      "observationId": "T035",
+      "selectionId": "SEL-S04-0011",
+      "sourceEventId": "E004",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "biography-or-belief"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:46:33.357Z",
+      "recoderACodedAt": "2026-08-28T20:46:54.205Z",
+      "recoderBAssignedAt": "2026-08-28T20:48:40.362Z",
+      "recoderBCodedAt": "2026-08-28T20:48:57.021Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "answer",
+        "researchContext": "uncertainty",
+        "traitFamilyId": "uncertainty-humility",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "answer",
+        "researchContext": "uncertainty",
+        "traitFamilyId": "uncertainty-humility",
+        "seriousnessPivot": false
+      },
+      "changedFields": [],
+      "reconciledCoding": {
+        "speechAct": "answer",
+        "researchContext": "uncertainty",
+        "traitFamilyId": "uncertainty-humility",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "Both blinded recoders independently produced the same categorical assignment."
+    },
+    {
+      "observationId": "T036",
+      "selectionId": "SEL-S04-0012",
+      "sourceEventId": "E004",
+      "reviewReasons": [
+        "trait-admission-candidate"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:46:33.357Z",
+      "recoderACodedAt": "2026-08-28T20:46:54.205Z",
+      "recoderBAssignedAt": "2026-08-28T20:48:40.362Z",
+      "recoderBCodedAt": "2026-08-28T20:48:57.021Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "ask",
+        "researchContext": "care",
+        "traitFamilyId": "operational-care",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "ask",
+        "researchContext": "care",
+        "traitFamilyId": "operational-care",
+        "seriousnessPivot": false
+      },
+      "changedFields": [],
+      "reconciledCoding": {
+        "speechAct": "ask",
+        "researchContext": "care",
+        "traitFamilyId": "operational-care",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "Both blinded recoders independently produced the same categorical assignment."
+    },
+    {
+      "observationId": "T037",
+      "selectionId": "SEL-S04-0013",
+      "sourceEventId": "E004",
+      "reviewReasons": [
+        "low-confidence"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:46:33.357Z",
+      "recoderACodedAt": "2026-08-28T20:46:54.205Z",
+      "recoderBAssignedAt": "2026-08-28T20:48:40.362Z",
+      "recoderBCodedAt": "2026-08-28T20:48:57.021Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "ask",
+        "researchContext": "leadership",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "ask",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "changedFields": [
+        "researchContext"
+      ],
+      "reconciledCoding": {
+        "speechAct": "ask",
+        "researchContext": "leadership",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "The turn directs the interview's next step, making leadership the more specific interactional context than general work practice."
+    },
+    {
+      "observationId": "T038",
+      "selectionId": "SEL-S04-0014",
+      "sourceEventId": "E004",
+      "reviewReasons": [
+        "low-confidence"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:46:33.357Z",
+      "recoderACodedAt": "2026-08-28T20:46:54.205Z",
+      "recoderBAssignedAt": "2026-08-28T20:48:40.362Z",
+      "recoderBCodedAt": "2026-08-28T20:48:57.021Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "answer",
+        "researchContext": "leadership",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "answer",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "changedFields": [
+        "researchContext"
+      ],
+      "reconciledCoding": {
+        "speechAct": "answer",
+        "researchContext": "leadership",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "This is an affirmative response that permits the interviewer to continue, fitting the immediate interview-management context."
+    },
+    {
+      "observationId": "T039",
+      "selectionId": "SEL-S05-0001",
+      "sourceEventId": "E005",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "humor"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:46:33.357Z",
+      "recoderACodedAt": "2026-08-28T20:46:54.205Z",
+      "recoderBAssignedAt": "2026-08-28T20:48:40.362Z",
+      "recoderBCodedAt": "2026-08-28T20:48:57.021Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "joke",
+        "researchContext": "humor",
+        "traitFamilyId": "calibrated-wit",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "joke",
+        "researchContext": "humor",
+        "traitFamilyId": "calibrated-wit",
+        "seriousnessPivot": false
+      },
+      "changedFields": [],
+      "reconciledCoding": {
+        "speechAct": "joke",
+        "researchContext": "humor",
+        "traitFamilyId": "calibrated-wit",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "Both blinded recoders independently produced the same categorical assignment."
+    },
+    {
+      "observationId": "T040",
+      "selectionId": "SEL-S05-0002",
+      "sourceEventId": "E005",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "biography-or-belief"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:46:33.357Z",
+      "recoderACodedAt": "2026-08-28T20:46:54.205Z",
+      "recoderBAssignedAt": "2026-08-28T20:48:40.362Z",
+      "recoderBCodedAt": "2026-08-28T20:48:57.021Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "answer",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "answer",
+        "researchContext": "leadership",
+        "traitFamilyId": "grounded-optimism",
+        "seriousnessPivot": false
+      },
+      "changedFields": [
+        "researchContext",
+        "traitFamilyId"
+      ],
+      "reconciledCoding": {
+        "speechAct": "answer",
+        "researchContext": "leadership",
+        "traitFamilyId": "grounded-optimism",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "The response describes taking on a public representative role and emphasizes appreciation for the place discussed. That supports leadership and constructive appreciation rather than routine work process."
+    },
+    {
+      "observationId": "T042",
+      "selectionId": "SEL-S05-0004",
+      "sourceEventId": "E005",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "trait-admission-candidate"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:46:54.206Z",
+      "recoderACodedAt": "2026-08-28T20:47:12.562Z",
+      "recoderBAssignedAt": "2026-08-28T20:48:57.022Z",
+      "recoderBCodedAt": "2026-08-28T20:49:13.170Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "story",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "story",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "changedFields": [],
+      "reconciledCoding": {
+        "speechAct": "story",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "Both blinded recoders independently produced the same categorical assignment."
+    },
+    {
+      "observationId": "T043",
+      "selectionId": "SEL-S05-0005",
+      "sourceEventId": "E005",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "biography-or-belief",
+        "boundary"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:46:54.206Z",
+      "recoderACodedAt": "2026-08-28T20:47:12.562Z",
+      "recoderBAssignedAt": "2026-08-28T20:48:57.022Z",
+      "recoderBCodedAt": "2026-08-28T20:49:13.170Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "boundary",
+        "researchContext": "boundaries",
+        "traitFamilyId": "bounded-warmth",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "boundary",
+        "researchContext": "boundaries",
+        "traitFamilyId": "bounded-warmth",
+        "seriousnessPivot": false
+      },
+      "changedFields": [],
+      "reconciledCoding": {
+        "speechAct": "boundary",
+        "researchContext": "boundaries",
+        "traitFamilyId": "bounded-warmth",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "Both blinded recoders independently produced the same categorical assignment."
+    },
+    {
+      "observationId": "T044",
+      "selectionId": "SEL-S05-0006",
+      "sourceEventId": "E005",
+      "reviewReasons": [
+        "boundary"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:46:54.206Z",
+      "recoderACodedAt": "2026-08-28T20:47:12.562Z",
+      "recoderBAssignedAt": "2026-08-28T20:48:57.022Z",
+      "recoderBCodedAt": "2026-08-28T20:49:13.170Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "answer",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "answer",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "changedFields": [],
+      "reconciledCoding": {
+        "speechAct": "answer",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "Both blinded recoders independently produced the same categorical assignment."
+    },
+    {
+      "observationId": "T045",
+      "selectionId": "SEL-S05-0007",
+      "sourceEventId": "E005",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "biography-or-belief"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:46:54.206Z",
+      "recoderACodedAt": "2026-08-28T20:47:12.562Z",
+      "recoderBAssignedAt": "2026-08-28T20:48:57.022Z",
+      "recoderBCodedAt": "2026-08-28T20:49:13.170Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "story",
+        "researchContext": "attribution",
+        "traitFamilyId": "credit-aware-authority",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "credit",
+        "researchContext": "attribution",
+        "traitFamilyId": "credit-aware-authority",
+        "seriousnessPivot": false
+      },
+      "changedFields": [
+        "speechAct"
+      ],
+      "reconciledCoding": {
+        "speechAct": "credit",
+        "researchContext": "attribution",
+        "traitFamilyId": "credit-aware-authority",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "Although presented through a personal account, the central observable content is retained ownership and control of publishing rights."
+    },
+    {
+      "observationId": "T046",
+      "selectionId": "SEL-S05-0008",
+      "sourceEventId": "E005",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "biography-or-belief"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:46:54.206Z",
+      "recoderACodedAt": "2026-08-28T20:47:12.562Z",
+      "recoderBAssignedAt": "2026-08-28T20:48:57.022Z",
+      "recoderBCodedAt": "2026-08-28T20:49:13.170Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "answer",
+        "researchContext": "uncertainty",
+        "traitFamilyId": "grounded-optimism",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "answer",
+        "researchContext": "care",
+        "traitFamilyId": "grounded-optimism",
+        "seriousnessPivot": false
+      },
+      "changedFields": [
+        "researchContext"
+      ],
+      "reconciledCoding": {
+        "speechAct": "answer",
+        "researchContext": "uncertainty",
+        "traitFamilyId": "grounded-optimism",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "The response positively accepts how events unfold without supplying a concrete mechanism, which is better captured as uncertainty than care."
+    },
+    {
+      "observationId": "T047",
+      "selectionId": "SEL-S05-0009",
+      "sourceEventId": "E005",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "biography-or-belief"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:46:54.206Z",
+      "recoderACodedAt": "2026-08-28T20:47:12.562Z",
+      "recoderBAssignedAt": "2026-08-28T20:48:57.022Z",
+      "recoderBCodedAt": "2026-08-28T20:49:13.170Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "advise",
+        "researchContext": "leadership",
+        "traitFamilyId": "grounded-optimism",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "advise",
+        "researchContext": "leadership",
+        "traitFamilyId": "grounded-optimism",
+        "seriousnessPivot": false
+      },
+      "changedFields": [],
+      "reconciledCoding": {
+        "speechAct": "advise",
+        "researchContext": "leadership",
+        "traitFamilyId": "grounded-optimism",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "Both blinded recoders independently produced the same categorical assignment."
+    },
+    {
+      "observationId": "T049",
+      "selectionId": "SEL-S08-0001",
+      "sourceEventId": "E007",
+      "reviewReasons": [
+        "trait-admission-candidate"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:46:54.206Z",
+      "recoderACodedAt": "2026-08-28T20:47:12.562Z",
+      "recoderBAssignedAt": "2026-08-28T20:48:57.022Z",
+      "recoderBCodedAt": "2026-08-28T20:49:13.170Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "acknowledge",
+        "researchContext": "care",
+        "traitFamilyId": "bounded-warmth",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "acknowledge",
+        "researchContext": "care",
+        "traitFamilyId": "bounded-warmth",
+        "seriousnessPivot": false
+      },
+      "changedFields": [],
+      "reconciledCoding": {
+        "speechAct": "acknowledge",
+        "researchContext": "care",
+        "traitFamilyId": "bounded-warmth",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "Both blinded recoders independently produced the same categorical assignment."
+    },
+    {
+      "observationId": "T050",
+      "selectionId": "SEL-S08-0002",
+      "sourceEventId": "E007",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "humor"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:46:54.206Z",
+      "recoderACodedAt": "2026-08-28T20:47:12.562Z",
+      "recoderBAssignedAt": "2026-08-28T20:48:57.022Z",
+      "recoderBCodedAt": "2026-08-28T20:49:13.170Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "joke",
+        "researchContext": "humor",
+        "traitFamilyId": "calibrated-wit",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "joke",
+        "researchContext": "humor",
+        "traitFamilyId": "calibrated-wit",
+        "seriousnessPivot": false
+      },
+      "changedFields": [],
+      "reconciledCoding": {
+        "speechAct": "joke",
+        "researchContext": "humor",
+        "traitFamilyId": "calibrated-wit",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "Both blinded recoders independently produced the same categorical assignment."
+    },
+    {
+      "observationId": "T051",
+      "selectionId": "SEL-S08-0003",
+      "sourceEventId": "E007",
+      "reviewReasons": [
+        "low-confidence"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:46:54.206Z",
+      "recoderACodedAt": "2026-08-28T20:47:12.562Z",
+      "recoderBAssignedAt": "2026-08-28T20:48:57.022Z",
+      "recoderBCodedAt": "2026-08-28T20:49:13.170Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "answer",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "answer",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "changedFields": [],
+      "reconciledCoding": {
+        "speechAct": "answer",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "Both blinded recoders independently produced the same categorical assignment."
+    },
+    {
+      "observationId": "T052",
+      "selectionId": "SEL-S08-0004",
+      "sourceEventId": "E007",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "biography-or-belief"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:46:54.206Z",
+      "recoderACodedAt": "2026-08-28T20:47:12.562Z",
+      "recoderBAssignedAt": "2026-08-28T20:48:57.022Z",
+      "recoderBCodedAt": "2026-08-28T20:49:13.170Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "story",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "story",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "changedFields": [],
+      "reconciledCoding": {
+        "speechAct": "story",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "Both blinded recoders independently produced the same categorical assignment."
+    },
+    {
+      "observationId": "T053",
+      "selectionId": "SEL-S08-0005",
+      "sourceEventId": "E007",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "humor",
+        "biography-or-belief"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:46:54.206Z",
+      "recoderACodedAt": "2026-08-28T20:47:12.562Z",
+      "recoderBAssignedAt": "2026-08-28T20:48:57.022Z",
+      "recoderBCodedAt": "2026-08-28T20:49:13.170Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "story",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "story",
+        "researchContext": "care",
+        "traitFamilyId": "operational-care",
+        "seriousnessPivot": false
+      },
+      "changedFields": [
+        "researchContext",
+        "traitFamilyId"
+      ],
+      "reconciledCoding": {
+        "speechAct": "story",
+        "researchContext": "care",
+        "traitFamilyId": "operational-care",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "The extended recollection centers on affectionate collaboration, shared musical activity, and an enduring personal connection."
+    },
+    {
+      "observationId": "T054",
+      "selectionId": "SEL-S08-0006",
+      "sourceEventId": "E007",
+      "reviewReasons": [
+        "low-confidence"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:46:54.206Z",
+      "recoderACodedAt": "2026-08-28T20:47:12.562Z",
+      "recoderBAssignedAt": "2026-08-28T20:48:57.022Z",
+      "recoderBCodedAt": "2026-08-28T20:49:13.170Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "answer",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "answer",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "changedFields": [],
+      "reconciledCoding": {
+        "speechAct": "answer",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "Both blinded recoders independently produced the same categorical assignment."
+    },
+    {
+      "observationId": "T055",
+      "selectionId": "SEL-S08-0007",
+      "sourceEventId": "E007",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "humor",
+        "boundary"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:46:54.206Z",
+      "recoderACodedAt": "2026-08-28T20:47:12.562Z",
+      "recoderBAssignedAt": "2026-08-28T20:48:57.022Z",
+      "recoderBCodedAt": "2026-08-28T20:49:13.170Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "boundary",
+        "researchContext": "boundaries",
+        "traitFamilyId": "bounded-warmth",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "boundary",
+        "researchContext": "boundaries",
+        "traitFamilyId": "bounded-warmth",
+        "seriousnessPivot": false
+      },
+      "changedFields": [],
+      "reconciledCoding": {
+        "speechAct": "boundary",
+        "researchContext": "boundaries",
+        "traitFamilyId": "bounded-warmth",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "Both blinded recoders independently produced the same categorical assignment."
+    },
+    {
+      "observationId": "T056",
+      "selectionId": "SEL-S08-0008",
+      "sourceEventId": "E007",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "humor",
+        "biography-or-belief",
+        "boundary"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:46:54.206Z",
+      "recoderACodedAt": "2026-08-28T20:47:12.562Z",
+      "recoderBAssignedAt": "2026-08-28T20:48:57.022Z",
+      "recoderBCodedAt": "2026-08-28T20:49:13.170Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "boundary",
+        "researchContext": "boundaries",
+        "traitFamilyId": "bounded-warmth",
+        "seriousnessPivot": true
+      },
+      "recoderB": {
+        "speechAct": "boundary",
+        "researchContext": "boundaries",
+        "traitFamilyId": "bounded-warmth",
+        "seriousnessPivot": true
+      },
+      "changedFields": [],
+      "reconciledCoding": {
+        "speechAct": "boundary",
+        "researchContext": "boundaries",
+        "traitFamilyId": "bounded-warmth",
+        "seriousnessPivot": true
+      },
+      "adjudicationRationale": "Both blinded recoders independently produced the same categorical assignment."
+    },
+    {
+      "observationId": "T057",
+      "selectionId": "SEL-S08-0009",
+      "sourceEventId": "E007",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "biography-or-belief",
+        "boundary"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:46:54.206Z",
+      "recoderACodedAt": "2026-08-28T20:47:12.562Z",
+      "recoderBAssignedAt": "2026-08-28T20:48:57.022Z",
+      "recoderBCodedAt": "2026-08-28T20:49:13.170Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "boundary",
+        "researchContext": "boundaries",
+        "traitFamilyId": "credit-aware-authority",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "boundary",
+        "researchContext": "boundaries",
+        "traitFamilyId": "bounded-warmth",
+        "seriousnessPivot": false
+      },
+      "changedFields": [
+        "traitFamilyId"
+      ],
+      "reconciledCoding": {
+        "speechAct": "boundary",
+        "researchContext": "boundaries",
+        "traitFamilyId": "credit-aware-authority",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "The speaker declines a proposed division of rights while explaining the importance of preserving ownership for future family benefit."
+    },
+    {
+      "observationId": "T058",
+      "selectionId": "SEL-S08-0010",
+      "sourceEventId": "E007",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "biography-or-belief",
+        "boundary",
+        "trait-admission-candidate"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:46:54.206Z",
+      "recoderACodedAt": "2026-08-28T20:47:12.562Z",
+      "recoderBAssignedAt": "2026-08-28T20:48:57.022Z",
+      "recoderBCodedAt": "2026-08-28T20:49:13.170Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "boundary",
+        "researchContext": "boundaries",
+        "traitFamilyId": "bounded-warmth",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "boundary",
+        "researchContext": "boundaries",
+        "traitFamilyId": "bounded-warmth",
+        "seriousnessPivot": false
+      },
+      "changedFields": [],
+      "reconciledCoding": {
+        "speechAct": "boundary",
+        "researchContext": "boundaries",
+        "traitFamilyId": "bounded-warmth",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "Both blinded recoders independently produced the same categorical assignment."
+    },
+    {
+      "observationId": "T059",
+      "selectionId": "SEL-S08-0011",
+      "sourceEventId": "E007",
+      "reviewReasons": [
+        "low-confidence"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:46:54.206Z",
+      "recoderACodedAt": "2026-08-28T20:47:12.562Z",
+      "recoderBAssignedAt": "2026-08-28T20:48:57.022Z",
+      "recoderBCodedAt": "2026-08-28T20:49:13.170Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "boundary",
+        "researchContext": "boundaries",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "answer",
+        "researchContext": "attribution",
+        "traitFamilyId": "credit-aware-authority",
+        "seriousnessPivot": false
+      },
+      "changedFields": [
+        "researchContext",
+        "speechAct",
+        "traitFamilyId"
+      ],
+      "reconciledCoding": {
+        "speechAct": "boundary",
+        "researchContext": "boundaries",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "The concise statement identifies a fixed condition of an arrangement, functioning as a boundary rather than an attribution claim."
+    },
+    {
+      "observationId": "T060",
+      "selectionId": "SEL-S08-0012",
+      "sourceEventId": "E007",
+      "reviewReasons": [
+        "low-confidence"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:46:54.206Z",
+      "recoderACodedAt": "2026-08-28T20:47:12.562Z",
+      "recoderBAssignedAt": "2026-08-28T20:48:57.022Z",
+      "recoderBCodedAt": "2026-08-28T20:49:13.170Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "answer",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "answer",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "changedFields": [],
+      "reconciledCoding": {
+        "speechAct": "answer",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "Both blinded recoders independently produced the same categorical assignment."
+    },
+    {
+      "observationId": "T061",
+      "selectionId": "SEL-S08-0013",
+      "sourceEventId": "E007",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "humor",
+        "contradiction",
+        "biography-or-belief",
+        "boundary"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:46:54.206Z",
+      "recoderACodedAt": "2026-08-28T20:47:12.562Z",
+      "recoderBAssignedAt": "2026-08-28T20:48:57.022Z",
+      "recoderBCodedAt": "2026-08-28T20:49:13.170Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "reframe",
+        "researchContext": "care",
+        "traitFamilyId": "grounded-optimism",
+        "seriousnessPivot": true
+      },
+      "recoderB": {
+        "speechAct": "reframe",
+        "researchContext": "care",
+        "traitFamilyId": "operational-care",
+        "seriousnessPivot": true
+      },
+      "changedFields": [
+        "traitFamilyId"
+      ],
+      "reconciledCoding": {
+        "speechAct": "reframe",
+        "researchContext": "care",
+        "traitFamilyId": "grounded-optimism",
+        "seriousnessPivot": true
+      },
+      "adjudicationRationale": "The response redirects potentially sensitive relationship implications toward broad interest in and regard for other people, using a generally constructive frame."
+    },
+    {
+      "observationId": "T062",
+      "selectionId": "SEL-S08-0014",
+      "sourceEventId": "E007",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "humor",
+        "biography-or-belief",
+        "boundary"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:46:54.206Z",
+      "recoderACodedAt": "2026-08-28T20:47:12.562Z",
+      "recoderBAssignedAt": "2026-08-28T20:48:57.022Z",
+      "recoderBCodedAt": "2026-08-28T20:49:13.170Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "story",
+        "researchContext": "care",
+        "traitFamilyId": "bounded-warmth",
+        "seriousnessPivot": true
+      },
+      "recoderB": {
+        "speechAct": "boundary",
+        "researchContext": "boundaries",
+        "traitFamilyId": "bounded-warmth",
+        "seriousnessPivot": true
+      },
+      "changedFields": [
+        "researchContext",
+        "speechAct"
+      ],
+      "reconciledCoding": {
+        "speechAct": "story",
+        "researchContext": "care",
+        "traitFamilyId": "bounded-warmth",
+        "seriousnessPivot": true
+      },
+      "adjudicationRationale": "Most of the turn recounts the development and continuity of a close friendship; the clarification of its limits is embedded within that account rather than being the main act."
+    },
+    {
+      "observationId": "T063",
+      "selectionId": "SEL-S08-0015",
+      "sourceEventId": "E007",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "biography-or-belief"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:47:12.564Z",
+      "recoderACodedAt": "2026-08-28T20:47:31.464Z",
+      "recoderBAssignedAt": "2026-08-28T20:49:13.173Z",
+      "recoderBCodedAt": "2026-08-28T20:49:40.915Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "boundary",
+        "researchContext": "boundaries",
+        "traitFamilyId": "bounded-warmth",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "boundary",
+        "researchContext": "boundaries",
+        "traitFamilyId": "bounded-warmth",
+        "seriousnessPivot": false
+      },
+      "changedFields": [],
+      "reconciledCoding": {
+        "speechAct": "boundary",
+        "researchContext": "boundaries",
+        "traitFamilyId": "bounded-warmth",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "Both blinded recoders independently produced the same categorical assignment."
+    },
+    {
+      "observationId": "T064",
+      "selectionId": "SEL-S08-0016",
+      "sourceEventId": "E007",
+      "reviewReasons": [
+        "trait-admission-candidate"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:47:12.564Z",
+      "recoderACodedAt": "2026-08-28T20:47:31.464Z",
+      "recoderBAssignedAt": "2026-08-28T20:49:13.173Z",
+      "recoderBCodedAt": "2026-08-28T20:49:40.915Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "answer",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "acknowledge",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "changedFields": [
+        "speechAct"
+      ],
+      "reconciledCoding": {
+        "speechAct": "answer",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "After confirming the premise, the speaker provides a substantive explanation of admiration for an independent approach to making music."
+    },
+    {
+      "observationId": "T065",
+      "selectionId": "SEL-S08-0017",
+      "sourceEventId": "E007",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "biography-or-belief"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:47:12.564Z",
+      "recoderACodedAt": "2026-08-28T20:47:31.464Z",
+      "recoderBAssignedAt": "2026-08-28T20:49:13.173Z",
+      "recoderBCodedAt": "2026-08-28T20:49:40.915Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "advise",
+        "researchContext": "uncertainty",
+        "traitFamilyId": "uncertainty-humility",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "advise",
+        "researchContext": "uncertainty",
+        "traitFamilyId": "grounded-optimism",
+        "seriousnessPivot": false
+      },
+      "changedFields": [
+        "traitFamilyId"
+      ],
+      "reconciledCoding": {
+        "speechAct": "advise",
+        "researchContext": "uncertainty",
+        "traitFamilyId": "uncertainty-humility",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "The turn explicitly acknowledges uncertainty about larger questions and recommends making the most of present capacities."
+    },
+    {
+      "observationId": "T066",
+      "selectionId": "SEL-S09-0001",
+      "sourceEventId": "E008",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "biography-or-belief"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:47:12.564Z",
+      "recoderACodedAt": "2026-08-28T20:47:31.464Z",
+      "recoderBAssignedAt": "2026-08-28T20:49:13.173Z",
+      "recoderBCodedAt": "2026-08-28T20:49:40.915Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "story",
+        "researchContext": "recovery",
+        "traitFamilyId": "grounded-optimism",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "story",
+        "researchContext": "recovery",
+        "traitFamilyId": "candid-repair",
+        "seriousnessPivot": false
+      },
+      "changedFields": [
+        "traitFamilyId"
+      ],
+      "reconciledCoding": {
+        "speechAct": "story",
+        "researchContext": "recovery",
+        "traitFamilyId": "candid-repair",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "The account traces recurring pain, creative expression, and a reported sense of release, making repair through processing the most specific trait family."
+    },
+    {
+      "observationId": "T067",
+      "selectionId": "SEL-S09-0002",
+      "sourceEventId": "E008",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "humor",
+        "biography-or-belief",
+        "trait-admission-candidate"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:47:12.564Z",
+      "recoderACodedAt": "2026-08-28T20:47:31.464Z",
+      "recoderBAssignedAt": "2026-08-28T20:49:13.173Z",
+      "recoderBCodedAt": "2026-08-28T20:49:40.915Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "answer",
+        "researchContext": "work-practice",
+        "traitFamilyId": "uncertainty-humility",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "reframe",
+        "researchContext": "work-practice",
+        "traitFamilyId": "uncertainty-humility",
+        "seriousnessPivot": false
+      },
+      "changedFields": [
+        "speechAct"
+      ],
+      "reconciledCoding": {
+        "speechAct": "answer",
+        "researchContext": "work-practice",
+        "traitFamilyId": "uncertainty-humility",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "The response directly explains uncertainty and competing considerations in selecting a release, rather than primarily recasting the issue."
+    },
+    {
+      "observationId": "T068",
+      "selectionId": "SEL-S09-0003",
+      "sourceEventId": "E008",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "biography-or-belief",
+        "boundary"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:47:12.564Z",
+      "recoderACodedAt": "2026-08-28T20:47:31.464Z",
+      "recoderBAssignedAt": "2026-08-28T20:49:13.173Z",
+      "recoderBCodedAt": "2026-08-28T20:49:40.915Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "answer",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "answer",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "changedFields": [],
+      "reconciledCoding": {
+        "speechAct": "answer",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "Both blinded recoders independently produced the same categorical assignment."
+    },
+    {
+      "observationId": "T069",
+      "selectionId": "SEL-S09-0004",
+      "sourceEventId": "E008",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "biography-or-belief"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:47:12.564Z",
+      "recoderACodedAt": "2026-08-28T20:47:31.464Z",
+      "recoderBAssignedAt": "2026-08-28T20:49:13.173Z",
+      "recoderBCodedAt": "2026-08-28T20:49:40.915Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "reframe",
+        "researchContext": "recovery",
+        "traitFamilyId": "grounded-optimism",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "advise",
+        "researchContext": "recovery",
+        "traitFamilyId": "grounded-optimism",
+        "seriousnessPivot": false
+      },
+      "changedFields": [
+        "speechAct"
+      ],
+      "reconciledCoding": {
+        "speechAct": "reframe",
+        "researchContext": "recovery",
+        "traitFamilyId": "grounded-optimism",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "The turn recasts experiences of judgment and hurt as material that can support resilience and understanding; it is not framed as a direct instruction to the listener."
+    },
+    {
+      "observationId": "T070",
+      "selectionId": "SEL-S09-0005",
+      "sourceEventId": "E008",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "biography-or-belief"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:47:12.564Z",
+      "recoderACodedAt": "2026-08-28T20:47:31.464Z",
+      "recoderBAssignedAt": "2026-08-28T20:49:13.173Z",
+      "recoderBCodedAt": "2026-08-28T20:49:40.915Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "acknowledge",
+        "researchContext": "attribution",
+        "traitFamilyId": "credit-aware-authority",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "acknowledge",
+        "researchContext": "attribution",
+        "traitFamilyId": "credit-aware-authority",
+        "seriousnessPivot": false
+      },
+      "changedFields": [],
+      "reconciledCoding": {
+        "speechAct": "acknowledge",
+        "researchContext": "attribution",
+        "traitFamilyId": "credit-aware-authority",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "Both blinded recoders independently produced the same categorical assignment."
+    },
+    {
+      "observationId": "T071",
+      "selectionId": "SEL-S13-0001",
+      "sourceEventId": "E010",
+      "reviewReasons": [
+        "trait-admission-candidate"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:47:12.564Z",
+      "recoderACodedAt": "2026-08-28T20:47:31.464Z",
+      "recoderBAssignedAt": "2026-08-28T20:49:13.173Z",
+      "recoderBCodedAt": "2026-08-28T20:49:40.915Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "acknowledge",
+        "researchContext": "attribution",
+        "traitFamilyId": "credit-aware-authority",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "acknowledge",
+        "researchContext": "care",
+        "traitFamilyId": "uncertainty-humility",
+        "seriousnessPivot": false
+      },
+      "changedFields": [
+        "researchContext",
+        "traitFamilyId"
+      ],
+      "reconciledCoding": {
+        "speechAct": "acknowledge",
+        "researchContext": "attribution",
+        "traitFamilyId": "uncertainty-humility",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "The speaker receives praise while qualifying personal deservingness. The context is attribution of credit, and the qualification most clearly signals humility."
+    },
+    {
+      "observationId": "T072",
+      "selectionId": "SEL-S13-0002",
+      "sourceEventId": "E010",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "biography-or-belief"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:47:12.564Z",
+      "recoderACodedAt": "2026-08-28T20:47:31.464Z",
+      "recoderBAssignedAt": "2026-08-28T20:49:13.173Z",
+      "recoderBCodedAt": "2026-08-28T20:49:40.915Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "story",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "story",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "changedFields": [],
+      "reconciledCoding": {
+        "speechAct": "story",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "Both blinded recoders independently produced the same categorical assignment."
+    },
+    {
+      "observationId": "T073",
+      "selectionId": "SEL-S13-0003",
+      "sourceEventId": "E010",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "biography-or-belief"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:47:12.564Z",
+      "recoderACodedAt": "2026-08-28T20:47:31.464Z",
+      "recoderBAssignedAt": "2026-08-28T20:49:13.173Z",
+      "recoderBCodedAt": "2026-08-28T20:49:40.915Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "answer",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "answer",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "changedFields": [],
+      "reconciledCoding": {
+        "speechAct": "answer",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "Both blinded recoders independently produced the same categorical assignment."
+    },
+    {
+      "observationId": "T074",
+      "selectionId": "SEL-S13-0004",
+      "sourceEventId": "E010",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "biography-or-belief"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:47:12.564Z",
+      "recoderACodedAt": "2026-08-28T20:47:31.464Z",
+      "recoderBAssignedAt": "2026-08-28T20:49:13.173Z",
+      "recoderBCodedAt": "2026-08-28T20:49:40.915Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "answer",
+        "researchContext": "attribution",
+        "traitFamilyId": "credit-aware-authority",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "answer",
+        "researchContext": "attribution",
+        "traitFamilyId": "credit-aware-authority",
+        "seriousnessPivot": false
+      },
+      "changedFields": [],
+      "reconciledCoding": {
+        "speechAct": "answer",
+        "researchContext": "attribution",
+        "traitFamilyId": "credit-aware-authority",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "Both blinded recoders independently produced the same categorical assignment."
+    },
+    {
+      "observationId": "T075",
+      "selectionId": "SEL-S13-0005",
+      "sourceEventId": "E010",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "humor",
+        "biography-or-belief"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:47:12.564Z",
+      "recoderACodedAt": "2026-08-28T20:47:31.464Z",
+      "recoderBAssignedAt": "2026-08-28T20:49:13.173Z",
+      "recoderBCodedAt": "2026-08-28T20:49:40.915Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "answer",
+        "researchContext": "leadership",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": true
+      },
+      "recoderB": {
+        "speechAct": "answer",
+        "researchContext": "leadership",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": true
+      },
+      "changedFields": [],
+      "reconciledCoding": {
+        "speechAct": "answer",
+        "researchContext": "leadership",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": true
+      },
+      "adjudicationRationale": "Both blinded recoders independently produced the same categorical assignment."
+    },
+    {
+      "observationId": "T076",
+      "selectionId": "SEL-S13-0006",
+      "sourceEventId": "E010",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "trait-admission-candidate"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:47:12.564Z",
+      "recoderACodedAt": "2026-08-28T20:47:31.464Z",
+      "recoderBAssignedAt": "2026-08-28T20:49:13.173Z",
+      "recoderBCodedAt": "2026-08-28T20:49:40.915Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "answer",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "reframe",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "changedFields": [
+        "speechAct"
+      ],
+      "reconciledCoding": {
+        "speechAct": "reframe",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "The speaker distinguishes high standards from perfectionism and explains a practical work philosophy, which is a reframing of the label at issue."
+    },
+    {
+      "observationId": "T077",
+      "selectionId": "SEL-S13-0007",
+      "sourceEventId": "E010",
+      "reviewReasons": [
+        "sensitive-stratum"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:47:12.564Z",
+      "recoderACodedAt": "2026-08-28T20:47:31.464Z",
+      "recoderBAssignedAt": "2026-08-28T20:49:13.173Z",
+      "recoderBCodedAt": "2026-08-28T20:49:40.915Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "advise",
+        "researchContext": "recovery",
+        "traitFamilyId": "candid-repair",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "advise",
+        "researchContext": "recovery",
+        "traitFamilyId": "candid-repair",
+        "seriousnessPivot": false
+      },
+      "changedFields": [],
+      "reconciledCoding": {
+        "speechAct": "advise",
+        "researchContext": "recovery",
+        "traitFamilyId": "candid-repair",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "Both blinded recoders independently produced the same categorical assignment."
+    },
+    {
+      "observationId": "T078",
+      "selectionId": "SEL-S13-0008",
+      "sourceEventId": "E010",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "biography-or-belief",
+        "trait-admission-candidate"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:47:12.564Z",
+      "recoderACodedAt": "2026-08-28T20:47:31.464Z",
+      "recoderBAssignedAt": "2026-08-28T20:49:13.173Z",
+      "recoderBCodedAt": "2026-08-28T20:49:40.915Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "answer",
+        "researchContext": "care",
+        "traitFamilyId": "operational-care",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "answer",
+        "researchContext": "care",
+        "traitFamilyId": "operational-care",
+        "seriousnessPivot": false
+      },
+      "changedFields": [],
+      "reconciledCoding": {
+        "speechAct": "answer",
+        "researchContext": "care",
+        "traitFamilyId": "operational-care",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "Both blinded recoders independently produced the same categorical assignment."
+    },
+    {
+      "observationId": "T079",
+      "selectionId": "SEL-S13-0009",
+      "sourceEventId": "E010",
+      "reviewReasons": [
+        "low-confidence",
+        "trait-admission-candidate"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:47:12.564Z",
+      "recoderACodedAt": "2026-08-28T20:47:31.464Z",
+      "recoderBAssignedAt": "2026-08-28T20:49:13.173Z",
+      "recoderBCodedAt": "2026-08-28T20:49:40.915Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "answer",
+        "researchContext": "uncertainty",
+        "traitFamilyId": "uncertainty-humility",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "answer",
+        "researchContext": "uncertainty",
+        "traitFamilyId": "grounded-optimism",
+        "seriousnessPivot": false
+      },
+      "changedFields": [
+        "traitFamilyId"
+      ],
+      "reconciledCoding": {
+        "speechAct": "answer",
+        "researchContext": "uncertainty",
+        "traitFamilyId": "uncertainty-humility",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "The brief response expresses hope while retaining uncertainty, so humility is more directly evidenced than general optimism."
+    },
+    {
+      "observationId": "T080",
+      "selectionId": "SEL-S13-0010",
+      "sourceEventId": "E010",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "biography-or-belief",
+        "boundary"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:47:12.564Z",
+      "recoderACodedAt": "2026-08-28T20:47:31.464Z",
+      "recoderBAssignedAt": "2026-08-28T20:49:13.173Z",
+      "recoderBCodedAt": "2026-08-28T20:49:40.915Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "boundary",
+        "researchContext": "boundaries",
+        "traitFamilyId": "bounded-warmth",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "boundary",
+        "researchContext": "boundaries",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "changedFields": [
+        "traitFamilyId"
+      ],
+      "reconciledCoding": {
+        "speechAct": "boundary",
+        "researchContext": "boundaries",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "The account describes a stated time limit and a decision to pursue an independent career path, combining a clear boundary with sustained self-directed action."
+    },
+    {
+      "observationId": "T081",
+      "selectionId": "SEL-S13-0011",
+      "sourceEventId": "E010",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "humor"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:47:12.564Z",
+      "recoderACodedAt": "2026-08-28T20:47:31.464Z",
+      "recoderBAssignedAt": "2026-08-28T20:49:13.173Z",
+      "recoderBCodedAt": "2026-08-28T20:49:40.915Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "reframe",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": true
+      },
+      "recoderB": {
+        "speechAct": "answer",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": true
+      },
+      "changedFields": [
+        "speechAct"
+      ],
+      "reconciledCoding": {
+        "speechAct": "reframe",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": true
+      },
+      "adjudicationRationale": "The speaker turns a question about exhaustion into a contrast between depletion and active creative momentum, then emphasizes persistence in pursuing outcomes."
+    },
+    {
+      "observationId": "T082",
+      "selectionId": "SEL-S13-0012",
+      "sourceEventId": "E010",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "biography-or-belief"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:47:12.564Z",
+      "recoderACodedAt": "2026-08-28T20:47:31.464Z",
+      "recoderBAssignedAt": "2026-08-28T20:49:13.173Z",
+      "recoderBCodedAt": "2026-08-28T20:49:40.915Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "answer",
+        "researchContext": "recovery",
+        "traitFamilyId": "operational-care",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "story",
+        "researchContext": "recovery",
+        "traitFamilyId": "operational-care",
+        "seriousnessPivot": false
+      },
+      "changedFields": [
+        "speechAct"
+      ],
+      "reconciledCoding": {
+        "speechAct": "answer",
+        "researchContext": "recovery",
+        "traitFamilyId": "operational-care",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "The turn directly supplies a response about restorative routines and care-oriented activities. Its list-like account supports an answer more than a self-contained narrative."
+    },
+    {
+      "observationId": "T083",
+      "selectionId": "SEL-S13-0013",
+      "sourceEventId": "E010",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "humor"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:47:31.467Z",
+      "recoderACodedAt": "2026-08-28T20:47:52.034Z",
+      "recoderBAssignedAt": "2026-08-28T20:49:40.920Z",
+      "recoderBCodedAt": "2026-08-28T20:49:53.961Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "joke",
+        "researchContext": "humor",
+        "traitFamilyId": "calibrated-wit",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "joke",
+        "researchContext": "humor",
+        "traitFamilyId": "calibrated-wit",
+        "seriousnessPivot": false
+      },
+      "changedFields": [],
+      "reconciledCoding": {
+        "speechAct": "joke",
+        "researchContext": "humor",
+        "traitFamilyId": "calibrated-wit",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "Both blinded recoders independently produced the same categorical assignment."
+    },
+    {
+      "observationId": "T084",
+      "selectionId": "SEL-S13-0014",
+      "sourceEventId": "E010",
+      "reviewReasons": [
+        "sensitive-stratum"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:47:31.467Z",
+      "recoderACodedAt": "2026-08-28T20:47:52.034Z",
+      "recoderBAssignedAt": "2026-08-28T20:49:40.920Z",
+      "recoderBCodedAt": "2026-08-28T20:49:53.961Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "answer",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "answer",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "changedFields": [],
+      "reconciledCoding": {
+        "speechAct": "answer",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "Both blinded recoders independently produced the same categorical assignment."
+    },
+    {
+      "observationId": "T085",
+      "selectionId": "SEL-S13-0015",
+      "sourceEventId": "E010",
+      "reviewReasons": [
+        "sensitive-stratum"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:47:31.467Z",
+      "recoderACodedAt": "2026-08-28T20:47:52.034Z",
+      "recoderBAssignedAt": "2026-08-28T20:49:40.920Z",
+      "recoderBCodedAt": "2026-08-28T20:49:53.961Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "answer",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "answer",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "changedFields": [],
+      "reconciledCoding": {
+        "speechAct": "answer",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "Both blinded recoders independently produced the same categorical assignment."
+    },
+    {
+      "observationId": "T086",
+      "selectionId": "SEL-S13-0016",
+      "sourceEventId": "E010",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "humor"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:47:31.467Z",
+      "recoderACodedAt": "2026-08-28T20:47:52.034Z",
+      "recoderBAssignedAt": "2026-08-28T20:49:40.920Z",
+      "recoderBCodedAt": "2026-08-28T20:49:53.961Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "joke",
+        "researchContext": "humor",
+        "traitFamilyId": "calibrated-wit",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "joke",
+        "researchContext": "humor",
+        "traitFamilyId": "calibrated-wit",
+        "seriousnessPivot": false
+      },
+      "changedFields": [],
+      "reconciledCoding": {
+        "speechAct": "joke",
+        "researchContext": "humor",
+        "traitFamilyId": "calibrated-wit",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "Both blinded recoders independently produced the same categorical assignment."
+    },
+    {
+      "observationId": "T087",
+      "selectionId": "SEL-S13-0017",
+      "sourceEventId": "E010",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "contradiction",
+        "trait-admission-candidate"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:47:31.467Z",
+      "recoderACodedAt": "2026-08-28T20:47:52.034Z",
+      "recoderBAssignedAt": "2026-08-28T20:49:40.920Z",
+      "recoderBCodedAt": "2026-08-28T20:49:53.961Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "reframe",
+        "researchContext": "recovery",
+        "traitFamilyId": "grounded-optimism",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "reframe",
+        "researchContext": "recovery",
+        "traitFamilyId": "grounded-optimism",
+        "seriousnessPivot": false
+      },
+      "changedFields": [],
+      "reconciledCoding": {
+        "speechAct": "reframe",
+        "researchContext": "recovery",
+        "traitFamilyId": "grounded-optimism",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "Both blinded recoders independently produced the same categorical assignment."
+    },
+    {
+      "observationId": "T088",
+      "selectionId": "SEL-S13-0018",
+      "sourceEventId": "E010",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "humor"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:47:31.467Z",
+      "recoderACodedAt": "2026-08-28T20:47:52.034Z",
+      "recoderBAssignedAt": "2026-08-28T20:49:40.920Z",
+      "recoderBCodedAt": "2026-08-28T20:49:53.961Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "joke",
+        "researchContext": "humor",
+        "traitFamilyId": "calibrated-wit",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "joke",
+        "researchContext": "humor",
+        "traitFamilyId": "calibrated-wit",
+        "seriousnessPivot": false
+      },
+      "changedFields": [],
+      "reconciledCoding": {
+        "speechAct": "joke",
+        "researchContext": "humor",
+        "traitFamilyId": "calibrated-wit",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "Both blinded recoders independently produced the same categorical assignment."
+    },
+    {
+      "observationId": "T089",
+      "selectionId": "SEL-S18-0001",
+      "sourceEventId": "E014",
+      "reviewReasons": [
+        "trait-admission-candidate"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:47:31.467Z",
+      "recoderACodedAt": "2026-08-28T20:47:52.034Z",
+      "recoderBAssignedAt": "2026-08-28T20:49:40.920Z",
+      "recoderBCodedAt": "2026-08-28T20:49:53.961Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "credit",
+        "researchContext": "attribution",
+        "traitFamilyId": "credit-aware-authority",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "credit",
+        "researchContext": "attribution",
+        "traitFamilyId": "credit-aware-authority",
+        "seriousnessPivot": false
+      },
+      "changedFields": [],
+      "reconciledCoding": {
+        "speechAct": "credit",
+        "researchContext": "attribution",
+        "traitFamilyId": "credit-aware-authority",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "Both blinded recoders independently produced the same categorical assignment."
+    },
+    {
+      "observationId": "T090",
+      "selectionId": "SEL-S18-0002",
+      "sourceEventId": "E014",
+      "reviewReasons": [
+        "sensitive-stratum"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:47:31.467Z",
+      "recoderACodedAt": "2026-08-28T20:47:52.034Z",
+      "recoderBAssignedAt": "2026-08-28T20:49:40.920Z",
+      "recoderBCodedAt": "2026-08-28T20:49:53.961Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "reframe",
+        "researchContext": "recovery",
+        "traitFamilyId": "grounded-optimism",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "reframe",
+        "researchContext": "recovery",
+        "traitFamilyId": "grounded-optimism",
+        "seriousnessPivot": false
+      },
+      "changedFields": [],
+      "reconciledCoding": {
+        "speechAct": "reframe",
+        "researchContext": "recovery",
+        "traitFamilyId": "grounded-optimism",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "Both blinded recoders independently produced the same categorical assignment."
+    },
+    {
+      "observationId": "T091",
+      "selectionId": "SEL-S19-0001",
+      "sourceEventId": "E015",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "humor"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:47:31.467Z",
+      "recoderACodedAt": "2026-08-28T20:47:52.034Z",
+      "recoderBAssignedAt": "2026-08-28T20:49:40.920Z",
+      "recoderBCodedAt": "2026-08-28T20:49:53.961Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "joke",
+        "researchContext": "humor",
+        "traitFamilyId": "calibrated-wit",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "joke",
+        "researchContext": "humor",
+        "traitFamilyId": "calibrated-wit",
+        "seriousnessPivot": false
+      },
+      "changedFields": [],
+      "reconciledCoding": {
+        "speechAct": "joke",
+        "researchContext": "humor",
+        "traitFamilyId": "calibrated-wit",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "Both blinded recoders independently produced the same categorical assignment."
+    },
+    {
+      "observationId": "T092",
+      "selectionId": "SEL-S19-0002",
+      "sourceEventId": "E015",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "biography-or-belief"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:47:31.467Z",
+      "recoderACodedAt": "2026-08-28T20:47:52.034Z",
+      "recoderBAssignedAt": "2026-08-28T20:49:40.920Z",
+      "recoderBCodedAt": "2026-08-28T20:49:53.961Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "story",
+        "researchContext": "recovery",
+        "traitFamilyId": "candid-repair",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "story",
+        "researchContext": "recovery",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "changedFields": [
+        "traitFamilyId"
+      ],
+      "reconciledCoding": {
+        "speechAct": "story",
+        "researchContext": "recovery",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "The speaker recounts a past health-related period and describes concrete efforts to improve physical condition. The observable emphasis is on sustained self-directed action rather than repairing an interpersonal rupture."
+    },
+    {
+      "observationId": "T093",
+      "selectionId": "SEL-S19-0003",
+      "sourceEventId": "E015",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "biography-or-belief"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:47:31.467Z",
+      "recoderACodedAt": "2026-08-28T20:47:52.034Z",
+      "recoderBAssignedAt": "2026-08-28T20:49:40.920Z",
+      "recoderBCodedAt": "2026-08-28T20:49:53.961Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "story",
+        "researchContext": "recovery",
+        "traitFamilyId": "candid-repair",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "story",
+        "researchContext": "recovery",
+        "traitFamilyId": "candid-repair",
+        "seriousnessPivot": false
+      },
+      "changedFields": [],
+      "reconciledCoding": {
+        "speechAct": "story",
+        "researchContext": "recovery",
+        "traitFamilyId": "candid-repair",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "Both blinded recoders independently produced the same categorical assignment."
+    },
+    {
+      "observationId": "T094",
+      "selectionId": "SEL-S19-0004",
+      "sourceEventId": "E015",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "biography-or-belief",
+        "trait-admission-candidate"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:47:31.467Z",
+      "recoderACodedAt": "2026-08-28T20:47:52.034Z",
+      "recoderBAssignedAt": "2026-08-28T20:49:40.920Z",
+      "recoderBCodedAt": "2026-08-28T20:49:53.961Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "answer",
+        "researchContext": "recovery",
+        "traitFamilyId": "grounded-optimism",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "answer",
+        "researchContext": "recovery",
+        "traitFamilyId": "grounded-optimism",
+        "seriousnessPivot": false
+      },
+      "changedFields": [],
+      "reconciledCoding": {
+        "speechAct": "answer",
+        "researchContext": "recovery",
+        "traitFamilyId": "grounded-optimism",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "Both blinded recoders independently produced the same categorical assignment."
+    },
+    {
+      "observationId": "T095",
+      "selectionId": "SEL-S19-0005",
+      "sourceEventId": "E015",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "contradiction",
+        "biography-or-belief"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:47:31.467Z",
+      "recoderACodedAt": "2026-08-28T20:47:52.034Z",
+      "recoderBAssignedAt": "2026-08-28T20:49:40.920Z",
+      "recoderBCodedAt": "2026-08-28T20:49:53.961Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "story",
+        "researchContext": "recovery",
+        "traitFamilyId": "candid-repair",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "story",
+        "researchContext": "recovery",
+        "traitFamilyId": "candid-repair",
+        "seriousnessPivot": false
+      },
+      "changedFields": [],
+      "reconciledCoding": {
+        "speechAct": "story",
+        "researchContext": "recovery",
+        "traitFamilyId": "candid-repair",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "Both blinded recoders independently produced the same categorical assignment."
+    },
+    {
+      "observationId": "T096",
+      "selectionId": "SEL-S19-0006",
+      "sourceEventId": "E015",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "biography-or-belief",
+        "boundary"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:47:31.467Z",
+      "recoderACodedAt": "2026-08-28T20:47:52.034Z",
+      "recoderBAssignedAt": "2026-08-28T20:49:40.920Z",
+      "recoderBCodedAt": "2026-08-28T20:49:53.961Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "boundary",
+        "researchContext": "boundaries",
+        "traitFamilyId": "bounded-warmth",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "boundary",
+        "researchContext": "boundaries",
+        "traitFamilyId": "bounded-warmth",
+        "seriousnessPivot": false
+      },
+      "changedFields": [],
+      "reconciledCoding": {
+        "speechAct": "boundary",
+        "researchContext": "boundaries",
+        "traitFamilyId": "bounded-warmth",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "Both blinded recoders independently produced the same categorical assignment."
+    },
+    {
+      "observationId": "T097",
+      "selectionId": "SEL-S19-0007",
+      "sourceEventId": "E015",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "contradiction",
+        "biography-or-belief",
+        "boundary"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:47:31.467Z",
+      "recoderACodedAt": "2026-08-28T20:47:52.034Z",
+      "recoderBAssignedAt": "2026-08-28T20:49:40.920Z",
+      "recoderBCodedAt": "2026-08-28T20:49:53.961Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "reframe",
+        "researchContext": "recovery",
+        "traitFamilyId": "candid-repair",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "story",
+        "researchContext": "recovery",
+        "traitFamilyId": "candid-repair",
+        "seriousnessPivot": false
+      },
+      "changedFields": [
+        "speechAct"
+      ],
+      "reconciledCoding": {
+        "speechAct": "reframe",
+        "researchContext": "recovery",
+        "traitFamilyId": "candid-repair",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "Although the response recounts a painful period, its concluding function recasts that experience as instructive and motivating. That evaluative reinterpretation is more salient than the chronology alone."
+    },
+    {
+      "observationId": "T098",
+      "selectionId": "SEL-S19-0008",
+      "sourceEventId": "E015",
+      "reviewReasons": [
+        "humor",
+        "trait-admission-candidate"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:47:31.467Z",
+      "recoderACodedAt": "2026-08-28T20:47:52.034Z",
+      "recoderBAssignedAt": "2026-08-28T20:49:40.920Z",
+      "recoderBCodedAt": "2026-08-28T20:49:53.961Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "ask",
+        "researchContext": "uncertainty",
+        "traitFamilyId": "uncertainty-humility",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "joke",
+        "researchContext": "humor",
+        "traitFamilyId": "calibrated-wit",
+        "seriousnessPivot": false
+      },
+      "changedFields": [
+        "researchContext",
+        "speechAct",
+        "traitFamilyId"
+      ],
+      "reconciledCoding": {
+        "speechAct": "ask",
+        "researchContext": "uncertainty",
+        "traitFamilyId": "uncertainty-humility",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "The opening move requests clarification. The following assertion does not provide sufficient observable evidence to establish a humorous intent, so the explicit question is the more defensible speech-act anchor."
+    },
+    {
+      "observationId": "T099",
+      "selectionId": "SEL-S19-0009",
+      "sourceEventId": "E015",
+      "reviewReasons": [
+        "trait-admission-candidate"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:47:31.467Z",
+      "recoderACodedAt": "2026-08-28T20:47:52.034Z",
+      "recoderBAssignedAt": "2026-08-28T20:49:40.920Z",
+      "recoderBCodedAt": "2026-08-28T20:49:53.961Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "answer",
+        "researchContext": "uncertainty",
+        "traitFamilyId": "uncertainty-humility",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "answer",
+        "researchContext": "uncertainty",
+        "traitFamilyId": "uncertainty-humility",
+        "seriousnessPivot": false
+      },
+      "changedFields": [],
+      "reconciledCoding": {
+        "speechAct": "answer",
+        "researchContext": "uncertainty",
+        "traitFamilyId": "uncertainty-humility",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "Both blinded recoders independently produced the same categorical assignment."
+    },
+    {
+      "observationId": "T100",
+      "selectionId": "SEL-S19-0010",
+      "sourceEventId": "E015",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "humor",
+        "biography-or-belief"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:47:31.467Z",
+      "recoderACodedAt": "2026-08-28T20:47:52.034Z",
+      "recoderBAssignedAt": "2026-08-28T20:49:40.920Z",
+      "recoderBCodedAt": "2026-08-28T20:49:53.961Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "story",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "story",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "changedFields": [],
+      "reconciledCoding": {
+        "speechAct": "story",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "Both blinded recoders independently produced the same categorical assignment."
+    },
+    {
+      "observationId": "T101",
+      "selectionId": "SEL-S19-0011",
+      "sourceEventId": "E015",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "biography-or-belief"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:47:31.467Z",
+      "recoderACodedAt": "2026-08-28T20:47:52.034Z",
+      "recoderBAssignedAt": "2026-08-28T20:49:40.920Z",
+      "recoderBCodedAt": "2026-08-28T20:49:53.961Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "story",
+        "researchContext": "recovery",
+        "traitFamilyId": "grounded-optimism",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "story",
+        "researchContext": "recovery",
+        "traitFamilyId": "grounded-optimism",
+        "seriousnessPivot": false
+      },
+      "changedFields": [],
+      "reconciledCoding": {
+        "speechAct": "story",
+        "researchContext": "recovery",
+        "traitFamilyId": "grounded-optimism",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "Both blinded recoders independently produced the same categorical assignment."
+    },
+    {
+      "observationId": "T102",
+      "selectionId": "SEL-S19-0012",
+      "sourceEventId": "E015",
+      "reviewReasons": [
+        "trait-admission-candidate"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:47:31.467Z",
+      "recoderACodedAt": "2026-08-28T20:47:52.034Z",
+      "recoderBAssignedAt": "2026-08-28T20:49:40.920Z",
+      "recoderBCodedAt": "2026-08-28T20:49:53.961Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "answer",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "answer",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "changedFields": [],
+      "reconciledCoding": {
+        "speechAct": "answer",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "Both blinded recoders independently produced the same categorical assignment."
+    },
+    {
+      "observationId": "T103",
+      "selectionId": "SEL-S19-0013",
+      "sourceEventId": "E015",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "biography-or-belief"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:47:52.036Z",
+      "recoderACodedAt": "2026-08-28T20:48:13.233Z",
+      "recoderBAssignedAt": "2026-08-28T20:49:53.964Z",
+      "recoderBCodedAt": "2026-08-28T20:50:26.411Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "reframe",
+        "researchContext": "recovery",
+        "traitFamilyId": "grounded-optimism",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "reframe",
+        "researchContext": "recovery",
+        "traitFamilyId": "grounded-optimism",
+        "seriousnessPivot": false
+      },
+      "changedFields": [],
+      "reconciledCoding": {
+        "speechAct": "reframe",
+        "researchContext": "recovery",
+        "traitFamilyId": "grounded-optimism",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "Both blinded recoders independently produced the same categorical assignment."
+    },
+    {
+      "observationId": "T104",
+      "selectionId": "SEL-S19-0014",
+      "sourceEventId": "E015",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "boundary",
+        "trait-admission-candidate"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:47:52.036Z",
+      "recoderACodedAt": "2026-08-28T20:48:13.233Z",
+      "recoderBAssignedAt": "2026-08-28T20:49:53.964Z",
+      "recoderBCodedAt": "2026-08-28T20:50:26.411Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "boundary",
+        "researchContext": "boundaries",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "boundary",
+        "researchContext": "boundaries",
+        "traitFamilyId": "bounded-warmth",
+        "seriousnessPivot": false
+      },
+      "changedFields": [
+        "traitFamilyId"
+      ],
+      "reconciledCoding": {
+        "speechAct": "boundary",
+        "researchContext": "boundaries",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "The turn states a public-facing limit and links it to maintaining a chosen presentation standard. This is a self-directed boundary around professional appearance rather than a relational warmth boundary."
+    },
+    {
+      "observationId": "T105",
+      "selectionId": "SEL-S19-0015",
+      "sourceEventId": "E015",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "trait-admission-candidate"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:47:52.036Z",
+      "recoderACodedAt": "2026-08-28T20:48:13.233Z",
+      "recoderBAssignedAt": "2026-08-28T20:49:53.964Z",
+      "recoderBCodedAt": "2026-08-28T20:50:26.411Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "story",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "answer",
+        "researchContext": "work-practice",
+        "traitFamilyId": "uncertainty-humility",
+        "seriousnessPivot": false
+      },
+      "changedFields": [
+        "speechAct",
+        "traitFamilyId"
+      ],
+      "reconciledCoding": {
+        "speechAct": "story",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "The speaker recounts an earlier encounter while describing long-term work on a performance skill. The explicit reference to sustained effort supports disciplined agency more directly than a trait inference from modest self-assessment."
+    },
+    {
+      "observationId": "T106",
+      "selectionId": "SEL-S19-0016",
+      "sourceEventId": "E015",
+      "reviewReasons": [
+        "low-confidence"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:47:52.036Z",
+      "recoderACodedAt": "2026-08-28T20:48:13.233Z",
+      "recoderBAssignedAt": "2026-08-28T20:49:53.964Z",
+      "recoderBCodedAt": "2026-08-28T20:50:26.411Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "answer",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "answer",
+        "researchContext": "boundaries",
+        "traitFamilyId": "candid-repair",
+        "seriousnessPivot": false
+      },
+      "changedFields": [
+        "researchContext",
+        "traitFamilyId"
+      ],
+      "reconciledCoding": {
+        "speechAct": "answer",
+        "researchContext": "uncertainty",
+        "traitFamilyId": "uncertainty-humility",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "A bare affirmative supports only that it is an answer. It provides no observable basis for a work-practice, boundary, agency, or repair characterization; the uncertainty coding most clearly reflects that evidentiary limitation."
+    },
+    {
+      "observationId": "T107",
+      "selectionId": "SEL-S19-0017",
+      "sourceEventId": "E015",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "biography-or-belief"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:47:52.036Z",
+      "recoderACodedAt": "2026-08-28T20:48:13.233Z",
+      "recoderBAssignedAt": "2026-08-28T20:49:53.964Z",
+      "recoderBCodedAt": "2026-08-28T20:50:26.411Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "advise",
+        "researchContext": "leadership",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "advise",
+        "researchContext": "leadership",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "changedFields": [],
+      "reconciledCoding": {
+        "speechAct": "advise",
+        "researchContext": "leadership",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "Both blinded recoders independently produced the same categorical assignment."
+    },
+    {
+      "observationId": "T108",
+      "selectionId": "SEL-S19-0018",
+      "sourceEventId": "E015",
+      "reviewReasons": [
+        "low-confidence"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:47:52.036Z",
+      "recoderACodedAt": "2026-08-28T20:48:13.233Z",
+      "recoderBAssignedAt": "2026-08-28T20:49:53.964Z",
+      "recoderBCodedAt": "2026-08-28T20:50:26.411Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "answer",
+        "researchContext": "recovery",
+        "traitFamilyId": "grounded-optimism",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "answer",
+        "researchContext": "recovery",
+        "traitFamilyId": "grounded-optimism",
+        "seriousnessPivot": false
+      },
+      "changedFields": [],
+      "reconciledCoding": {
+        "speechAct": "answer",
+        "researchContext": "recovery",
+        "traitFamilyId": "grounded-optimism",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "Both blinded recoders independently produced the same categorical assignment."
+    },
+    {
+      "observationId": "T109",
+      "selectionId": "SEL-S20-0001",
+      "sourceEventId": "E016",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "humor",
+        "trait-admission-candidate"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:47:52.036Z",
+      "recoderACodedAt": "2026-08-28T20:48:13.233Z",
+      "recoderBAssignedAt": "2026-08-28T20:49:53.964Z",
+      "recoderBCodedAt": "2026-08-28T20:50:26.411Z",
+      "reconciledAt": "2026-08-28T20:51:47.961Z",
+      "recoderA": {
+        "speechAct": "joke",
+        "researchContext": "humor",
+        "traitFamilyId": "calibrated-wit",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "joke",
+        "researchContext": "humor",
+        "traitFamilyId": "calibrated-wit",
+        "seriousnessPivot": false
+      },
+      "changedFields": [],
+      "reconciledCoding": {
+        "speechAct": "joke",
+        "researchContext": "humor",
+        "traitFamilyId": "calibrated-wit",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "Both blinded recoders independently produced the same categorical assignment."
+    },
+    {
+      "observationId": "T110",
+      "selectionId": "SEL-S20-0002",
+      "sourceEventId": "E016",
+      "reviewReasons": [
+        "trait-admission-candidate"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:47:52.036Z",
+      "recoderACodedAt": "2026-08-28T20:48:13.233Z",
+      "recoderBAssignedAt": "2026-08-28T20:49:53.964Z",
+      "recoderBCodedAt": "2026-08-28T20:50:26.411Z",
+      "reconciledAt": "2026-08-28T20:51:47.962Z",
+      "recoderA": {
+        "speechAct": "answer",
+        "researchContext": "care",
+        "traitFamilyId": "grounded-optimism",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "answer",
+        "researchContext": "care",
+        "traitFamilyId": "grounded-optimism",
+        "seriousnessPivot": false
+      },
+      "changedFields": [],
+      "reconciledCoding": {
+        "speechAct": "answer",
+        "researchContext": "care",
+        "traitFamilyId": "grounded-optimism",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "Both blinded recoders independently produced the same categorical assignment."
+    },
+    {
+      "observationId": "T111",
+      "selectionId": "SEL-S20-0003",
+      "sourceEventId": "E016",
+      "reviewReasons": [
+        "trait-admission-candidate"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:47:52.036Z",
+      "recoderACodedAt": "2026-08-28T20:48:13.233Z",
+      "recoderBAssignedAt": "2026-08-28T20:49:53.964Z",
+      "recoderBCodedAt": "2026-08-28T20:50:26.411Z",
+      "reconciledAt": "2026-08-28T20:51:47.962Z",
+      "recoderA": {
+        "speechAct": "answer",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "answer",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "changedFields": [],
+      "reconciledCoding": {
+        "speechAct": "answer",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "Both blinded recoders independently produced the same categorical assignment."
+    },
+    {
+      "observationId": "T112",
+      "selectionId": "SEL-S20-0004",
+      "sourceEventId": "E016",
+      "reviewReasons": [
+        "low-confidence"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:47:52.036Z",
+      "recoderACodedAt": "2026-08-28T20:48:13.233Z",
+      "recoderBAssignedAt": "2026-08-28T20:49:53.964Z",
+      "recoderBCodedAt": "2026-08-28T20:50:26.411Z",
+      "reconciledAt": "2026-08-28T20:51:47.962Z",
+      "recoderA": {
+        "speechAct": "answer",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "answer",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "changedFields": [],
+      "reconciledCoding": {
+        "speechAct": "answer",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "Both blinded recoders independently produced the same categorical assignment."
+    },
+    {
+      "observationId": "T113",
+      "selectionId": "SEL-S20-0005",
+      "sourceEventId": "E016",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "trait-admission-candidate"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:47:52.036Z",
+      "recoderACodedAt": "2026-08-28T20:48:13.233Z",
+      "recoderBAssignedAt": "2026-08-28T20:49:53.964Z",
+      "recoderBCodedAt": "2026-08-28T20:50:26.411Z",
+      "reconciledAt": "2026-08-28T20:51:47.962Z",
+      "recoderA": {
+        "speechAct": "answer",
+        "researchContext": "care",
+        "traitFamilyId": "operational-care",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "answer",
+        "researchContext": "care",
+        "traitFamilyId": "operational-care",
+        "seriousnessPivot": false
+      },
+      "changedFields": [],
+      "reconciledCoding": {
+        "speechAct": "answer",
+        "researchContext": "care",
+        "traitFamilyId": "operational-care",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "Both blinded recoders independently produced the same categorical assignment."
+    },
+    {
+      "observationId": "T114",
+      "selectionId": "SEL-S20-0006",
+      "sourceEventId": "E016",
+      "reviewReasons": [
+        "low-confidence"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:47:52.036Z",
+      "recoderACodedAt": "2026-08-28T20:48:13.233Z",
+      "recoderBAssignedAt": "2026-08-28T20:49:53.964Z",
+      "recoderBCodedAt": "2026-08-28T20:50:26.411Z",
+      "reconciledAt": "2026-08-28T20:51:47.962Z",
+      "recoderA": {
+        "speechAct": "answer",
+        "researchContext": "recovery",
+        "traitFamilyId": "candid-repair",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "answer",
+        "researchContext": "recovery",
+        "traitFamilyId": "candid-repair",
+        "seriousnessPivot": false
+      },
+      "changedFields": [],
+      "reconciledCoding": {
+        "speechAct": "answer",
+        "researchContext": "recovery",
+        "traitFamilyId": "candid-repair",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "Both blinded recoders independently produced the same categorical assignment."
+    },
+    {
+      "observationId": "T115",
+      "selectionId": "SEL-S20-0007",
+      "sourceEventId": "E016",
+      "reviewReasons": [
+        "trait-admission-candidate"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:47:52.036Z",
+      "recoderACodedAt": "2026-08-28T20:48:13.233Z",
+      "recoderBAssignedAt": "2026-08-28T20:49:53.964Z",
+      "recoderBCodedAt": "2026-08-28T20:50:26.411Z",
+      "reconciledAt": "2026-08-28T20:51:47.962Z",
+      "recoderA": {
+        "speechAct": "answer",
+        "researchContext": "recovery",
+        "traitFamilyId": "grounded-optimism",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "answer",
+        "researchContext": "recovery",
+        "traitFamilyId": "grounded-optimism",
+        "seriousnessPivot": false
+      },
+      "changedFields": [],
+      "reconciledCoding": {
+        "speechAct": "answer",
+        "researchContext": "recovery",
+        "traitFamilyId": "grounded-optimism",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "Both blinded recoders independently produced the same categorical assignment."
+    },
+    {
+      "observationId": "T116",
+      "selectionId": "SEL-S20-0008",
+      "sourceEventId": "E016",
+      "reviewReasons": [
+        "low-confidence"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:47:52.036Z",
+      "recoderACodedAt": "2026-08-28T20:48:13.233Z",
+      "recoderBAssignedAt": "2026-08-28T20:49:53.964Z",
+      "recoderBCodedAt": "2026-08-28T20:50:26.411Z",
+      "reconciledAt": "2026-08-28T20:51:47.962Z",
+      "recoderA": {
+        "speechAct": "answer",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "answer",
+        "researchContext": "leadership",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "changedFields": [
+        "researchContext"
+      ],
+      "reconciledCoding": {
+        "speechAct": "answer",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "The response names an accomplishment in direct answer to the prompt. The evidence supports a general accomplishment or practice framing, but does not itself establish a leadership role."
+    },
+    {
+      "observationId": "T117",
+      "selectionId": "SEL-S20-0009",
+      "sourceEventId": "E016",
+      "reviewReasons": [
+        "low-confidence"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:47:52.036Z",
+      "recoderACodedAt": "2026-08-28T20:48:13.233Z",
+      "recoderBAssignedAt": "2026-08-28T20:49:53.964Z",
+      "recoderBCodedAt": "2026-08-28T20:50:26.411Z",
+      "reconciledAt": "2026-08-28T20:51:47.962Z",
+      "recoderA": {
+        "speechAct": "answer",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "answer",
+        "researchContext": "attribution",
+        "traitFamilyId": "credit-aware-authority",
+        "seriousnessPivot": false
+      },
+      "changedFields": [
+        "researchContext",
+        "traitFamilyId"
+      ],
+      "reconciledCoding": {
+        "speechAct": "answer",
+        "researchContext": "work-practice",
+        "traitFamilyId": "disciplined-agency",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "The turn directly identifies a valued possession. Nothing in the brief answer attributes work to others or establishes a credit-oriented authority frame, making the broader work-practice assignment comparatively less inferential."
+    },
+    {
+      "observationId": "T118",
+      "selectionId": "SEL-S20-0010",
+      "sourceEventId": "E016",
+      "reviewReasons": [
+        "boundary",
+        "trait-admission-candidate"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:47:52.036Z",
+      "recoderACodedAt": "2026-08-28T20:48:13.233Z",
+      "recoderBAssignedAt": "2026-08-28T20:49:53.964Z",
+      "recoderBCodedAt": "2026-08-28T20:50:26.411Z",
+      "reconciledAt": "2026-08-28T20:51:47.962Z",
+      "recoderA": {
+        "speechAct": "joke",
+        "researchContext": "humor",
+        "traitFamilyId": "calibrated-wit",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "joke",
+        "researchContext": "humor",
+        "traitFamilyId": "calibrated-wit",
+        "seriousnessPivot": false
+      },
+      "changedFields": [],
+      "reconciledCoding": {
+        "speechAct": "joke",
+        "researchContext": "humor",
+        "traitFamilyId": "calibrated-wit",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "Both blinded recoders independently produced the same categorical assignment."
+    },
+    {
+      "observationId": "T119",
+      "selectionId": "SEL-S20-0011",
+      "sourceEventId": "E016",
+      "reviewReasons": [
+        "low-confidence",
+        "humor"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:47:52.036Z",
+      "recoderACodedAt": "2026-08-28T20:48:13.233Z",
+      "recoderBAssignedAt": "2026-08-28T20:49:53.964Z",
+      "recoderBCodedAt": "2026-08-28T20:50:26.411Z",
+      "reconciledAt": "2026-08-28T20:51:47.962Z",
+      "recoderA": {
+        "speechAct": "joke",
+        "researchContext": "humor",
+        "traitFamilyId": "calibrated-wit",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "joke",
+        "researchContext": "humor",
+        "traitFamilyId": "calibrated-wit",
+        "seriousnessPivot": false
+      },
+      "changedFields": [],
+      "reconciledCoding": {
+        "speechAct": "joke",
+        "researchContext": "humor",
+        "traitFamilyId": "calibrated-wit",
+        "seriousnessPivot": false
+      },
+      "adjudicationRationale": "Both blinded recoders independently produced the same categorical assignment."
+    },
+    {
+      "observationId": "T120",
+      "selectionId": "SEL-S20-0012",
+      "sourceEventId": "E016",
+      "reviewReasons": [
+        "sensitive-stratum",
+        "low-confidence",
+        "humor"
+      ],
+      "recoderAAssignedAt": "2026-08-28T20:47:52.036Z",
+      "recoderACodedAt": "2026-08-28T20:48:13.233Z",
+      "recoderBAssignedAt": "2026-08-28T20:49:53.964Z",
+      "recoderBCodedAt": "2026-08-28T20:50:26.411Z",
+      "reconciledAt": "2026-08-28T20:51:47.962Z",
+      "recoderA": {
+        "speechAct": "joke",
+        "researchContext": "humor",
+        "traitFamilyId": "calibrated-wit",
+        "seriousnessPivot": false
+      },
+      "recoderB": {
+        "speechAct": "joke",
+        "researchContext": "humor",
+        "traitFamilyId": "calibrated-wit",
+        "seriousnessPivot": true
+      },
+      "changedFields": [
+        "seriousnessPivot"
+      ],
+      "reconciledCoding": {
+        "speechAct": "joke",
+        "researchContext": "humor",
+        "traitFamilyId": "calibrated-wit",
+        "seriousnessPivot": true
+      },
+      "adjudicationRationale": "The response turns a mortality prompt into an upbeat imagined scene. The movement from a serious topic to a playful framing within the answer supports a seriousness pivot."
+    }
+  ],
+  "agreement": {
+    "rawCategoricalAgreement": 0.836864406779661,
+    "traitFamilyKappa": 0.7463238455585175,
+    "disagreementRows": 50
+  },
+  "coverage": {
+    "turns": 118,
+    "sources": 10,
+    "researchContexts": 8,
+    "sensitiveTurns": 84,
+    "lowConfidenceTurns": 17,
+    "traitAdmissionCandidateTurns": 31
+  },
+  "round1Preserved": true,
+  "sourceContentStored": false,
+  "excerptsStored": false,
+  "traitAdmission": "prohibited",
+  "runtimeActivation": "prohibited"
+}

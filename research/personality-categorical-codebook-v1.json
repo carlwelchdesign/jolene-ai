@@ -1,0 +1,74 @@
+{
+  "schemaVersion": "jolene.personality-categorical-codebook.v1",
+  "status": "prospective-frozen-before-recoding",
+  "frozenAt": "2026-08-28T21:05:00.000Z",
+  "purpose": "Resolve round-1 categorical ambiguity without changing the frozen sample or overwriting prior assignments.",
+  "fields": {
+    "speechAct": {
+      "rule": "Choose the single main observable communicative action, using the priority order only when two actions are equally central.",
+      "priority": ["boundary", "credit", "ask", "advise", "acknowledge", "joke", "reframe", "story", "answer"],
+      "definitions": {
+        "acknowledge": "Recognizes, validates, thanks, or explicitly receives another person's contribution or feeling.",
+        "advise": "Recommends or prescribes an action, practice, or decision.",
+        "answer": "Provides direct information or explanation when no more specific action dominates.",
+        "ask": "Requests information, clarification, permission, or action.",
+        "boundary": "States a refusal, limit, condition, correction, protected line, or conduct constraint.",
+        "credit": "Allocates authorship, ownership, recognition, or contribution to another person or group.",
+        "joke": "Uses an observable comic mechanism as the turn's primary action rather than incidental tone.",
+        "reframe": "Changes the interpretation, stakes, or meaning of an event without primarily narrating it.",
+        "story": "Narrates an event sequence or personal/public episode without another higher-priority action dominating."
+      }
+    },
+    "researchContext": {
+      "rule": "Choose the analytic context that best explains why the turn matters for professional assistant behavior, not its topic alone.",
+      "priority": ["boundaries", "attribution", "recovery", "uncertainty", "leadership", "work-practice", "care", "humor"],
+      "definitions": {
+        "attribution": "Credit, ownership, authorship, role boundaries, or contribution accuracy.",
+        "boundaries": "Refusals, limits, corrections, conditions, safety lines, or protected conduct.",
+        "care": "Empathy, support, dignity, relational consideration, or practical help centered on another person.",
+        "humor": "Comic timing or wit when no higher-priority professional context explains the turn.",
+        "leadership": "Direction, alignment, mentoring, delegation, accountability, or group decision-making.",
+        "recovery": "Setback, repair, learning from failure, course correction, or rebuilding.",
+        "uncertainty": "Unknowns, evidence limits, qualified claims, ambiguity, or explicit confidence boundaries.",
+        "work-practice": "Methods, process, craft, execution, preparation, prioritization, or operating rhythm."
+      }
+    },
+    "traitFamilyId": {
+      "rule": "Choose the closest candidate behavioral family from observable conduct only. Use the priority order when multiple families are equally supported.",
+      "priority": ["candid-repair", "credit-aware-authority", "uncertainty-humility", "bounded-warmth", "calibrated-wit", "operational-care", "grounded-optimism", "disciplined-agency"],
+      "definitions": {
+        "bounded-warmth": "Maintains kindness or dignity while stating a real limit or correction.",
+        "calibrated-wit": "Uses concise humor to clarify, relieve tension, or improve connection without targeting a vulnerable person.",
+        "candid-repair": "Owns an error, names a setback plainly, changes course, or repairs trust.",
+        "credit-aware-authority": "Leads or speaks decisively while allocating credit and ownership accurately.",
+        "disciplined-agency": "Moves work forward through clear decisions, preparation, prioritization, or firm execution.",
+        "grounded-optimism": "Offers realistic hope or constructive reframing without denying difficulty or evidence.",
+        "operational-care": "Turns concern into concrete, useful, anticipatory, or protective action.",
+        "uncertainty-humility": "States evidence limits, unknowns, confidence, or ambiguity without bluffing."
+      }
+    },
+    "seriousnessPivot": {
+      "rule": "True only when the same atomic turn visibly changes between levity and gravity, such as humor followed by hurt, stakes, correction, or a firm boundary. A turn that is only serious or only funny is false."
+    }
+  },
+  "reviewProtocol": {
+    "completeRequiredSet": 118,
+    "recoders": 2,
+    "blindToPrimaryRound": true,
+    "blindToOtherRecoder": true,
+    "sourceTextHandling": "transient-untrusted-evidence-only",
+    "sourceTextPersistence": "prohibited",
+    "minimumRawCategoricalAgreement": 0.8,
+    "minimumTraitFamilyKappa": 0.6,
+    "preserveRound1": true
+  },
+  "rights": {
+    "excerpts": "prohibited",
+    "recognizableExpression": "prohibited",
+    "biographyOrBeliefTransfer": "prohibited",
+    "dialectImitation": "prohibited",
+    "voiceImitation": "prohibited"
+  },
+  "traitAdmission": "prohibited",
+  "runtimeActivation": "prohibited"
+}
