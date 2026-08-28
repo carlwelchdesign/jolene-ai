@@ -4,6 +4,11 @@ import { isIP } from "node:net";
 import dotenv from "dotenv";
 import { z } from "zod";
 
+import {
+  personalityModeSchema,
+  type PersonalityMode,
+} from "../personality/personality-mode.js";
+
 const publicEnvSchema = z.object({
   JOLENE_PUBLIC_ENABLED: z.enum(["true", "false"]).default("true"),
   JOLENE_PUBLIC_HOST: z
@@ -63,6 +68,7 @@ const publicEnvSchema = z.object({
   ),
   JOLENE_PUBLIC_ANSWER_MODE: z.enum(["deterministic", "openai"])
     .default("deterministic"),
+  JOLENE_PERSONALITY_MODE: personalityModeSchema.default("jolene"),
   JOLENE_PUBLIC_OPENAI_MODEL: z.string().trim().min(1).default("gpt-5.4-mini"),
   JOLENE_PUBLIC_OPENAI_TIMEOUT_MS: z.coerce.number().int().min(1_000).max(30_000)
     .default(8_000),
@@ -170,6 +176,7 @@ export interface PublicDelegateConfig {
   readonly authMode: "disabled" | "bearer";
   readonly apiToken: string | undefined;
   readonly answerMode: "deterministic" | "openai";
+  readonly personalityMode: PersonalityMode;
   readonly openaiModel: string;
   readonly openaiTimeoutMilliseconds: number;
   readonly openaiBudgetPath: string;
@@ -225,6 +232,7 @@ export function parsePublicDelegateConfig(
     authMode: parsed.JOLENE_PUBLIC_AUTH_MODE,
     apiToken: parsed.JOLENE_PUBLIC_API_TOKEN,
     answerMode: parsed.JOLENE_PUBLIC_ANSWER_MODE,
+    personalityMode: parsed.JOLENE_PERSONALITY_MODE,
     openaiModel: parsed.JOLENE_PUBLIC_OPENAI_MODEL,
     openaiTimeoutMilliseconds: parsed.JOLENE_PUBLIC_OPENAI_TIMEOUT_MS,
     openaiBudgetPath: path.resolve(

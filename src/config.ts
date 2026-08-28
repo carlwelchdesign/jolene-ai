@@ -8,10 +8,15 @@ import { resolveSecretValue } from "./config-secret-files.js";
 import { privateControlTokenSchema } from "./http/private-ingress-auth.js";
 import type { WatchedProjectDefinition } from "./domain/watched-project.js";
 import type { PrivateBriefingPolicy } from "./domain/private-briefing.js";
+import {
+  personalityModeSchema,
+  type PersonalityMode,
+} from "./personality/personality-mode.js";
 
 const envSchema = z.object({
   OPENAI_API_KEY: z.string().trim().min(1),
   JOLENE_MODEL: z.string().trim().min(1).default("gpt-5.6-terra"),
+  JOLENE_PERSONALITY_MODE: personalityModeSchema.default("jolene"),
   JOLENE_HOST: z.string().trim().min(1).default("127.0.0.1"),
   JOLENE_PORT: z.coerce.number().int().min(1).max(65_535).default(8421),
   JOLENE_DATABASE_PATH: z
@@ -66,6 +71,7 @@ const envSchema = z.object({
 export interface AppConfig {
   readonly openaiApiKey: string;
   readonly model: string;
+  readonly personalityMode: PersonalityMode;
   readonly host: string;
   readonly port: number;
   readonly databasePath: string;
@@ -176,6 +182,7 @@ export function parseConfig(
   return {
     openaiApiKey: env.OPENAI_API_KEY,
     model: env.JOLENE_MODEL,
+    personalityMode: env.JOLENE_PERSONALITY_MODE,
     host: env.JOLENE_HOST,
     port: env.JOLENE_PORT,
     databasePath: path.resolve(workingDirectory, env.JOLENE_DATABASE_PATH),

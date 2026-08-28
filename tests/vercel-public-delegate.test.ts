@@ -56,6 +56,28 @@ describe("Vercel public delegate adapter", () => {
     })).toThrow();
   });
 
+  it("accepts only the shared personality rollback values", () => {
+    const artifact = createPublicEvidenceArtifact();
+    const environment = {
+      JOLENE_PUBLIC_ENABLED: "true",
+      JOLENE_PUBLIC_AUTH_MODE: "bearer",
+      JOLENE_PUBLIC_API_TOKEN:
+        "test-token-with-at-least-thirty-two-characters",
+      JOLENE_PUBLIC_ARTIFACT_URL:
+        "https://example.test/public-career-evidence.json",
+      JOLENE_PUBLIC_EXPECTED_CORPUS_VERSION: artifact.manifest.corpusVersion,
+    };
+
+    expect(createVercelPublicDelegateHandler({
+      ...environment,
+      JOLENE_PERSONALITY_MODE: "neutral",
+    }, sharedCoordination())).toBeTypeOf("function");
+    expect(() => createVercelPublicDelegateHandler({
+      ...environment,
+      JOLENE_PERSONALITY_MODE: "off",
+    }, sharedCoordination())).toThrow();
+  });
+
   it("serves the root API contract through Vercel's /api function prefix", async () => {
     const artifact = createPublicEvidenceArtifact();
     vi.stubGlobal("fetch", vi.fn(async () => new Response(

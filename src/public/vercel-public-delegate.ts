@@ -40,6 +40,7 @@ import {
   SharedSecurityTelemetry,
 } from "./shared-public-observability.js";
 import type { SecurityTelemetryRecorder } from "../security/security-telemetry.js";
+import { personalityModeSchema } from "../personality/personality-mode.js";
 
 const vercelPublicEnvironmentSchema = z.object({
   JOLENE_PUBLIC_ENABLED: z.literal("true"),
@@ -56,6 +57,7 @@ const vercelPublicEnvironmentSchema = z.object({
     .default(8),
   JOLENE_PUBLIC_ANSWER_MODE: z.enum(["deterministic", "openai"])
     .default("deterministic"),
+  JOLENE_PERSONALITY_MODE: personalityModeSchema.default("jolene"),
   JOLENE_PUBLIC_OPENAI_MODEL: z.string().trim().min(1).default("gpt-5.4-mini"),
   JOLENE_PUBLIC_OPENAI_TIMEOUT_MS: z.coerce.number().int().min(1_000)
     .max(30_000).default(12_000),
@@ -166,6 +168,7 @@ function createAnswerService(
     client: new OpenAI({ apiKey: requireOpenAIApiKey(config.OPENAI_API_KEY) }),
     model: config.JOLENE_PUBLIC_OPENAI_MODEL,
     timeoutMilliseconds: config.JOLENE_PUBLIC_OPENAI_TIMEOUT_MS,
+    personalityMode: config.JOLENE_PERSONALITY_MODE,
   }), {
     budget: modelBudget,
     ...(config.JOLENE_PUBLIC_RETRIEVAL_MODE === "hybrid"

@@ -12,6 +12,7 @@ x-jolene-runtime: &jolene-runtime
     OPENAI_API_KEY_FILE: /run/secrets/openai_api_key
     JOLENE_DATABASE_PATH: /data/jolene.sqlite
     JOLENE_HOST: 0.0.0.0
+    JOLENE_PERSONALITY_MODE: ${JOLENE_PERSONALITY_MODE:-jolene}
     JOLENE_OBSIDIAN_VAULT_ROOT: /vault
     JOLENE_PORT: 8421
     JOLENE_WATCHED_PROJECTS: >-

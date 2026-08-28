@@ -24,6 +24,7 @@ describe("private runtime configuration", () => {
     expect(config.careerEmbeddingsEnabled).toBe(false);
     expect(config.privateRetrievalProviderEgress).toBe("local_only");
     expect(config.openaiApiKey).toBe("test-key");
+    expect(config.personalityMode).toBe("jolene");
     expect(config.publicLiveReviewPacketPath).toBe(
       "/tmp/jolene-config-test/.jolene/evaluations/public-live-model-review.json",
     );
@@ -42,6 +43,17 @@ describe("private runtime configuration", () => {
     expect(config.conversationQualityDecisionPath).toBe(
       "/tmp/jolene-config-test/.jolene/evaluations/conversation-quality-decision.json",
     );
+  });
+
+  it("accepts one exact neutral personality rollback value", () => {
+    expect(parseConfig(configEnvironment({
+      OPENAI_API_KEY: "test-key",
+      JOLENE_PERSONALITY_MODE: "neutral",
+    })).personalityMode).toBe("neutral");
+    expect(() => parseConfig(configEnvironment({
+      OPENAI_API_KEY: "test-key",
+      JOLENE_PERSONALITY_MODE: "off",
+    }))).toThrow();
   });
 
   it("requires a high-entropy private control credential", () => {

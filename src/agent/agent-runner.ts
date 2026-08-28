@@ -41,6 +41,7 @@ import {
 } from "../domain/tool-call-authorization.js";
 import { buildPrivateJoleneInstructions } from
   "../personality/runtime-personality-policy.js";
+import type { PersonalityMode } from "../personality/personality-mode.js";
 import {
   careerToolResultEnvelopes,
   currentUserMessageEnvelope,
@@ -75,6 +76,7 @@ export interface OpenAIJoleneRunnerOptions {
   readonly apiKey: string;
   readonly model: string;
   readonly instructions: string;
+  readonly personalityMode?: PersonalityMode;
   readonly knowledge: KnowledgeSource;
   readonly careerKnowledge: CareerKnowledgeSource;
   readonly workStatus: WorkStatusSource;
@@ -133,6 +135,7 @@ export class OpenAIJoleneRunner implements JoleneAgentRunner {
       instructions: buildPrivateJoleneInstructions(
         this.options.instructions,
         request.channelKind,
+        this.options.personalityMode ?? "jolene",
       ),
       model: this.options.model,
       tools,

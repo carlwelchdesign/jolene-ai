@@ -5,8 +5,9 @@ import type {
   GroundedPublicAnswerInput,
   PublicAnswerTextGenerator,
 } from "./public-answer-service.js";
-import { PUBLIC_JOLENE_PERSONALITY_INSTRUCTIONS } from
+import { publicJolenePersonalityInstructions } from
   "../personality/runtime-personality-policy.js";
+import type { PersonalityMode } from "../personality/personality-mode.js";
 import {
   PUBLIC_ANSWER_GROUNDING_CONTRACT_VERSION,
   PUBLIC_ANSWER_GROUNDING_LIMITS,
@@ -47,6 +48,7 @@ export interface OpenAIPublicAnswerGeneratorOptions {
   readonly model: string;
   readonly timeoutMilliseconds: number;
   readonly maxOutputTokens?: number;
+  readonly personalityMode?: PersonalityMode;
 }
 
 export class OpenAIPublicAnswerGenerator implements PublicAnswerTextGenerator {
@@ -54,6 +56,7 @@ export class OpenAIPublicAnswerGenerator implements PublicAnswerTextGenerator {
   readonly #model: string;
   readonly #timeoutMilliseconds: number;
   readonly #maxOutputTokens: number;
+  readonly #personalityMode: PersonalityMode;
 
   constructor(options: OpenAIPublicAnswerGeneratorOptions) {
     if (
@@ -70,6 +73,7 @@ export class OpenAIPublicAnswerGenerator implements PublicAnswerTextGenerator {
     this.#model = options.model;
     this.#timeoutMilliseconds = options.timeoutMilliseconds;
     this.#maxOutputTokens = maxOutputTokens;
+    this.#personalityMode = options.personalityMode ?? "jolene";
   }
 
   async generate(
@@ -109,6 +113,7 @@ export class OpenAIPublicAnswerGenerator implements PublicAnswerTextGenerator {
         model: this.#model,
         maxOutputTokens: this.#maxOutputTokens,
         observedAt,
+        personalityMode: this.#personalityMode,
       }), {
         signal: AbortSignal.timeout(this.#timeoutMilliseconds),
       });
@@ -121,6 +126,7 @@ export function createOpenAIPublicAnswerRequest(options: {
   readonly model: string;
   readonly maxOutputTokens: number;
   readonly observedAt: string;
+  readonly personalityMode?: PersonalityMode;
 }) {
   const { input } = options;
   return {
@@ -128,7 +134,7 @@ export function createOpenAIPublicAnswerRequest(options: {
       store: false as const,
       instructions: [
         "You are Jolene, Carl Welch's public portfolio assistant.",
-        ...PUBLIC_JOLENE_PERSONALITY_INSTRUCTIONS,
+        ...publicJolenePersonalityInstructions(options.personalityMode),
         "Write two or three short paragraphs using only the supplied reviewed public evidence.",
         "Synthesize the evidence into a useful answer instead of reciting, concatenating, or labeling the claims.",
         "Prefer concrete examples and explain why they matter to the visitor.",

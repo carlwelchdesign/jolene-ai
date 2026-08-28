@@ -601,6 +601,15 @@ failures. Runtime activation, release, and deployment remain separate gates.
 **Scope:** private text first; then a tightly scoped Slack test with private-vault disclosure disabled.
 **Exit gate:** Carl approves tone across routine, technical, sensitive, and conflict cases; all release thresholds pass; rollback to neutral behavior is one configuration change.
 
+**Local checkpoint (2026-08-28):** complete. Carl's owner-reviewed nine-case text
+sample passes 9/9 at 3.93/4 with no hard failures. The private, Slack, container,
+isolated public, and Vercel answer paths now share the exact
+`JOLENE_PERSONALITY_MODE=jolene|neutral` contract. Deterministic regression tests
+prove that `neutral` removes the personality presentation layer without weakening
+base safety, privacy, grounding, authorization, capability, or channel boundaries.
+No Slack message, model call, hosted environment change, or deployment was performed;
+those remain separate release-verification actions.
+
 ### Phase 5 — Original voice exploration
 
 **Target:** Not scheduled
@@ -621,7 +630,7 @@ failures. Runtime activation, release, and deployment remain separate gates.
 | JOL-PER-007 | Draft identity and behavior specification | Product/AI | 006 | Rules cover normal, sensitive, urgent, public, private, error, and conflict contexts. |
 | JOL-PER-008 | Produce anti-caricature and rights review | Trust/rights | 007 | Complete locally. The fingerprint-bound v1 review explicitly covers ten risk areas, preserves all ten as release-blocking if weakened, and distinguishes engineering safeguards from legal clearance, runtime activation, public release, and voice authorization. |
 | JOL-PER-009 | Build evaluation fixtures and neutral baseline | Evaluation | 007 | Complete locally. The deterministic v1 baseline binds the seven-context behavior specification and ten-area trust review to nine conversational cases, eleven paired renderer contexts, eighteen hard-failure codes, human-review thresholds, and exact source fingerprints without recapturing the approved private packet. |
-| JOL-PER-010 | Run text-only pilot | Carl/Product | 008, 009 | Thresholds pass; Carl reviews sample; rollback path verified. |
+| JOL-PER-010 | Run text-only pilot | Carl/Product | 008, 009 | Complete locally. The owner-reviewed sample passes 9/9 at 3.93/4 with no hard failures, and one validated `JOLENE_PERSONALITY_MODE` setting rolls private, Slack, container, isolated public, and Vercel answer paths between `jolene` and `neutral` without changing safety or grounding policy. Live Slack and hosted verification remain separate release actions. |
 | JOL-PER-011 | Define Slack/vault disclosure policy | Product/Trust | 007 | Public/shared channel receives no private-vault content without explicit per-disclosure authorization. |
 | JOL-PER-012 | Decide whether to explore original voice | Carl | 010 | Separate go/no-go decision; no voice work begins by default. |
 

@@ -66,6 +66,7 @@ describe("Docker runtime boundary", () => {
     expect(compose).toContain("JOLENE_PUBLIC_LIVE_REVIEW_DECISION_PATH: /data/evaluations/public-live-model-decision.json");
     expect(compose).toContain("JOLENE_PERSONALITY_RESEARCH_DECISION_PATH: /data/personality/research-decision.json");
     expect(compose).toContain("JOLENE_PERSONALITY_TUNING_DECISION_PATH: /data/personality/tuning-decision.json");
+    expect(compose).toContain("JOLENE_PERSONALITY_MODE: ${JOLENE_PERSONALITY_MODE:-jolene}");
     expect(compose).toContain("JOLENE_CONVERSATION_QUALITY_PACKET_PATH: /review/conversation-quality-capture.json");
     expect(compose).toContain("JOLENE_CONVERSATION_QUALITY_DECISION_PATH: /data/evaluations/conversation-quality-decision.json");
     expect(dockerfile).toContain("COPY --chown=node:node research ./research");
@@ -235,6 +236,9 @@ describe("Docker runtime boundary", () => {
     expect(publicCompose).toContain("127.0.0.1:${JOLENE_PUBLIC_HOST_PORT:-8431}:8431");
     expect(publicCompose).toContain("JOLENE_PUBLIC_OPERATIONS_HOST: 127.0.0.1");
     expect(publicCompose).toContain("JOLENE_PUBLIC_OPERATIONS_PORT: 8432");
+    expect(publicCompose).toContain(
+      "JOLENE_PERSONALITY_MODE: ${JOLENE_PERSONALITY_MODE:-jolene}",
+    );
     expect(publicCompose).toContain(
       "JOLENE_PUBLIC_AUTH_MODE: ${JOLENE_PUBLIC_AUTH_MODE:-disabled}",
     );

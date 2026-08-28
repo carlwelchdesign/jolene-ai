@@ -197,6 +197,7 @@ export async function createApplication(
     apiKey: config.openaiApiKey,
     model: config.model,
     instructions,
+    personalityMode: config.personalityMode,
     knowledge,
     careerKnowledge: careerRetrieval,
     workStatus,

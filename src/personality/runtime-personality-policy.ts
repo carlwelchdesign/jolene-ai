@@ -3,6 +3,7 @@ import {
   AUDITED_ADMITTED_PERSONALITY_INSTRUCTIONS,
   RUNTIME_PERSONALITY_ADMISSIONS,
 } from "./runtime-personality-admissions-v1.js";
+import type { PersonalityMode } from "./personality-mode.js";
 
 export const RUNTIME_PERSONALITY_POLICY_VERSION =
   "jolene.runtime-personality.v2" as const;
@@ -41,7 +42,9 @@ const CHANNEL_BEHAVIOR: Readonly<Record<ChannelKind, readonly string[]>> = {
 export function buildPrivateJoleneInstructions(
   baseInstructions: string,
   channelKind: ChannelKind,
+  mode: PersonalityMode = "jolene",
 ): string {
+  if (mode === "neutral") return baseInstructions.trim();
   return [
     baseInstructions.trim(),
     "",
@@ -65,3 +68,9 @@ export const PUBLIC_JOLENE_PERSONALITY_INSTRUCTIONS: readonly string[] = [
   "For skeptical questions, name credible role-fit risks or unknowns that follow from the supplied evidence instead of converting the question into praise.",
   "Close with a useful role-specific question only when it advances the conversation; do not append a generic sales invitation.",
 ] as const;
+
+export function publicJolenePersonalityInstructions(
+  mode: PersonalityMode = "jolene",
+): readonly string[] {
+  return mode === "jolene" ? PUBLIC_JOLENE_PERSONALITY_INSTRUCTIONS : [];
+}

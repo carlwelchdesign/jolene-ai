@@ -93,6 +93,7 @@ describe("public delegate manifest boundary", () => {
       authMode: "disabled",
       apiToken: undefined,
       answerMode: "deterministic",
+      personalityMode: "jolene",
       openaiModel: "gpt-5.4-mini",
       openaiTimeoutMilliseconds: 8_000,
       openaiBudgetPath: path.resolve(".jolene/public/model-budget.json"),
@@ -101,6 +102,15 @@ describe("public delegate manifest boundary", () => {
       openaiEmbeddingModel: "text-embedding-3-small",
       openaiApiKey: undefined,
     });
+  });
+
+  it("accepts one exact neutral personality rollback value", () => {
+    expect(parsePublicDelegateConfig({
+      JOLENE_PERSONALITY_MODE: "neutral",
+    }).personalityMode).toBe("neutral");
+    expect(() => parsePublicDelegateConfig({
+      JOLENE_PERSONALITY_MODE: "off",
+    })).toThrow();
   });
 
   it("requires an API key only when OpenAI answer synthesis is selected", () => {

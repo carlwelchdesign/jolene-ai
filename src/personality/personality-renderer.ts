@@ -2,6 +2,13 @@ import { createHash } from "node:crypto";
 
 import { z } from "zod";
 
+import {
+  personalityModeSchema,
+  type PersonalityMode,
+} from "./personality-mode.js";
+
+export { personalityModeSchema, type PersonalityMode } from "./personality-mode.js";
+
 export const PERSONALITY_RENDERER_SCHEMA_VERSION =
   "jolene.personality-renderer.v1" as const;
 
@@ -101,13 +108,10 @@ export const personalityContextSchema = z.enum([
   "voice",
 ]);
 
-export const personalityModeSchema = z.enum(["neutral", "jolene"]);
-
 export type GroundedResponsePayload = z.infer<
   typeof groundedResponsePayloadSchema
 >;
 export type PersonalityContext = z.infer<typeof personalityContextSchema>;
-export type PersonalityMode = z.infer<typeof personalityModeSchema>;
 
 export interface PersonalityRenderRequest {
   readonly payload: GroundedResponsePayload;

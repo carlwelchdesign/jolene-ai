@@ -32,6 +32,22 @@ describe("runtime personality policy", () => {
     expect(instructions).not.toContain("familiar personality with Carl");
   });
 
+  it("rolls every private and Slack channel back to the unchanged base policy", () => {
+    for (const channel of [
+      "cli",
+      "private_chat",
+      "slack_dm",
+      "slack_private",
+      "slack_shared",
+    ] as const) {
+      expect(buildPrivateJoleneInstructions(
+        "  Base safety, privacy, grounding, and capability policy.  ",
+        channel,
+        "neutral",
+      )).toBe("Base safety, privacy, grounding, and capability policy.");
+    }
+  });
+
   it("gives public Jolene direct anti-canned and skeptical-answer guidance", () => {
     const instructions = PUBLIC_JOLENE_PERSONALITY_INSTRUCTIONS.join(" ");
 
