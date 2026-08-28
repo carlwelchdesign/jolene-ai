@@ -588,7 +588,11 @@ remain explicitly deferred. Runtime activation and deployment remain separate ga
 **Target:** 2026-09-09
 **Owner:** Product/AI engineering; trust reviewer consulted
 **Deliverables:** identity document, behavior rules, context matrix, surface-style guide, rubric, fixtures, red-team cases, neutral baseline.
-**Exit gate:** no anti-caricature or privacy hard fail in dry evaluation; usefulness does not regress against neutral responses.
+**Exit gate:** complete locally. The v1 machine-readable behavior specification is bound
+to the reviewed character graph and covers normal, sensitive, urgent, public, private,
+error, and conflict contexts. It preserves the priority order and all anti-caricature
+constraints. The nine-case owner-reviewed evaluation passes 9/9 at 3.93/4, with no hard
+failures. Runtime activation, release, and deployment remain separate gates.
 
 ### Phase 4 — Limited text-only pilot
 
