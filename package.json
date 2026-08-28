@@ -53,6 +53,8 @@
     "research:personality:sources:v3": "tsx scripts/validate-personality-sources-v3.ts",
     "research:personality:sampling:v2": "tsx scripts/validate-personality-sampling-plan.ts",
     "research:personality:sampling:v3": "tsx scripts/validate-personality-sampling-plan-v3.ts",
+    "research:personality:sampling:v4": "tsx scripts/validate-personality-sampling-plan-v4.ts",
+    "research:personality:sampling:v4:generate": "tsx scripts/generate-personality-sampling-plan-v4.ts",
     "research:personality:capacity:v1": "tsx scripts/validate-personality-sampling-capacity-audit.ts",
     "research:personality:boundary-protocol:v1": "tsx scripts/validate-personality-sampling-boundary-protocol.ts",
     "research:personality:av-recovery:v1": "tsx scripts/validate-personality-av-recovery-outcome.ts",
