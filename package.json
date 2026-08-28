@@ -49,6 +49,7 @@
     "research:personality:sampling:v2": "tsx scripts/validate-personality-sampling-plan.ts",
     "security:prompt-injection:validate": "tsx scripts/validate-prompt-injection-threat-model.ts",
     "security:prompt-injection:red-team:validate": "tsx scripts/validate-prompt-injection-red-team-contract.ts",
+    "security:operations:tabletop": "tsx scripts/run-security-tabletop.ts",
     "security:private-rag:validate": "tsx scripts/validate-private-rag-security.ts",
     "security:tool-authorization:validate": "tsx scripts/validate-tool-call-authorization.ts",
     "security:untrusted-content:validate": "tsx scripts/validate-untrusted-content-envelopes.ts",
