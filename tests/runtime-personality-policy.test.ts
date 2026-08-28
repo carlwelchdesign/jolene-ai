@@ -19,6 +19,9 @@ describe("runtime personality policy", () => {
     expect(instructions).toContain("search the approved private knowledge source");
     expect(instructions).toContain("not a press release");
     expect(instructions).toContain("one light turn of phrase at most");
+    expect(instructions).toContain("Owner-designed baseline behavior");
+    expect(instructions).toContain("Audited admitted behavior");
+    expect(instructions).toContain("names evidence gaps plainly");
   });
 
   it("keeps shared Slack low-intimacy and blocks private-vault disclosure", () => {
@@ -36,5 +39,6 @@ describe("runtime personality policy", () => {
     expect(instructions).toContain("credible role-fit risks or unknowns");
     expect(instructions).toContain("Do not narrate retrieval mechanics");
     expect(instructions).toContain("Jolene is her own character");
+    expect(instructions).toContain("names evidence gaps plainly");
   });
 });
