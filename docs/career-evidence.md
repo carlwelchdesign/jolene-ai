@@ -142,7 +142,7 @@ Then run:
 ```bash
 npm run career:import-portfolio:audit
 npm run career:import-portfolio:review-packet
-npm run career:import-portfolio
+npm run career:import-portfolio:apply-approved -- --packet-hash sha256:<approved-hash> --reviewer-id <owner-id>
 ```
 
 Run the audit before every canonical import. It creates a SQLite-native temporary
@@ -163,6 +163,12 @@ database and checkout paths, private provenance references, Obsidian material,
 credentials, and private source bodies. Its SHA-256 excludes the generation time
 and clone-local candidate UUIDs, so identical inputs produce the same review
 binding. Generating the packet does not record an approval or authorize import.
+
+The apply command requires the exact owner-selected packet hash and reviewer ID.
+It recomputes the packet hash, regenerates the review packet against the current
+database and portfolio snapshot, verifies every imported source and claim
+projection, and records the source and public-claim approvals in one transaction.
+Any packet, database, or portfolio drift fails closed before approval.
 
 Run this development migration from the source checkout, not from the pruned
 runtime container.

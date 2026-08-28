@@ -4,13 +4,17 @@ import path from "node:path";
 import dotenv from "dotenv";
 import ts from "typescript";
 
+import { applyApprovedPortfolioEvidenceImport } from "../src/application/approved-portfolio-evidence-import.js";
 import { PortfolioEvidenceImporter } from "../src/application/portfolio-evidence-importer.js";
 import {
   createPortfolioEvidenceImportReviewPacket,
   runPortfolioEvidenceImportAudit,
 } from "../src/application/portfolio-evidence-import-audit.js";
 import { SqliteCareerEvidenceStore } from "../src/persistence/sqlite-career-evidence-store.js";
-import { writePortfolioEvidenceImportReviewPacket } from "../src/publication/portfolio-evidence-import-review-writer.js";
+import {
+  readPortfolioEvidenceImportReviewPacket,
+  writePortfolioEvidenceImportReviewPacket,
+} from "../src/publication/portfolio-evidence-import-review-writer.js";
 
 dotenv.config({ path: path.resolve(process.cwd(), ".env.local"), quiet: true });
 
@@ -55,7 +59,19 @@ const importInput = {
   },
 };
 
-if (process.argv.includes("--review-packet")) {
+if (process.argv.includes("--apply-approved-packet")) {
+  const expectedPacketHash = requiredArgument("--packet-hash");
+  const reviewerId = requiredArgument("--reviewer-id");
+  const packet = await readPortfolioEvidenceImportReviewPacket(reviewPacketPath);
+  const result = await applyApprovedPortfolioEvidenceImport({
+    databasePath,
+    expectedPacketHash,
+    importInput,
+    packet,
+    reviewerId,
+  });
+  process.stdout.write(`${JSON.stringify(result, null, 2)}\n`);
+} else if (process.argv.includes("--review-packet")) {
   const packet = await createPortfolioEvidenceImportReviewPacket({
     databasePath,
     importInput,
@@ -77,6 +93,13 @@ if (process.argv.includes("--review-packet")) {
   } finally {
     store.close();
   }
+}
+
+function requiredArgument(name: string): string {
+  const index = process.argv.indexOf(name);
+  const value = index >= 0 ? process.argv[index + 1] : undefined;
+  if (!value || value.startsWith("--")) throw new Error(`${name} is required.`);
+  return value;
 }
 
 async function loadTypescriptData(filePath: string): Promise<Record<string, unknown>> {

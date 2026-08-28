@@ -168,6 +168,10 @@ export class SqliteCareerEvidenceStore implements CareerEvidenceStore {
     if (!readOnly) this.migrate();
   }
 
+  runInTransaction<T>(operation: () => T): T {
+    return this.database.transaction(operation)();
+  }
+
   upsertSource(input: UpsertCareerSourceInput): CareerSource {
     assertSourceInput(input);
     const current = this.findSource(input.id, input.actorId, input.workspaceId);
@@ -472,6 +476,21 @@ export class SqliteCareerEvidenceStore implements CareerEvidenceStore {
       input.workspaceId,
     );
     return this.requireClaim(input.id, input.actorId, input.workspaceId);
+  }
+
+  approvePublicEvidenceBatch(input: CareerEvidenceScope & {
+    readonly sourceIds: readonly string[];
+    readonly claimIds: readonly string[];
+    readonly reviewerId: string;
+  }): void {
+    this.runInTransaction(() => {
+      for (const id of [...new Set(input.sourceIds)]) {
+        this.decideSource({ ...input, id, decision: "approved" });
+      }
+      for (const id of [...new Set(input.claimIds)]) {
+        this.decideClaim({ ...input, id, decision: "approve_public" });
+      }
+    });
   }
 
   revokeSource(id: string, scope: CareerEvidenceScope): CareerSource {

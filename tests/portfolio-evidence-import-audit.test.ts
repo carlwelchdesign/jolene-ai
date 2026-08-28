@@ -9,6 +9,10 @@ import {
   createPortfolioEvidenceImportReviewPacket,
   runPortfolioEvidenceImportAudit,
 } from "../src/application/portfolio-evidence-import-audit.js";
+import {
+  applyApprovedPortfolioEvidenceImport,
+  ApprovedPortfolioEvidenceImportConflictError,
+} from "../src/application/approved-portfolio-evidence-import.js";
 import { PortfolioEvidenceImporter } from "../src/application/portfolio-evidence-importer.js";
 import { SqliteCareerEvidenceStore } from "../src/persistence/sqlite-career-evidence-store.js";
 import {
@@ -109,6 +113,65 @@ describe("runPortfolioEvidenceImportAudit", () => {
     await writePortfolioEvidenceImportReviewPacket(outputPath, packet);
     expect(await readPortfolioEvidenceImportReviewPacket(outputPath)).toEqual(packet);
     expect((await stat(outputPath)).mode & 0o777).toBe(0o600);
+  });
+
+  it("atomically applies an exact owner-approved packet", async () => {
+    const databasePath = await approvedFixtureDatabase();
+    const changed = snapshot();
+    changed.projects[0]!.summary = "A materially changed public summary.";
+    const input = importInput(changed, "2026-08-27T08:00:00.000Z");
+    const packet = await createPortfolioEvidenceImportReviewPacket({
+      databasePath,
+      importInput: input,
+    });
+
+    const result = await applyApprovedPortfolioEvidenceImport({
+      databasePath,
+      expectedPacketHash: packet.packetHash,
+      importInput: input,
+      packet,
+      reviewerId: "carl",
+    });
+
+    expect(result).toEqual({
+      packetHash: packet.packetHash,
+      approvedSources: 1,
+      approvedClaims: 1,
+      eligiblePublicClaims: 1,
+    });
+    const store = new SqliteCareerEvidenceStore(databasePath, () => new Date(), {
+      readOnly: true,
+    });
+    try {
+      expect(store.listPublicClaims(scope)).toHaveLength(1);
+      expect(store.listPublicClaims(scope)[0]?.proposition).toBe(
+        "A materially changed public summary.",
+      );
+      expect(store.validate(scope)).toEqual([]);
+    } finally {
+      store.close();
+    }
+  });
+
+  it("rejects packet or portfolio drift before canonical mutation", async () => {
+    const databasePath = await approvedFixtureDatabase();
+    const before = await digestFile(databasePath);
+    const changed = snapshot();
+    changed.projects[0]!.summary = "Approved wording.";
+    const packet = await createPortfolioEvidenceImportReviewPacket({
+      databasePath,
+      importInput: importInput(changed, "2026-08-27T08:00:00.000Z"),
+    });
+    changed.projects[0]!.summary = "Unreviewed drift.";
+
+    await expect(applyApprovedPortfolioEvidenceImport({
+      databasePath,
+      expectedPacketHash: packet.packetHash,
+      importInput: importInput(changed, "2026-08-27T08:00:00.000Z"),
+      packet,
+      reviewerId: "carl",
+    })).rejects.toBeInstanceOf(ApprovedPortfolioEvidenceImportConflictError);
+    expect(await digestFile(databasePath)).toBe(before);
   });
 });
 

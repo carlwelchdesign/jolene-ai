@@ -43,6 +43,11 @@ export interface PortfolioEvidenceImportReviewInput
   readonly now?: () => Date;
 }
 
+export type PortfolioEvidenceImportReviewPayload = Omit<
+  PortfolioEvidenceImportReviewPacket,
+  "generatedAt" | "packetHash"
+>;
+
 type SourceChangedField =
   | "new_source"
   | "source_content"
@@ -78,14 +83,20 @@ export async function createPortfolioEvidenceImportReviewPacket(
       },
       sources,
     };
-    const packetHash = `sha256:${createHash("sha256")
-      .update(stableStringify(payload)).digest("hex")}`;
+    const packetHash = portfolioEvidenceImportReviewPacketHash(payload);
     return portfolioEvidenceImportReviewPacketSchema.parse({
       ...payload,
       packetHash,
       generatedAt,
     });
   });
+}
+
+export function portfolioEvidenceImportReviewPacketHash(
+  payload: PortfolioEvidenceImportReviewPayload,
+): `sha256:${string}` {
+  return `sha256:${createHash("sha256")
+    .update(stableStringify(payload)).digest("hex")}`;
 }
 
 async function withImportedClone<T>(
@@ -255,7 +266,8 @@ function claimChangesForSource(
   return [...new Set([...previous.keys(), ...current.keys()])].sort().map((logicalKey) => {
     const before = previous.get(logicalKey) ?? null;
     const after = current.get(logicalKey) ?? null;
-    const status = !before ? "added" : !after ? "withdrawn" : before.id === after.id
+    const status: "added" | "changed" | "unchanged" | "withdrawn" =
+      !before ? "added" : !after ? "withdrawn" : before.id === after.id
       ? "unchanged" : "changed";
     return {
       logicalKey,

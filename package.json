@@ -21,6 +21,7 @@
     "career:import-portfolio": "tsx scripts/import-portfolio-evidence.ts",
     "career:import-portfolio:audit": "tsx scripts/import-portfolio-evidence.ts --audit",
     "career:import-portfolio:review-packet": "tsx scripts/import-portfolio-evidence.ts --review-packet",
+    "career:import-portfolio:apply-approved": "tsx scripts/import-portfolio-evidence.ts --apply-approved-packet",
     "career:import-obsidian": "tsx scripts/import-obsidian-career.ts",
     "career:index": "tsx scripts/index-career-evidence.ts",
     "career:index:lexical": "tsx src/career-index.ts",
