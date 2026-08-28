@@ -100,9 +100,11 @@ describe("private RAG policy", () => {
   it("requires complete derivation lineage and coherent invalidation state", () => {
     expect(privateRagDerivationSchema.parse({
       id: "derivation-1",
+      eventId: "event-1",
       actorId: "carl",
       workspaceId: "personal",
       destination: "model_copy",
+      outputFingerprint: `sha256:${"b".repeat(64)}`,
       parentFingerprints: [envelope().provenanceFingerprint],
       taintIds: envelope().lineage.taintIds,
       status: "active",
@@ -112,9 +114,11 @@ describe("private RAG policy", () => {
     })).toMatchObject({ status: "active", destination: "model_copy" });
     expect(() => privateRagDerivationSchema.parse({
       id: "derivation-1",
+      eventId: "event-1",
       actorId: "carl",
       workspaceId: "personal",
       destination: "summary",
+      outputFingerprint: `sha256:${"b".repeat(64)}`,
       parentFingerprints: [envelope().provenanceFingerprint],
       taintIds: envelope().lineage.taintIds,
       status: "invalidated",

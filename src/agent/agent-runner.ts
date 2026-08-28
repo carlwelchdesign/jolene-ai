@@ -10,6 +10,8 @@ import {
   privateRagFallbackPayload,
   type PrivateRetrievalProviderEgress,
 } from "../application/private-rag-provider-gate.js";
+import type { PrivateRagSecurityCoordinator } from
+  "../application/private-rag-security-coordinator.js";
 import {
   canExposeModelCapability,
   requireModelCapability,
@@ -76,6 +78,7 @@ export interface OpenAIJoleneRunnerOptions {
   readonly projectWatch: PrivateWatchedProjectSource;
   readonly capabilityAudit: CapabilityInvocationAuditor;
   readonly privateRetrievalProviderEgress: PrivateRetrievalProviderEgress;
+  readonly privateRagSecurity?: PrivateRagSecurityCoordinator;
 }
 
 export class OpenAIJoleneRunner implements JoleneAgentRunner {
@@ -191,7 +194,7 @@ export class OpenAIJoleneRunner implements JoleneAgentRunner {
               request,
               now(),
             );
-            const gated = gatePrivateRagProviderPayload({
+            const gateInput = {
               policy: createPrivateRagTurnPolicy({
                 request,
                 currentIntentFingerprint:
@@ -220,7 +223,10 @@ export class OpenAIJoleneRunner implements JoleneAgentRunner {
                 providerPayloadClass: "reviewed_excerpt" as const,
               })),
               queryTermCount: meaningfulQueryTermCount(query),
-            });
+            };
+            const gated = this.options.privateRagSecurity
+              ? this.options.privateRagSecurity.gateProviderPayload(gateInput)
+              : gatePrivateRagProviderPayload(gateInput);
             return {
               serialized: gated.providerEnvelopes.length > 0
                 ? serializePrivateModelEnvelopes(gated.providerEnvelopes)
@@ -269,7 +275,7 @@ export class OpenAIJoleneRunner implements JoleneAgentRunner {
               context: request,
             });
             const envelopes = careerToolResultEnvelopes(response, request, now());
-            const gated = gatePrivateRagProviderPayload({
+            const gateInput = {
               policy: createPrivateRagTurnPolicy({
                 request,
                 currentIntentFingerprint:
@@ -290,7 +296,10 @@ export class OpenAIJoleneRunner implements JoleneAgentRunner {
                 providerPayloadClass: "reviewed_career_claim" as const,
               })),
               queryTermCount: meaningfulQueryTermCount(query),
-            });
+            };
+            const gated = this.options.privateRagSecurity
+              ? this.options.privateRagSecurity.gateProviderPayload(gateInput)
+              : gatePrivateRagProviderPayload(gateInput);
             return {
               serialized: gated.providerEnvelopes.length > 0
                 ? serializePrivateModelEnvelopes(gated.providerEnvelopes)

@@ -38,6 +38,7 @@ export const privateRagRiskSignalSchema = z.enum([
   "private_locator",
   "disallowed_contact_data",
   "provider_payload_drift",
+  "previously_quarantined",
 ]);
 export type PrivateRagRiskSignal = z.infer<typeof privateRagRiskSignalSchema>;
 
@@ -211,9 +212,11 @@ export function evaluatePrivateRagIngress(
 
 export const privateRagDerivationSchema = z.object({
   id: identifierSchema,
+  eventId: identifierSchema,
   actorId: identifierSchema,
   workspaceId: identifierSchema,
   destination: z.enum(["index", "summary", "cache", "packet", "model_copy"]),
+  outputFingerprint: fingerprintSchema,
   parentFingerprints: z.array(fingerprintSchema).min(1).max(128),
   taintIds: z.array(identifierSchema).min(1).max(128),
   status: z.enum(["active", "invalidated"]),

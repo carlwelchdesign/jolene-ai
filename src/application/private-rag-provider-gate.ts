@@ -90,15 +90,22 @@ export function gatePrivateRagProviderPayload(input: {
   readonly policy: PrivateRagTurnPolicy;
   readonly entries: readonly PrivateRagProviderEntry[];
   readonly queryTermCount: number;
+  readonly blockedTaintIds?: ReadonlySet<string>;
 }): PrivateRagProviderGateResult {
   const providerEnvelopes: UntrustedContentEnvelope[] = [];
   const quarantineCandidates: PrivateRagQuarantineCandidate[] = [];
   for (const entry of input.entries) {
-    const riskSignals = detectPrivateRagRiskSignals(entry.envelope);
+    const riskSignals = new Set(detectPrivateRagRiskSignals(entry.envelope));
+    if (entry.envelope.lineage.taintIds.some((taintId) =>
+      input.blockedTaintIds?.has(taintId)
+    )) {
+      riskSignals.add("previously_quarantined");
+    }
+    const orderedRiskSignals = Object.freeze([...riskSignals].sort());
     const decision = evaluatePrivateRagIngress(input.policy, {
       namespace: entry.namespace,
       envelope: entry.envelope,
-      riskSignals,
+      riskSignals: orderedRiskSignals,
       queryTermCount: input.queryTermCount,
       resultItemCount: input.entries.length,
       resultCharacterCount: serializeUntrustedContentEnvelope(entry.envelope).length,
@@ -108,7 +115,7 @@ export function gatePrivateRagProviderPayload(input: {
       quarantineCandidates.push(Object.freeze({
         parentFingerprint: decision.parentFingerprint,
         taintIds: decision.taintIds,
-        riskSignals,
+        riskSignals: orderedRiskSignals,
       }));
     }
     if (decision.providerEgress === "allow") {
