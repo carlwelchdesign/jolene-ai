@@ -1,0 +1,58 @@
+schemaVersion: jolene.personality-sampling-plan-v4-outcome.v1
+status: failed-before-selection-and-coding
+evaluatedAt: 2026-08-28T07:30:00Z
+samplingPlanFingerprint: sha256:00cd994166788086361fe19952892c06b1db1dba18bcc1c9971e015965137627
+capacityManifestFingerprint: sha256:9cd75872581f9b6776fe39c64dd81df2330ea083828eca9b3f2d28e86d283bf7
+candidateSelectedTurns: 120
+failure:
+  code: duplicate-segment-fingerprints-in-candidate-selection
+  sourceRegisterId: S03
+  duplicateGroups:
+    - segmentFingerprint: sha256:03aa40d5d9558d37a17341dd3f40028a81ff7f4c5775ed3217042e3f1c0c0c68
+      units:
+        - sourceRegisterId: S03
+          capacityUnitId: C-S03-0104
+          locator: speaker-block-103
+          selectionRuleId: SAM-001
+        - sourceRegisterId: S03
+          capacityUnitId: C-S03-0375
+          locator: speaker-block-374
+          selectionRuleId: SAM-001
+    - segmentFingerprint: sha256:0f5192197201093f4891f47e2724b86dd8c9b6b3c99a78f0c4b6b78ae08e9b64
+      units:
+        - sourceRegisterId: S03
+          capacityUnitId: C-S03-0171
+          locator: speaker-block-170
+          selectionRuleId: SAM-001
+        - sourceRegisterId: S03
+          capacityUnitId: C-S03-0442
+          locator: speaker-block-441
+          selectionRuleId: SAM-001
+    - segmentFingerprint: sha256:44b5e736e8faeedb4e4edeecbacd42d599a92f0c7a34cfec116ac851342b719c
+      units:
+        - sourceRegisterId: S03
+          capacityUnitId: C-S03-0034
+          locator: speaker-block-33
+          selectionRuleId: SAM-001
+        - sourceRegisterId: S03
+          capacityUnitId: C-S03-0305
+          locator: speaker-block-304
+          selectionRuleId: SAM-001
+    - segmentFingerprint: sha256:a1b13f979ac1bc7e1f0755f80eb4d64911e5e9c504daa752973bb6ad7b365f78
+      units:
+        - sourceRegisterId: S03
+          capacityUnitId: C-S03-0239
+          locator: speaker-block-238
+          selectionRuleId: SAM-001
+        - sourceRegisterId: S03
+          capacityUnitId: C-S03-0510
+          locator: speaker-block-509
+          selectionRuleId: SAM-001
+  duplicateSelectedTurns: 8
+committedSelectionLedgers: 0
+selectionPerformed: false
+observationsCreated: 0
+outcomeBasedReplacementPerformed: false
+requiredNextAction: prospective-duplicate-overlap-policy-and-new-sampling-plan-version
+sourceContentStored: false
+runtimeActivation: prohibited
