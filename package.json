@@ -62,6 +62,8 @@
     "research:personality:s03-duplicate-audit:v1:generate": "tsx scripts/generate-personality-s03-duplicate-overlap-audit.ts",
     "research:personality:s03-duplicate-amendment:v1": "tsx scripts/validate-personality-s03-duplicate-overlap-amendment.ts",
     "research:personality:s03-duplicate-amendment:v1:generate": "tsx scripts/generate-personality-s03-duplicate-overlap-amendment.ts",
+    "research:personality:s03-unique-capacity:v1": "tsx scripts/validate-personality-s03-unique-capacity-view.ts",
+    "research:personality:s03-unique-capacity:v1:generate": "tsx scripts/generate-personality-s03-unique-capacity-view.ts",
     "research:personality:capacity:v1": "tsx scripts/validate-personality-sampling-capacity-audit.ts",
     "research:personality:boundary-protocol:v1": "tsx scripts/validate-personality-sampling-boundary-protocol.ts",
     "research:personality:av-recovery:v1": "tsx scripts/validate-personality-av-recovery-outcome.ts",
