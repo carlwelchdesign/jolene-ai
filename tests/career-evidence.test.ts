@@ -794,7 +794,13 @@ function portfolioSnapshot() {
       status: "Deployed read-only portfolio demo",
       summary: "A bounded evidence product.",
       stack: ["TypeScript"],
-      architecture: [{ id: "api", label: "API", detail: "Typed boundary" }],
+      architecture: {
+        title: "System map",
+        summary: "A structured topology.",
+        groups: [],
+        nodes: [{ id: "api", label: "API", detail: "Typed boundary" }],
+        edges: [],
+      },
       evidence: [{
         id: "portfolio:claim:sample:reviewed-evidence",
         text: "Uses reviewed evidence.",

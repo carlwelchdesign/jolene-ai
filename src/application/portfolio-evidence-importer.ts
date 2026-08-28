@@ -14,6 +14,13 @@ const architectureNodeSchema = z.object({
   detail: z.string().trim().min(1),
 });
 
+const projectArchitectureSchema = z.union([
+  z.array(architectureNodeSchema),
+  z.object({
+    nodes: z.array(architectureNodeSchema),
+  }).passthrough(),
+]);
+
 const projectEvidenceSchema = z.union([
   z.string().trim().min(1),
   z.object({
@@ -28,7 +35,7 @@ const projectSchema = z.object({
   status: z.string().trim().min(1),
   summary: z.string().trim().min(1),
   stack: z.array(z.string().trim().min(1)),
-  architecture: z.array(architectureNodeSchema),
+  architecture: projectArchitectureSchema,
   evidence: z.array(projectEvidenceSchema),
   boundaries: z.array(z.string().trim().min(1)),
   repositoryUrl: z.string().url(),

@@ -1,16 +1,54 @@
 {
   "manifest": {
     "schemaVersion": "1.0.0",
-    "corpusVersion": "career:fd223e58149ded86f5d3083678b496239b66cdf3b458b740dd637ddb8a27549e",
-    "corpusHash": "sha256:fd223e58149ded86f5d3083678b496239b66cdf3b458b740dd637ddb8a27549e",
-    "generatedAt": "2026-08-27T20:17:09.125Z",
-    "reviewedAt": "2026-08-27T20:16:33.853Z",
-    "evidenceCount": 41,
+    "corpusVersion": "career:23ea9cba5c822f2d10827397b0bae94fbab77d56f505f18555912b9e95a85104",
+    "corpusHash": "sha256:23ea9cba5c822f2d10827397b0bae94fbab77d56f505f18555912b9e95a85104",
+    "generatedAt": "2026-08-28T23:50:59.554Z",
+    "reviewedAt": "2026-08-28T23:50:59.221Z",
+    "evidenceCount": 53,
     "revokedEvidenceIds": [
-      "career:58364f15-a822-46ce-8052-1e977686bc2a"
+      "career:10d994b5-58fb-4641-bacf-80969a706bfd",
+      "career:1aaf956d-0de0-4fe1-a57c-a8e7658ec2a9",
+      "career:30b62ac4-2f18-48b4-aaa5-eff18233ae7f",
+      "career:36645260-3a82-4020-ab81-2f62f2a591e8",
+      "career:3bd30942-a107-4353-9365-f96bdbe0d19a",
+      "career:562beffa-3bc7-4114-bb94-f718b6610194",
+      "career:58364f15-a822-46ce-8052-1e977686bc2a",
+      "career:9b9f2833-29eb-4772-aadd-20a6972b8845",
+      "career:9ca5a5c5-2233-4e01-90cf-e4ba2ff873a1",
+      "career:ad0743d6-d68b-406a-85ee-88c27e29cb40",
+      "career:b08a1522-932a-4bb2-b23f-b497856cbbde",
+      "career:d00e1a07-121d-4664-b7ab-09fa515e22fb",
+      "career:dcae402e-91e4-43ec-bffe-df5f2701ffb5",
+      "career:ec5a56fc-da58-46ed-8af1-39766f52927f",
+      "career:f9a6ef24-2fa3-4f01-830a-af52dd783d2d"
     ]
   },
   "evidence": [
+    {
+      "evidenceId": "career:084c6ad6-4efd-4b0b-a79f-a29b676cb76f",
+      "claim": {
+        "claimId": "084c6ad6-4efd-4b0b-a79f-a29b676cb76f",
+        "text": "A human-led matchmaking concept spanning a discreet public experience, member mobile surface, matchmaker workspace, shared design system, and the beginnings of a production-minded platform.",
+        "evidenceIds": [
+          "career:084c6ad6-4efd-4b0b-a79f-a29b676cb76f"
+        ],
+        "evidenceStrength": "limited",
+        "maturity": "prototype",
+        "limitations": [
+          "Contribution boundary: Imported portfolio candidate; Carl's role and contribution require review."
+        ]
+      },
+      "citation": {
+        "evidenceId": "career:084c6ad6-4efd-4b0b-a79f-a29b676cb76f",
+        "title": "Argent Matchmaking",
+        "href": "/work/argent-matchmaking#evidence",
+        "sourceType": "project",
+        "strength": "limited",
+        "maturity": "prototype",
+        "lastReviewedAt": "2026-08-28T23:50:59.220Z"
+      }
+    },
     {
       "evidenceId": "career:09148cfd-bef9-4fc6-95d5-a91c38d254e9",
       "claim": {
@@ -32,31 +70,31 @@
         "sourceType": "portfolio_page",
         "strength": "limited",
         "maturity": "not_applicable",
-        "lastReviewedAt": "2026-08-27T00:02:24.138Z"
+        "lastReviewedAt": "2026-08-28T23:50:59.220Z"
       }
     },
     {
-      "evidenceId": "career:10d994b5-58fb-4641-bacf-80969a706bfd",
+      "evidenceId": "career:0d9c562e-ac3e-448b-b101-ebb60e52df00",
       "claim": {
-        "claimId": "10d994b5-58fb-4641-bacf-80969a706bfd",
-        "text": "Carl Welch is a rare breed of web expert. He has his left and right brain working in sync to deliver stellar web designs and functionalities. We have hired him to both design flash animations and code the action-script to bring them to life. Also, Carl has provided our clients some of the most innovative forward-thinking designs we’ve seen on the web. We highly recommend Carl for any style web project.",
+        "claimId": "0d9c562e-ac3e-448b-b101-ebb60e52df00",
+        "text": "Current artifacts are pre-release tester builds. The products have not been publicly released.",
         "evidenceIds": [
-          "career:10d994b5-58fb-4641-bacf-80969a706bfd"
+          "career:0d9c562e-ac3e-448b-b101-ebb60e52df00"
         ],
         "evidenceStrength": "limited",
-        "maturity": "not_applicable",
+        "maturity": "pre_release",
         "limitations": [
-          "Contribution boundary: Third-party statement attributed to Jacob Tell (Jacob was Carl’s client); exact wording and publication rights require reconciliation."
+          "Contribution boundary: Status and use boundary imported from the portfolio; requires review."
         ]
       },
       "citation": {
-        "evidenceId": "career:10d994b5-58fb-4641-bacf-80969a706bfd",
-        "title": "Recommendation from Jacob Tell",
-        "href": "/recommendations",
-        "sourceType": "recommendation",
+        "evidenceId": "career:0d9c562e-ac3e-448b-b101-ebb60e52df00",
+        "title": "Wave Factory Essentials",
+        "href": "/work/wave-factory-essentials#evidence",
+        "sourceType": "project",
         "strength": "limited",
-        "maturity": "not_applicable",
-        "lastReviewedAt": "2026-08-27T00:01:54.722Z"
+        "maturity": "pre_release",
+        "lastReviewedAt": "2026-08-28T23:50:59.220Z"
       }
     },
     {
@@ -80,16 +118,16 @@
         "sourceType": "recommendation",
         "strength": "limited",
         "maturity": "not_applicable",
-        "lastReviewedAt": "2026-08-27T00:01:39.556Z"
+        "lastReviewedAt": "2026-08-28T23:50:59.220Z"
       }
     },
     {
-      "evidenceId": "career:1aaf956d-0de0-4fe1-a57c-a8e7658ec2a9",
+      "evidenceId": "career:13f22894-2a62-4d0a-875a-50ff54664aeb",
       "claim": {
-        "claimId": "1aaf956d-0de0-4fe1-a57c-a8e7658ec2a9",
-        "text": "Mar 2020 — Jul 2022: Developed analytics dashboards and helped move a mature application from Backbone toward React and TypeScript.",
+        "claimId": "13f22894-2a62-4d0a-875a-50ff54664aeb",
+        "text": "Jul 2018 to Mar 2020: Led frontend delivery for B2B ridesharing products spanning maps, scheduling, responsive interfaces, and coordinated releases.",
         "evidenceIds": [
-          "career:1aaf956d-0de0-4fe1-a57c-a8e7658ec2a9"
+          "career:13f22894-2a62-4d0a-875a-50ff54664aeb"
         ],
         "evidenceStrength": "limited",
         "maturity": "not_applicable",
@@ -98,13 +136,37 @@
         ]
       },
       "citation": {
-        "evidenceId": "career:1aaf956d-0de0-4fe1-a57c-a8e7658ec2a9",
-        "title": "Senior Software Engineer at Revenue.io",
-        "href": "/experience#revenue-io",
+        "evidenceId": "career:13f22894-2a62-4d0a-875a-50ff54664aeb",
+        "title": "Lead Frontend Developer at Bosch",
+        "href": "/experience#bosch",
         "sourceType": "employer_history",
         "strength": "limited",
         "maturity": "not_applicable",
-        "lastReviewedAt": "2026-08-27T00:01:00.514Z"
+        "lastReviewedAt": "2026-08-28T23:50:59.220Z"
+      }
+    },
+    {
+      "evidenceId": "career:1ce79b70-0e7c-4f1f-8f14-175966e319da",
+      "claim": {
+        "claimId": "1ce79b70-0e7c-4f1f-8f14-175966e319da",
+        "text": "Retrieval is currently policy-first and keyword based; vector search is planned, and graph-assisted runtime context is disabled by default.",
+        "evidenceIds": [
+          "career:1ce79b70-0e7c-4f1f-8f14-175966e319da"
+        ],
+        "evidenceStrength": "limited",
+        "maturity": "development",
+        "limitations": [
+          "Contribution boundary: Status and use boundary imported from the portfolio; requires review."
+        ]
+      },
+      "citation": {
+        "evidenceId": "career:1ce79b70-0e7c-4f1f-8f14-175966e319da",
+        "title": "Supraconscious Avatar AI",
+        "href": "/work/supraconscious-avatar-ai#evidence",
+        "sourceType": "project",
+        "strength": "limited",
+        "maturity": "development",
+        "lastReviewedAt": "2026-08-28T23:50:59.220Z"
       }
     },
     {
@@ -128,31 +190,55 @@
         "sourceType": "project",
         "strength": "limited",
         "maturity": "deployed_demo",
-        "lastReviewedAt": "2026-08-27T00:38:07.719Z"
+        "lastReviewedAt": "2026-08-28T23:50:59.220Z"
       }
     },
     {
-      "evidenceId": "career:30b62ac4-2f18-48b4-aaa5-eff18233ae7f",
+      "evidenceId": "career:27bf3aed-9198-4569-acf4-2a3f3a0ee923",
       "claim": {
-        "claimId": "30b62ac4-2f18-48b4-aaa5-eff18233ae7f",
-        "text": "Apr 2016 — Aug 2017: Delivered in-app campaign and content-management tooling while managing web engineering work and cross-functional delivery.",
+        "claimId": "27bf3aed-9198-4569-acf4-2a3f3a0ee923",
+        "text": "Release still depends on host, platform, signing, notarization, and packaging checks.",
         "evidenceIds": [
-          "career:30b62ac4-2f18-48b4-aaa5-eff18233ae7f"
+          "career:27bf3aed-9198-4569-acf4-2a3f3a0ee923"
+        ],
+        "evidenceStrength": "limited",
+        "maturity": "pre_release",
+        "limitations": [
+          "Contribution boundary: Status and use boundary imported from the portfolio; requires review."
+        ]
+      },
+      "citation": {
+        "evidenceId": "career:27bf3aed-9198-4569-acf4-2a3f3a0ee923",
+        "title": "Wave Factory Essentials",
+        "href": "/work/wave-factory-essentials#evidence",
+        "sourceType": "project",
+        "strength": "limited",
+        "maturity": "pre_release",
+        "lastReviewedAt": "2026-08-28T23:50:59.220Z"
+      }
+    },
+    {
+      "evidenceId": "career:28f1a121-de74-47d0-b0aa-6d1465597b59",
+      "claim": {
+        "claimId": "28f1a121-de74-47d0-b0aa-6d1465597b59",
+        "text": "Carl Welch is a rare breed of web expert. He has his left and right brain working in sync to deliver stellar web designs and functionalities. We have hired him to both design flash animations and code the action-script to bring them to life. Also, Carl has provided our clients some of the most innovative forward-thinking designs we've seen on the web. We highly recommend Carl for any style web project.",
+        "evidenceIds": [
+          "career:28f1a121-de74-47d0-b0aa-6d1465597b59"
         ],
         "evidenceStrength": "limited",
         "maturity": "not_applicable",
         "limitations": [
-          "Contribution boundary: Professional role summary imported from the portfolio; employment and wording require review."
+          "Contribution boundary: Third-party statement attributed to Jacob Tell (Jacob was Carl’s client); exact wording and publication rights require reconciliation."
         ]
       },
       "citation": {
-        "evidenceId": "career:30b62ac4-2f18-48b4-aaa5-eff18233ae7f",
-        "title": "Senior Web Developer / Manager at Grindr",
-        "href": "/experience#grindr",
-        "sourceType": "employer_history",
+        "evidenceId": "career:28f1a121-de74-47d0-b0aa-6d1465597b59",
+        "title": "Recommendation from Jacob Tell",
+        "href": "/recommendations",
+        "sourceType": "recommendation",
         "strength": "limited",
         "maturity": "not_applicable",
-        "lastReviewedAt": "2026-08-27T00:01:07.797Z"
+        "lastReviewedAt": "2026-08-28T23:50:59.220Z"
       }
     },
     {
@@ -176,7 +262,7 @@
         "sourceType": "portfolio_page",
         "strength": "limited",
         "maturity": "not_applicable",
-        "lastReviewedAt": "2026-08-27T00:02:55.729Z"
+        "lastReviewedAt": "2026-08-28T23:50:59.219Z"
       }
     },
     {
@@ -200,7 +286,7 @@
         "sourceType": "recommendation",
         "strength": "limited",
         "maturity": "not_applicable",
-        "lastReviewedAt": "2026-08-27T00:01:44.042Z"
+        "lastReviewedAt": "2026-08-28T04:49:22.698Z"
       }
     },
     {
@@ -224,55 +310,31 @@
         "sourceType": "project",
         "strength": "limited",
         "maturity": "deployed_demo",
-        "lastReviewedAt": "2026-08-27T00:38:07.723Z"
+        "lastReviewedAt": "2026-08-28T23:50:59.220Z"
       }
     },
     {
-      "evidenceId": "career:36645260-3a82-4020-ab81-2f62f2a591e8",
+      "evidenceId": "career:3c134580-0575-4dcb-a7a8-7b40b08cac86",
       "claim": {
-        "claimId": "36645260-3a82-4020-ab81-2f62f2a591e8",
-        "text": "Current artifacts are pre-release tester builds and are not represented as publicly released products.",
+        "claimId": "3c134580-0575-4dcb-a7a8-7b40b08cac86",
+        "text": "Keeps generated client contracts and design tokens cross-platform while reserving authorization rules, sensitive policy, and provider credentials for server-only packages.",
         "evidenceIds": [
-          "career:36645260-3a82-4020-ab81-2f62f2a591e8"
+          "career:3c134580-0575-4dcb-a7a8-7b40b08cac86"
         ],
         "evidenceStrength": "limited",
-        "maturity": "pre_release",
+        "maturity": "prototype",
         "limitations": [
-          "Contribution boundary: Status and use boundary imported from the portfolio; requires review."
+          "Contribution boundary: Imported portfolio candidate; Carl's role and contribution require review."
         ]
       },
       "citation": {
-        "evidenceId": "career:36645260-3a82-4020-ab81-2f62f2a591e8",
-        "title": "Wave Factory Essentials",
-        "href": "/work/wave-factory-essentials#evidence",
+        "evidenceId": "career:3c134580-0575-4dcb-a7a8-7b40b08cac86",
+        "title": "Argent Matchmaking",
+        "href": "/work/argent-matchmaking#evidence",
         "sourceType": "project",
         "strength": "limited",
-        "maturity": "pre_release",
-        "lastReviewedAt": "2026-08-27T00:38:07.744Z"
-      }
-    },
-    {
-      "evidenceId": "career:3bd30942-a107-4353-9365-f96bdbe0d19a",
-      "claim": {
-        "claimId": "3bd30942-a107-4353-9365-f96bdbe0d19a",
-        "text": "This is a protected single-user application, not a public applicant-submission service.",
-        "evidenceIds": [
-          "career:3bd30942-a107-4353-9365-f96bdbe0d19a"
-        ],
-        "evidenceStrength": "limited",
-        "maturity": "production",
-        "limitations": [
-          "Contribution boundary: Status and use boundary imported from the portfolio; requires review."
-        ]
-      },
-      "citation": {
-        "evidenceId": "career:3bd30942-a107-4353-9365-f96bdbe0d19a",
-        "title": "Job Search OS",
-        "href": "/work/job-search-os#evidence",
-        "sourceType": "project",
-        "strength": "limited",
-        "maturity": "production",
-        "lastReviewedAt": "2026-08-27T00:38:07.700Z"
+        "maturity": "prototype",
+        "lastReviewedAt": "2026-08-28T23:50:59.220Z"
       }
     },
     {
@@ -296,7 +358,7 @@
         "sourceType": "project",
         "strength": "limited",
         "maturity": "deployed_demo",
-        "lastReviewedAt": "2026-08-27T00:38:07.726Z"
+        "lastReviewedAt": "2026-08-28T23:50:59.220Z"
       }
     },
     {
@@ -320,7 +382,79 @@
         "sourceType": "recommendation",
         "strength": "limited",
         "maturity": "not_applicable",
-        "lastReviewedAt": "2026-08-27T00:01:33.196Z"
+        "lastReviewedAt": "2026-08-28T23:50:59.220Z"
+      }
+    },
+    {
+      "evidenceId": "career:46047315-ee35-4574-8b74-13152c102466",
+      "claim": {
+        "claimId": "46047315-ee35-4574-8b74-13152c102466",
+        "text": "Dec 2017 to Aug 2018: Built data-rich product interfaces for analytics, audience segmentation, and customer intelligence workflows.",
+        "evidenceIds": [
+          "career:46047315-ee35-4574-8b74-13152c102466"
+        ],
+        "evidenceStrength": "limited",
+        "maturity": "not_applicable",
+        "limitations": [
+          "Contribution boundary: Professional role summary imported from the portfolio; employment and wording require review."
+        ]
+      },
+      "citation": {
+        "evidenceId": "career:46047315-ee35-4574-8b74-13152c102466",
+        "title": "Senior Frontend Engineer at Bridg",
+        "href": "/experience#bridg",
+        "sourceType": "employer_history",
+        "strength": "limited",
+        "maturity": "not_applicable",
+        "lastReviewedAt": "2026-08-28T23:50:59.220Z"
+      }
+    },
+    {
+      "evidenceId": "career:462cd510-d767-49b2-bcaa-371514e25717",
+      "claim": {
+        "claimId": "462cd510-d767-49b2-bcaa-371514e25717",
+        "text": "Includes Docker smoke verification across five local services plus quality, secret, dependency, code-scanning, container-security, and SBOM checks in CI.",
+        "evidenceIds": [
+          "career:462cd510-d767-49b2-bcaa-371514e25717"
+        ],
+        "evidenceStrength": "limited",
+        "maturity": "prototype",
+        "limitations": [
+          "Contribution boundary: Imported portfolio candidate; Carl's role and contribution require review."
+        ]
+      },
+      "citation": {
+        "evidenceId": "career:462cd510-d767-49b2-bcaa-371514e25717",
+        "title": "Argent Matchmaking",
+        "href": "/work/argent-matchmaking#evidence",
+        "sourceType": "project",
+        "strength": "limited",
+        "maturity": "prototype",
+        "lastReviewedAt": "2026-08-28T23:50:59.220Z"
+      }
+    },
+    {
+      "evidenceId": "career:4c992b61-9466-45c9-81e9-1fb3e62fcb90",
+      "claim": {
+        "claimId": "4c992b61-9466-45c9-81e9-1fb3e62fcb90",
+        "text": "Carl is a skilled frontend engineer who possesses a rare combination of a keen eye for visualization and a deep commitment to high-performance user experience. He is known for creating modular, high-quality UI components using Storybook to accelerate development cycles while elevating our design system standards. He successfully led several critical frontend features that directly improved the experience for our customers. He is a natural mentor who genuinely enjoys sharing knowledge and helping others grow technically. He would be an invaluable asset to any high-performing team!",
+        "evidenceIds": [
+          "career:4c992b61-9466-45c9-81e9-1fb3e62fcb90"
+        ],
+        "evidenceStrength": "limited",
+        "maturity": "not_applicable",
+        "limitations": [
+          "Contribution boundary: Third-party statement attributed to Sree Sankara (Sree was senior to Carl but didn’t manage Carl directly); exact wording and publication rights require reconciliation."
+        ]
+      },
+      "citation": {
+        "evidenceId": "career:4c992b61-9466-45c9-81e9-1fb3e62fcb90",
+        "title": "Recommendation from Sree Sankara",
+        "href": "/recommendations",
+        "sourceType": "recommendation",
+        "strength": "limited",
+        "maturity": "not_applicable",
+        "lastReviewedAt": "2026-08-28T23:50:59.221Z"
       }
     },
     {
@@ -344,31 +478,55 @@
         "sourceType": "recommendation",
         "strength": "limited",
         "maturity": "not_applicable",
-        "lastReviewedAt": "2026-08-27T00:01:29.083Z"
+        "lastReviewedAt": "2026-08-28T04:49:22.698Z"
       }
     },
     {
-      "evidenceId": "career:562beffa-3bc7-4114-bb94-f718b6610194",
+      "evidenceId": "career:58c8eaf6-3a88-499d-b344-1aa8a6025673",
       "claim": {
-        "claimId": "562beffa-3bc7-4114-bb94-f718b6610194",
-        "text": "Carl did great work for us in web design and multimedia production. Super good guy to work with.",
+        "claimId": "58c8eaf6-3a88-499d-b344-1aa8a6025673",
+        "text": "Mar 2020 to Jul 2022: Developed analytics dashboards and helped move a mature application from Backbone toward React and TypeScript.",
         "evidenceIds": [
-          "career:562beffa-3bc7-4114-bb94-f718b6610194"
+          "career:58c8eaf6-3a88-499d-b344-1aa8a6025673"
         ],
         "evidenceStrength": "limited",
         "maturity": "not_applicable",
         "limitations": [
-          "Contribution boundary: Third-party statement attributed to David Allen (David was Carl’s employer); exact wording and publication rights require reconciliation."
+          "Contribution boundary: Professional role summary imported from the portfolio; employment and wording require review."
         ]
       },
       "citation": {
-        "evidenceId": "career:562beffa-3bc7-4114-bb94-f718b6610194",
-        "title": "Recommendation from David Allen",
-        "href": "/recommendations",
-        "sourceType": "recommendation",
+        "evidenceId": "career:58c8eaf6-3a88-499d-b344-1aa8a6025673",
+        "title": "Senior Software Engineer at Revenue.io",
+        "href": "/experience#revenue-io",
+        "sourceType": "employer_history",
         "strength": "limited",
         "maturity": "not_applicable",
-        "lastReviewedAt": "2026-08-27T20:16:33.853Z"
+        "lastReviewedAt": "2026-08-28T23:50:59.220Z"
+      }
+    },
+    {
+      "evidenceId": "career:5ae9ecb2-f374-493c-8c17-4a57c6b0282c",
+      "claim": {
+        "claimId": "5ae9ecb2-f374-493c-8c17-4a57c6b0282c",
+        "text": "Organizes public web, separate staff web, Flutter mobile, API, worker, domain policy, database, generated contracts, and design-system packages in one monorepo.",
+        "evidenceIds": [
+          "career:5ae9ecb2-f374-493c-8c17-4a57c6b0282c"
+        ],
+        "evidenceStrength": "limited",
+        "maturity": "prototype",
+        "limitations": [
+          "Contribution boundary: Imported portfolio candidate; Carl's role and contribution require review."
+        ]
+      },
+      "citation": {
+        "evidenceId": "career:5ae9ecb2-f374-493c-8c17-4a57c6b0282c",
+        "title": "Argent Matchmaking",
+        "href": "/work/argent-matchmaking#evidence",
+        "sourceType": "project",
+        "strength": "limited",
+        "maturity": "prototype",
+        "lastReviewedAt": "2026-08-28T23:50:59.220Z"
       }
     },
     {
@@ -392,7 +550,55 @@
         "sourceType": "project",
         "strength": "limited",
         "maturity": "pre_release",
-        "lastReviewedAt": "2026-08-27T00:38:07.729Z"
+        "lastReviewedAt": "2026-08-28T23:50:59.220Z"
+      }
+    },
+    {
+      "evidenceId": "career:5d36a876-c4bf-4407-a65e-a15282338205",
+      "claim": {
+        "claimId": "5d36a876-c4bf-4407-a65e-a15282338205",
+        "text": "The broader architecture is a reviewed direction and implementation foundation; provider selection, production identity, real data, and launch remain separate work.",
+        "evidenceIds": [
+          "career:5d36a876-c4bf-4407-a65e-a15282338205"
+        ],
+        "evidenceStrength": "limited",
+        "maturity": "prototype",
+        "limitations": [
+          "Contribution boundary: Status and use boundary imported from the portfolio; requires review."
+        ]
+      },
+      "citation": {
+        "evidenceId": "career:5d36a876-c4bf-4407-a65e-a15282338205",
+        "title": "Argent Matchmaking",
+        "href": "/work/argent-matchmaking#evidence",
+        "sourceType": "project",
+        "strength": "limited",
+        "maturity": "prototype",
+        "lastReviewedAt": "2026-08-28T23:50:59.220Z"
+      }
+    },
+    {
+      "evidenceId": "career:5f572787-2894-4b69-a76b-458068f33d33",
+      "claim": {
+        "claimId": "5f572787-2894-4b69-a76b-458068f33d33",
+        "text": "Apr 2016 to Aug 2017: Delivered in-app campaign and content-management tooling while managing web engineering work and cross-functional delivery.",
+        "evidenceIds": [
+          "career:5f572787-2894-4b69-a76b-458068f33d33"
+        ],
+        "evidenceStrength": "limited",
+        "maturity": "not_applicable",
+        "limitations": [
+          "Contribution boundary: Professional role summary imported from the portfolio; employment and wording require review."
+        ]
+      },
+      "citation": {
+        "evidenceId": "career:5f572787-2894-4b69-a76b-458068f33d33",
+        "title": "Senior Web Developer / Manager at Grindr",
+        "href": "/experience#grindr",
+        "sourceType": "employer_history",
+        "strength": "limited",
+        "maturity": "not_applicable",
+        "lastReviewedAt": "2026-08-28T23:50:59.220Z"
       }
     },
     {
@@ -416,7 +622,7 @@
         "sourceType": "project",
         "strength": "limited",
         "maturity": "production",
-        "lastReviewedAt": "2026-08-27T00:38:07.703Z"
+        "lastReviewedAt": "2026-08-28T23:50:59.220Z"
       }
     },
     {
@@ -440,7 +646,7 @@
         "sourceType": "recommendation",
         "strength": "limited",
         "maturity": "not_applicable",
-        "lastReviewedAt": "2026-08-27T00:01:41.988Z"
+        "lastReviewedAt": "2026-08-28T04:49:22.698Z"
       }
     },
     {
@@ -464,7 +670,7 @@
         "sourceType": "project",
         "strength": "limited",
         "maturity": "production",
-        "lastReviewedAt": "2026-08-27T00:38:07.691Z"
+        "lastReviewedAt": "2026-08-28T23:50:59.220Z"
       }
     },
     {
@@ -488,7 +694,31 @@
         "sourceType": "project",
         "strength": "limited",
         "maturity": "deployed_demo",
-        "lastReviewedAt": "2026-08-27T00:38:07.712Z"
+        "lastReviewedAt": "2026-08-28T23:50:59.220Z"
+      }
+    },
+    {
+      "evidenceId": "career:6ddc773f-d57c-47e1-8c0e-a4157fadb36f",
+      "claim": {
+        "claimId": "6ddc773f-d57c-47e1-8c0e-a4157fadb36f",
+        "text": "Carl Welch is a life-saver! On a monstrously understaffed project with lots of JavaScript needs I didn't have time to handle, Carl rescued me several times per day. Familiar with several top-tier JS libraries, Carl always had a solution for each new problem presented by an over-designed UI. And if no library worked, he could just as easily jump in and code it from scratch. Carl's experience, persistence, and (most of all) _calm_ always saved the day.",
+        "evidenceIds": [
+          "career:6ddc773f-d57c-47e1-8c0e-a4157fadb36f"
+        ],
+        "evidenceStrength": "limited",
+        "maturity": "not_applicable",
+        "limitations": [
+          "Contribution boundary: Third-party statement attributed to Todd Rimes (Todd worked with Carl on the same team); exact wording and publication rights require reconciliation."
+        ]
+      },
+      "citation": {
+        "evidenceId": "career:6ddc773f-d57c-47e1-8c0e-a4157fadb36f",
+        "title": "Recommendation from Todd Rimes",
+        "href": "/recommendations",
+        "sourceType": "recommendation",
+        "strength": "limited",
+        "maturity": "not_applicable",
+        "lastReviewedAt": "2026-08-28T23:50:59.221Z"
       }
     },
     {
@@ -512,7 +742,7 @@
         "sourceType": "project",
         "strength": "limited",
         "maturity": "deployed_demo",
-        "lastReviewedAt": "2026-08-27T00:38:07.714Z"
+        "lastReviewedAt": "2026-08-28T23:50:59.220Z"
       }
     },
     {
@@ -536,7 +766,7 @@
         "sourceType": "portfolio_page",
         "strength": "limited",
         "maturity": "not_applicable",
-        "lastReviewedAt": "2026-08-27T00:02:02.237Z"
+        "lastReviewedAt": "2026-08-28T04:49:22.697Z"
       }
     },
     {
@@ -560,7 +790,79 @@
         "sourceType": "project",
         "strength": "limited",
         "maturity": "production",
-        "lastReviewedAt": "2026-08-27T00:38:07.695Z"
+        "lastReviewedAt": "2026-08-28T23:50:59.220Z"
+      }
+    },
+    {
+      "evidenceId": "career:8da0c7b3-5b0e-46d6-9c49-9f57af8c292b",
+      "claim": {
+        "claimId": "8da0c7b3-5b0e-46d6-9c49-9f57af8c292b",
+        "text": "The web product is deployed, while the Flutter mobile client remains a scaffold rather than a released mobile application.",
+        "evidenceIds": [
+          "career:8da0c7b3-5b0e-46d6-9c49-9f57af8c292b"
+        ],
+        "evidenceStrength": "limited",
+        "maturity": "development",
+        "limitations": [
+          "Contribution boundary: Status and use boundary imported from the portfolio; requires review."
+        ]
+      },
+      "citation": {
+        "evidenceId": "career:8da0c7b3-5b0e-46d6-9c49-9f57af8c292b",
+        "title": "Supraconscious Avatar AI",
+        "href": "/work/supraconscious-avatar-ai#evidence",
+        "sourceType": "project",
+        "strength": "limited",
+        "maturity": "development",
+        "lastReviewedAt": "2026-08-28T23:50:59.220Z"
+      }
+    },
+    {
+      "evidenceId": "career:8dc81a0f-cdbe-4d5e-8352-ac082cc49d47",
+      "claim": {
+        "claimId": "8dc81a0f-cdbe-4d5e-8352-ac082cc49d47",
+        "text": "Combines a user-facing journal, a separate admin and content-governance application, an MCP-compatible service, shared AI packages, and PostgreSQL persistence.",
+        "evidenceIds": [
+          "career:8dc81a0f-cdbe-4d5e-8352-ac082cc49d47"
+        ],
+        "evidenceStrength": "limited",
+        "maturity": "development",
+        "limitations": [
+          "Contribution boundary: Imported portfolio candidate; Carl's role and contribution require review."
+        ]
+      },
+      "citation": {
+        "evidenceId": "career:8dc81a0f-cdbe-4d5e-8352-ac082cc49d47",
+        "title": "Supraconscious Avatar AI",
+        "href": "/work/supraconscious-avatar-ai#evidence",
+        "sourceType": "project",
+        "strength": "limited",
+        "maturity": "development",
+        "lastReviewedAt": "2026-08-28T23:50:59.220Z"
+      }
+    },
+    {
+      "evidenceId": "career:8dfeb238-bf13-436e-b7ed-9ce70a4b9592",
+      "claim": {
+        "claimId": "8dfeb238-bf13-436e-b7ed-9ce70a4b9592",
+        "text": "Gates retrieval by source review, rights metadata, quote permissions, safety intensity, feature state, and citation traceability.",
+        "evidenceIds": [
+          "career:8dfeb238-bf13-436e-b7ed-9ce70a4b9592"
+        ],
+        "evidenceStrength": "limited",
+        "maturity": "development",
+        "limitations": [
+          "Contribution boundary: Imported portfolio candidate; Carl's role and contribution require review."
+        ]
+      },
+      "citation": {
+        "evidenceId": "career:8dfeb238-bf13-436e-b7ed-9ce70a4b9592",
+        "title": "Supraconscious Avatar AI",
+        "href": "/work/supraconscious-avatar-ai#evidence",
+        "sourceType": "project",
+        "strength": "limited",
+        "maturity": "development",
+        "lastReviewedAt": "2026-08-28T23:50:59.220Z"
       }
     },
     {
@@ -584,55 +886,55 @@
         "sourceType": "project",
         "strength": "limited",
         "maturity": "production",
-        "lastReviewedAt": "2026-08-27T00:38:07.709Z"
+        "lastReviewedAt": "2026-08-28T23:50:59.220Z"
       }
     },
     {
-      "evidenceId": "career:9b9f2833-29eb-4772-aadd-20a6972b8845",
+      "evidenceId": "career:9c03ed79-3957-462a-82ac-3df4a7a3e95f",
       "claim": {
-        "claimId": "9b9f2833-29eb-4772-aadd-20a6972b8845",
-        "text": "Jul 2022 — Mar 2026: Built enterprise administration interfaces, shared components, Storybook documentation, and test infrastructure for security-product workflows.",
+        "claimId": "9c03ed79-3957-462a-82ac-3df4a7a3e95f",
+        "text": "This is a production application built for one person rather than a public applicant service.",
         "evidenceIds": [
-          "career:9b9f2833-29eb-4772-aadd-20a6972b8845"
+          "career:9c03ed79-3957-462a-82ac-3df4a7a3e95f"
+        ],
+        "evidenceStrength": "limited",
+        "maturity": "production",
+        "limitations": [
+          "Contribution boundary: Status and use boundary imported from the portfolio; requires review."
+        ]
+      },
+      "citation": {
+        "evidenceId": "career:9c03ed79-3957-462a-82ac-3df4a7a3e95f",
+        "title": "Job Search OS",
+        "href": "/work/job-search-os#evidence",
+        "sourceType": "project",
+        "strength": "limited",
+        "maturity": "production",
+        "lastReviewedAt": "2026-08-28T23:50:59.220Z"
+      }
+    },
+    {
+      "evidenceId": "career:9d5f4d3e-3c5d-4dc2-b4a2-acae1b60cd3a",
+      "claim": {
+        "claimId": "9d5f4d3e-3c5d-4dc2-b4a2-acae1b60cd3a",
+        "text": "Many people claim to be Senior Developers but I can say without a doubt that Carl Welch is truly a Senior Developer. As our Team Manager, he has taught us a great deal of innovative and cutting-edge technologies, and I personally have learned so much from him. My JavaScript and PHP knowledge has greatly increased under his guidance and I continue to learn from him everyday. He’s an invaluable asset to the Grindr team.",
+        "evidenceIds": [
+          "career:9d5f4d3e-3c5d-4dc2-b4a2-acae1b60cd3a"
         ],
         "evidenceStrength": "limited",
         "maturity": "not_applicable",
         "limitations": [
-          "Contribution boundary: Professional role summary imported from the portfolio; employment and wording require review."
+          "Contribution boundary: Third-party statement attributed to Shervin Kayvon (Carl was senior to Shervin but didn’t manage Shervin directly); exact wording and publication rights require reconciliation."
         ]
       },
       "citation": {
-        "evidenceId": "career:9b9f2833-29eb-4772-aadd-20a6972b8845",
-        "title": "Senior Software Engineer at Yubico",
-        "href": "/experience#yubico",
-        "sourceType": "employer_history",
+        "evidenceId": "career:9d5f4d3e-3c5d-4dc2-b4a2-acae1b60cd3a",
+        "title": "Recommendation from Shervin Kayvon",
+        "href": "/recommendations",
+        "sourceType": "recommendation",
         "strength": "limited",
         "maturity": "not_applicable",
-        "lastReviewedAt": "2026-08-27T00:00:54.297Z"
-      }
-    },
-    {
-      "evidenceId": "career:9ca5a5c5-2233-4e01-90cf-e4ba2ff873a1",
-      "claim": {
-        "claimId": "9ca5a5c5-2233-4e01-90cf-e4ba2ff873a1",
-        "text": "Dec 2017 — Aug 2018: Built data-rich product interfaces for analytics, audience segmentation, and customer intelligence workflows.",
-        "evidenceIds": [
-          "career:9ca5a5c5-2233-4e01-90cf-e4ba2ff873a1"
-        ],
-        "evidenceStrength": "limited",
-        "maturity": "not_applicable",
-        "limitations": [
-          "Contribution boundary: Professional role summary imported from the portfolio; employment and wording require review."
-        ]
-      },
-      "citation": {
-        "evidenceId": "career:9ca5a5c5-2233-4e01-90cf-e4ba2ff873a1",
-        "title": "Senior Frontend Engineer at Bridg",
-        "href": "/experience#bridg",
-        "sourceType": "employer_history",
-        "strength": "limited",
-        "maturity": "not_applicable",
-        "lastReviewedAt": "2026-08-27T00:01:10.153Z"
+        "lastReviewedAt": "2026-08-28T23:50:59.221Z"
       }
     },
     {
@@ -656,55 +958,31 @@
         "sourceType": "portfolio_page",
         "strength": "limited",
         "maturity": "not_applicable",
-        "lastReviewedAt": "2026-08-27T00:02:04.337Z"
+        "lastReviewedAt": "2026-08-28T04:49:22.697Z"
       }
     },
     {
-      "evidenceId": "career:ad0743d6-d68b-406a-85ee-88c27e29cb40",
+      "evidenceId": "career:a4f50b5a-f07b-44bd-9b48-3414e7a7f1fa",
       "claim": {
-        "claimId": "ad0743d6-d68b-406a-85ee-88c27e29cb40",
-        "text": "Many people claim to be Senior Developers but I can say without a doubt that Carl Welch is truly a Senior Developer. As our Team Manager, he has taught us a great deal of innovative and cutting-edge technologies, and I personally have learned so much from him. My JavaScript and PHP knowledge has greatly increased under his guidance and I continue to learn from him everyday. He’s an invaluable asset to the Grindr team.",
+        "claimId": "a4f50b5a-f07b-44bd-9b48-3414e7a7f1fa",
+        "text": "A multi-surface reflection product that turns journal entries into guided questions while giving the operator a separate place to govern prompts, sources, safety, and review.",
         "evidenceIds": [
-          "career:ad0743d6-d68b-406a-85ee-88c27e29cb40"
+          "career:a4f50b5a-f07b-44bd-9b48-3414e7a7f1fa"
         ],
         "evidenceStrength": "limited",
-        "maturity": "not_applicable",
+        "maturity": "development",
         "limitations": [
-          "Contribution boundary: Third-party statement attributed to Shervin Kayvon (Shervin reported to Carl directly); exact wording and publication rights require reconciliation."
+          "Contribution boundary: Imported portfolio candidate; Carl's role and contribution require review."
         ]
       },
       "citation": {
-        "evidenceId": "career:ad0743d6-d68b-406a-85ee-88c27e29cb40",
-        "title": "Recommendation from Shervin Kayvon",
-        "href": "/recommendations",
-        "sourceType": "recommendation",
+        "evidenceId": "career:a4f50b5a-f07b-44bd-9b48-3414e7a7f1fa",
+        "title": "Supraconscious Avatar AI",
+        "href": "/work/supraconscious-avatar-ai#evidence",
+        "sourceType": "project",
         "strength": "limited",
-        "maturity": "not_applicable",
-        "lastReviewedAt": "2026-08-27T00:01:35.052Z"
-      }
-    },
-    {
-      "evidenceId": "career:b08a1522-932a-4bb2-b23f-b497856cbbde",
-      "claim": {
-        "claimId": "b08a1522-932a-4bb2-b23f-b497856cbbde",
-        "text": "Jul 2018 — Mar 2020: Led frontend delivery for B2B ridesharing products spanning maps, scheduling, responsive interfaces, and coordinated releases.",
-        "evidenceIds": [
-          "career:b08a1522-932a-4bb2-b23f-b497856cbbde"
-        ],
-        "evidenceStrength": "limited",
-        "maturity": "not_applicable",
-        "limitations": [
-          "Contribution boundary: Professional role summary imported from the portfolio; employment and wording require review."
-        ]
-      },
-      "citation": {
-        "evidenceId": "career:b08a1522-932a-4bb2-b23f-b497856cbbde",
-        "title": "Lead Frontend Developer at Bosch",
-        "href": "/experience#bosch",
-        "sourceType": "employer_history",
-        "strength": "limited",
-        "maturity": "not_applicable",
-        "lastReviewedAt": "2026-08-27T00:01:04.154Z"
+        "maturity": "development",
+        "lastReviewedAt": "2026-08-28T23:50:59.220Z"
       }
     },
     {
@@ -728,31 +1006,31 @@
         "sourceType": "project",
         "strength": "limited",
         "maturity": "pre_release",
-        "lastReviewedAt": "2026-08-27T00:38:07.731Z"
+        "lastReviewedAt": "2026-08-28T23:50:59.220Z"
       }
     },
     {
-      "evidenceId": "career:d00e1a07-121d-4664-b7ab-09fa515e22fb",
+      "evidenceId": "career:d55e2324-819e-4701-8528-57219288cd6e",
       "claim": {
-        "claimId": "d00e1a07-121d-4664-b7ab-09fa515e22fb",
-        "text": "Carl worked on the cutting edge design for a VR & AR program that broke new ground for commercial and military applications. He was instrumental in the programming of the application software. He is a very focused individual and during his time at General Dynamics I think he surpassed all management expectations with the product he created.",
+        "claimId": "d55e2324-819e-4701-8528-57219288cd6e",
+        "text": "Carl did great work for us in web design and multimedia production. Super good guy to work with.",
         "evidenceIds": [
-          "career:d00e1a07-121d-4664-b7ab-09fa515e22fb"
+          "career:d55e2324-819e-4701-8528-57219288cd6e"
         ],
         "evidenceStrength": "limited",
         "maturity": "not_applicable",
         "limitations": [
-          "Contribution boundary: Third-party statement attributed to Laura Baran (Laura worked with Carl on the same team); exact wording and publication rights require reconciliation."
+          "Contribution boundary: Third-party statement attributed to David Allen (David was Carl’s employer); exact wording and publication rights require reconciliation."
         ]
       },
       "citation": {
-        "evidenceId": "career:d00e1a07-121d-4664-b7ab-09fa515e22fb",
-        "title": "Recommendation from Laura Baran",
+        "evidenceId": "career:d55e2324-819e-4701-8528-57219288cd6e",
+        "title": "Recommendation from David Allen",
         "href": "/recommendations",
         "sourceType": "recommendation",
         "strength": "limited",
         "maturity": "not_applicable",
-        "lastReviewedAt": "2026-08-27T00:01:56.838Z"
+        "lastReviewedAt": "2026-08-28T23:50:59.220Z"
       }
     },
     {
@@ -776,7 +1054,7 @@
         "sourceType": "project",
         "strength": "limited",
         "maturity": "pre_release",
-        "lastReviewedAt": "2026-08-27T00:38:07.735Z"
+        "lastReviewedAt": "2026-08-28T23:50:59.220Z"
       }
     },
     {
@@ -800,31 +1078,7 @@
         "sourceType": "portfolio_page",
         "strength": "limited",
         "maturity": "not_applicable",
-        "lastReviewedAt": "2026-08-27T00:01:48.737Z"
-      }
-    },
-    {
-      "evidenceId": "career:dcae402e-91e4-43ec-bffe-df5f2701ffb5",
-      "claim": {
-        "claimId": "dcae402e-91e4-43ec-bffe-df5f2701ffb5",
-        "text": "Carl Welch is a life-saver! On a monstrously understaffed project with lots of JavaScript needs I didn't have time to handle, Carl rescued me several times per day. Familiar with several top-tier JS libraries, Carl always had a solution for each new problem presented by an over-designed UI. And if no library worked, he could just as easily jump in and code it from scratch. Carl's experience, persistence, and (most of all) calm always saved the day.",
-        "evidenceIds": [
-          "career:dcae402e-91e4-43ec-bffe-df5f2701ffb5"
-        ],
-        "evidenceStrength": "limited",
-        "maturity": "not_applicable",
-        "limitations": [
-          "Contribution boundary: Third-party statement attributed to Todd Rimes (Todd worked with Carl on the same team); exact wording and publication rights require reconciliation."
-        ]
-      },
-      "citation": {
-        "evidenceId": "career:dcae402e-91e4-43ec-bffe-df5f2701ffb5",
-        "title": "Recommendation from Todd Rimes",
-        "href": "/recommendations",
-        "sourceType": "recommendation",
-        "strength": "limited",
-        "maturity": "not_applicable",
-        "lastReviewedAt": "2026-08-27T00:01:37.051Z"
+        "lastReviewedAt": "2026-08-28T04:49:22.697Z"
       }
     },
     {
@@ -848,7 +1102,55 @@
         "sourceType": "project",
         "strength": "limited",
         "maturity": "deployed_demo",
-        "lastReviewedAt": "2026-08-27T00:38:07.717Z"
+        "lastReviewedAt": "2026-08-28T23:50:59.220Z"
+      }
+    },
+    {
+      "evidenceId": "career:dedac0d3-2c8d-41aa-9149-1a72ee14073f",
+      "claim": {
+        "claimId": "dedac0d3-2c8d-41aa-9149-1a72ee14073f",
+        "text": "Carl worked on the cutting edge design for a 3D virtual & augmented reality program that broke new ground for commercial and military applications. He was instrumental in the programming of the application software. He is a very focused individual and during his time at General Dynamics I think he surpassed all management expectations with the product he created.",
+        "evidenceIds": [
+          "career:dedac0d3-2c8d-41aa-9149-1a72ee14073f"
+        ],
+        "evidenceStrength": "limited",
+        "maturity": "not_applicable",
+        "limitations": [
+          "Contribution boundary: Third-party statement attributed to Laura Baran (Laura worked with Carl on the same team); exact wording and publication rights require reconciliation."
+        ]
+      },
+      "citation": {
+        "evidenceId": "career:dedac0d3-2c8d-41aa-9149-1a72ee14073f",
+        "title": "Recommendation from Laura Baran",
+        "href": "/recommendations",
+        "sourceType": "recommendation",
+        "strength": "limited",
+        "maturity": "not_applicable",
+        "lastReviewedAt": "2026-08-28T23:50:59.221Z"
+      }
+    },
+    {
+      "evidenceId": "career:e1e23af3-6be9-49c6-8b77-566e369ea46d",
+      "claim": {
+        "claimId": "e1e23af3-6be9-49c6-8b77-566e369ea46d",
+        "text": "Keeps prompt, source, safety, feature, quality, and subscription operations in a separate admin control plane.",
+        "evidenceIds": [
+          "career:e1e23af3-6be9-49c6-8b77-566e369ea46d"
+        ],
+        "evidenceStrength": "limited",
+        "maturity": "development",
+        "limitations": [
+          "Contribution boundary: Imported portfolio candidate; Carl's role and contribution require review."
+        ]
+      },
+      "citation": {
+        "evidenceId": "career:e1e23af3-6be9-49c6-8b77-566e369ea46d",
+        "title": "Supraconscious Avatar AI",
+        "href": "/work/supraconscious-avatar-ai#evidence",
+        "sourceType": "project",
+        "strength": "limited",
+        "maturity": "development",
+        "lastReviewedAt": "2026-08-28T23:50:59.220Z"
       }
     },
     {
@@ -872,31 +1174,31 @@
         "sourceType": "recommendation",
         "strength": "limited",
         "maturity": "not_applicable",
-        "lastReviewedAt": "2026-08-27T00:01:13.573Z"
+        "lastReviewedAt": "2026-08-28T04:49:22.698Z"
       }
     },
     {
-      "evidenceId": "career:ec5a56fc-da58-46ed-8af1-39766f52927f",
+      "evidenceId": "career:f0512ac3-c682-4efc-b2e9-e00898ad5366",
       "claim": {
-        "claimId": "ec5a56fc-da58-46ed-8af1-39766f52927f",
-        "text": "Remaining host, platform, signing, notarization, and packaging checks are tracked separately from successful builds.",
+        "claimId": "f0512ac3-c682-4efc-b2e9-e00898ad5366",
+        "text": "The current screen uses synthetic content and has no accounts, submissions, stored profiles, real matching, or production workflow.",
         "evidenceIds": [
-          "career:ec5a56fc-da58-46ed-8af1-39766f52927f"
+          "career:f0512ac3-c682-4efc-b2e9-e00898ad5366"
         ],
         "evidenceStrength": "limited",
-        "maturity": "pre_release",
+        "maturity": "prototype",
         "limitations": [
           "Contribution boundary: Status and use boundary imported from the portfolio; requires review."
         ]
       },
       "citation": {
-        "evidenceId": "career:ec5a56fc-da58-46ed-8af1-39766f52927f",
-        "title": "Wave Factory Essentials",
-        "href": "/work/wave-factory-essentials#evidence",
+        "evidenceId": "career:f0512ac3-c682-4efc-b2e9-e00898ad5366",
+        "title": "Argent Matchmaking",
+        "href": "/work/argent-matchmaking#evidence",
         "sourceType": "project",
         "strength": "limited",
-        "maturity": "pre_release",
-        "lastReviewedAt": "2026-08-27T00:38:07.748Z"
+        "maturity": "prototype",
+        "lastReviewedAt": "2026-08-28T23:50:59.220Z"
       }
     },
     {
@@ -920,31 +1222,31 @@
         "sourceType": "recommendation",
         "strength": "limited",
         "maturity": "not_applicable",
-        "lastReviewedAt": "2026-08-27T00:01:15.717Z"
+        "lastReviewedAt": "2026-08-28T04:49:22.698Z"
       }
     },
     {
-      "evidenceId": "career:f9a6ef24-2fa3-4f01-830a-af52dd783d2d",
+      "evidenceId": "career:f4f21a45-83d6-4f9c-bdab-a6f34043cb1a",
       "claim": {
-        "claimId": "f9a6ef24-2fa3-4f01-830a-af52dd783d2d",
-        "text": "Carl is a skilled frontend engineer who possesses a rare combination of a keen eye for visualization and a deep commitment to high-performance user experience. He is known for creating modular, high-quality UI components using Storybook to accelerate development cycles while elevating our design system standards. He successfully led several critical frontend features that directly improved the experience for our customers. He is a natural mentor who genuinely enjoys sharing knowledge and helping others grow technically. He would be an invaluable asset to any high-performing team!",
+        "claimId": "f4f21a45-83d6-4f9c-bdab-a6f34043cb1a",
+        "text": "Jul 2022 to Mar 2026: Built enterprise administration interfaces, shared components, Storybook documentation, and test infrastructure for security-product workflows.",
         "evidenceIds": [
-          "career:f9a6ef24-2fa3-4f01-830a-af52dd783d2d"
+          "career:f4f21a45-83d6-4f9c-bdab-a6f34043cb1a"
         ],
         "evidenceStrength": "limited",
         "maturity": "not_applicable",
         "limitations": [
-          "Contribution boundary: Third-party statement attributed to Sree Sankara (Sree was senior to Carl but did not manage Carl directly); exact wording and publication rights require reconciliation."
+          "Contribution boundary: Professional role summary imported from the portfolio; employment and wording require review."
         ]
       },
       "citation": {
-        "evidenceId": "career:f9a6ef24-2fa3-4f01-830a-af52dd783d2d",
-        "title": "Recommendation from Sree Sankara",
-        "href": "/recommendations",
-        "sourceType": "recommendation",
+        "evidenceId": "career:f4f21a45-83d6-4f9c-bdab-a6f34043cb1a",
+        "title": "Senior Software Engineer at Yubico",
+        "href": "/experience#yubico",
+        "sourceType": "employer_history",
         "strength": "limited",
         "maturity": "not_applicable",
-        "lastReviewedAt": "2026-08-27T00:01:30.389Z"
+        "lastReviewedAt": "2026-08-28T23:50:59.220Z"
       }
     },
     {
@@ -968,7 +1270,7 @@
         "sourceType": "project",
         "strength": "limited",
         "maturity": "production",
-        "lastReviewedAt": "2026-08-27T00:38:07.698Z"
+        "lastReviewedAt": "2026-08-28T23:50:59.220Z"
       }
     },
     {
@@ -992,7 +1294,7 @@
         "sourceType": "project",
         "strength": "limited",
         "maturity": "pre_release",
-        "lastReviewedAt": "2026-08-27T00:38:07.739Z"
+        "lastReviewedAt": "2026-08-28T23:50:59.220Z"
       }
     }
   ],

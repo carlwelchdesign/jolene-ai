@@ -1,14 +1,16 @@
 # Shared hosted coordination
 
 `JOL-SEC-010` adds a provider-neutral Redis-compatible HTTPS coordination
-boundary for the isolated public Jolene delegate. It is local development work,
-not provider provisioning or deployment authorization.
+boundary for the isolated public Jolene delegate. JOL-REL-002 provisioned the
+approved Upstash free-plan resource in Vercel with automatic paid upgrades and
+the production pack disabled, connected it only to the Jolene public project,
+and installed its endpoint and credentials as server-only Production and Preview
+environment variables.
 
 The implementation follows the Redis REST JSON-array, transaction, and `EVAL`
-contracts documented by Upstash. A compatible service may be used only after
-its exact behavior, retention, billing, region, access, and deletion settings
-are independently approved. The code has not created or contacted a real
-database.
+contracts documented by Upstash. The authorized resource uses the SFO primary
+region, eviction at the free-plan limit, a dedicated `jolene-public` namespace,
+30-day bounded audit/security retention, and no browser-visible credential.
 
 Primary protocol references:
 
