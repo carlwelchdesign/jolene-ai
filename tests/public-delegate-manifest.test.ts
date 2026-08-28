@@ -458,7 +458,7 @@ describe("public delegate manifest boundary", () => {
     expect(body.claims).toEqual([]);
     expect(body.citations).toEqual([]);
     expect(body.limitations).toEqual([
-      "No matching public-approved evidence was available.",
+      "No relevant published information was found for this question.",
     ]);
   });
 

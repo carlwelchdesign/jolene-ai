@@ -17,6 +17,11 @@ import {
   PublicAnswerGroundingValidator,
   type PublicAnswerGroundingValidatorLike,
 } from "./public-answer-grounding-validator.js";
+import {
+  containsInternalPublicProcessLanguage,
+  visitorFacingClaim,
+  visitorFacingLimitations,
+} from "./public-visitor-language.js";
 
 export interface PublicPortfolioAnswerer {
   execute(
@@ -198,6 +203,9 @@ export class GroundedPublicAnswerService implements PublicPortfolioAnswerer {
         return { response: baseline, mode: "fallback" };
       }
       const answer = generatedAnswerSchema.parse(validation.answer);
+      if (containsInternalPublicProcessLanguage(answer)) {
+        return { response: baseline, mode: "fallback" };
+      }
       return {
         mode: "model",
         response: portfolioAnswerResponseSchema.parse({
@@ -478,11 +486,11 @@ function supportedResponse(
       : hiringValueQuestion
       ? boundedHiringValueAnswer(selected)
       : boundedSupportedAnswer(selected),
-    claims: selected.map((record) => record.claim),
+    claims: selected.map((record) => visitorFacingClaim(record.claim)),
     citations: selected.map((record) => record.citation),
     limitations: unique(hiringValueQuestion
       ? ["A hiring decision should still be based on the role, interviews, and direct references."]
-      : selected.flatMap((record) => record.claim.limitations))
+      : visitorFacingLimitations(selected.flatMap((record) => record.claim.limitations)))
       .slice(0, PUBLIC_PORTFOLIO_ANSWER_LIMITS.responseLimitations),
     suggestedFollowUpQuestions: relationshipFact
       ? [
@@ -517,10 +525,10 @@ function noEvidenceResponse(
   return portfolioAnswerResponseSchema.parse({
     schemaVersion: PUBLIC_CAREER_EVIDENCE_SCHEMA_VERSION,
     answer:
-      "The reviewed public evidence does not support a reliable answer to that question.",
+      "I don’t have enough published information to answer that reliably.",
     claims: [],
     citations: [],
-    limitations: ["No matching public-approved evidence was available."],
+    limitations: ["No relevant published information was found for this question."],
     suggestedFollowUpQuestions: [
       "Would you like to ask about a published project, professional role, skill, or contribution?",
     ],
@@ -552,11 +560,11 @@ function conflictResponse(
   return portfolioAnswerResponseSchema.parse({
     schemaVersion: PUBLIC_CAREER_EVIDENCE_SCHEMA_VERSION,
     answer:
-      "The reviewed public evidence contains an unresolved conflict, so it does not support a reliable answer yet.",
+      "The published information available to me conflicts on this point, so I can’t answer it reliably.",
     claims: [],
     citations: [],
     limitations: [
-      "Conflicting public evidence requires Carl's review before it can support an answer.",
+      "The conflicting accounts need clarification before I can use them here.",
     ],
     suggestedFollowUpQuestions: [
       "Would you like to ask about a different published project, role, skill, or contribution?",
@@ -583,7 +591,7 @@ function uniqueRecords(
 function boundedSupportedAnswer(
   selected: readonly PublicCareerEvidenceRecord[],
 ): string {
-  const prefix = "Reviewed public evidence: ";
+  const prefix = "Here’s what Carl’s published work shows: ";
   const available = PUBLIC_PORTFOLIO_ANSWER_LIMITS.answerCharacters -
     prefix.length;
   return `${prefix}${selected
@@ -600,7 +608,7 @@ function boundedHiringValueAnswer(
   const strengths = HIRING_CATEGORY_PRIORITY
     .filter((category) => categories.has(category))
     .map((category) => HIRING_CATEGORY_SUMMARIES[category]);
-  return `The reviewed public record supports considering Carl for roles that value ${formatNaturalList(strengths)}. The cited evidence below provides the concrete details and boundaries.`;
+  return `Carl may be worth considering for roles that value ${formatNaturalList(strengths)}. The examples below show what he has actually done and where the evidence has limits.`;
 }
 
 const HIRING_CATEGORY_SUMMARIES: Readonly<Record<

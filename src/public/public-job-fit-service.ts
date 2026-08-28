@@ -13,6 +13,7 @@ import {
   type PortfolioJobFitResponse,
 } from "../domain/public-portfolio-contract.js";
 import { createPublicJobDescriptionEnvelope } from "./public-model-data.js";
+import { visitorFacingLimitations } from "./public-visitor-language.js";
 
 export interface PublicJobFitComparer {
   compare(
@@ -59,8 +60,8 @@ export class DeterministicPublicJobFitService implements PublicJobFitComparer {
         .sort((left, right) => left.evidenceId.localeCompare(right.evidenceId))
         .map((record) => record.citation),
       caveats: [
-        "This comparison uses only reviewed public evidence and is not a recommendation or blanket fit score.",
-        "Unknown means the public corpus does not establish an answer; it does not mean Carl lacks the experience.",
+        "This comparison uses Carl’s published portfolio information and is not a recommendation or blanket fit score.",
+        "Unknown means the available information does not establish an answer; it does not mean Carl lacks the experience.",
         "The submitted job description is treated as untrusted, ephemeral text and is not persisted.",
         ...(artifact.conflicts.length > 0
           ? ["Evidence in unresolved conflict groups is excluded from requirement assessments."]
@@ -107,14 +108,15 @@ function assessRequirement(
     requirement,
     assessment,
     explanation: assessment === "unknown"
-      ? "The reviewed public evidence does not establish this requirement."
+      ? "Carl’s published work does not establish this requirement."
       : assessment === "direct"
-        ? "Reviewed public evidence directly overlaps the stated requirement."
-        : "Reviewed public evidence has relevant overlap, but does not establish the full requirement.",
+        ? "Carl’s published work directly overlaps the stated requirement."
+        : "Carl’s published work has relevant overlap, but does not establish the full requirement.",
     evidenceIds,
     limitations: assessment === "unknown"
-      ? ["No conclusion about absent experience can be drawn from the public corpus."]
-      : unique(matches.flatMap((match) => match.record.claim.limitations)).slice(0, 4),
+      ? ["No conclusion about experience that is not shown here should be drawn from this result."]
+      : visitorFacingLimitations(matches.flatMap((match) =>
+        match.record.claim.limitations)).slice(0, 4),
   };
 }
 

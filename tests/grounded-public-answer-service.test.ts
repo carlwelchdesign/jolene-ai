@@ -113,6 +113,46 @@ describe("grounded public answer service", () => {
     });
   });
 
+  it("withholds internal editorial limitations from the model and public response", async () => {
+    const record = createPublicEvidenceRecord(1, {
+      text: "Carl built a typed React system.",
+      limitations: [
+        "Contribution boundary: Imported from the portfolio; employment and wording require review.",
+        "The example is a demonstration rather than a certified production service.",
+      ],
+    });
+    let providerInput: GroundedPublicAnswerInput | undefined;
+    const artifact = createPublicEvidenceArtifact([record]);
+    const execution = await new GroundedPublicAnswerService({
+      generate: async (input) => {
+        providerInput = input;
+        return generation(input, "Carl built a typed React system.");
+      },
+    }).execute(artifact, { question: "What React system did Carl build?" });
+
+    expect(providerInput?.evidence[0]?.limitations).toEqual([
+      "The example is a demonstration rather than a certified production service.",
+    ]);
+    expect(JSON.stringify(execution.response)).not.toMatch(
+      /contribution boundary|imported from|require review/iu,
+    );
+  });
+
+  it("rejects generated prose that exposes internal public-process language", async () => {
+    const artifact = createPublicEvidenceArtifact();
+    const request = { question: "What React systems has Carl built?" };
+    const baseline = new DeterministicPublicAnswerService().answer(artifact, request);
+    const execution = await new GroundedPublicAnswerService({
+      generate: async (input) => generation(
+        input,
+        "Contribution boundary: Carl builds typed React product systems.",
+      ),
+    }).execute(artifact, request);
+
+    expect(execution).toEqual({ mode: "fallback", response: baseline });
+    expect(JSON.stringify(execution.response)).not.toContain("Contribution boundary");
+  });
+
   it("keeps exact recommendation relationships deterministic and bypasses broad retrieval", async () => {
     const david = createPublicEvidenceRecord(1, {
       text: "Carl did great work for us in web design and multimedia production. Super good guy to work with.",
@@ -142,7 +182,7 @@ describe("grounded public answer service", () => {
 
     expect(execution.mode).toBe("deterministic");
     expect(execution.response.answer).toContain("David Allen was Carl’s employer.");
-    expect(execution.response.claims).toEqual([david.claim]);
+    expect(execution.response.claims).toEqual([{ ...david.claim, limitations: [] }]);
     expect(JSON.stringify(execution.response).toLocaleLowerCase("en-US"))
       .not.toContain("client");
     expect(retrieve).not.toHaveBeenCalled();

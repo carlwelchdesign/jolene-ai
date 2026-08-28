@@ -95,6 +95,28 @@ describe("DeterministicPublicJobFitService", () => {
     expect(result.corpusVersion).toBe(artifact.manifest.corpusVersion);
   });
 
+  it("keeps internal editorial metadata out of visitor-facing job-fit results", () => {
+    const artifact = createPublicEvidenceArtifact([
+      createPublicEvidenceRecord(1, {
+        text: "Carl built typed React product systems.",
+        limitations: [
+          "Contribution boundary: Imported from the portfolio; Carl's role requires review.",
+          "The example demonstrates product work but does not establish every framework.",
+        ],
+      }),
+    ]);
+    const result = service.compare(artifact, {
+      jobDescription: "Build typed React product systems.",
+    });
+
+    expect(JSON.stringify(result)).not.toMatch(
+      /contribution boundary|imported from|require review|reviewed public|public corpus/iu,
+    );
+    expect(result.requirements[0]?.limitations).toEqual([
+      "The example demonstrates product work but does not establish every framework.",
+    ]);
+  });
+
   it("excludes explicitly conflicted evidence from requirement support", () => {
     const evidence = [
       createPublicEvidenceRecord(1, { text: "Carl led the Atlas migration." }),

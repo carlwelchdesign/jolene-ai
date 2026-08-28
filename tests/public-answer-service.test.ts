@@ -72,7 +72,7 @@ describe("DeterministicPublicAnswerService", () => {
     );
 
     expect(result.answer).toContain("David Allen was Carl’s employer.");
-    expect(result.claims).toEqual([david.claim]);
+    expect(result.claims).toEqual([{ ...david.claim, limitations: [] }]);
     expect(result.citations).toEqual([david.citation]);
     expect(JSON.stringify(result).toLocaleLowerCase("en-US")).not.toContain("client");
   });
@@ -107,7 +107,7 @@ describe("DeterministicPublicAnswerService", () => {
 
     expect(result.claims.length).toBeGreaterThan(0);
     expect(result.citations).toHaveLength(result.claims.length);
-    expect(result.answer).toContain("supports considering Carl");
+    expect(result.answer).toContain("worth considering");
     expect(result.answer).not.toContain("Why should I hire Carl?");
     expect(result.limitations[0]).toContain("hiring decision");
     expect(result.suggestedFollowUpQuestions[0]).toContain("job description");
@@ -122,9 +122,9 @@ describe("DeterministicPublicAnswerService", () => {
     expect(result).toMatchObject({
       claims: [],
       citations: [],
-      limitations: ["No matching public-approved evidence was available."],
+      limitations: ["No relevant published information was found for this question."],
     });
-    expect(result.answer.toLowerCase()).toContain("does not support");
+    expect(result.answer.toLowerCase()).toContain("enough published information");
     expect(result.answer).not.toContain(question);
   });
 
@@ -182,9 +182,31 @@ describe("DeterministicPublicAnswerService", () => {
 
     expect(result.claims).toEqual([]);
     expect(result.citations).toEqual([]);
-    expect(result.answer).toContain("unresolved conflict");
+    expect(result.answer).toContain("conflicts on this point");
     expect(result.answer).not.toContain("led");
     expect(result.answer).not.toContain("advised");
+  });
+
+  it("removes internal editorial metadata from visitor-facing claims and limitations", () => {
+    const artifact = createPublicEvidenceArtifact([
+      createPublicEvidenceRecord(1, {
+        text: "Carl built a typed product system.",
+        limitations: [
+          "Contribution boundary: Imported from the portfolio; Carl's role and contribution require review.",
+          "The product is a demonstration, not a certified operational system.",
+        ],
+      }),
+    ]);
+
+    const result = service.answer(artifact, { question: "What product system did Carl build?" });
+    const serialized = JSON.stringify(result);
+    expect(serialized).not.toMatch(/contribution boundary|imported from|require review/iu);
+    expect(result.claims[0]?.limitations).toEqual([
+      "The product is a demonstration, not a certified operational system.",
+    ]);
+    expect(result.limitations).toEqual([
+      "The product is a demonstration, not a certified operational system.",
+    ]);
   });
 
   it("strictly validates question and rejects session or extra fields", () => {

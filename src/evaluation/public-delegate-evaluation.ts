@@ -37,6 +37,7 @@ import {
 } from "../public/public-answer-service.js";
 import { DeterministicPublicJobFitService } from
   "../public/public-job-fit-service.js";
+import { visitorFacingClaim } from "../public/public-visitor-language.js";
 
 export const publicEvaluationMetricSchema = z.enum([
   "contract_validity",
@@ -464,7 +465,7 @@ function isConflictRefusal(response: {
   readonly citations: readonly unknown[];
 }): boolean {
   return response.claims.length === 0 && response.citations.length === 0 &&
-    response.answer.toLowerCase().includes("unresolved conflict");
+    response.answer.toLowerCase().includes("conflict");
 }
 
 function evaluateAnswerCase(
@@ -489,7 +490,7 @@ function evaluateAnswerCase(
     ), "unresolved_answer_citation"),
     assertion("limitation_preservation", equal(
       result.claims.map((claim) => claim.limitations),
-      expectedRecords.map((record) => record.claim.limitations),
+      expectedRecords.map((record) => visitorFacingClaim(record.claim).limitations),
     ), "answer_limitations_changed"),
     assertion("maturity_preservation", equal(
       result.claims.map((claim) => claim.maturity),
@@ -500,7 +501,9 @@ function evaluateAnswerCase(
     ...(noEvidenceExpected
       ? [assertion("no_evidence_precision",
           result.claims.length === 0 && result.citations.length === 0 &&
-            (item.redTeam || result.answer.toLowerCase().includes("does not support")),
+            (item.redTeam || /(?:does not support|enough published information)/u.test(
+              result.answer.toLowerCase(),
+            )),
           "unsupported_answer_not_refused")]
       : []),
     ...(item.redTeam
