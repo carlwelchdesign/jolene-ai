@@ -1,0 +1,161 @@
+schemaVersion: jolene.personality-selection-manifest.v5
+status: immutable-selection-frozen-before-observation-coding
+frozenAt: 2026-08-28T08:10:00Z
+sourceRegisterFingerprint: sha256:29dcfbe68ffc7b7be13758be298739179146dab5041ff73ee9e49fc74218481f
+capacityManifestFingerprint: sha256:9cd75872581f9b6776fe39c64dd81df2330ea083828eca9b3f2d28e86d283bf7
+samplingPlanFingerprint: sha256:7fb65523ca9aef33b071c6345cd624b58c7d9cc876a447a9f085abe215f65a97
+s03DuplicateOverlapAuditFingerprint: sha256:b9dd86435cdf1b51d77070fba7f880fcbe08bc2e3d42acde96d41ffc15c6e425
+s03DuplicateOverlapAmendmentFingerprint: sha256:6c47e59878b302457b31d04ab082b44214956f99bd8cd4201018e4dfac9783cc
+s03UniqueCapacityViewFingerprint: sha256:ec80b53fcf28e45343d921b6b5347eec824b351f5ce878da5c251815851cba8d
+ledgers:
+  - sourceRegisterId: S02
+    sourceEventId: E002
+    selectionLedgerArtifact: ledgers/source-S02.json
+    selectionLedgerArtifactFingerprint: sha256:c91e772c9986001ff62a2ef8b40e6840a1384289b84a5fdc63107af9d64df541
+    sourceEligibleOccurrences: 43
+    effectiveEligibleUnits: 43
+    selectedTurns: 10
+    systematicTurns: 8
+    purposiveHighRiskTurns: 2
+    nonSelectedEffectiveUnits: 33
+    collapsedDuplicateOccurrences: 0
+    excludedUnits: 214
+    excludedRanges: 112
+  - sourceRegisterId: S03
+    sourceEventId: E003
+    selectionLedgerArtifact: ledgers/source-S03.json
+    selectionLedgerArtifactFingerprint: sha256:bcf5727af60897ee8e2fcd057f4ea8ae22fea6fc4e04d5ab4386f21c6d9cea3e
+    sourceEligibleOccurrences: 270
+    effectiveEligibleUnits: 133
+    selectedTurns: 14
+    systematicTurns: 8
+    purposiveHighRiskTurns: 6
+    nonSelectedEffectiveUnits: 119
+    collapsedDuplicateOccurrences: 137
+    excludedUnits: 273
+    excludedRanges: 260
+  - sourceRegisterId: S04
+    sourceEventId: E004
+    selectionLedgerArtifact: ledgers/source-S04.json
+    selectionLedgerArtifactFingerprint: sha256:cac9f7f6c737e5bd00f2352b6e70a95b379adbe9aed9f26526ca90d8049f3307
+    sourceEligibleOccurrences: 45
+    effectiveEligibleUnits: 45
+    selectedTurns: 14
+    systematicTurns: 11
+    purposiveHighRiskTurns: 3
+    nonSelectedEffectiveUnits: 31
+    collapsedDuplicateOccurrences: 0
+    excludedUnits: 56
+    excludedRanges: 56
+  - sourceRegisterId: S05
+    sourceEventId: E005
+    selectionLedgerArtifact: ledgers/source-S05.json
+    selectionLedgerArtifactFingerprint: sha256:d17da0b11e49bbd240542e480a962d9fbb959fac6ae7ff0354ed4c4fe2261d14
+    sourceEligibleOccurrences: 29
+    effectiveEligibleUnits: 29
+    selectedTurns: 10
+    systematicTurns: 8
+    purposiveHighRiskTurns: 2
+    nonSelectedEffectiveUnits: 19
+    collapsedDuplicateOccurrences: 0
+    excludedUnits: 43
+    excludedRanges: 41
+  - sourceRegisterId: S08
+    sourceEventId: E007
+    selectionLedgerArtifact: ledgers/source-S08.json
+    selectionLedgerArtifactFingerprint: sha256:72dc12ca3dfe8905bfc9b8bf548e3f8c32519c91e9433e3975d4d977d0f5f0ce
+    sourceEligibleOccurrences: 88
+    effectiveEligibleUnits: 88
+    selectedTurns: 17
+    systematicTurns: 14
+    purposiveHighRiskTurns: 3
+    nonSelectedEffectiveUnits: 71
+    collapsedDuplicateOccurrences: 0
+    excludedUnits: 111
+    excludedRanges: 111
+  - sourceRegisterId: S09
+    sourceEventId: E008
+    selectionLedgerArtifact: ledgers/source-S09.json
+    selectionLedgerArtifactFingerprint: sha256:cdf9462e6474a2e8535fe46dc8e31380fb32b4c0635b7c2fa4e3a426771036b6
+    sourceEligibleOccurrences: 5
+    effectiveEligibleUnits: 5
+    selectedTurns: 5
+    systematicTurns: 4
+    purposiveHighRiskTurns: 1
+    nonSelectedEffectiveUnits: 0
+    collapsedDuplicateOccurrences: 0
+    excludedUnits: 6
+    excludedRanges: 6
+  - sourceRegisterId: S13
+    sourceEventId: E010
+    selectionLedgerArtifact: ledgers/source-S13.json
+    selectionLedgerArtifactFingerprint: sha256:0a00492fb6c3299bfe4e244e1d43a73ea9322fcc25a4f8b7f3ac88583e10c1c9
+    sourceEligibleOccurrences: 23
+    effectiveEligibleUnits: 23
+    selectedTurns: 18
+    systematicTurns: 15
+    purposiveHighRiskTurns: 3
+    nonSelectedEffectiveUnits: 5
+    collapsedDuplicateOccurrences: 0
+    excludedUnits: 38
+    excludedRanges: 34
+  - sourceRegisterId: S18
+    sourceEventId: E014
+    selectionLedgerArtifact: ledgers/source-S18.json
+    selectionLedgerArtifactFingerprint: sha256:f4b850c3f072a1f9f9df064a700811049ec00714b4f3642bf39d68d3a8c2cd89
+    sourceEligibleOccurrences: 2
+    effectiveEligibleUnits: 2
+    selectedTurns: 2
+    systematicTurns: 2
+    purposiveHighRiskTurns: 0
+    nonSelectedEffectiveUnits: 0
+    collapsedDuplicateOccurrences: 0
+    excludedUnits: 17
+    excludedRanges: 17
+  - sourceRegisterId: S19
+    sourceEventId: E015
+    selectionLedgerArtifact: ledgers/source-S19.json
+    selectionLedgerArtifactFingerprint: sha256:7ba0af3d73de48792c5049e1cb61943917d450e9c1005ca77196ea8df0c51e72
+    sourceEligibleOccurrences: 58
+    effectiveEligibleUnits: 58
+    selectedTurns: 18
+    systematicTurns: 14
+    purposiveHighRiskTurns: 4
+    nonSelectedEffectiveUnits: 40
+    collapsedDuplicateOccurrences: 0
+    excludedUnits: 60
+    excludedRanges: 58
+  - sourceRegisterId: S20
+    sourceEventId: E016
+    selectionLedgerArtifact: ledgers/source-S20.json
+    selectionLedgerArtifactFingerprint: sha256:7770784edb4fd62f950ccbd183ae6725be45acd1a0795329799632d1501a5df1
+    sourceEligibleOccurrences: 25
+    effectiveEligibleUnits: 25
+    selectedTurns: 12
+    systematicTurns: 12
+    purposiveHighRiskTurns: 0
+    nonSelectedEffectiveUnits: 13
+    collapsedDuplicateOccurrences: 0
+    excludedUnits: 0
+    excludedRanges: 0
+totals:
+  sources: 10
+  boundaryUnits: 1406
+  sourceEligibleOccurrences: 588
+  effectiveEligibleUnits: 451
+  selectedTurns: 120
+  systematicTurns: 96
+  purposiveHighRiskTurns: 24
+  nonSelectedEffectiveUnits: 331
+  collapsedDuplicateOccurrences: 137
+  excludedUnits: 818
+  excludedRanges: 695
+  uniqueSelectedSegmentFingerprints: 120
+sourceContentStored: false
+selectionPerformed: true
+globalFingerprintUniquenessPreflight: passed-before-artifact-write
+artifactWrite: atomic-directory-promotion-after-all-preflights
+outcomeBasedReplacementPerformed: false
+observationCodingPerformed: false
+traitAdmission: prohibited
+runtimeActivation: prohibited

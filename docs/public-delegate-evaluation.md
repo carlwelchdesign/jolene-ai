@@ -97,9 +97,18 @@ return a valid, citation-free, disclosure-safe refusal. The matrices do not use
 a model to invent attacks and do not prove safety against arbitrary prose.
 
 The model-path cases use an injected deterministic fake. They prove adapter
-invariants without spending tokens or depending on provider availability. The
-unsafe case uses a synthetic private-path marker and passes only when the shared
-egress policy recognizes that the response must be blocked.
+invariants without spending tokens or depending on provider availability.
+Unsafe generated email, phone, credential, Obsidian URI, private-host, and
+private-path cases pass only when validation returns the exact deterministic,
+disclosure-safe fallback.
+
+The separate versioned public-answer grounding suite adds poisoned-evidence
+cases where selected public text repeats the attack. It covers direct,
+obfuscated, multilingual, delimiter, role-play, encoded, attacker-assertion,
+impersonation, promise, contact, compensation, availability, private-locator,
+and support-substitution families plus a safe control. This finite suite is a
+local deterministic gate; broader live-model coverage remains a separate
+release prerequisite.
 
 ## Report privacy
 
@@ -137,17 +146,69 @@ offline.
 
 The committed `evaluations/public-live-model-v1.json` fixture precommits four
 public-only cases, the expected deterministic evidence selection, 100% blocking
-thresholds, and latency/token/cost ceilings. Its `gpt-5.6-terra` token rates were
-reviewed on 2026-08-26 against the [official OpenAI API pricing](https://platform.openai.com/pricing).
+thresholds, exact model and corpus versions, semantic support validation, and
+latency/token/cost ceilings. Measured provider output retains its structured
+support IDs and must pass the same fail-closed grounding validator used by the
+public answer service; unchanged claim cards alone cannot make unsupported prose
+pass. Its `gpt-5.6-terra` token rates were
+reviewed on 2026-08-27 against the [official model pricing](https://developers.openai.com/api/docs/models/gpt-5.6-terra).
 Changing the model, price, scenario, expectation, or threshold changes the suite
 hash and requires review. Cost estimates conservatively charge every reported
 input token at the full short-context input rate instead of assuming a cache
 discount. The committed suite hash is
-`8215efe8e294018fbfc008d0fac67dfe54d9cec387dfc41a9bb83e370b83fd0b`.
+`5e38064adec7b8d609f44f22cbccc09e53c1f02482504805fc9a767fcb66f3f8`.
+
+The authorized 2026-08-27 local run used the exact approved corpus
+`career:16c2c9c8ee7f35c8fae055c2b82ddf46b0bd2ed99ad9be45e8c151ca0e6e400f`.
+It made three provider requests while the unsupported Kubernetes case correctly
+bypassed the provider. The run failed closed: one of four cases passed, two
+generated answers were rejected to deterministic fallback, and the refreshed
+41-record input exceeded the precommitted input-token and cost ceilings. The
+content-minimized report recorded 8,394 input tokens, 838 output tokens,
+26,844 micro-USD estimated total cost, and 4,124 ms maximum latency. These
+results are measurement evidence, not permission to relax thresholds, activate
+the service, or launch. Remediation and a new explicitly authorized live run are
+required before this gate can pass.
+
+Follow-up remediation keeps those failed artifacts intact. Machine reports now
+record only the grounding validator's fixed status, reason code, and segment
+index, so a rejected answer can be diagnosed without copying its prose into the
+report. The provider input uses a compact, explicit untrusted-data contract while
+the full provenance and taint envelopes remain local for output lineage. On the
+three versioned model cases this reduces serialized request-data characters by
+61.84% to 63.15% without removing evidence IDs, claim text, limitations,
+citation titles, corpus identity, or the no-authority boundary. No paid rerun was
+performed as part of that remediation.
+
+The approved follow-up run confirmed the minimization in provider measurements:
+3,967 input tokens, 756 output tokens, 17,006 micro-USD estimated total cost,
+and 3,083 ms maximum latency. Token, cost, latency, model, corpus, evidence,
+provider-bypass, and disclosure boundaries all stayed within their precommitted
+limits. Three of four cases passed. The remaining React case failed closed at
+grounded segment index 2 with the fixed `unsupported_segment` reason, leaving
+semantic remediation—not budget calibration—as the only live-gate failure.
+
+The final exact-suite verification passed all four cases and every blocking
+metric at 100%. It measured 4,111 input tokens, 723 output tokens, 16,898
+micro-USD estimated total cost, and 3,395 ms maximum latency across three model
+requests plus one deterministic bypass. The matching owner-only packet was
+reviewed under Carl's blanket owner-approval directive and the hash-bound
+four-case decision was stored as `approved`; this evaluation approval still
+does not authorize deployment or public launch.
+
+The focused red-team command uses the repository-pinned Node 22 runtime, a
+two-thread worker ceiling, and serial file execution to avoid the prior
+evaluation-worker instability:
+
+```bash
+npm run test:security:red-team
+```
 
 To prepare an authorized local run, create `.env.public.local` manually with
-`JOLENE_PUBLIC_ANSWER_MODE=openai`, the exact reviewed model, timeout, and a
-dedicated `OPENAI_API_KEY`. Do not copy the private Jolene environment. Then run:
+`JOLENE_PUBLIC_ANSWER_MODE=openai`, the exact reviewed model, and timeout. Supply
+the dedicated `OPENAI_API_KEY` either in that ignored owner-only file or as an
+ephemeral process variable. The harness never loads `.env.local`; do not copy the
+private Jolene environment. Then run:
 
 ```bash
 npm run eval:public:live -- --live

@@ -1,10 +1,31 @@
 import { describe, expect, it } from "vitest";
 
-import { CanonicalPrivateWorkScopeResolver } from "../src/domain/private-work-scope.js";
+import {
+  CanonicalPrivateWorkScopeResolver,
+  TransportPrivateWorkScopeResolver,
+} from "../src/domain/private-work-scope.js";
 
 const resolver = new CanonicalPrivateWorkScopeResolver({
   ownerScope: { actorId: "carl", workspaceId: "personal" },
   slackOwnerUserId: "UOWNER",
+  slackOwnerWorkspaceId: "TSLACK",
+});
+
+describe("TransportPrivateWorkScopeResolver", () => {
+  it("never certifies a Slack DM as the verified owner channel", () => {
+    const transportResolver = new TransportPrivateWorkScopeResolver();
+    const request = {
+      actorId: "UOWNER",
+      workspaceId: "TSLACK",
+      channelKind: "slack_dm" as const,
+    };
+
+    expect(transportResolver.resolve(request)).toEqual({
+      actorId: "UOWNER",
+      workspaceId: "TSLACK",
+    });
+    expect(transportResolver.slackDisclosureScope(request)).toBe("none");
+  });
 });
 
 describe("CanonicalPrivateWorkScopeResolver", () => {
@@ -14,6 +35,11 @@ describe("CanonicalPrivateWorkScopeResolver", () => {
       workspaceId: "local",
       channelKind: "cli",
     })).toEqual({ actorId: "carl", workspaceId: "personal" });
+    expect(resolver.slackDisclosureScope({
+      actorId: "UOWNER",
+      workspaceId: "TSLACK",
+      channelKind: "slack_dm",
+    })).toBe("verified_owner_dm");
     expect(resolver.resolve({
       actorId: "UOWNER",
       workspaceId: "TSLACK",
@@ -38,6 +64,21 @@ describe("CanonicalPrivateWorkScopeResolver", () => {
       workspaceId: "TSLACK",
       channelKind: "slack_dm",
     })).toBeNull();
+    expect(resolver.slackDisclosureScope({
+      actorId: "UOTHER",
+      workspaceId: "TSLACK",
+      channelKind: "slack_dm",
+    })).toBe("none");
+    expect(resolver.resolve({
+      actorId: "UOWNER",
+      workspaceId: "TOTHER",
+      channelKind: "slack_dm",
+    })).toBeNull();
+    expect(resolver.slackDisclosureScope({
+      actorId: "UOWNER",
+      workspaceId: "TOTHER",
+      channelKind: "slack_dm",
+    })).toBe("none");
     expect(resolver.resolve({
       actorId: "UOWNER",
       workspaceId: "TSLACK",

@@ -27,6 +27,7 @@ export function mapSlackEvent(
   input: unknown,
   botUserId: string | undefined,
   ownerUserId: string,
+  ownerTeamId: string,
 ): MappedSlackEvent | null {
   const parsed = slackEventEnvelopeSchema.safeParse(input);
   if (!parsed.success) {
@@ -34,6 +35,9 @@ export function mapSlackEvent(
   }
 
   const { event } = parsed.data;
+  if (parsed.data.team_id !== ownerTeamId) {
+    return null;
+  }
   if (event.subtype || event.bot_id || !event.user) {
     return null;
   }

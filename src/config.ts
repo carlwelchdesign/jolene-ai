@@ -5,12 +5,18 @@ import dotenv from "dotenv";
 import { z } from "zod";
 
 import { resolveSecretValue } from "./config-secret-files.js";
+import { privateControlTokenSchema } from "./http/private-ingress-auth.js";
 import type { WatchedProjectDefinition } from "./domain/watched-project.js";
 import type { PrivateBriefingPolicy } from "./domain/private-briefing.js";
+import {
+  personalityModeSchema,
+  type PersonalityMode,
+} from "./personality/personality-mode.js";
 
 const envSchema = z.object({
   OPENAI_API_KEY: z.string().trim().min(1),
   JOLENE_MODEL: z.string().trim().min(1).default("gpt-5.6-terra"),
+  JOLENE_PERSONALITY_MODE: personalityModeSchema.default("jolene"),
   JOLENE_HOST: z.string().trim().min(1).default("127.0.0.1"),
   JOLENE_PORT: z.coerce.number().int().min(1).max(65_535).default(8421),
   JOLENE_DATABASE_PATH: z
@@ -32,6 +38,10 @@ const envSchema = z.object({
     .default(".jolene/personality/research-decision.json"),
   JOLENE_PERSONALITY_TUNING_DECISION_PATH: z.string().trim().min(1)
     .default(".jolene/personality/tuning-decision.json"),
+  JOLENE_CONVERSATION_QUALITY_PACKET_PATH: z.string().trim().min(1)
+    .default(".jolene/evaluations/conversation-quality-capture.json"),
+  JOLENE_CONVERSATION_QUALITY_DECISION_PATH: z.string().trim().min(1)
+    .default(".jolene/evaluations/conversation-quality-decision.json"),
   JOLENE_OBSIDIAN_VAULT_ROOT: z.string().trim().optional(),
   JOLENE_OBSIDIAN_ALLOWLIST: z.string().default(""),
   JOLENE_CAREER_OBSIDIAN_ALLOWLIST: z.string().default(""),
@@ -39,6 +49,10 @@ const envSchema = z.object({
   JOLENE_OWNER_WORKSPACE_ID: z.string().trim().min(1).default("personal"),
   JOLENE_CAREER_WORKSPACE_ID: z.string().trim().min(1).default("professional"),
   JOLENE_CAREER_EMBEDDINGS_ENABLED: z.enum(["true", "false"]).default("false"),
+  JOLENE_PRIVATE_RETRIEVAL_PROVIDER_EGRESS: z.enum([
+    "local_only",
+    "approved_openai",
+  ]).default("local_only"),
   OPENAI_EMBEDDING_MODEL: z.string().trim().min(1).default("text-embedding-3-small"),
   JOLENE_MAX_HISTORY_TURNS: z.coerce.number().int().min(2).max(100).default(16),
   JOLENE_MAX_MEMORY_ITEMS: z.coerce.number().int().min(1).max(100).default(24),
@@ -49,11 +63,15 @@ const envSchema = z.object({
   SLACK_OWNER_USER_ID: z.string().trim().regex(/^[UW][A-Z0-9]+$/)
     .or(z.literal(""))
     .optional(),
+  SLACK_OWNER_TEAM_ID: z.string().trim().regex(/^T[A-Z0-9]+$/)
+    .or(z.literal(""))
+    .optional(),
 });
 
 export interface AppConfig {
   readonly openaiApiKey: string;
   readonly model: string;
+  readonly personalityMode: PersonalityMode;
   readonly host: string;
   readonly port: number;
   readonly databasePath: string;
@@ -64,6 +82,8 @@ export interface AppConfig {
   readonly publicLiveReviewDecisionPath: string;
   readonly personalityResearchDecisionPath: string;
   readonly personalityTuningDecisionPath: string;
+  readonly conversationQualityPacketPath: string;
+  readonly conversationQualityDecisionPath: string;
   readonly vaultRoot: string | undefined;
   readonly vaultAllowlist: readonly string[];
   readonly careerVaultAllowlist: readonly string[];
@@ -72,6 +92,7 @@ export interface AppConfig {
   readonly careerOwnerActorId: string;
   readonly careerWorkspaceId: string;
   readonly careerEmbeddingsEnabled: boolean;
+  readonly privateRetrievalProviderEgress: "local_only" | "approved_openai";
   readonly embeddingModel: string;
   readonly maxHistoryTurns: number;
   readonly maxMemoryItems: number;
@@ -80,6 +101,7 @@ export interface AppConfig {
   readonly slackBotToken: string | undefined;
   readonly slackAppToken: string | undefined;
   readonly slackOwnerUserId: string | undefined;
+  readonly slackOwnerTeamId: string | undefined;
 }
 
 export function loadConfig(): AppConfig {
@@ -89,6 +111,31 @@ export function loadConfig(): AppConfig {
   });
 
   return parseConfig(process.env);
+}
+
+export function loadPrivateServerConfig(): AppConfig & {
+  readonly privateControlToken: string;
+} {
+  dotenv.config({
+    path: path.resolve(process.cwd(), ".env.local"),
+    quiet: true,
+  });
+  return {
+    ...parseConfig(process.env),
+    privateControlToken: parsePrivateControlToken(process.env),
+  };
+}
+
+export function parsePrivateControlToken(
+  environment: Record<string, string | undefined>,
+  workingDirectory = process.cwd(),
+): string {
+  return privateControlTokenSchema.parse(resolveSecretValue(
+    environment,
+    "JOLENE_PRIVATE_CONTROL_TOKEN",
+    "JOLENE_PRIVATE_CONTROL_TOKEN_FILE",
+    { required: true, workingDirectory },
+  ));
 }
 
 export function parseConfig(
@@ -116,10 +163,26 @@ export function parseConfig(
       { required: false, workingDirectory },
     ),
   });
+  const slackOwnerUserId = emptyToUndefined(env.SLACK_OWNER_USER_ID);
+  const slackOwnerTeamId = emptyToUndefined(env.SLACK_OWNER_TEAM_ID);
+  if (Boolean(slackOwnerUserId) !== Boolean(slackOwnerTeamId)) {
+    throw new Error(
+      "SLACK_OWNER_USER_ID and SLACK_OWNER_TEAM_ID must be configured together.",
+    );
+  }
+  if (
+    env.JOLENE_CAREER_EMBEDDINGS_ENABLED === "true" &&
+    env.JOLENE_PRIVATE_RETRIEVAL_PROVIDER_EGRESS !== "approved_openai"
+  ) {
+    throw new Error(
+      "Career embeddings require explicit approved private retrieval provider egress.",
+    );
+  }
 
   return {
     openaiApiKey: env.OPENAI_API_KEY,
     model: env.JOLENE_MODEL,
+    personalityMode: env.JOLENE_PERSONALITY_MODE,
     host: env.JOLENE_HOST,
     port: env.JOLENE_PORT,
     databasePath: path.resolve(workingDirectory, env.JOLENE_DATABASE_PATH),
@@ -145,6 +208,14 @@ export function parseConfig(
       workingDirectory,
       env.JOLENE_PERSONALITY_TUNING_DECISION_PATH,
     ),
+    conversationQualityPacketPath: path.resolve(
+      workingDirectory,
+      env.JOLENE_CONVERSATION_QUALITY_PACKET_PATH,
+    ),
+    conversationQualityDecisionPath: path.resolve(
+      workingDirectory,
+      env.JOLENE_CONVERSATION_QUALITY_DECISION_PATH,
+    ),
     vaultRoot: emptyToUndefined(env.JOLENE_OBSIDIAN_VAULT_ROOT),
     vaultAllowlist: env.JOLENE_OBSIDIAN_ALLOWLIST.split(",")
       .map((value) => value.trim())
@@ -157,6 +228,8 @@ export function parseConfig(
     careerOwnerActorId: env.JOLENE_OWNER_ACTOR_ID,
     careerWorkspaceId: env.JOLENE_CAREER_WORKSPACE_ID,
     careerEmbeddingsEnabled: env.JOLENE_CAREER_EMBEDDINGS_ENABLED === "true",
+    privateRetrievalProviderEgress:
+      env.JOLENE_PRIVATE_RETRIEVAL_PROVIDER_EGRESS,
     embeddingModel: env.OPENAI_EMBEDDING_MODEL,
     maxHistoryTurns: env.JOLENE_MAX_HISTORY_TURNS,
     maxMemoryItems: env.JOLENE_MAX_MEMORY_ITEMS,
@@ -170,7 +243,8 @@ export function parseConfig(
     ),
     slackBotToken: emptyToUndefined(env.SLACK_BOT_TOKEN),
     slackAppToken: emptyToUndefined(env.SLACK_APP_TOKEN),
-    slackOwnerUserId: emptyToUndefined(env.SLACK_OWNER_USER_ID),
+    slackOwnerUserId,
+    slackOwnerTeamId,
   };
 }
 

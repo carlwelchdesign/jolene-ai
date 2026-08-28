@@ -1,0 +1,454 @@
+{
+  "schemaVersion": "jolene.personality-selection-ledger.v5",
+  "status": "selected-from-precommitted-reviewed-unique-capacity",
+  "frozenAt": "2026-08-28T08:10:00Z",
+  "sourceRegisterFingerprint": "sha256:29dcfbe68ffc7b7be13758be298739179146dab5041ff73ee9e49fc74218481f",
+  "capacityManifestFingerprint": "sha256:9cd75872581f9b6776fe39c64dd81df2330ea083828eca9b3f2d28e86d283bf7",
+  "samplingPlanFingerprint": "sha256:7fb65523ca9aef33b071c6345cd624b58c7d9cc876a447a9f085abe215f65a97",
+  "s03UniqueCapacityViewFingerprint": null,
+  "sourceRegisterId": "S20",
+  "sourceEventId": "E016",
+  "capacityLedgerArtifactFingerprint": "sha256:5761289e357cbd2f64ffd7d720babcbe6713ddfffd21b25de570720d3258855d",
+  "capacityLedgerFingerprint": "sha256:c64cab13b92877b161e0e71867a7f0200db34974f8b8068dfef8479de5ead930",
+  "sourceBoundaryUnitCount": 25,
+  "sourceEligibleOccurrences": 25,
+  "effectiveEligibleCapacity": 25,
+  "allocation": {
+    "targetTurns": 12,
+    "systematicTurns": 12,
+    "purposiveHighRiskTurns": 0
+  },
+  "selectedUnits": [
+    {
+      "selectionId": "SEL-S20-0001",
+      "effectiveUnitId": "C-S20-0002",
+      "representativeCapacityUnitId": "C-S20-0002",
+      "sourceUnitOrdinal": 1,
+      "locator": {
+        "kind": "pair-index",
+        "start": 1,
+        "end": 1,
+        "label": "pair-1"
+      },
+      "segmentFingerprint": "sha256:03d03e1f1d63897f768ff9d57c2293813b39711d3e39d1310c2997a16ff8ff04",
+      "capacityBasis": "reviewed-source-ledger",
+      "selectionRuleId": "SAM-001",
+      "primaryHighRiskStratum": null,
+      "agreedHighRiskStrata": [
+        "humor"
+      ]
+    },
+    {
+      "selectionId": "SEL-S20-0002",
+      "effectiveUnitId": "C-S20-0004",
+      "representativeCapacityUnitId": "C-S20-0004",
+      "sourceUnitOrdinal": 3,
+      "locator": {
+        "kind": "pair-index",
+        "start": 3,
+        "end": 3,
+        "label": "pair-3"
+      },
+      "segmentFingerprint": "sha256:e58a01f7bde47470afa71dec1a53d488cf040e2a95ffc628fe3a8a498003d0d8",
+      "capacityBasis": "reviewed-source-ledger",
+      "selectionRuleId": "SAM-001",
+      "primaryHighRiskStratum": null,
+      "agreedHighRiskStrata": []
+    },
+    {
+      "selectionId": "SEL-S20-0003",
+      "effectiveUnitId": "C-S20-0006",
+      "representativeCapacityUnitId": "C-S20-0006",
+      "sourceUnitOrdinal": 5,
+      "locator": {
+        "kind": "pair-index",
+        "start": 5,
+        "end": 5,
+        "label": "pair-5"
+      },
+      "segmentFingerprint": "sha256:dfea6f9bdf4aefb2bb1ed2f76eede44b63ab5f05d6efe954de12aa20c49b3830",
+      "capacityBasis": "reviewed-source-ledger",
+      "selectionRuleId": "SAM-001",
+      "primaryHighRiskStratum": null,
+      "agreedHighRiskStrata": []
+    },
+    {
+      "selectionId": "SEL-S20-0004",
+      "effectiveUnitId": "C-S20-0008",
+      "representativeCapacityUnitId": "C-S20-0008",
+      "sourceUnitOrdinal": 7,
+      "locator": {
+        "kind": "pair-index",
+        "start": 7,
+        "end": 7,
+        "label": "pair-7"
+      },
+      "segmentFingerprint": "sha256:eb7ea60acdb6407f7b81bde427ec2ce1c6b0564b0caa679292eba6d66cb829d4",
+      "capacityBasis": "reviewed-source-ledger",
+      "selectionRuleId": "SAM-001",
+      "primaryHighRiskStratum": null,
+      "agreedHighRiskStrata": []
+    },
+    {
+      "selectionId": "SEL-S20-0005",
+      "effectiveUnitId": "C-S20-0010",
+      "representativeCapacityUnitId": "C-S20-0010",
+      "sourceUnitOrdinal": 9,
+      "locator": {
+        "kind": "pair-index",
+        "start": 9,
+        "end": 9,
+        "label": "pair-9"
+      },
+      "segmentFingerprint": "sha256:90f6746c4aa90163d092afe87f8fbddae297ef0824c8729adf7786fdc63a2a5e",
+      "capacityBasis": "reviewed-source-ledger",
+      "selectionRuleId": "SAM-001",
+      "primaryHighRiskStratum": null,
+      "agreedHighRiskStrata": [
+        "grief-or-hurt"
+      ]
+    },
+    {
+      "selectionId": "SEL-S20-0006",
+      "effectiveUnitId": "C-S20-0012",
+      "representativeCapacityUnitId": "C-S20-0012",
+      "sourceUnitOrdinal": 11,
+      "locator": {
+        "kind": "pair-index",
+        "start": 11,
+        "end": 11,
+        "label": "pair-11"
+      },
+      "segmentFingerprint": "sha256:7a4372fcd5859b7ffbb3560141a080acbc606f77725e2614029e48bbb042b0e9",
+      "capacityBasis": "reviewed-source-ledger",
+      "selectionRuleId": "SAM-001",
+      "primaryHighRiskStratum": null,
+      "agreedHighRiskStrata": []
+    },
+    {
+      "selectionId": "SEL-S20-0007",
+      "effectiveUnitId": "C-S20-0014",
+      "representativeCapacityUnitId": "C-S20-0014",
+      "sourceUnitOrdinal": 13,
+      "locator": {
+        "kind": "pair-index",
+        "start": 13,
+        "end": 13,
+        "label": "pair-13"
+      },
+      "segmentFingerprint": "sha256:882b103450f8a669fed5b59b70a0d20a9b9231b72f42be61573c16ed5e89e51b",
+      "capacityBasis": "reviewed-source-ledger",
+      "selectionRuleId": "SAM-001",
+      "primaryHighRiskStratum": null,
+      "agreedHighRiskStrata": []
+    },
+    {
+      "selectionId": "SEL-S20-0008",
+      "effectiveUnitId": "C-S20-0016",
+      "representativeCapacityUnitId": "C-S20-0016",
+      "sourceUnitOrdinal": 15,
+      "locator": {
+        "kind": "pair-index",
+        "start": 15,
+        "end": 15,
+        "label": "pair-15"
+      },
+      "segmentFingerprint": "sha256:f06985de1a3b19a3cdb35a40a3ea37ffc7d0a75307abb679fed66739f6307475",
+      "capacityBasis": "reviewed-source-ledger",
+      "selectionRuleId": "SAM-001",
+      "primaryHighRiskStratum": null,
+      "agreedHighRiskStrata": []
+    },
+    {
+      "selectionId": "SEL-S20-0009",
+      "effectiveUnitId": "C-S20-0018",
+      "representativeCapacityUnitId": "C-S20-0018",
+      "sourceUnitOrdinal": 17,
+      "locator": {
+        "kind": "pair-index",
+        "start": 17,
+        "end": 17,
+        "label": "pair-17"
+      },
+      "segmentFingerprint": "sha256:685fbd585fae9ecbf0cebd49718067f9acfaa45fc5398bbec5327b3762b4df7d",
+      "capacityBasis": "reviewed-source-ledger",
+      "selectionRuleId": "SAM-001",
+      "primaryHighRiskStratum": null,
+      "agreedHighRiskStrata": []
+    },
+    {
+      "selectionId": "SEL-S20-0010",
+      "effectiveUnitId": "C-S20-0020",
+      "representativeCapacityUnitId": "C-S20-0020",
+      "sourceUnitOrdinal": 19,
+      "locator": {
+        "kind": "pair-index",
+        "start": 19,
+        "end": 19,
+        "label": "pair-19"
+      },
+      "segmentFingerprint": "sha256:8409ea4d536cee9edb509e3055cd6c706100b620950c65141e5b8496aabb5db2",
+      "capacityBasis": "reviewed-source-ledger",
+      "selectionRuleId": "SAM-001",
+      "primaryHighRiskStratum": null,
+      "agreedHighRiskStrata": []
+    },
+    {
+      "selectionId": "SEL-S20-0011",
+      "effectiveUnitId": "C-S20-0022",
+      "representativeCapacityUnitId": "C-S20-0022",
+      "sourceUnitOrdinal": 21,
+      "locator": {
+        "kind": "pair-index",
+        "start": 21,
+        "end": 21,
+        "label": "pair-21"
+      },
+      "segmentFingerprint": "sha256:1ac15c4c77cdbf49f283f7849a5bae39077930abd9cde30c4966e117f9a5225e",
+      "capacityBasis": "reviewed-source-ledger",
+      "selectionRuleId": "SAM-001",
+      "primaryHighRiskStratum": null,
+      "agreedHighRiskStrata": []
+    },
+    {
+      "selectionId": "SEL-S20-0012",
+      "effectiveUnitId": "C-S20-0024",
+      "representativeCapacityUnitId": "C-S20-0024",
+      "sourceUnitOrdinal": 23,
+      "locator": {
+        "kind": "pair-index",
+        "start": 23,
+        "end": 23,
+        "label": "pair-23"
+      },
+      "segmentFingerprint": "sha256:04b6d0264ce9cc7f5842c997d39302ee803b8761bb9301edd56ec51c873e7ec5",
+      "capacityBasis": "reviewed-source-ledger",
+      "selectionRuleId": "SAM-001",
+      "primaryHighRiskStratum": null,
+      "agreedHighRiskStrata": [
+        "humor",
+        "voice-adjacent"
+      ]
+    }
+  ],
+  "nonSelectedEffectiveUnits": [
+    {
+      "effectiveUnitId": "C-S20-0001",
+      "representativeCapacityUnitId": "C-S20-0001",
+      "sourceUnitOrdinal": 0,
+      "locator": {
+        "kind": "pair-index",
+        "start": 0,
+        "end": 0,
+        "label": "pair-0"
+      },
+      "segmentFingerprint": "sha256:4dca3d8b38ae21077467d60ce6e0d4825de606d5bbf5536936c65860252280c3",
+      "capacityBasis": "reviewed-source-ledger",
+      "agreedHighRiskStrata": [],
+      "reason": "not-selected-by-precommitted-v5-allocation"
+    },
+    {
+      "effectiveUnitId": "C-S20-0003",
+      "representativeCapacityUnitId": "C-S20-0003",
+      "sourceUnitOrdinal": 2,
+      "locator": {
+        "kind": "pair-index",
+        "start": 2,
+        "end": 2,
+        "label": "pair-2"
+      },
+      "segmentFingerprint": "sha256:746813af55268347c9cb44ce487769cc15cf218e45b4e6ab3c269ffde37b34e3",
+      "capacityBasis": "reviewed-source-ledger",
+      "agreedHighRiskStrata": [
+        "humor"
+      ],
+      "reason": "not-selected-by-precommitted-v5-allocation"
+    },
+    {
+      "effectiveUnitId": "C-S20-0005",
+      "representativeCapacityUnitId": "C-S20-0005",
+      "sourceUnitOrdinal": 4,
+      "locator": {
+        "kind": "pair-index",
+        "start": 4,
+        "end": 4,
+        "label": "pair-4"
+      },
+      "segmentFingerprint": "sha256:a11370c28492d6a9c395f63928e83a699d039031d7f968063079065422735826",
+      "capacityBasis": "reviewed-source-ledger",
+      "agreedHighRiskStrata": [
+        "identity-trait"
+      ],
+      "reason": "not-selected-by-precommitted-v5-allocation"
+    },
+    {
+      "effectiveUnitId": "C-S20-0007",
+      "representativeCapacityUnitId": "C-S20-0007",
+      "sourceUnitOrdinal": 6,
+      "locator": {
+        "kind": "pair-index",
+        "start": 6,
+        "end": 6,
+        "label": "pair-6"
+      },
+      "segmentFingerprint": "sha256:17e67ac9e340c90fe7b25c11bd7b3c3179c45e023d22fed0aceb58a83e9afd7e",
+      "capacityBasis": "reviewed-source-ledger",
+      "agreedHighRiskStrata": [],
+      "reason": "not-selected-by-precommitted-v5-allocation"
+    },
+    {
+      "effectiveUnitId": "C-S20-0009",
+      "representativeCapacityUnitId": "C-S20-0009",
+      "sourceUnitOrdinal": 8,
+      "locator": {
+        "kind": "pair-index",
+        "start": 8,
+        "end": 8,
+        "label": "pair-8"
+      },
+      "segmentFingerprint": "sha256:0ebe4aabc09591a8dde5b8778b524ad23f7f4c6d4561995fdaa249fbf4f17f0f",
+      "capacityBasis": "reviewed-source-ledger",
+      "agreedHighRiskStrata": [
+        "humor"
+      ],
+      "reason": "not-selected-by-precommitted-v5-allocation"
+    },
+    {
+      "effectiveUnitId": "C-S20-0011",
+      "representativeCapacityUnitId": "C-S20-0011",
+      "sourceUnitOrdinal": 10,
+      "locator": {
+        "kind": "pair-index",
+        "start": 10,
+        "end": 10,
+        "label": "pair-10"
+      },
+      "segmentFingerprint": "sha256:9e816851b0d043eafe23222c7b3bbbf012c34a6b90bb460ca8517428edcd5939",
+      "capacityBasis": "reviewed-source-ledger",
+      "agreedHighRiskStrata": [
+        "humor"
+      ],
+      "reason": "not-selected-by-precommitted-v5-allocation"
+    },
+    {
+      "effectiveUnitId": "C-S20-0013",
+      "representativeCapacityUnitId": "C-S20-0013",
+      "sourceUnitOrdinal": 12,
+      "locator": {
+        "kind": "pair-index",
+        "start": 12,
+        "end": 12,
+        "label": "pair-12"
+      },
+      "segmentFingerprint": "sha256:81670765ce8acb0a3cc0485a4ae51ad8e35dec7b3b38726bdf6643e4b47fbcf4",
+      "capacityBasis": "reviewed-source-ledger",
+      "agreedHighRiskStrata": [
+        "biography"
+      ],
+      "reason": "not-selected-by-precommitted-v5-allocation"
+    },
+    {
+      "effectiveUnitId": "C-S20-0015",
+      "representativeCapacityUnitId": "C-S20-0015",
+      "sourceUnitOrdinal": 14,
+      "locator": {
+        "kind": "pair-index",
+        "start": 14,
+        "end": 14,
+        "label": "pair-14"
+      },
+      "segmentFingerprint": "sha256:7601d13d1c2f1b544a184d8c0d5815c903a4c1a619d61800954958e4719d594b",
+      "capacityBasis": "reviewed-source-ledger",
+      "agreedHighRiskStrata": [],
+      "reason": "not-selected-by-precommitted-v5-allocation"
+    },
+    {
+      "effectiveUnitId": "C-S20-0017",
+      "representativeCapacityUnitId": "C-S20-0017",
+      "sourceUnitOrdinal": 16,
+      "locator": {
+        "kind": "pair-index",
+        "start": 16,
+        "end": 16,
+        "label": "pair-16"
+      },
+      "segmentFingerprint": "sha256:76a5dbf85b5c5e2a000090f0a3bfc53c34e3f3d6d1dce3ce1e7be4c3141cf4f3",
+      "capacityBasis": "reviewed-source-ledger",
+      "agreedHighRiskStrata": [
+        "humor"
+      ],
+      "reason": "not-selected-by-precommitted-v5-allocation"
+    },
+    {
+      "effectiveUnitId": "C-S20-0019",
+      "representativeCapacityUnitId": "C-S20-0019",
+      "sourceUnitOrdinal": 18,
+      "locator": {
+        "kind": "pair-index",
+        "start": 18,
+        "end": 18,
+        "label": "pair-18"
+      },
+      "segmentFingerprint": "sha256:ff4a6430d9d3e79e695336893731698723db87cb5513afc60049607c0636e155",
+      "capacityBasis": "reviewed-source-ledger",
+      "agreedHighRiskStrata": [],
+      "reason": "not-selected-by-precommitted-v5-allocation"
+    },
+    {
+      "effectiveUnitId": "C-S20-0021",
+      "representativeCapacityUnitId": "C-S20-0021",
+      "sourceUnitOrdinal": 20,
+      "locator": {
+        "kind": "pair-index",
+        "start": 20,
+        "end": 20,
+        "label": "pair-20"
+      },
+      "segmentFingerprint": "sha256:77652529c116df17266b7351ad540547471d3aedbdb0e4ec1f38aa1b971511e9",
+      "capacityBasis": "reviewed-source-ledger",
+      "agreedHighRiskStrata": [],
+      "reason": "not-selected-by-precommitted-v5-allocation"
+    },
+    {
+      "effectiveUnitId": "C-S20-0023",
+      "representativeCapacityUnitId": "C-S20-0023",
+      "sourceUnitOrdinal": 22,
+      "locator": {
+        "kind": "pair-index",
+        "start": 22,
+        "end": 22,
+        "label": "pair-22"
+      },
+      "segmentFingerprint": "sha256:f93e4dcad667b7b6e1c4ec568e10d78e2c800232c40de501b7f8d6bc97f9c487",
+      "capacityBasis": "reviewed-source-ledger",
+      "agreedHighRiskStrata": [],
+      "reason": "not-selected-by-precommitted-v5-allocation"
+    },
+    {
+      "effectiveUnitId": "C-S20-0025",
+      "representativeCapacityUnitId": "C-S20-0025",
+      "sourceUnitOrdinal": 24,
+      "locator": {
+        "kind": "pair-index",
+        "start": 24,
+        "end": 24,
+        "label": "pair-24"
+      },
+      "segmentFingerprint": "sha256:21f712ba83b6ec83655735d359e3b21e2a3b3163a64792ce868ae4a7b973bb00",
+      "capacityBasis": "reviewed-source-ledger",
+      "agreedHighRiskStrata": [
+        "belief"
+      ],
+      "reason": "not-selected-by-precommitted-v5-allocation"
+    }
+  ],
+  "collapsedDuplicateOccurrences": [],
+  "excludedRanges": [],
+  "sourceContentStored": false,
+  "selectionPerformed": true,
+  "globalFingerprintUniquenessPreflight": "passed-before-artifact-write",
+  "outcomeBasedReplacementPerformed": false,
+  "observationCodingPerformed": false,
+  "traitAdmission": "prohibited",
+  "runtimeActivation": "prohibited"
+}

@@ -1,0 +1,134 @@
+schema_version: personality-source-register-repair-v3
+status: prospective-repaired-non-activating
+reviewed_at: 2026-08-27T10:36:00Z
+base_register:
+  schema_version: jolene.personality-source-register.v2
+  fingerprint: sha256:b17ed2346343313d1940071177573c95a7ecaf5bcc273e1da09b3592639d1db1
+boundary_protocol_fingerprint: sha256:7ef6eba7a8eee9fde9be225f4e4b3dc7045a5165974091e008e41a592330bda7
+av_recovery_status: failed-before-map-creation
+av_recovery_outcome_fingerprint: sha256:00c96b1715e6c128b2e73b5c558932bb17b14cbbd25871447836e33e5501adb3
+access_repairs:
+  - source_register_id: S07
+    source_event_id: E006
+    from: coding-ready
+    to: excluded
+    reason: Publisher boundary lacks explicit target-speaker attribution and has no defensible structural repair.
+  - source_register_id: S16
+    source_event_id: E012
+    from: coding-ready
+    to: excluded
+    reason: Text boundary lacks speaker labels and the required complete audiovisual attribution map could not be produced.
+  - source_register_id: S17
+    source_event_id: E013
+    from: coding-ready
+    to: excluded
+    reason: Caption boundary lacks speaker identities and the required complete audiovisual attribution map could not be produced.
+publisher_family_additions:
+  - id: interview-magazine
+    label: Interview Magazine
+    distribution_hosts: [www.interviewmagazine.com]
+    independence_note: Interview Magazine is the originating publisher and current host of its own 1984 interview reprint.
+  - id: vanity-fair
+    label: Vanity Fair
+    distribution_hosts: [www.vanityfair.com]
+    independence_note: Vanity Fair is the originating publisher and host of its standardized Proust Questionnaire event.
+event_additions:
+  - sourceEventId: E015
+    sourceRegisterId: S19
+    eventIdentity: interview-magazine-1984-dolly-parton-lunch-interview
+    publisherFamilyId: interview-magazine
+    editorialProgramId: interview-magazine-cover-interview
+    distributionHost: www.interviewmagazine.com
+    isRebroadcast: true
+    lineageNote: Interview Magazine is the originating publisher; the current page is its own 2012 reprint of the July 1984 interview.
+    eventDateNote: The publisher identifies the original interview and issue as July 1984; the register conservatively records only the year.
+    publisher: Interview Magazine
+    title: "New Again: Dolly Parton"
+    url: https://www.interviewmagazine.com/culture/new-again-dolly-parton
+    effectiveUrl: https://www.interviewmagazine.com/culture/new-again-dolly-parton
+    contentBoundaryUrl: https://www.interviewmagazine.com/culture/new-again-dolly-parton
+    date: "1984"
+    timeBand: pre-2000
+    settingFamily: informal-candid-interview
+    medium: text
+    transcriptProvenance: official-publisher-reprint
+    accessState: coding-ready
+    accessReason: The publisher-hosted reprint exposes a stable ordered transcript boundary with explicit speaker labels.
+    retrievalStatus: retrieved
+    retrievedAt: 2026-08-27T10:32:51Z
+    retrievalHttpStatus: 200
+    retrievalContentType: text/html; charset=UTF-8
+    primarySourceVerified: true
+    contentBoundaryVerified: true
+    editorialTreatment: edited
+    deliveryStructure: unscripted
+    promotionalPurpose: mixed
+    rightsBasis: metadata-and-paraphrase-only
+    fingerprintBasis: normalized-transcript-segments
+    fingerprintMethod: interview-magazine-speaker-paragraphs-v1
+    sourceContentFingerprint: sha256:b1765353abd7f2d2c562d3447d9bd2a20e168c81d619a9ecf6e6f6604ecd0449
+  - sourceEventId: E016
+    sourceRegisterId: S20
+    eventIdentity: vanity-fair-2012-proust-questionnaire
+    publisherFamilyId: vanity-fair
+    editorialProgramId: proust-questionnaire
+    distributionHost: www.vanityfair.com
+    isRebroadcast: false
+    lineageNote: Vanity Fair is the originating publisher and hosts its complete standardized Proust Questionnaire event.
+    eventDateNote: The publisher page identifies the web publication date as October 24, 2012 and the issue as November 2012.
+    publisher: Vanity Fair
+    title: "The Proust Questionnaire: Dolly Parton"
+    url: https://www.vanityfair.com/culture/2012/11/dolly-parton-proust-questionnaire
+    effectiveUrl: https://www.vanityfair.com/culture/2012/11/dolly-parton-proust-questionnaire
+    contentBoundaryUrl: https://www.vanityfair.com/culture/2012/11/dolly-parton-proust-questionnaire
+    date: 2012-10-24
+    timeBand: 2010s
+    settingFamily: structured-prompt-interview
+    medium: text
+    transcriptProvenance: publisher-questionnaire
+    accessState: coding-ready
+    accessReason: The publisher page exposes exactly twenty-five ordered prompt-answer pairs with stable pair locators.
+    retrievalStatus: retrieved
+    retrievedAt: 2026-08-27T10:32:51Z
+    retrievalHttpStatus: 200
+    retrievalContentType: text/html; charset=utf-8
+    primarySourceVerified: true
+    contentBoundaryVerified: true
+    editorialTreatment: edited
+    deliveryStructure: mixed
+    promotionalPurpose: no
+    rightsBasis: metadata-and-paraphrase-only
+    fingerprintBasis: normalized-transcript-segments
+    fingerprintMethod: vanity-fair-proust-pairs-v1
+    sourceContentFingerprint: sha256:1e551fd24168a6120aa89530ca8dcd513cf014f6a8a6bb1c78622faadbd0aa08
+live_fingerprint_verification:
+  required_source_ids: [S02, S03, S04, S05, S08, S09, S13, S18, S19, S20]
+  allowed_origins:
+    - https://freshairarchive.org
+    - https://transcripts.cnn.com
+    - https://www.press.org
+    - https://www.wfae.org
+    - https://danratherjournalist.org
+    - https://www.loc.gov
+    - https://www.ted.com
+    - https://cdn.imaginationlibrary.com
+    - https://www.interviewmagazine.com
+    - https://www.vanityfair.com
+  fingerprint_methods:
+    - fresh-air-transcript-paragraphs-v1
+    - cnn-transcript-body-paragraphs-v1
+    - raw-pdf-bytes-v1
+    - npr-station-article-body-paragraphs-v1
+    - raw-pdf-bytes-v1
+    - raw-pdf-bytes-v1
+    - ted-next-data-transcript-segments-v1
+    - raw-pdf-bytes-v1
+    - interview-magazine-speaker-paragraphs-v1
+    - vanity-fair-proust-pairs-v1
+rights:
+  repository_storage: metadata-and-paraphrase-only
+  transcript_storage: prohibited
+  lyrics_storage: prohibited
+  audio_video_storage: prohibited
+  content_fingerprint_storage: sha256-only
+runtime_activation: prohibited

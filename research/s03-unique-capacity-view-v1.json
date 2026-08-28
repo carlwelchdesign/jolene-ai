@@ -1,0 +1,2280 @@
+{
+  "schemaVersion": "jolene.personality-s03-unique-capacity-view.v1",
+  "status": "frozen-before-new-sampling-plan",
+  "frozenAt": "2026-08-28T07:52:37.714Z",
+  "sourceRegisterId": "S03",
+  "sourceEventId": "E003",
+  "duplicateOverlapAuditFingerprint": "sha256:b9dd86435cdf1b51d77070fba7f880fcbe08bc2e3d42acde96d41ffc15c6e425",
+  "duplicateOverlapAmendmentFingerprint": "sha256:6c47e59878b302457b31d04ab082b44214956f99bd8cd4201018e4dfac9783cc",
+  "sourceRegisterFingerprint": "sha256:29dcfbe68ffc7b7be13758be298739179146dab5041ff73ee9e49fc74218481f",
+  "capacityManifestFingerprint": "sha256:9cd75872581f9b6776fe39c64dd81df2330ea083828eca9b3f2d28e86d283bf7",
+  "sourceCapacityLedgerArtifactFingerprint": "sha256:d193b8134b986443079b7eeed79f204e71d2ff0c5e91f667ccd9d5af00497fa4",
+  "sourceCapacityLedgerFingerprint": "sha256:21a609a44e3dcd8c92485f3b13479fc78441a24785b8a644048d6d2bd8b0bf51",
+  "samplingPlanV4OutcomeFingerprint": "sha256:7e2221cd2cc6db054eac580bda4760b45b8e030779446a2cf108997b6c23bdc5",
+  "policy": {
+    "equivalence": "exact-canonical-segment-fingerprint",
+    "representative": "lowest-source-unit-ordinal-then-capacity-unit-id",
+    "conflictResult": "withhold-entire-group-never-union"
+  },
+  "counts": {
+    "sourceEligibleOccurrences": 270,
+    "uniqueCapacityUnits": 133,
+    "excludedDuplicateOccurrences": 137,
+    "consensusUnits": 70,
+    "uncertaintyWithheldUnits": 63,
+    "unitsWithAdmittedHighRiskStrata": 49
+  },
+  "units": [
+    {
+      "uniqueUnitId": "U-S03-0001",
+      "duplicateGroupId": "DG-S03-0001",
+      "segmentFingerprint": "sha256:034be37b502aaaaf0e36dec5c2d77b4e2dbf9110448777ee450a07f39f773446",
+      "representativeCapacityUnitId": "C-S03-0005",
+      "representativeSourceUnitOrdinal": 4,
+      "locator": "speaker-block-4",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0276"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "consensus",
+      "agreedHighRiskStrata": [
+        "biography"
+      ],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0002",
+      "duplicateGroupId": "DG-S03-0002",
+      "segmentFingerprint": "sha256:03aa40d5d9558d37a17341dd3f40028a81ff7f4c5775ed3217042e3f1c0c0c68",
+      "representativeCapacityUnitId": "C-S03-0104",
+      "representativeSourceUnitOrdinal": 103,
+      "locator": "speaker-block-103",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0375"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "consensus",
+      "agreedHighRiskStrata": [
+        "biography",
+        "humor"
+      ],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0003",
+      "duplicateGroupId": "DG-S03-0003",
+      "segmentFingerprint": "sha256:05f6121b50a11eccf3166a7dea6db54d18d2ef4758e16afe73ea4fc3ffa20f05",
+      "representativeCapacityUnitId": "C-S03-0229",
+      "representativeSourceUnitOrdinal": 228,
+      "locator": "speaker-block-228",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0500"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "consensus",
+      "agreedHighRiskStrata": [
+        "voice-adjacent"
+      ],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0004",
+      "duplicateGroupId": "DG-S03-0004",
+      "segmentFingerprint": "sha256:061f703ef853a377f924476131169899ffbc03584444a439bdebc57b67a8e859",
+      "representativeCapacityUnitId": "C-S03-0094",
+      "representativeSourceUnitOrdinal": 93,
+      "locator": "speaker-block-93",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0365"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "uncertainty-withheld",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": [
+        "biography"
+      ]
+    },
+    {
+      "uniqueUnitId": "U-S03-0005",
+      "duplicateGroupId": "DG-S03-0005",
+      "segmentFingerprint": "sha256:08f216d4a1f996e77f288fde9a240355119fbb65faa2ef100dab11d71fe68759",
+      "representativeCapacityUnitId": "C-S03-0137",
+      "representativeSourceUnitOrdinal": 136,
+      "locator": "speaker-block-136",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0408"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "consensus",
+      "agreedHighRiskStrata": [
+        "boundary"
+      ],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0006",
+      "duplicateGroupId": "DG-S03-0006",
+      "segmentFingerprint": "sha256:0a4d9d087a5330a25f42b50f2e65a6ce8715285e05f4efb1ab3c46015745c408",
+      "representativeCapacityUnitId": "C-S03-0130",
+      "representativeSourceUnitOrdinal": 129,
+      "locator": "speaker-block-129",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0401"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "consensus",
+      "agreedHighRiskStrata": [
+        "humor",
+        "identity-trait"
+      ],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0007",
+      "duplicateGroupId": "DG-S03-0007",
+      "segmentFingerprint": "sha256:0a5d1cbb33252f8eadd94978b0c94fdafa0b21db059b7e9d0862ae04e33229b3",
+      "representativeCapacityUnitId": "C-S03-0124",
+      "representativeSourceUnitOrdinal": 123,
+      "locator": "speaker-block-123",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0395"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "consensus",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0008",
+      "duplicateGroupId": "DG-S03-0008",
+      "segmentFingerprint": "sha256:0a700322722400afc131f3cab23a0f723e152eee9cecf7d671bec6883cb86850",
+      "representativeCapacityUnitId": "C-S03-0132",
+      "representativeSourceUnitOrdinal": 131,
+      "locator": "speaker-block-131",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0403"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "uncertainty-withheld",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": [
+        "humor",
+        "identity-trait"
+      ]
+    },
+    {
+      "uniqueUnitId": "U-S03-0009",
+      "duplicateGroupId": "DG-S03-0009",
+      "segmentFingerprint": "sha256:0b59b01da735bdf4c1d45dd74f6e57c4733ef6a30ad9d373516235117137d6df",
+      "representativeCapacityUnitId": "C-S03-0196",
+      "representativeSourceUnitOrdinal": 195,
+      "locator": "speaker-block-195",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0467"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "uncertainty-withheld",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": [
+        "biography",
+        "humor"
+      ]
+    },
+    {
+      "uniqueUnitId": "U-S03-0010",
+      "duplicateGroupId": "DG-S03-0010",
+      "segmentFingerprint": "sha256:0be608a776862383afe54cee8fadcefe719f7495cfebed4fa5e063945fd8b0b3",
+      "representativeCapacityUnitId": "C-S03-0266",
+      "representativeSourceUnitOrdinal": 265,
+      "locator": "speaker-block-265",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0537"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "consensus",
+      "agreedHighRiskStrata": [
+        "boundary"
+      ],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0011",
+      "duplicateGroupId": "DG-S03-0011",
+      "segmentFingerprint": "sha256:0ec62bce24dcd2a62cee3685c3bbd2460cee71a89e3d15df9aadd2a9f605907b",
+      "representativeCapacityUnitId": "C-S03-0054",
+      "representativeSourceUnitOrdinal": 53,
+      "locator": "speaker-block-53",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0325"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "uncertainty-withheld",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": [
+        "biography",
+        "voice-adjacent"
+      ]
+    },
+    {
+      "uniqueUnitId": "U-S03-0012",
+      "duplicateGroupId": "DG-S03-0012",
+      "segmentFingerprint": "sha256:0f5192197201093f4891f47e2724b86dd8c9b6b3c99a78f0c4b6b78ae08e9b64",
+      "representativeCapacityUnitId": "C-S03-0171",
+      "representativeSourceUnitOrdinal": 170,
+      "locator": "speaker-block-170",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0442"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "consensus",
+      "agreedHighRiskStrata": [
+        "biography",
+        "contradiction",
+        "grief-or-hurt"
+      ],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0013",
+      "duplicateGroupId": "DG-S03-0013",
+      "segmentFingerprint": "sha256:1347aed9cf0150b70baed6a303989eda8651810e4b17fa253dc5bcc381391628",
+      "representativeCapacityUnitId": "C-S03-0175",
+      "representativeSourceUnitOrdinal": 174,
+      "locator": "speaker-block-174",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0446"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "uncertainty-withheld",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": [
+        "biography",
+        "contradiction",
+        "grief-or-hurt"
+      ]
+    },
+    {
+      "uniqueUnitId": "U-S03-0014",
+      "duplicateGroupId": "DG-S03-0014",
+      "segmentFingerprint": "sha256:13be3f48427f75bd9a97044954e97b45879b32d80af777c2b58fa3f067d71afa",
+      "representativeCapacityUnitId": "C-S03-0024",
+      "representativeSourceUnitOrdinal": 23,
+      "locator": "speaker-block-23",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0295"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "consensus",
+      "agreedHighRiskStrata": [
+        "biography",
+        "identity-trait"
+      ],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0015",
+      "duplicateGroupId": "DG-S03-0015",
+      "segmentFingerprint": "sha256:13e45dede6bc161c0e94eefa338f921e2d14937ed339c601ad6498781e926905",
+      "representativeCapacityUnitId": "C-S03-0036",
+      "representativeSourceUnitOrdinal": 35,
+      "locator": "speaker-block-35",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0307"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "uncertainty-withheld",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": [
+        "belief",
+        "humor"
+      ]
+    },
+    {
+      "uniqueUnitId": "U-S03-0016",
+      "duplicateGroupId": "DG-S03-0016",
+      "segmentFingerprint": "sha256:13f9a3e934d3f676f4e53e424bf8292da9d5deeb32faeaf57a8e1fe5fa35e421",
+      "representativeCapacityUnitId": "C-S03-0253",
+      "representativeSourceUnitOrdinal": 252,
+      "locator": "speaker-block-252",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0524"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "consensus",
+      "agreedHighRiskStrata": [
+        "biography"
+      ],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0017",
+      "duplicateGroupId": "DG-S03-0017",
+      "segmentFingerprint": "sha256:16089b05f9ab9f5dcde822b03edf67365ee527437e385f86e210cf281d02006f",
+      "representativeCapacityUnitId": "C-S03-0074",
+      "representativeSourceUnitOrdinal": 73,
+      "locator": "speaker-block-73",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0345"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "consensus",
+      "agreedHighRiskStrata": [
+        "humor"
+      ],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0018",
+      "duplicateGroupId": "DG-S03-0018",
+      "segmentFingerprint": "sha256:180a87804def8c26fec9e2e592185924ff7b82bb686a05953b814af52872bbab",
+      "representativeCapacityUnitId": "C-S03-0085",
+      "representativeSourceUnitOrdinal": 84,
+      "locator": "speaker-block-84",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0356"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "uncertainty-withheld",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": [
+        "belief",
+        "politics"
+      ]
+    },
+    {
+      "uniqueUnitId": "U-S03-0019",
+      "duplicateGroupId": "DG-S03-0019",
+      "segmentFingerprint": "sha256:19a0c989f226f07e957c809cce9e3ed2008ce3bbec596dfcb11ecaf2b11480b6",
+      "representativeCapacityUnitId": "C-S03-0212",
+      "representativeSourceUnitOrdinal": 211,
+      "locator": "speaker-block-211",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0483"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "uncertainty-withheld",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": [
+        "belief",
+        "biography",
+        "identity-trait"
+      ]
+    },
+    {
+      "uniqueUnitId": "U-S03-0020",
+      "duplicateGroupId": "DG-S03-0020",
+      "segmentFingerprint": "sha256:1a71f822712df168116f9a6ee0ec17a14532c6a4954021aae9fe6efe94b0fc7a",
+      "representativeCapacityUnitId": "C-S03-0202",
+      "representativeSourceUnitOrdinal": 201,
+      "locator": "speaker-block-201",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0473"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "consensus",
+      "agreedHighRiskStrata": [
+        "boundary",
+        "politics"
+      ],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0021",
+      "duplicateGroupId": "DG-S03-0021",
+      "segmentFingerprint": "sha256:1af1513f3b923c134a6580f7f882aac253c2ff914f36505630d406ed0cf9c0d6",
+      "representativeCapacityUnitId": "C-S03-0163",
+      "representativeSourceUnitOrdinal": 162,
+      "locator": "speaker-block-162",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0434"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "uncertainty-withheld",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": [
+        "boundary",
+        "contradiction"
+      ]
+    },
+    {
+      "uniqueUnitId": "U-S03-0022",
+      "duplicateGroupId": "DG-S03-0022",
+      "segmentFingerprint": "sha256:1c56850c18b4471d0132aa5073df1e8cb683a45e5158667437e30eaab493e4a0",
+      "representativeCapacityUnitId": "C-S03-0249",
+      "representativeSourceUnitOrdinal": 248,
+      "locator": "speaker-block-248",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0520"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "consensus",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0023",
+      "duplicateGroupId": "DG-S03-0023",
+      "segmentFingerprint": "sha256:1def64b300bf243c58743a72a9980f15a3b634f82936a5829da2e5eebeca86ec",
+      "representativeCapacityUnitId": "C-S03-0106",
+      "representativeSourceUnitOrdinal": 105,
+      "locator": "speaker-block-105",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0377"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "uncertainty-withheld",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0024",
+      "duplicateGroupId": "DG-S03-0024",
+      "segmentFingerprint": "sha256:1e05f0e92821b59da0bf9bb3287604ab6169a6d9585d23514062863303f4bfc8",
+      "representativeCapacityUnitId": "C-S03-0060",
+      "representativeSourceUnitOrdinal": 59,
+      "locator": "speaker-block-59",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0331"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "consensus",
+      "agreedHighRiskStrata": [
+        "biography"
+      ],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0025",
+      "duplicateGroupId": "DG-S03-0025",
+      "segmentFingerprint": "sha256:1e1da251f0be0728f73ac0a22dc688f7c31365934b899e10f6ad3759c57623c6",
+      "representativeCapacityUnitId": "C-S03-0118",
+      "representativeSourceUnitOrdinal": 117,
+      "locator": "speaker-block-117",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0389"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "uncertainty-withheld",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0026",
+      "duplicateGroupId": "DG-S03-0026",
+      "segmentFingerprint": "sha256:2125d8bed147d93185a4677960ccce025e1c6b1978baaf1fe86d3f83c918fd38",
+      "representativeCapacityUnitId": "C-S03-0122",
+      "representativeSourceUnitOrdinal": 121,
+      "locator": "speaker-block-121",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0393"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "consensus",
+      "agreedHighRiskStrata": [
+        "boundary"
+      ],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0027",
+      "duplicateGroupId": "DG-S03-0027",
+      "segmentFingerprint": "sha256:225fa8049f4f4d2255a7fdbaf17fdd583f916675b91abc632b998841f05dd47f",
+      "representativeCapacityUnitId": "C-S03-0030",
+      "representativeSourceUnitOrdinal": 29,
+      "locator": "speaker-block-29",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0301"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "consensus",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0028",
+      "duplicateGroupId": "DG-S03-0028",
+      "segmentFingerprint": "sha256:22cbc0f7089787a3a8adf8ef4c27a9b49dd42be4c7d4720a83d500994f47e74c",
+      "representativeCapacityUnitId": "C-S03-0003",
+      "representativeSourceUnitOrdinal": 2,
+      "locator": "speaker-block-2",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0274"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "uncertainty-withheld",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": [
+        "biography"
+      ]
+    },
+    {
+      "uniqueUnitId": "U-S03-0029",
+      "duplicateGroupId": "DG-S03-0029",
+      "segmentFingerprint": "sha256:26335336df911dc2565f26cb899866f98668c0c4ad9649844d34305bc4fc95b7",
+      "representativeCapacityUnitId": "C-S03-0167",
+      "representativeSourceUnitOrdinal": 166,
+      "locator": "speaker-block-166",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0438"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "consensus",
+      "agreedHighRiskStrata": [
+        "boundary"
+      ],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0030",
+      "duplicateGroupId": "DG-S03-0030",
+      "segmentFingerprint": "sha256:279dc71c241376232a1b571b2f85ed9b56ed7a94cedeb68a37ef4568820efe26",
+      "representativeCapacityUnitId": "C-S03-0009",
+      "representativeSourceUnitOrdinal": 8,
+      "locator": "speaker-block-8",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0280"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "uncertainty-withheld",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": [
+        "biography",
+        "grief-or-hurt"
+      ]
+    },
+    {
+      "uniqueUnitId": "U-S03-0031",
+      "duplicateGroupId": "DG-S03-0031",
+      "segmentFingerprint": "sha256:2879dae65c8a5dced7e88d4998126cc3c378b8262ad586e62e9065eb07c6e915",
+      "representativeCapacityUnitId": "C-S03-0146",
+      "representativeSourceUnitOrdinal": 145,
+      "locator": "speaker-block-145",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0417"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "uncertainty-withheld",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0032",
+      "duplicateGroupId": "DG-S03-0032",
+      "segmentFingerprint": "sha256:2953104e0a49839197da407ca167333b29c12e8c212b86682246c55a6fda1070",
+      "representativeCapacityUnitId": "C-S03-0188",
+      "representativeSourceUnitOrdinal": 187,
+      "locator": "speaker-block-187",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0459"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "uncertainty-withheld",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": [
+        "biography",
+        "contradiction",
+        "voice-adjacent"
+      ]
+    },
+    {
+      "uniqueUnitId": "U-S03-0033",
+      "duplicateGroupId": "DG-S03-0033",
+      "segmentFingerprint": "sha256:297e818df60eafec928e933e16d601eba4a6cf8bdf8baa5dc5451162d3973d04",
+      "representativeCapacityUnitId": "C-S03-0178",
+      "representativeSourceUnitOrdinal": 177,
+      "locator": "speaker-block-177",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0449"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "consensus",
+      "agreedHighRiskStrata": [
+        "biography",
+        "grief-or-hurt"
+      ],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0034",
+      "duplicateGroupId": "DG-S03-0034",
+      "segmentFingerprint": "sha256:2a410e174173439c14fc23163154344db7f8827d6652254faec3e6eb6a352660",
+      "representativeCapacityUnitId": "C-S03-0149",
+      "representativeSourceUnitOrdinal": 148,
+      "locator": "speaker-block-148",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0420"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "uncertainty-withheld",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0035",
+      "duplicateGroupId": "DG-S03-0035",
+      "segmentFingerprint": "sha256:2c66d09602c04c5254e0b40f8b518f0f7667de99e9d24d8b99068e18408c9212",
+      "representativeCapacityUnitId": "C-S03-0268",
+      "representativeSourceUnitOrdinal": 267,
+      "locator": "speaker-block-267",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0539"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "consensus",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0036",
+      "duplicateGroupId": "DG-S03-0036",
+      "segmentFingerprint": "sha256:2fb0186f95d1bcd05987b89cd4c0c84aacc829a41250069d3bd29728bd023ebf",
+      "representativeCapacityUnitId": "C-S03-0096",
+      "representativeSourceUnitOrdinal": 95,
+      "locator": "speaker-block-95",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0367"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "consensus",
+      "agreedHighRiskStrata": [
+        "biography"
+      ],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0037",
+      "duplicateGroupId": "DG-S03-0037",
+      "segmentFingerprint": "sha256:315251473cc84226f48c83292702285dfef3ab975a36dd2d2ab40592ab7e067f",
+      "representativeCapacityUnitId": "C-S03-0090",
+      "representativeSourceUnitOrdinal": 89,
+      "locator": "speaker-block-89",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0361"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "uncertainty-withheld",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": [
+        "boundary",
+        "contradiction"
+      ]
+    },
+    {
+      "uniqueUnitId": "U-S03-0038",
+      "duplicateGroupId": "DG-S03-0038",
+      "segmentFingerprint": "sha256:329ea91327da6e5a62a98a82905c24c99499af96c2f2f3ac26094c7552ea2c23",
+      "representativeCapacityUnitId": "C-S03-0211",
+      "representativeSourceUnitOrdinal": 210,
+      "locator": "speaker-block-210",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0482"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "consensus",
+      "agreedHighRiskStrata": [
+        "voice-adjacent"
+      ],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0039",
+      "duplicateGroupId": "DG-S03-0039",
+      "segmentFingerprint": "sha256:33da2617a3432415dcd68c21afe8b80b6832488bbd5b136753e269b206fb78a4",
+      "representativeCapacityUnitId": "C-S03-0180",
+      "representativeSourceUnitOrdinal": 179,
+      "locator": "speaker-block-179",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0451"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "consensus",
+      "agreedHighRiskStrata": [
+        "biography"
+      ],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0040",
+      "duplicateGroupId": "DG-S03-0040",
+      "segmentFingerprint": "sha256:349985cbcb06645c655533aa90e7ddbdeeda8636e4d9c13c85c8822200e1f92b",
+      "representativeCapacityUnitId": "C-S03-0251",
+      "representativeSourceUnitOrdinal": 250,
+      "locator": "speaker-block-250",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0522"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "consensus",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0041",
+      "duplicateGroupId": "DG-S03-0041",
+      "segmentFingerprint": "sha256:35b9c832a6ee5deaeff787c995aab62b479dbef8c1ee0d1bc95064dd93893d62",
+      "representativeCapacityUnitId": "C-S03-0092",
+      "representativeSourceUnitOrdinal": 91,
+      "locator": "speaker-block-91",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0363"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "consensus",
+      "agreedHighRiskStrata": [
+        "humor"
+      ],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0042",
+      "duplicateGroupId": "DG-S03-0042",
+      "segmentFingerprint": "sha256:366abfae753d1bd342071a4fa78392aff696600ace8bb37d1333f5883fbc024d",
+      "representativeCapacityUnitId": "C-S03-0159",
+      "representativeSourceUnitOrdinal": 158,
+      "locator": "speaker-block-158",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0430"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "consensus",
+      "agreedHighRiskStrata": [
+        "biography"
+      ],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0043",
+      "duplicateGroupId": "DG-S03-0043",
+      "segmentFingerprint": "sha256:3b3be1eca122efd37f956f30470bb72c332baa39794ccdda93bbf80ee0e2ded3",
+      "representativeCapacityUnitId": "C-S03-0190",
+      "representativeSourceUnitOrdinal": 189,
+      "locator": "speaker-block-189",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0461"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "consensus",
+      "agreedHighRiskStrata": [
+        "biography"
+      ],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0044",
+      "duplicateGroupId": "DG-S03-0044",
+      "segmentFingerprint": "sha256:44b5e736e8faeedb4e4edeecbacd42d599a92f0c7a34cfec116ac851342b719c",
+      "representativeCapacityUnitId": "C-S03-0034",
+      "representativeSourceUnitOrdinal": 33,
+      "locator": "speaker-block-33",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0305"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "uncertainty-withheld",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": [
+        "biography"
+      ]
+    },
+    {
+      "uniqueUnitId": "U-S03-0045",
+      "duplicateGroupId": "DG-S03-0045",
+      "segmentFingerprint": "sha256:4519da5f78c409afb0775c31b33f92ed8464d3db30c6d656cf376a71712aebbf",
+      "representativeCapacityUnitId": "C-S03-0237",
+      "representativeSourceUnitOrdinal": 236,
+      "locator": "speaker-block-236",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0508"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "uncertainty-withheld",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0046",
+      "duplicateGroupId": "DG-S03-0046",
+      "segmentFingerprint": "sha256:466a8bfafe792668e6505ae0d368d4d0d9a131adacf5fbb587fafdfc96cc0d9f",
+      "representativeCapacityUnitId": "C-S03-0151",
+      "representativeSourceUnitOrdinal": 150,
+      "locator": "speaker-block-150",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0422"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "uncertainty-withheld",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": [
+        "biography",
+        "boundary",
+        "humor"
+      ]
+    },
+    {
+      "uniqueUnitId": "U-S03-0047",
+      "duplicateGroupId": "DG-S03-0047",
+      "segmentFingerprint": "sha256:4682e18a3058c2863bf51f6b77180a7a7134b6c5b1a59417ffe178b516e5694c",
+      "representativeCapacityUnitId": "C-S03-0066",
+      "representativeSourceUnitOrdinal": 65,
+      "locator": "speaker-block-65",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0337"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "uncertainty-withheld",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0048",
+      "duplicateGroupId": "DG-S03-0048",
+      "segmentFingerprint": "sha256:47be904e0af0f181f01b256966cebd0e67e767d83862cc8b086c87db62f2243b",
+      "representativeCapacityUnitId": "C-S03-0255",
+      "representativeSourceUnitOrdinal": 254,
+      "locator": "speaker-block-254",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0526"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "uncertainty-withheld",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": [
+        "grief-or-hurt",
+        "identity-trait"
+      ]
+    },
+    {
+      "uniqueUnitId": "U-S03-0049",
+      "duplicateGroupId": "DG-S03-0049",
+      "segmentFingerprint": "sha256:48055de221b825954fc57af0551d70cf210a53b436fcb918123d8928cf1e78b6",
+      "representativeCapacityUnitId": "C-S03-0128",
+      "representativeSourceUnitOrdinal": 127,
+      "locator": "speaker-block-127",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0399"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "uncertainty-withheld",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": [
+        "biography"
+      ]
+    },
+    {
+      "uniqueUnitId": "U-S03-0050",
+      "duplicateGroupId": "DG-S03-0050",
+      "segmentFingerprint": "sha256:48636b2ca8c0fee3cd3c3aac819817027b22b282cd1cd9b8eef97326655c50c7",
+      "representativeCapacityUnitId": "C-S03-0220",
+      "representativeSourceUnitOrdinal": 219,
+      "locator": "speaker-block-219",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0491"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "consensus",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0051",
+      "duplicateGroupId": "DG-S03-0051",
+      "segmentFingerprint": "sha256:4c30957a3fde94df4d54d0b19d7f0b06f7aa6cbe7f403b783fa0ad83f6d8d38f",
+      "representativeCapacityUnitId": "C-S03-0015",
+      "representativeSourceUnitOrdinal": 14,
+      "locator": "speaker-block-14",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0286"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "consensus",
+      "agreedHighRiskStrata": [
+        "voice-adjacent"
+      ],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0052",
+      "duplicateGroupId": "DG-S03-0052",
+      "segmentFingerprint": "sha256:4cb8ef2c278ef0e9a6316fa50dc04e4865b7b3bf0cf3e6bb22823178e50d02e4",
+      "representativeCapacityUnitId": "C-S03-0241",
+      "representativeSourceUnitOrdinal": 240,
+      "locator": "speaker-block-240",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0512"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "consensus",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0053",
+      "duplicateGroupId": "DG-S03-0053",
+      "segmentFingerprint": "sha256:51e0173fdee08402f5b1db8cf97f368aa57d58ad98b5b25c0b5ff44af427ab24",
+      "representativeCapacityUnitId": "C-S03-0214",
+      "representativeSourceUnitOrdinal": 213,
+      "locator": "speaker-block-213",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0485"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "consensus",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0054",
+      "duplicateGroupId": "DG-S03-0054",
+      "segmentFingerprint": "sha256:5206e010e7e58df9c4e49c15a433c190bff428f50801b801d578530a088721eb",
+      "representativeCapacityUnitId": "C-S03-0161",
+      "representativeSourceUnitOrdinal": 160,
+      "locator": "speaker-block-160",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0432"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "uncertainty-withheld",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0055",
+      "duplicateGroupId": "DG-S03-0055",
+      "segmentFingerprint": "sha256:5318aadab45697366821d7b42cbacd724ddf3efbb6507e2b7a641639e9902a5e",
+      "representativeCapacityUnitId": "C-S03-0028",
+      "representativeSourceUnitOrdinal": 27,
+      "locator": "speaker-block-27",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0299"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "uncertainty-withheld",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": [
+        "biography",
+        "humor"
+      ]
+    },
+    {
+      "uniqueUnitId": "U-S03-0056",
+      "duplicateGroupId": "DG-S03-0056",
+      "segmentFingerprint": "sha256:53d6a3bbfcd95ea15c270dd63fa30980de64287f4329b0dbce81a2acb8c6c766",
+      "representativeCapacityUnitId": "C-S03-0102",
+      "representativeSourceUnitOrdinal": 101,
+      "locator": "speaker-block-101",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0373"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "consensus",
+      "agreedHighRiskStrata": [
+        "biography"
+      ],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0057",
+      "duplicateGroupId": "DG-S03-0057",
+      "segmentFingerprint": "sha256:54539f8d4e5bc5c406cd0efbeee0f7d6c428021965826c3b3cacc51da65dc9d6",
+      "representativeCapacityUnitId": "C-S03-0224",
+      "representativeSourceUnitOrdinal": 223,
+      "locator": "speaker-block-223",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0495"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "consensus",
+      "agreedHighRiskStrata": [
+        "biography"
+      ],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0058",
+      "duplicateGroupId": "DG-S03-0058",
+      "segmentFingerprint": "sha256:5bc284c215a070f45932e31f4f718454698b032490bf3bdd0443929ee343ee10",
+      "representativeCapacityUnitId": "C-S03-0076",
+      "representativeSourceUnitOrdinal": 75,
+      "locator": "speaker-block-75",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0347"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "consensus",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0059",
+      "duplicateGroupId": "DG-S03-0059",
+      "segmentFingerprint": "sha256:5c75a64f28443568b9a55ee9cde454f72e138c66f9b2e3ae6b1c20dcf98dc79d",
+      "representativeCapacityUnitId": "C-S03-0245",
+      "representativeSourceUnitOrdinal": 244,
+      "locator": "speaker-block-244",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0516"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "consensus",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0060",
+      "duplicateGroupId": "DG-S03-0060",
+      "segmentFingerprint": "sha256:5dbc5d4d4b3e658246ac7ebd45f957caa2dfb05dc11507b3d9138a03f96b1207",
+      "representativeCapacityUnitId": "C-S03-0050",
+      "representativeSourceUnitOrdinal": 49,
+      "locator": "speaker-block-49",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0321"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "uncertainty-withheld",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": [
+        "boundary",
+        "humor",
+        "voice-adjacent"
+      ]
+    },
+    {
+      "uniqueUnitId": "U-S03-0061",
+      "duplicateGroupId": "DG-S03-0061",
+      "segmentFingerprint": "sha256:5ec377b50e57dddde79be0d2e06f501ace9aa5277651a9aa19e54c2ab36199d1",
+      "representativeCapacityUnitId": "C-S03-0048",
+      "representativeSourceUnitOrdinal": 47,
+      "locator": "speaker-block-47",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0319"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "uncertainty-withheld",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": [
+        "belief",
+        "biography",
+        "humor"
+      ]
+    },
+    {
+      "uniqueUnitId": "U-S03-0062",
+      "duplicateGroupId": "DG-S03-0062",
+      "segmentFingerprint": "sha256:608fe05f416a13ae7cf0b415478d6db64df11fea91ba2e2464e120886dea58c9",
+      "representativeCapacityUnitId": "C-S03-0056",
+      "representativeSourceUnitOrdinal": 55,
+      "locator": "speaker-block-55",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0327"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "consensus",
+      "agreedHighRiskStrata": [
+        "biography"
+      ],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0063",
+      "duplicateGroupId": "DG-S03-0063",
+      "segmentFingerprint": "sha256:6584460610054ef510965bf1d63a81a5a8af16d60679588c7cffc9d23496ced8",
+      "representativeCapacityUnitId": "C-S03-0052",
+      "representativeSourceUnitOrdinal": 51,
+      "locator": "speaker-block-51",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0323"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "consensus",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0064",
+      "duplicateGroupId": "DG-S03-0064",
+      "segmentFingerprint": "sha256:6bfdb52957cc5e36c3f305e1e33f16f596caf50cb1d242911b00a2ea9c56a1c2",
+      "representativeCapacityUnitId": "C-S03-0020",
+      "representativeSourceUnitOrdinal": 19,
+      "locator": "speaker-block-19",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0291"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "consensus",
+      "agreedHighRiskStrata": [
+        "biography"
+      ],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0065",
+      "duplicateGroupId": "DG-S03-0065",
+      "segmentFingerprint": "sha256:6c0bf9120b25d2b34729e1c3986fa0099806f9171c076430afd114096da4bab2",
+      "representativeCapacityUnitId": "C-S03-0070",
+      "representativeSourceUnitOrdinal": 69,
+      "locator": "speaker-block-69",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0341"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "consensus",
+      "agreedHighRiskStrata": [
+        "biography",
+        "voice-adjacent"
+      ],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0066",
+      "duplicateGroupId": "DG-S03-0066",
+      "segmentFingerprint": "sha256:707a1a8ac2b76110156f53e00ee440a82da98491dddb6b13cab88ffa663ec1de",
+      "representativeCapacityUnitId": "C-S03-0040",
+      "representativeSourceUnitOrdinal": 39,
+      "locator": "speaker-block-39",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0139",
+        "C-S03-0200",
+        "C-S03-0311",
+        "C-S03-0410",
+        "C-S03-0471"
+      ],
+      "occurrenceCount": 6,
+      "highRiskReviewState": "uncertainty-withheld",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0067",
+      "duplicateGroupId": "DG-S03-0067",
+      "segmentFingerprint": "sha256:73d414151b9032080322325ec54fe18e8e2b9a09cc33a0d57635a470d02f7a81",
+      "representativeCapacityUnitId": "C-S03-0013",
+      "representativeSourceUnitOrdinal": 12,
+      "locator": "speaker-block-12",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0284"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "consensus",
+      "agreedHighRiskStrata": [
+        "voice-adjacent"
+      ],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0068",
+      "duplicateGroupId": "DG-S03-0068",
+      "segmentFingerprint": "sha256:73f5d111f0f25521c556fb67a9cd1e8e888484d31cf630e3759a3ef8aa09bc3a",
+      "representativeCapacityUnitId": "C-S03-0205",
+      "representativeSourceUnitOrdinal": 204,
+      "locator": "speaker-block-204",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0476"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "uncertainty-withheld",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": [
+        "biography",
+        "humor",
+        "identity-trait"
+      ]
+    },
+    {
+      "uniqueUnitId": "U-S03-0069",
+      "duplicateGroupId": "DG-S03-0069",
+      "segmentFingerprint": "sha256:75236ed4be1f805bf963d78e844fa9bfca4682a0be2cee67e360bd2aff350faf",
+      "representativeCapacityUnitId": "C-S03-0218",
+      "representativeSourceUnitOrdinal": 217,
+      "locator": "speaker-block-217",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0489"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "consensus",
+      "agreedHighRiskStrata": [
+        "biography",
+        "voice-adjacent"
+      ],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0070",
+      "duplicateGroupId": "DG-S03-0070",
+      "segmentFingerprint": "sha256:76ac3cedcbfecfb186c98407b792b26090cb022ad9c1164a40935a0dbdffd63c",
+      "representativeCapacityUnitId": "C-S03-0231",
+      "representativeSourceUnitOrdinal": 230,
+      "locator": "speaker-block-230",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0502"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "uncertainty-withheld",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0071",
+      "duplicateGroupId": "DG-S03-0071",
+      "segmentFingerprint": "sha256:76fee2481aba4359b30a4008228024c9b3fbb3b91377f777eaeecf1e9cc15c8e",
+      "representativeCapacityUnitId": "C-S03-0072",
+      "representativeSourceUnitOrdinal": 71,
+      "locator": "speaker-block-71",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0343"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "uncertainty-withheld",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": [
+        "biography"
+      ]
+    },
+    {
+      "uniqueUnitId": "U-S03-0072",
+      "duplicateGroupId": "DG-S03-0072",
+      "segmentFingerprint": "sha256:78e0d2e5e4b57dad5a88341b676505fd4ba71f838949b727ba0bd04426de5a40",
+      "representativeCapacityUnitId": "C-S03-0114",
+      "representativeSourceUnitOrdinal": 113,
+      "locator": "speaker-block-113",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0385"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "uncertainty-withheld",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0073",
+      "duplicateGroupId": "DG-S03-0073",
+      "segmentFingerprint": "sha256:79010b859ac5212c0a8540182574f2805de389b1bc5a69f7f2fc362961636e08",
+      "representativeCapacityUnitId": "C-S03-0247",
+      "representativeSourceUnitOrdinal": 246,
+      "locator": "speaker-block-246",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0518"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "consensus",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0074",
+      "duplicateGroupId": "DG-S03-0074",
+      "segmentFingerprint": "sha256:81dd12f822ea5929b7ffa0caaf84a00b16a845b0b0bed0fea66ddd9e1b2890cf",
+      "representativeCapacityUnitId": "C-S03-0068",
+      "representativeSourceUnitOrdinal": 67,
+      "locator": "speaker-block-67",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0339"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "uncertainty-withheld",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": [
+        "biography",
+        "boundary",
+        "contradiction",
+        "grief-or-hurt"
+      ]
+    },
+    {
+      "uniqueUnitId": "U-S03-0075",
+      "duplicateGroupId": "DG-S03-0075",
+      "segmentFingerprint": "sha256:822627c2041c15fb2ece0b284e833a1bea3ea7c46e8a96039c55d692e5b59ae1",
+      "representativeCapacityUnitId": "C-S03-0192",
+      "representativeSourceUnitOrdinal": 191,
+      "locator": "speaker-block-191",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0463"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "uncertainty-withheld",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": [
+        "biography"
+      ]
+    },
+    {
+      "uniqueUnitId": "U-S03-0076",
+      "duplicateGroupId": "DG-S03-0076",
+      "segmentFingerprint": "sha256:83ca6010c141013b020b3d71e440025343b88140e1eb81fba3972425755e5981",
+      "representativeCapacityUnitId": "C-S03-0176",
+      "representativeSourceUnitOrdinal": 175,
+      "locator": "speaker-block-175",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0447"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "uncertainty-withheld",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0077",
+      "duplicateGroupId": "DG-S03-0077",
+      "segmentFingerprint": "sha256:8553d72e55da04888376c49ebc9840ecd379b624ca8a9b0bd03cea8eaae77b75",
+      "representativeCapacityUnitId": "C-S03-0157",
+      "representativeSourceUnitOrdinal": 156,
+      "locator": "speaker-block-156",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0428"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "consensus",
+      "agreedHighRiskStrata": [
+        "belief",
+        "biography"
+      ],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0078",
+      "duplicateGroupId": "DG-S03-0078",
+      "segmentFingerprint": "sha256:85579015a7f18191d28e6ed8a38b66ad48e6a276fd0f7e324d53443c75b59274",
+      "representativeCapacityUnitId": "C-S03-0262",
+      "representativeSourceUnitOrdinal": 261,
+      "locator": "speaker-block-261",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0533"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "uncertainty-withheld",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0079",
+      "duplicateGroupId": "DG-S03-0079",
+      "segmentFingerprint": "sha256:8a4be5f9e61eba47d5375de3ccaab243cd91c002a32968d8447604def79cc864",
+      "representativeCapacityUnitId": "C-S03-0100",
+      "representativeSourceUnitOrdinal": 99,
+      "locator": "speaker-block-99",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0371"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "uncertainty-withheld",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0080",
+      "duplicateGroupId": "DG-S03-0080",
+      "segmentFingerprint": "sha256:8ff28d8641afb21273f420e42634e23db1e501cafcbfe544ca0e22aaf53b8eff",
+      "representativeCapacityUnitId": "C-S03-0243",
+      "representativeSourceUnitOrdinal": 242,
+      "locator": "speaker-block-242",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0514"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "uncertainty-withheld",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": [
+        "identity-trait"
+      ]
+    },
+    {
+      "uniqueUnitId": "U-S03-0081",
+      "duplicateGroupId": "DG-S03-0081",
+      "segmentFingerprint": "sha256:95298b51a7f7719063b629536e4430f5b513dbf23fbdffcfd9eb5373e1cdfb07",
+      "representativeCapacityUnitId": "C-S03-0046",
+      "representativeSourceUnitOrdinal": 45,
+      "locator": "speaker-block-45",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0317"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "consensus",
+      "agreedHighRiskStrata": [
+        "biography"
+      ],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0082",
+      "duplicateGroupId": "DG-S03-0082",
+      "segmentFingerprint": "sha256:9648facb1eaa3f645c38dc5550cbdd1090c8284bf953db9049a8eea2d875e308",
+      "representativeCapacityUnitId": "C-S03-0062",
+      "representativeSourceUnitOrdinal": 61,
+      "locator": "speaker-block-61",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0333"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "uncertainty-withheld",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0083",
+      "duplicateGroupId": "DG-S03-0083",
+      "segmentFingerprint": "sha256:97e292d6ed46c865f665adfbd3561c6535577583f766aa0a2c1dc3e4caf11946",
+      "representativeCapacityUnitId": "C-S03-0116",
+      "representativeSourceUnitOrdinal": 115,
+      "locator": "speaker-block-115",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0387"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "uncertainty-withheld",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": [
+        "biography",
+        "humor",
+        "identity-trait"
+      ]
+    },
+    {
+      "uniqueUnitId": "U-S03-0084",
+      "duplicateGroupId": "DG-S03-0084",
+      "segmentFingerprint": "sha256:9c5ad90f5a7b63b158886bad09d2dd9e39861a1b0705789675ab629e6506e876",
+      "representativeCapacityUnitId": "C-S03-0144",
+      "representativeSourceUnitOrdinal": 143,
+      "locator": "speaker-block-143",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0415"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "uncertainty-withheld",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0085",
+      "duplicateGroupId": "DG-S03-0085",
+      "segmentFingerprint": "sha256:9ceb2e8fc08407837df2746554d2c18da11e0866798476109dd8c11604de83e4",
+      "representativeCapacityUnitId": "C-S03-0194",
+      "representativeSourceUnitOrdinal": 193,
+      "locator": "speaker-block-193",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0465"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "uncertainty-withheld",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0086",
+      "duplicateGroupId": "DG-S03-0086",
+      "segmentFingerprint": "sha256:9e3391fce4595b096dda35ca5e023bdc32b0674204b3d5458c3663ac7a7334f4",
+      "representativeCapacityUnitId": "C-S03-0083",
+      "representativeSourceUnitOrdinal": 82,
+      "locator": "speaker-block-82",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0354"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "uncertainty-withheld",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0087",
+      "duplicateGroupId": "DG-S03-0087",
+      "segmentFingerprint": "sha256:a13c656007585a7eca13ea1e63808e18b41a2e77ed8de84d4bb501f4e94bb6b6",
+      "representativeCapacityUnitId": "C-S03-0064",
+      "representativeSourceUnitOrdinal": 63,
+      "locator": "speaker-block-63",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0335"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "consensus",
+      "agreedHighRiskStrata": [
+        "biography"
+      ],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0088",
+      "duplicateGroupId": "DG-S03-0088",
+      "segmentFingerprint": "sha256:a14066362d2149abf78f967d1e7bd6909f62b4383cf8a4428991c735af95e19e",
+      "representativeCapacityUnitId": "C-S03-0153",
+      "representativeSourceUnitOrdinal": 152,
+      "locator": "speaker-block-152",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0424"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "consensus",
+      "agreedHighRiskStrata": [
+        "biography"
+      ],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0089",
+      "duplicateGroupId": "DG-S03-0089",
+      "segmentFingerprint": "sha256:a1b13f979ac1bc7e1f0755f80eb4d64911e5e9c504daa752973bb6ad7b365f78",
+      "representativeCapacityUnitId": "C-S03-0239",
+      "representativeSourceUnitOrdinal": 238,
+      "locator": "speaker-block-238",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0510"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "consensus",
+      "agreedHighRiskStrata": [
+        "boundary"
+      ],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0090",
+      "duplicateGroupId": "DG-S03-0090",
+      "segmentFingerprint": "sha256:a39aecc2c2f18ba23d8526e265e368ccdfae7484ddc182ae40a6dede855bb8a6",
+      "representativeCapacityUnitId": "C-S03-0165",
+      "representativeSourceUnitOrdinal": 164,
+      "locator": "speaker-block-164",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0436"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "uncertainty-withheld",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0091",
+      "duplicateGroupId": "DG-S03-0091",
+      "segmentFingerprint": "sha256:a4eca50983338990ccc04ac4de48184eac8edefe5ae2aa3139efc1f5d50a73bf",
+      "representativeCapacityUnitId": "C-S03-0026",
+      "representativeSourceUnitOrdinal": 25,
+      "locator": "speaker-block-25",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0297"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "uncertainty-withheld",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": [
+        "biography"
+      ]
+    },
+    {
+      "uniqueUnitId": "U-S03-0092",
+      "duplicateGroupId": "DG-S03-0092",
+      "segmentFingerprint": "sha256:a51bb24ff06ce3cdcc186d427872ccb126c4c5aa498e1064a26fb5ace7596342",
+      "representativeCapacityUnitId": "C-S03-0186",
+      "representativeSourceUnitOrdinal": 185,
+      "locator": "speaker-block-185",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0457"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "uncertainty-withheld",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0093",
+      "duplicateGroupId": "DG-S03-0093",
+      "segmentFingerprint": "sha256:a7ddf0a18bdde56f22d98fb20981a7c2f851965928435a284d98246758479588",
+      "representativeCapacityUnitId": "C-S03-0135",
+      "representativeSourceUnitOrdinal": 134,
+      "locator": "speaker-block-134",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0406"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "uncertainty-withheld",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": [
+        "biography",
+        "humor",
+        "identity-trait"
+      ]
+    },
+    {
+      "uniqueUnitId": "U-S03-0094",
+      "duplicateGroupId": "DG-S03-0094",
+      "segmentFingerprint": "sha256:a8c93a3bddfb40722cecd99aff4334003eb27c0f7f42499c433c8062484e5e82",
+      "representativeCapacityUnitId": "C-S03-0032",
+      "representativeSourceUnitOrdinal": 31,
+      "locator": "speaker-block-31",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0303"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "consensus",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0095",
+      "duplicateGroupId": "DG-S03-0095",
+      "segmentFingerprint": "sha256:ab59a90d62f845cccde15ecb7b0d8e46c867d07b6a9803ded4f70d23ce086055",
+      "representativeCapacityUnitId": "C-S03-0256",
+      "representativeSourceUnitOrdinal": 255,
+      "locator": "speaker-block-255",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0527"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "uncertainty-withheld",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": [
+        "biography",
+        "grief-or-hurt"
+      ]
+    },
+    {
+      "uniqueUnitId": "U-S03-0096",
+      "duplicateGroupId": "DG-S03-0096",
+      "segmentFingerprint": "sha256:ac23854f18bf3c53cf89136cd721bb95969b27db5f6c2b193fb2b4a1002a9d3a",
+      "representativeCapacityUnitId": "C-S03-0042",
+      "representativeSourceUnitOrdinal": 41,
+      "locator": "speaker-block-41",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0313"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "consensus",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0097",
+      "duplicateGroupId": "DG-S03-0097",
+      "segmentFingerprint": "sha256:aee494ed7355497111c2a7974bccb3a592d9d8e056cff1269a7ce40657092906",
+      "representativeCapacityUnitId": "C-S03-0233",
+      "representativeSourceUnitOrdinal": 232,
+      "locator": "speaker-block-232",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0504"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "uncertainty-withheld",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": [
+        "biography"
+      ]
+    },
+    {
+      "uniqueUnitId": "U-S03-0098",
+      "duplicateGroupId": "DG-S03-0098",
+      "segmentFingerprint": "sha256:b11bd5b4398a6d666018593f7aeffdc3cd08b60f41351bc6a2749263449a84e5",
+      "representativeCapacityUnitId": "C-S03-0235",
+      "representativeSourceUnitOrdinal": 234,
+      "locator": "speaker-block-234",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0506"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "consensus",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0099",
+      "duplicateGroupId": "DG-S03-0099",
+      "segmentFingerprint": "sha256:b29fcb2384c6d22feb35742205ed5060163f612b9ce9d5fdb58a7a9de70bdf86",
+      "representativeCapacityUnitId": "C-S03-0019",
+      "representativeSourceUnitOrdinal": 18,
+      "locator": "speaker-block-18",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0290"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "consensus",
+      "agreedHighRiskStrata": [
+        "biography",
+        "identity-trait"
+      ],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0100",
+      "duplicateGroupId": "DG-S03-0100",
+      "segmentFingerprint": "sha256:b2cd98d2cabca3ee4ddb95472efce186f6292e41df5b75e4e7079ec7a95abb35",
+      "representativeCapacityUnitId": "C-S03-0112",
+      "representativeSourceUnitOrdinal": 111,
+      "locator": "speaker-block-111",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0383"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "consensus",
+      "agreedHighRiskStrata": [
+        "biography",
+        "boundary",
+        "humor"
+      ],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0101",
+      "duplicateGroupId": "DG-S03-0101",
+      "segmentFingerprint": "sha256:b4cb891c2138c3b2473172f163412bec449720e4f2354d5f9fbc981c18213d5a",
+      "representativeCapacityUnitId": "C-S03-0147",
+      "representativeSourceUnitOrdinal": 146,
+      "locator": "speaker-block-146",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0418"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "consensus",
+      "agreedHighRiskStrata": [
+        "boundary",
+        "grief-or-hurt"
+      ],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0102",
+      "duplicateGroupId": "DG-S03-0102",
+      "segmentFingerprint": "sha256:be7ce5c20578f90efe3faa71ee380bd3d94b3a6ccb47d224ef5dbeb1b95bb25b",
+      "representativeCapacityUnitId": "C-S03-0078",
+      "representativeSourceUnitOrdinal": 77,
+      "locator": "speaker-block-77",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0349"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "consensus",
+      "agreedHighRiskStrata": [
+        "identity-trait"
+      ],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0103",
+      "duplicateGroupId": "DG-S03-0103",
+      "segmentFingerprint": "sha256:bf3f406d372acc633d8e5ad839f780dea2a5ba7f8c4731ad0eabc170c4fa5713",
+      "representativeCapacityUnitId": "C-S03-0022",
+      "representativeSourceUnitOrdinal": 21,
+      "locator": "speaker-block-21",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0293"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "consensus",
+      "agreedHighRiskStrata": [
+        "biography"
+      ],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0104",
+      "duplicateGroupId": "DG-S03-0104",
+      "segmentFingerprint": "sha256:c200aed75ac7a41a212d76a327714416d3f9d2a693209bcac908d81ad6ba9c6c",
+      "representativeCapacityUnitId": "C-S03-0058",
+      "representativeSourceUnitOrdinal": 57,
+      "locator": "speaker-block-57",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0329"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "uncertainty-withheld",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": [
+        "biography",
+        "boundary",
+        "contradiction"
+      ]
+    },
+    {
+      "uniqueUnitId": "U-S03-0105",
+      "duplicateGroupId": "DG-S03-0105",
+      "segmentFingerprint": "sha256:c330c8d15d0605dff754094c017762d93996e9a43e3f9ab45ee75cd1f878fac9",
+      "representativeCapacityUnitId": "C-S03-0155",
+      "representativeSourceUnitOrdinal": 154,
+      "locator": "speaker-block-154",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0426"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "uncertainty-withheld",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": [
+        "biography",
+        "humor"
+      ]
+    },
+    {
+      "uniqueUnitId": "U-S03-0106",
+      "duplicateGroupId": "DG-S03-0106",
+      "segmentFingerprint": "sha256:c34aaabf9767fb0472aad47fdd422e0df90644b07dafd9a7f246e544a6a6eb94",
+      "representativeCapacityUnitId": "C-S03-0184",
+      "representativeSourceUnitOrdinal": 183,
+      "locator": "speaker-block-183",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0455"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "consensus",
+      "agreedHighRiskStrata": [
+        "biography"
+      ],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0107",
+      "duplicateGroupId": "DG-S03-0107",
+      "segmentFingerprint": "sha256:c4b56b0ca56c24d2697fe767be51305e04850e17a3a3cb69d924a1bb36dad33a",
+      "representativeCapacityUnitId": "C-S03-0222",
+      "representativeSourceUnitOrdinal": 221,
+      "locator": "speaker-block-221",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0493"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "uncertainty-withheld",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": [
+        "biography",
+        "boundary",
+        "contradiction",
+        "identity-trait",
+        "voice-adjacent"
+      ]
+    },
+    {
+      "uniqueUnitId": "U-S03-0108",
+      "duplicateGroupId": "DG-S03-0108",
+      "segmentFingerprint": "sha256:c6e2f0ad48a995347aa7bb838d4bc4e13f7067ea3438706f1d19318c11239103",
+      "representativeCapacityUnitId": "C-S03-0209",
+      "representativeSourceUnitOrdinal": 208,
+      "locator": "speaker-block-208",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0480"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "uncertainty-withheld",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0109",
+      "duplicateGroupId": "DG-S03-0109",
+      "segmentFingerprint": "sha256:c9abd455b1358851dfac23da0355e801fdb6dcd8b83ad7d648c51721eb7433ba",
+      "representativeCapacityUnitId": "C-S03-0007",
+      "representativeSourceUnitOrdinal": 6,
+      "locator": "speaker-block-6",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0278"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "consensus",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0110",
+      "duplicateGroupId": "DG-S03-0110",
+      "segmentFingerprint": "sha256:d118493adcc25f7ace8f1fff5f7024326e423e1776b4bee159b60b3a952c7355",
+      "representativeCapacityUnitId": "C-S03-0108",
+      "representativeSourceUnitOrdinal": 107,
+      "locator": "speaker-block-107",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0379"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "uncertainty-withheld",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": [
+        "biography",
+        "humor",
+        "identity-trait"
+      ]
+    },
+    {
+      "uniqueUnitId": "U-S03-0111",
+      "duplicateGroupId": "DG-S03-0111",
+      "segmentFingerprint": "sha256:dac141d854cb4ab3ca263e93fa85a5a62ab0286f0f4c0d4659a412c01bf1c716",
+      "representativeCapacityUnitId": "C-S03-0142",
+      "representativeSourceUnitOrdinal": 141,
+      "locator": "speaker-block-141",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0413"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "consensus",
+      "agreedHighRiskStrata": [
+        "biography"
+      ],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0112",
+      "duplicateGroupId": "DG-S03-0112",
+      "segmentFingerprint": "sha256:de0dded43d46b573fe790220e1e915e8b1072de9856cca74f24bd92acc6023a1",
+      "representativeCapacityUnitId": "C-S03-0110",
+      "representativeSourceUnitOrdinal": 109,
+      "locator": "speaker-block-109",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0381"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "uncertainty-withheld",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": [
+        "biography",
+        "identity-trait"
+      ]
+    },
+    {
+      "uniqueUnitId": "U-S03-0113",
+      "duplicateGroupId": "DG-S03-0113",
+      "segmentFingerprint": "sha256:df0bdabb371e00364b0fa99a67e59baff4b31a7a622dccbd32beda07304ba1e9",
+      "representativeCapacityUnitId": "C-S03-0260",
+      "representativeSourceUnitOrdinal": 259,
+      "locator": "speaker-block-259",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0531"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "consensus",
+      "agreedHighRiskStrata": [
+        "biography"
+      ],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0114",
+      "duplicateGroupId": "DG-S03-0114",
+      "segmentFingerprint": "sha256:e1badf1ee7de1d8f4825fdb3b2a1bf709ec51e7137cbb6e808e0d204e1a184e6",
+      "representativeCapacityUnitId": "C-S03-0120",
+      "representativeSourceUnitOrdinal": 119,
+      "locator": "speaker-block-119",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0391"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "uncertainty-withheld",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0115",
+      "duplicateGroupId": "DG-S03-0115",
+      "segmentFingerprint": "sha256:e5149650ef9617604a7c268c6e1f3f9835a645b8802a84a1eabcfc0f38ca460c",
+      "representativeCapacityUnitId": "C-S03-0264",
+      "representativeSourceUnitOrdinal": 263,
+      "locator": "speaker-block-263",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0535"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "consensus",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0116",
+      "duplicateGroupId": "DG-S03-0116",
+      "segmentFingerprint": "sha256:e8c7aba402e8374ca5086fcf002799a0eefdd2abf18ff298e2610413ae4a2155",
+      "representativeCapacityUnitId": "C-S03-0207",
+      "representativeSourceUnitOrdinal": 206,
+      "locator": "speaker-block-206",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0478"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "consensus",
+      "agreedHighRiskStrata": [
+        "biography"
+      ],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0117",
+      "duplicateGroupId": "DG-S03-0117",
+      "segmentFingerprint": "sha256:eaa775a0e845c1da4f235d358769bd632d2973c883ced4cba292da3ce3114258",
+      "representativeCapacityUnitId": "C-S03-0087",
+      "representativeSourceUnitOrdinal": 86,
+      "locator": "speaker-block-86",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0358"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "uncertainty-withheld",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": [
+        "belief",
+        "identity-trait"
+      ]
+    },
+    {
+      "uniqueUnitId": "U-S03-0118",
+      "duplicateGroupId": "DG-S03-0118",
+      "segmentFingerprint": "sha256:eb6cf1e2b36f582adab1691d1a40785196a2c0957dd6ce4d23dca3ba5cbbd1f2",
+      "representativeCapacityUnitId": "C-S03-0270",
+      "representativeSourceUnitOrdinal": 269,
+      "locator": "speaker-block-269",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0541"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "uncertainty-withheld",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": [
+        "biography"
+      ]
+    },
+    {
+      "uniqueUnitId": "U-S03-0119",
+      "duplicateGroupId": "DG-S03-0119",
+      "segmentFingerprint": "sha256:eb93dc93462c77d47c4553f1ca7d71c425cbc5c9e47c2a474912104120003cc4",
+      "representativeCapacityUnitId": "C-S03-0011",
+      "representativeSourceUnitOrdinal": 10,
+      "locator": "speaker-block-10",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0282"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "consensus",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0120",
+      "duplicateGroupId": "DG-S03-0120",
+      "segmentFingerprint": "sha256:ec57076e685a526e993081fd7f0bc7e67c6752210430cd0e3073cdb3fff5fe41",
+      "representativeCapacityUnitId": "C-S03-0038",
+      "representativeSourceUnitOrdinal": 37,
+      "locator": "speaker-block-37",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0309"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "consensus",
+      "agreedHighRiskStrata": [
+        "humor"
+      ],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0121",
+      "duplicateGroupId": "DG-S03-0121",
+      "segmentFingerprint": "sha256:ece27b5a325a2a7ce556e2c30e5832be7a366c088cbb9c55af2ca6865407dee3",
+      "representativeCapacityUnitId": "C-S03-0258",
+      "representativeSourceUnitOrdinal": 257,
+      "locator": "speaker-block-257",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0529"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "uncertainty-withheld",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0122",
+      "duplicateGroupId": "DG-S03-0122",
+      "segmentFingerprint": "sha256:ee206a30cf44e3dfb7277d462ee1e190b782438a7aeb42eddbd2289b1c1844b5",
+      "representativeCapacityUnitId": "C-S03-0081",
+      "representativeSourceUnitOrdinal": 80,
+      "locator": "speaker-block-80",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0352"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "uncertainty-withheld",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": [
+        "belief",
+        "humor",
+        "identity-trait",
+        "politics"
+      ]
+    },
+    {
+      "uniqueUnitId": "U-S03-0123",
+      "duplicateGroupId": "DG-S03-0123",
+      "segmentFingerprint": "sha256:ef2d2dda0c7b1a3f57631dcce330cc4f1f28dcafb21b437fb60010de9a5d204e",
+      "representativeCapacityUnitId": "C-S03-0226",
+      "representativeSourceUnitOrdinal": 225,
+      "locator": "speaker-block-225",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0497"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "uncertainty-withheld",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": [
+        "biography",
+        "boundary"
+      ]
+    },
+    {
+      "uniqueUnitId": "U-S03-0124",
+      "duplicateGroupId": "DG-S03-0124",
+      "segmentFingerprint": "sha256:f21cfe395aa6452d9154a806c93096dac691c8902ab135b0ef705bdf11113e93",
+      "representativeCapacityUnitId": "C-S03-0182",
+      "representativeSourceUnitOrdinal": 181,
+      "locator": "speaker-block-181",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0453"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "consensus",
+      "agreedHighRiskStrata": [
+        "biography"
+      ],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0125",
+      "duplicateGroupId": "DG-S03-0125",
+      "segmentFingerprint": "sha256:f309aa6fa9f7cd2667e17f2dddebe44bc7f59bf83df39d4bca59cde6aee6c904",
+      "representativeCapacityUnitId": "C-S03-0044",
+      "representativeSourceUnitOrdinal": 43,
+      "locator": "speaker-block-43",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0315"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "consensus",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0126",
+      "duplicateGroupId": "DG-S03-0126",
+      "segmentFingerprint": "sha256:f37e56c7c6c1c3bd4b015d9c669b071fd8e2d32997245e701cd11daf1fcd19ea",
+      "representativeCapacityUnitId": "C-S03-0017",
+      "representativeSourceUnitOrdinal": 16,
+      "locator": "speaker-block-16",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0288"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "consensus",
+      "agreedHighRiskStrata": [
+        "belief",
+        "biography"
+      ],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0127",
+      "duplicateGroupId": "DG-S03-0127",
+      "segmentFingerprint": "sha256:f41a8a41a48ed23bf4df4dcbfb9b1a0f8f7f8c504a0f2b30af0cecc191146ba3",
+      "representativeCapacityUnitId": "C-S03-0173",
+      "representativeSourceUnitOrdinal": 172,
+      "locator": "speaker-block-172",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0444"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "consensus",
+      "agreedHighRiskStrata": [
+        "biography",
+        "contradiction"
+      ],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0128",
+      "duplicateGroupId": "DG-S03-0128",
+      "segmentFingerprint": "sha256:f50fdfa22c6dbee8313c1bd330d1b817371c757256e441baf41374044e643710",
+      "representativeCapacityUnitId": "C-S03-0169",
+      "representativeSourceUnitOrdinal": 168,
+      "locator": "speaker-block-168",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0440"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "uncertainty-withheld",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": [
+        "humor"
+      ]
+    },
+    {
+      "uniqueUnitId": "U-S03-0129",
+      "duplicateGroupId": "DG-S03-0129",
+      "segmentFingerprint": "sha256:f632ccd9468a75bd494b7dec39808cfa30d665c6e9a75aad7c7661e511dc7fe2",
+      "representativeCapacityUnitId": "C-S03-0198",
+      "representativeSourceUnitOrdinal": 197,
+      "locator": "speaker-block-197",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0469"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "consensus",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0130",
+      "duplicateGroupId": "DG-S03-0130",
+      "segmentFingerprint": "sha256:f71769d0e6c0fb4d83c0789f47fa93762584502222c9b34e4459fbbd56d9c235",
+      "representativeCapacityUnitId": "C-S03-0098",
+      "representativeSourceUnitOrdinal": 97,
+      "locator": "speaker-block-97",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0369"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "consensus",
+      "agreedHighRiskStrata": [
+        "biography"
+      ],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0131",
+      "duplicateGroupId": "DG-S03-0131",
+      "segmentFingerprint": "sha256:f9b7a5eb43e91cd0b43a276df0dc134e4eb7b42937e5fa8edb798e3ab01487d4",
+      "representativeCapacityUnitId": "C-S03-0216",
+      "representativeSourceUnitOrdinal": 215,
+      "locator": "speaker-block-215",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0487"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "uncertainty-withheld",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": [
+        "belief",
+        "biography",
+        "voice-adjacent"
+      ]
+    },
+    {
+      "uniqueUnitId": "U-S03-0132",
+      "duplicateGroupId": "DG-S03-0132",
+      "segmentFingerprint": "sha256:fd07c386c4b613b5ff5f4af72dcf76c85f51bd70cf76f290cd888a47708c06c2",
+      "representativeCapacityUnitId": "C-S03-0126",
+      "representativeSourceUnitOrdinal": 125,
+      "locator": "speaker-block-125",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0397"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "consensus",
+      "agreedHighRiskStrata": [
+        "biography",
+        "contradiction"
+      ],
+      "withheldCandidateStrata": []
+    },
+    {
+      "uniqueUnitId": "U-S03-0133",
+      "duplicateGroupId": "DG-S03-0133",
+      "segmentFingerprint": "sha256:fde480042d5f68cc5a94f614b31fbfbce9d6596b74aef176245e23852171c7ed",
+      "representativeCapacityUnitId": "C-S03-0134",
+      "representativeSourceUnitOrdinal": 133,
+      "locator": "speaker-block-133",
+      "duplicateCapacityUnitIds": [
+        "C-S03-0405"
+      ],
+      "occurrenceCount": 2,
+      "highRiskReviewState": "consensus",
+      "agreedHighRiskStrata": [],
+      "withheldCandidateStrata": []
+    }
+  ],
+  "sourceContentStored": false,
+  "selectionPerformed": false,
+  "observationCodingPerformed": false,
+  "traitAdmission": "prohibited",
+  "runtimeActivation": "prohibited",
+  "nextAction": "freeze-sampling-plan-v5-against-unique-capacity-view"
+}

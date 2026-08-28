@@ -571,7 +571,7 @@ describe("PortfolioEvidenceImporter", () => {
       expect(first).toEqual({
         sourceCount: 4,
         claimCount: 6,
-        relationshipCount: 4,
+        relationshipCount: 5,
         validationIssueCount: 10,
         publicClaimCount: 0,
       });
@@ -584,6 +584,56 @@ describe("PortfolioEvidenceImporter", () => {
       expect(store.listClaims(scope).every((claim) =>
         claim.visibility === "public_candidate" && claim.reviewState === "needs_review"
       )).toBe(true);
+      const recommendationClaim = store.listClaims(scope).find((claim) =>
+        claim.sourceId === "portfolio:recommendation:reviewer:august-25-2026"
+      );
+      expect(store.listRelationships(scope)).toContainEqual(expect.objectContaining({
+        id: "portfolio:recommendation:reviewer:august-25-2026:recommender-support",
+        claimId: recommendationClaim?.id,
+        fromKind: "person",
+        fromId: "reviewer",
+        relationship: "supports",
+        toKind: "person",
+        toId: "carl",
+        state: "active",
+      }));
+    } finally {
+      store.close();
+    }
+  });
+
+  it("preserves explicit approvals when unchanged portfolio evidence is recaptured", () => {
+    const store = new SqliteCareerEvidenceStore(":memory:", () => fixedNow);
+    try {
+      const importer = new PortfolioEvidenceImporter(store);
+      importer.import(portfolioImportInput());
+      for (const source of store.listSources(scope)) {
+        store.decideSource({
+          ...scope,
+          id: source.id,
+          decision: "approved",
+          reviewerId: "carl",
+        });
+      }
+      const approvedIds = store.listClaims(scope).map((claim) =>
+        approvePublic(store, claim.sourceId, claim.id).id
+      ).sort();
+
+      const recaptured = portfolioImportInput();
+      const report = importer.import({
+        ...recaptured,
+        capturedAt: "2026-08-27T08:00:00.000Z",
+      });
+
+      expect(report.publicClaimCount).toBe(6);
+      expect(store.listSources(scope).every((source) =>
+        source.reviewState === "approved" &&
+        source.capturedAt === "2026-08-27T08:00:00.000Z"
+      )).toBe(true);
+      expect(store.listClaims(scope).filter((claim) => claim.state === "active")
+        .map((claim) => claim.id).sort()).toEqual(approvedIds);
+      expect(store.listClaims(scope).filter((claim) => claim.state === "superseded"))
+        .toEqual([]);
     } finally {
       store.close();
     }

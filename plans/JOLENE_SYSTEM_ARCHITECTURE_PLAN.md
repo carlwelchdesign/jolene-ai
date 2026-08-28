@@ -618,6 +618,19 @@ Private personal-knowledge and recipe checkpoint:
 | Privacy boundary | The portfolio delegate remains physically isolated from the vault; shared Slack exposes no private knowledge tool; allowlist changes remain local and untracked |
 | Remaining boundary | Hybrid semantic retrieval, cross-note synthesis, freshness review, and channel-specific disclosure approvals remain tracked in `JOL-KNOW-002` |
 
+Channel-aware retrieval-policy checkpoint:
+
+| Field | Value |
+|---|---|
+| Ticket | `JOL-KNOW-002` — [Asana](https://app.asana.com/1/9789386902387/project/1216473233375594/task/1217931071239192) |
+| Branch | `codex/jol-know-002-channel-policy` |
+| Policy | Versioned deterministic matrix resolved before conversation history, durable memory, Obsidian, career evidence, or private work tools are exposed |
+| Private/local | Same-thread history, approved durable context, allowlisted Obsidian, and reviewed internal/public career evidence; sensitive memory remains explicit-request only |
+| Slack | Verified owner DM may use the canonical private scope; unverified DMs and private/shared channels receive no private retrieval capability |
+| Portfolio | Public export accepts only `public_approved` career evidence and keeps note/claim/public-evidence citation contracts explicit |
+| Injection boundary | User messages, retrieved notes, memories, recommendations, and conversation quotations cannot widen policy because content is not a policy input and remains labeled untrusted evidence |
+| Deployment boundary | Local code, tests, and documentation only for this checkpoint; pushing or opening a PR is withheld because GitHub may trigger a Vercel build. No Vercel build, environment change, promotion, or deployment without Carl's later approval |
+
 Exact-action-approval checkpoint:
 
 | Field | Value |
@@ -821,7 +834,7 @@ Current ticket evidence:
 | JOL-ARCH-006 | Partial | Retrieved excerpts retain provenance and private knowledge searches now have a durable, content-minimizing access ledger; external disclosure authorization and delivery receipts remain pending. |
 | JOL-ARCH-007 | Partial | Deterministic risk decisions, a typed proposal-only registry, exact expiring approvals, an internal one-time claim boundary, and a local graphical approval-review workflow exist; trusted delivery adapters and execution receipts remain pending. |
 | JOL-ARCH-008 | Implemented for local slice | Six task-bound workflow templates, exact step evidence, durable history, bounded revision, explicit final review, a local graphical control point, private read-only model status review, and one deterministic bounded owner briefing schedule are tested; model-facing mutations, richer artifacts, general scheduling, and authenticated administration remain pending. |
-| JOL-ARCH-009 | Partial; immutable research pilot, source-diverse v2 register and corpus contract, owner decision controls, and non-activating render contract complete | Initial runtime behavior prompt and non-impersonation rules exist. The unchanged rights-conscious v1 pilot registers 11 primary sources, codes 25 paraphrase-only observations across five sources, and records seven legacy independent-review outcomes while separating observed, inferred, and designed evidence. A 2026-08-27 independent audit found that v1's free-form trait/context labels and unstructured reconciliation metadata cannot support safe count expansion. The separate contract-only v2 policy precommits 100–150 atomic turns, 10 source events, eight publisher/setting/context families, four time bands, concentration caps, normalized provenance, duplicate/locator checks, stratified review, 80% raw agreement, 0.60 trait-family kappa, multi-source trait admission, and hard rights/non-impersonation gates. The normalized v2 register preserves all 11 legacy leads, adds two independently published events, and reports 11 coding-ready events across eight conservative publisher families, eight controlled setting families, and all four time bands, clearing the source-diversity entry gate without sampling any v2 observations. NPR syndications and Library of Congress events do not inflate editorial diversity. The 1977 ABC archive remains metadata-only because its official captions have not passed speaker-attribution and audiovisual quality review; the redirected first-party statement remains unavailable. Carl can inspect the exact v1 packet and record a durable owner-only relevance decision bound to all five artifact hashes. Once that exact snapshot is approved, a separate local control can record nine explicit tuning choices bound to both the research snapshot and a versioned tuning-contract hash; changed or malformed state fails closed, and neither decision activates behavior. A versioned structured response contract fingerprints grounded summary, source-linked claims, citations, limitations, next actions, completion, and permission state before deterministic neutral or Jolene presentation. Eleven paired context fixtures require invariant semantic segments, no more than one flourish, and hard-fail on impersonation, borrowed quote/biography framing, dialect/default intimacy, hidden state, or sensitive-context ornament. These controls are deliberately not connected to the model, API response path, Slack, public delegate, or voice. Precommitted sampling, generalized source-drift verification, the full corpus, independent reconciliation, trait admission, Carl's decisions, final behavior specification, representative text pilot, and explicit activation remain pending. |
+| JOL-ARCH-009 | Implemented and verified for local text runtimes; hosted release and voice remain separate | The completed v2 research path contains 120 reviewed turns across 10 source events, independent reconciliation, contradiction and rights review, and a fingerprinted admission audit. One trait family, uncertainty-humility, passed the evidence and owner-decision gates; deferred traits remain excluded from the audited admission set. `jolene.runtime-personality.v2` is wired into the private agent runner and public answer generator, keeps the owner-designed warm/candid baseline distinct from research-backed behavior, and adds the admitted rule through an immutable runtime bundle. The renderer and paired evaluations preserve factual, citation, completion, permission, channel, and sensitive-context boundaries. The owner-reviewed nine-case live text packet passes 9/9 with no hard failures and a 3.93/4 weighted mean. This is local source and evaluation evidence, not proof of a pushed release, hosted activation, voice implementation, or deployment. |
 | JOL-ARCH-010 | Partial | An explicit local registry, on-demand read-only snapshots, canonical-owner conversational tools, and an explicitly enabled local worker report project existence, plan freshness, Git branch/revision/dirty state, and clear alerts without exposing root paths, plan contents, or diffs. Scheduled checks and the private-owner briefing enforce cadence, daily budget, terminal count, pause state, bounded visible history, durable exact-message retry, and exact-owner Slack delivery. Project alert-set transitions retain no-change/manual suppression. Build verification, authenticated remote administration, production hosting, and live scheduled owner-DM evidence remain pending. |
 | JOL-ARCH-011 | Implemented for review-only local core and owner control | Exact Jenny and Maria recipient identities, task ownership, context/source allowlists, 24-hour expiry, one-to-five Jolene turns, append-only alternating transcript, restart/concurrent retry safety, separately consumed exact-action approval per Jolene outbound turn, versioned handoff revision, and owner approval before closure are enforced. The local control surface makes draft creation, exact fingerprint review, cancellation, transcript provenance, and latest-handoff review usable while exposing no transcript execution, arbitrary recipients, model tools, Slack posting, client-repository access, public exposure, or autonomous exchange. |
 | JOL-ARCH-013 | Planned and deferred | The revised baseline at `/Users/carl.welch/Documents/Github Projects/carl-welch-portfolio/PORTFOLIO_SITE_PLAN.md` explicitly defers Jolene outside the portfolio's first release. The later public delegate still requires a public/private boundary, versioned evidence contract, adversarial evaluations, correction flow, contact handoff, and production controls. Fit Console is a pattern source, not the target project. |
@@ -843,6 +856,16 @@ source-ID set and exact HTTPS origins are pinned, so coverage cannot be silently
 closes generalized source-drift verification only; v2 sampling, coding, reconciliation, trait
 admission, owner decisions, behavior activation, model wiring, Slack use, and voice remain
 pending or explicitly out of scope.
+
+JOL-ARCH-009 sampling follow-up (2026-08-27): six coding-ready HTML sources now have complete
+machine boundary drafts containing only hashes, generic locators, and controlled structural
+labels. They cover 1,076 boundary units and identify 448 structurally eligible units, while
+explicitly recording that semantic review, independent review, and selection have not occurred.
+The PDF path remains fail-closed: S04's exact 101-unit boundary reproduces, but the frozen cue
+language is underdetermined and literal policies yield 40, 44, 45, or 49 eligible target blocks
+instead of the frozen 48. A prospective cue-adjudication amendment and two independent
+full-boundary reviews are required before PDF drafts, final capacity ledgers, v4 allocation,
+selection, coding, or personality activation.
 
 ## Architecture risks
 
@@ -1142,10 +1165,10 @@ Live-model measurement-harness checkpoint:
 | Implementation commit | `734d7fb` (`JOL-CAREER-006G add live model evaluation harness`) |
 | Pull request | [jolene-ai #30](https://github.com/carlwelchdesign/jolene-ai/pull/30), stacked on the frozen-v1 contract branch |
 | Opt-in boundary | The live command requires `--live` and a manually created `.env.public.local`; ordinary tests and offline evaluation cannot call the provider, and the private environment is never loaded or copied |
-| Measurement boundary | Versioned public-only cases precommit exact evidence selection, model and pricing review, 100% blocker thresholds, latency, input/output token, per-request cost, and total cost ceilings |
-| Suite evidence | Four cases, ten covered metrics, and hash `8215efe8e294018fbfc008d0fac67dfe54d9cec387dfc41a9bb83e370b83fd0b`; the passing implementation check uses an injected fake and is not live-model evidence |
+| Measurement boundary | Versioned public-only cases precommit exact evidence selection, model, corpus and pricing review, 100% blocker thresholds, semantic response support, latency, input/output token, per-request cost, and total cost ceilings |
+| Suite evidence | Four cases, thirteen covered metrics, and hash `a71ae1e505e1305c38c1e5bef0aec37dfdbcad44dfa612b29e0f4b0676d47f2b`; the passing implementation check uses an injected fake and is not live-model evidence |
 | Report boundary | Machine output contains stable IDs, fixed reasons, gates, and aggregate measurements only; representative questions, exact public grounding, and prose are isolated in an ignored owner-permission review packet |
-| Safety evidence | Evidence mismatch bypasses the provider; unsafe or invalid prose falls back; no public bind, evidence approval, portfolio enablement, deployment, or launch authorization |
+| Safety evidence | Evidence or corpus mismatch bypasses the provider; model drift, unsupported semantics, unsafe disclosure, or invalid prose fail closed; no public bind, evidence approval, portfolio enablement, deployment, or launch authorization |
 | Verification | Node 24 typecheck, 46 test files / 302 tests, unchanged 41/41 offline suite, production build, Compose validation, zero production dependency vulnerabilities, opt-in/config refusal checks, and a 4/4 fake-provider preflight passed |
 | Remaining boundary | A separately authorized live run, arbitrary-prose human review, portfolio integration/accessibility, production operations, deployment, and launch approval remain open |
 
@@ -1299,3 +1322,30 @@ Live private lexical-index checkpoint:
 | Live state | Private API and Slack run image `659cfdf96ccddb5da8dff2a9a27d02a9aa5c1d321fbaaa02ee249ef7249390c7` with `JOLENE_CAREER_EMBEDDINGS_ENABLED=false`; the canonical index contains 152 lexical-only chunks and zero vectors |
 | Runtime verification | A network-isolated live-volume query returned `lexical_fallback`, five citation-complete results, and zero vector scores; API health passed, Slack reconnected in Socket Mode, and the isolated public delegate remained healthy on its unchanged 41-claim corpus |
 | Remaining boundary | No provider request, embedding opt-in, public artifact change, public deployment, hosting change, external message, or launch action occurred |
+
+Prompt-injection threat-model checkpoint:
+
+| Field | Evidence |
+|---|---|
+| Asana | `JOL-SEC-003` (`1217931645187988`) |
+| Canonical artifacts | [`JOLENE_PROMPT_INJECTION_THREAT_MODEL.md`](JOLENE_PROMPT_INJECTION_THREAT_MODEL.md) and machine-validated [`prompt-injection-threat-model.v1.json`](security/prompt-injection-threat-model.v1.json) |
+| Inventory | 7 actors; 9 data classes; 18 trust boundaries; 35 current/planned controls; 20 threats across direct, indirect, persistent, tool, exfiltration, identity, poisoning, provider, retention, audit, encoding, and resource-abuse families; 9 scored risks; 9 blocking gates |
+| Highest-priority finding | The loopback private HTTP control plane does not authenticate its caller and accepts caller-supplied actor/workspace/channel scope; loopback and same-origin checks are containment, not identity proof |
+| Control boundary | The model distinguishes deterministic/isolation/process controls from prompt-only guidance and records every current limitation; reviewed or approved content always remains non-authoritative data |
+| Delivery sequence | `JOL-SEC-004A` authenticated private ingress → `JOL-SEC-004` typed untrusted envelopes → `JOL-SEC-005` intent-bound tools → `JOL-SEC-007` private RAG/egress/quarantine → `JOL-SEC-006` public semantic grounding → `JOL-SEC-008` adversarial gates → `JOL-SEC-009` telemetry/recovery |
+| Release boundary | This checkpoint is an implementation-ready security plan, not proof that injection is impossible. It adds no tool, provider call, runtime mutation, push, deployment, promotion, or launch authorization. |
+
+Private-ingress authentication checkpoint:
+
+| Field | Evidence |
+|---|---|
+| Asana | Parent `JOL-SEC-004A` with four implementation subtasks; one parent plus its current subtasks may be In Progress, and each completed subtask moves immediately to Complete |
+| Branch | `codex/jol-sec-004a-private-ingress-auth` |
+| Private HTTP identity | Dedicated at-least-43-character secret; Bearer API access and browser-native Basic access; immutable server-derived Carl actor/workspace, `private_chat`, and `local_private` scope |
+| Network containment | Every private UI/control route is authenticated before routing; Host must be loopback and browser Origin must match; minimized `/health` is the only credential-free route |
+| Chat boundary | Caller JSON cannot supply actor, workspace, channel kind, or disclosure authority; strict extra-field rejection occurs before model execution |
+| Slack identity | Private Slack scope requires the exact configured workspace/member pair at authenticated event mapping and domain scope resolution; a member-only or wrong-workspace match is ignored before model execution/posting |
+| Secret isolation | Private Compose gives the private-control secret only to `jolene-api`; migration generates a non-printing 256-bit token when absent and preserves mode `0600`/idempotence |
+| Audit boundary | Authentication records only policy version, outcome, and fixed reason code; responses are sanitized and no credential, header, address, path, query, prompt, or payload is logged |
+| Residual boundary | The reusable possession credential must be rotated after plausible exposure; domain capability/approval rules remain required after authentication |
+| Release boundary | Local development and verification only. No service creation/restart, secret migration against Carl's live files, Slack message, push, deployment, promotion, or production verification is included. |

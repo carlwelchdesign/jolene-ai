@@ -87,6 +87,15 @@ describe("personality sampling selection", () => {
       ...failedPlan, sourceRegisterState: "superseded-after-recorded-failure",
     }, ledger())).toThrow("Superseded sampling plan cannot drive selection");
   });
+
+  it("requires v3 ledgers for a v3 sampling snapshot", () => {
+    const v3 = { ...snapshot(), schemaVersion: "jolene.personality-sampling-plan.v3" as const };
+    expect(() => validateAndSelectPersonalityLedgerSource(v3, ledger()))
+      .toThrow("Selection ledger version does not match");
+    const currentLedger = ledger();
+    currentLedger.schemaVersion = "jolene.personality-source-selection-ledger.v3";
+    expect(() => validateAndSelectPersonalityLedgerSource(v3, currentLedger)).not.toThrow();
+  });
 });
 
 const planFingerprint = hash(900);

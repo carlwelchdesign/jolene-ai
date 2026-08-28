@@ -1,0 +1,3192 @@
+{
+  "schemaVersion": "jolene.personality-html-ledger-fingerprint-map.v1",
+  "sourceRegisterId": "S03",
+  "sourceContentFingerprint": "sha256:61a049d29ada1bb6aae3a0700336bb11a1f4ba151139c1db0e12032d5ea4931b",
+  "boundaryDraftFingerprint": "sha256:d183dbd7fe537a717a28990e96cff5702221f71590679080d5f2edad8e95746b",
+  "records": [
+    {
+      "recordId": "C-S03-0003",
+      "locator": "speaker-block-2",
+      "boundarySegmentFingerprint": "sha256:22cbc0f7089787a3a8adf8ef4c27a9b49dd42be4c7d4720a83d500994f47e74c",
+      "ledgerSegmentFingerprint": "sha256:22cbc0f7089787a3a8adf8ef4c27a9b49dd42be4c7d4720a83d500994f47e74c"
+    },
+    {
+      "recordId": "C-S03-0005",
+      "locator": "speaker-block-4",
+      "boundarySegmentFingerprint": "sha256:034be37b502aaaaf0e36dec5c2d77b4e2dbf9110448777ee450a07f39f773446",
+      "ledgerSegmentFingerprint": "sha256:034be37b502aaaaf0e36dec5c2d77b4e2dbf9110448777ee450a07f39f773446"
+    },
+    {
+      "recordId": "C-S03-0007",
+      "locator": "speaker-block-6",
+      "boundarySegmentFingerprint": "sha256:c9abd455b1358851dfac23da0355e801fdb6dcd8b83ad7d648c51721eb7433ba",
+      "ledgerSegmentFingerprint": "sha256:c9abd455b1358851dfac23da0355e801fdb6dcd8b83ad7d648c51721eb7433ba"
+    },
+    {
+      "recordId": "C-S03-0009",
+      "locator": "speaker-block-8",
+      "boundarySegmentFingerprint": "sha256:279dc71c241376232a1b571b2f85ed9b56ed7a94cedeb68a37ef4568820efe26",
+      "ledgerSegmentFingerprint": "sha256:279dc71c241376232a1b571b2f85ed9b56ed7a94cedeb68a37ef4568820efe26"
+    },
+    {
+      "recordId": "C-S03-0011",
+      "locator": "speaker-block-10",
+      "boundarySegmentFingerprint": "sha256:eb93dc93462c77d47c4553f1ca7d71c425cbc5c9e47c2a474912104120003cc4",
+      "ledgerSegmentFingerprint": "sha256:eb93dc93462c77d47c4553f1ca7d71c425cbc5c9e47c2a474912104120003cc4"
+    },
+    {
+      "recordId": "C-S03-0013",
+      "locator": "speaker-block-12",
+      "boundarySegmentFingerprint": "sha256:73d414151b9032080322325ec54fe18e8e2b9a09cc33a0d57635a470d02f7a81",
+      "ledgerSegmentFingerprint": "sha256:73d414151b9032080322325ec54fe18e8e2b9a09cc33a0d57635a470d02f7a81"
+    },
+    {
+      "recordId": "C-S03-0015",
+      "locator": "speaker-block-14",
+      "boundarySegmentFingerprint": "sha256:4c30957a3fde94df4d54d0b19d7f0b06f7aa6cbe7f403b783fa0ad83f6d8d38f",
+      "ledgerSegmentFingerprint": "sha256:4c30957a3fde94df4d54d0b19d7f0b06f7aa6cbe7f403b783fa0ad83f6d8d38f"
+    },
+    {
+      "recordId": "C-S03-0017",
+      "locator": "speaker-block-16",
+      "boundarySegmentFingerprint": "sha256:f37e56c7c6c1c3bd4b015d9c669b071fd8e2d32997245e701cd11daf1fcd19ea",
+      "ledgerSegmentFingerprint": "sha256:f37e56c7c6c1c3bd4b015d9c669b071fd8e2d32997245e701cd11daf1fcd19ea"
+    },
+    {
+      "recordId": "C-S03-0019",
+      "locator": "speaker-block-18",
+      "boundarySegmentFingerprint": "sha256:b29fcb2384c6d22feb35742205ed5060163f612b9ce9d5fdb58a7a9de70bdf86",
+      "ledgerSegmentFingerprint": "sha256:b29fcb2384c6d22feb35742205ed5060163f612b9ce9d5fdb58a7a9de70bdf86"
+    },
+    {
+      "recordId": "C-S03-0020",
+      "locator": "speaker-block-19",
+      "boundarySegmentFingerprint": "sha256:6bfdb52957cc5e36c3f305e1e33f16f596caf50cb1d242911b00a2ea9c56a1c2",
+      "ledgerSegmentFingerprint": "sha256:6bfdb52957cc5e36c3f305e1e33f16f596caf50cb1d242911b00a2ea9c56a1c2"
+    },
+    {
+      "recordId": "C-S03-0022",
+      "locator": "speaker-block-21",
+      "boundarySegmentFingerprint": "sha256:bf3f406d372acc633d8e5ad839f780dea2a5ba7f8c4731ad0eabc170c4fa5713",
+      "ledgerSegmentFingerprint": "sha256:bf3f406d372acc633d8e5ad839f780dea2a5ba7f8c4731ad0eabc170c4fa5713"
+    },
+    {
+      "recordId": "C-S03-0024",
+      "locator": "speaker-block-23",
+      "boundarySegmentFingerprint": "sha256:13be3f48427f75bd9a97044954e97b45879b32d80af777c2b58fa3f067d71afa",
+      "ledgerSegmentFingerprint": "sha256:13be3f48427f75bd9a97044954e97b45879b32d80af777c2b58fa3f067d71afa"
+    },
+    {
+      "recordId": "C-S03-0026",
+      "locator": "speaker-block-25",
+      "boundarySegmentFingerprint": "sha256:a4eca50983338990ccc04ac4de48184eac8edefe5ae2aa3139efc1f5d50a73bf",
+      "ledgerSegmentFingerprint": "sha256:a4eca50983338990ccc04ac4de48184eac8edefe5ae2aa3139efc1f5d50a73bf"
+    },
+    {
+      "recordId": "C-S03-0028",
+      "locator": "speaker-block-27",
+      "boundarySegmentFingerprint": "sha256:5318aadab45697366821d7b42cbacd724ddf3efbb6507e2b7a641639e9902a5e",
+      "ledgerSegmentFingerprint": "sha256:5318aadab45697366821d7b42cbacd724ddf3efbb6507e2b7a641639e9902a5e"
+    },
+    {
+      "recordId": "C-S03-0030",
+      "locator": "speaker-block-29",
+      "boundarySegmentFingerprint": "sha256:225fa8049f4f4d2255a7fdbaf17fdd583f916675b91abc632b998841f05dd47f",
+      "ledgerSegmentFingerprint": "sha256:225fa8049f4f4d2255a7fdbaf17fdd583f916675b91abc632b998841f05dd47f"
+    },
+    {
+      "recordId": "C-S03-0032",
+      "locator": "speaker-block-31",
+      "boundarySegmentFingerprint": "sha256:a8c93a3bddfb40722cecd99aff4334003eb27c0f7f42499c433c8062484e5e82",
+      "ledgerSegmentFingerprint": "sha256:a8c93a3bddfb40722cecd99aff4334003eb27c0f7f42499c433c8062484e5e82"
+    },
+    {
+      "recordId": "C-S03-0034",
+      "locator": "speaker-block-33",
+      "boundarySegmentFingerprint": "sha256:44b5e736e8faeedb4e4edeecbacd42d599a92f0c7a34cfec116ac851342b719c",
+      "ledgerSegmentFingerprint": "sha256:44b5e736e8faeedb4e4edeecbacd42d599a92f0c7a34cfec116ac851342b719c"
+    },
+    {
+      "recordId": "C-S03-0036",
+      "locator": "speaker-block-35",
+      "boundarySegmentFingerprint": "sha256:13e45dede6bc161c0e94eefa338f921e2d14937ed339c601ad6498781e926905",
+      "ledgerSegmentFingerprint": "sha256:13e45dede6bc161c0e94eefa338f921e2d14937ed339c601ad6498781e926905"
+    },
+    {
+      "recordId": "C-S03-0038",
+      "locator": "speaker-block-37",
+      "boundarySegmentFingerprint": "sha256:ec57076e685a526e993081fd7f0bc7e67c6752210430cd0e3073cdb3fff5fe41",
+      "ledgerSegmentFingerprint": "sha256:ec57076e685a526e993081fd7f0bc7e67c6752210430cd0e3073cdb3fff5fe41"
+    },
+    {
+      "recordId": "C-S03-0040",
+      "locator": "speaker-block-39",
+      "boundarySegmentFingerprint": "sha256:707a1a8ac2b76110156f53e00ee440a82da98491dddb6b13cab88ffa663ec1de",
+      "ledgerSegmentFingerprint": "sha256:707a1a8ac2b76110156f53e00ee440a82da98491dddb6b13cab88ffa663ec1de"
+    },
+    {
+      "recordId": "C-S03-0042",
+      "locator": "speaker-block-41",
+      "boundarySegmentFingerprint": "sha256:ac23854f18bf3c53cf89136cd721bb95969b27db5f6c2b193fb2b4a1002a9d3a",
+      "ledgerSegmentFingerprint": "sha256:ac23854f18bf3c53cf89136cd721bb95969b27db5f6c2b193fb2b4a1002a9d3a"
+    },
+    {
+      "recordId": "C-S03-0044",
+      "locator": "speaker-block-43",
+      "boundarySegmentFingerprint": "sha256:f309aa6fa9f7cd2667e17f2dddebe44bc7f59bf83df39d4bca59cde6aee6c904",
+      "ledgerSegmentFingerprint": "sha256:f309aa6fa9f7cd2667e17f2dddebe44bc7f59bf83df39d4bca59cde6aee6c904"
+    },
+    {
+      "recordId": "C-S03-0046",
+      "locator": "speaker-block-45",
+      "boundarySegmentFingerprint": "sha256:95298b51a7f7719063b629536e4430f5b513dbf23fbdffcfd9eb5373e1cdfb07",
+      "ledgerSegmentFingerprint": "sha256:95298b51a7f7719063b629536e4430f5b513dbf23fbdffcfd9eb5373e1cdfb07"
+    },
+    {
+      "recordId": "C-S03-0048",
+      "locator": "speaker-block-47",
+      "boundarySegmentFingerprint": "sha256:5ec377b50e57dddde79be0d2e06f501ace9aa5277651a9aa19e54c2ab36199d1",
+      "ledgerSegmentFingerprint": "sha256:5ec377b50e57dddde79be0d2e06f501ace9aa5277651a9aa19e54c2ab36199d1"
+    },
+    {
+      "recordId": "C-S03-0050",
+      "locator": "speaker-block-49",
+      "boundarySegmentFingerprint": "sha256:5dbc5d4d4b3e658246ac7ebd45f957caa2dfb05dc11507b3d9138a03f96b1207",
+      "ledgerSegmentFingerprint": "sha256:5dbc5d4d4b3e658246ac7ebd45f957caa2dfb05dc11507b3d9138a03f96b1207"
+    },
+    {
+      "recordId": "C-S03-0052",
+      "locator": "speaker-block-51",
+      "boundarySegmentFingerprint": "sha256:6584460610054ef510965bf1d63a81a5a8af16d60679588c7cffc9d23496ced8",
+      "ledgerSegmentFingerprint": "sha256:6584460610054ef510965bf1d63a81a5a8af16d60679588c7cffc9d23496ced8"
+    },
+    {
+      "recordId": "C-S03-0054",
+      "locator": "speaker-block-53",
+      "boundarySegmentFingerprint": "sha256:0ec62bce24dcd2a62cee3685c3bbd2460cee71a89e3d15df9aadd2a9f605907b",
+      "ledgerSegmentFingerprint": "sha256:0ec62bce24dcd2a62cee3685c3bbd2460cee71a89e3d15df9aadd2a9f605907b"
+    },
+    {
+      "recordId": "C-S03-0056",
+      "locator": "speaker-block-55",
+      "boundarySegmentFingerprint": "sha256:608fe05f416a13ae7cf0b415478d6db64df11fea91ba2e2464e120886dea58c9",
+      "ledgerSegmentFingerprint": "sha256:608fe05f416a13ae7cf0b415478d6db64df11fea91ba2e2464e120886dea58c9"
+    },
+    {
+      "recordId": "C-S03-0058",
+      "locator": "speaker-block-57",
+      "boundarySegmentFingerprint": "sha256:c200aed75ac7a41a212d76a327714416d3f9d2a693209bcac908d81ad6ba9c6c",
+      "ledgerSegmentFingerprint": "sha256:c200aed75ac7a41a212d76a327714416d3f9d2a693209bcac908d81ad6ba9c6c"
+    },
+    {
+      "recordId": "C-S03-0060",
+      "locator": "speaker-block-59",
+      "boundarySegmentFingerprint": "sha256:1e05f0e92821b59da0bf9bb3287604ab6169a6d9585d23514062863303f4bfc8",
+      "ledgerSegmentFingerprint": "sha256:1e05f0e92821b59da0bf9bb3287604ab6169a6d9585d23514062863303f4bfc8"
+    },
+    {
+      "recordId": "C-S03-0062",
+      "locator": "speaker-block-61",
+      "boundarySegmentFingerprint": "sha256:9648facb1eaa3f645c38dc5550cbdd1090c8284bf953db9049a8eea2d875e308",
+      "ledgerSegmentFingerprint": "sha256:9648facb1eaa3f645c38dc5550cbdd1090c8284bf953db9049a8eea2d875e308"
+    },
+    {
+      "recordId": "C-S03-0064",
+      "locator": "speaker-block-63",
+      "boundarySegmentFingerprint": "sha256:a13c656007585a7eca13ea1e63808e18b41a2e77ed8de84d4bb501f4e94bb6b6",
+      "ledgerSegmentFingerprint": "sha256:a13c656007585a7eca13ea1e63808e18b41a2e77ed8de84d4bb501f4e94bb6b6"
+    },
+    {
+      "recordId": "C-S03-0066",
+      "locator": "speaker-block-65",
+      "boundarySegmentFingerprint": "sha256:4682e18a3058c2863bf51f6b77180a7a7134b6c5b1a59417ffe178b516e5694c",
+      "ledgerSegmentFingerprint": "sha256:4682e18a3058c2863bf51f6b77180a7a7134b6c5b1a59417ffe178b516e5694c"
+    },
+    {
+      "recordId": "C-S03-0068",
+      "locator": "speaker-block-67",
+      "boundarySegmentFingerprint": "sha256:81dd12f822ea5929b7ffa0caaf84a00b16a845b0b0bed0fea66ddd9e1b2890cf",
+      "ledgerSegmentFingerprint": "sha256:81dd12f822ea5929b7ffa0caaf84a00b16a845b0b0bed0fea66ddd9e1b2890cf"
+    },
+    {
+      "recordId": "C-S03-0070",
+      "locator": "speaker-block-69",
+      "boundarySegmentFingerprint": "sha256:6c0bf9120b25d2b34729e1c3986fa0099806f9171c076430afd114096da4bab2",
+      "ledgerSegmentFingerprint": "sha256:6c0bf9120b25d2b34729e1c3986fa0099806f9171c076430afd114096da4bab2"
+    },
+    {
+      "recordId": "C-S03-0072",
+      "locator": "speaker-block-71",
+      "boundarySegmentFingerprint": "sha256:76fee2481aba4359b30a4008228024c9b3fbb3b91377f777eaeecf1e9cc15c8e",
+      "ledgerSegmentFingerprint": "sha256:76fee2481aba4359b30a4008228024c9b3fbb3b91377f777eaeecf1e9cc15c8e"
+    },
+    {
+      "recordId": "C-S03-0074",
+      "locator": "speaker-block-73",
+      "boundarySegmentFingerprint": "sha256:16089b05f9ab9f5dcde822b03edf67365ee527437e385f86e210cf281d02006f",
+      "ledgerSegmentFingerprint": "sha256:16089b05f9ab9f5dcde822b03edf67365ee527437e385f86e210cf281d02006f"
+    },
+    {
+      "recordId": "C-S03-0076",
+      "locator": "speaker-block-75",
+      "boundarySegmentFingerprint": "sha256:5bc284c215a070f45932e31f4f718454698b032490bf3bdd0443929ee343ee10",
+      "ledgerSegmentFingerprint": "sha256:5bc284c215a070f45932e31f4f718454698b032490bf3bdd0443929ee343ee10"
+    },
+    {
+      "recordId": "C-S03-0078",
+      "locator": "speaker-block-77",
+      "boundarySegmentFingerprint": "sha256:be7ce5c20578f90efe3faa71ee380bd3d94b3a6ccb47d224ef5dbeb1b95bb25b",
+      "ledgerSegmentFingerprint": "sha256:be7ce5c20578f90efe3faa71ee380bd3d94b3a6ccb47d224ef5dbeb1b95bb25b"
+    },
+    {
+      "recordId": "C-S03-0081",
+      "locator": "speaker-block-80",
+      "boundarySegmentFingerprint": "sha256:ee206a30cf44e3dfb7277d462ee1e190b782438a7aeb42eddbd2289b1c1844b5",
+      "ledgerSegmentFingerprint": "sha256:ee206a30cf44e3dfb7277d462ee1e190b782438a7aeb42eddbd2289b1c1844b5"
+    },
+    {
+      "recordId": "C-S03-0083",
+      "locator": "speaker-block-82",
+      "boundarySegmentFingerprint": "sha256:9e3391fce4595b096dda35ca5e023bdc32b0674204b3d5458c3663ac7a7334f4",
+      "ledgerSegmentFingerprint": "sha256:9e3391fce4595b096dda35ca5e023bdc32b0674204b3d5458c3663ac7a7334f4"
+    },
+    {
+      "recordId": "C-S03-0085",
+      "locator": "speaker-block-84",
+      "boundarySegmentFingerprint": "sha256:180a87804def8c26fec9e2e592185924ff7b82bb686a05953b814af52872bbab",
+      "ledgerSegmentFingerprint": "sha256:180a87804def8c26fec9e2e592185924ff7b82bb686a05953b814af52872bbab"
+    },
+    {
+      "recordId": "C-S03-0087",
+      "locator": "speaker-block-86",
+      "boundarySegmentFingerprint": "sha256:eaa775a0e845c1da4f235d358769bd632d2973c883ced4cba292da3ce3114258",
+      "ledgerSegmentFingerprint": "sha256:eaa775a0e845c1da4f235d358769bd632d2973c883ced4cba292da3ce3114258"
+    },
+    {
+      "recordId": "C-S03-0090",
+      "locator": "speaker-block-89",
+      "boundarySegmentFingerprint": "sha256:315251473cc84226f48c83292702285dfef3ab975a36dd2d2ab40592ab7e067f",
+      "ledgerSegmentFingerprint": "sha256:315251473cc84226f48c83292702285dfef3ab975a36dd2d2ab40592ab7e067f"
+    },
+    {
+      "recordId": "C-S03-0092",
+      "locator": "speaker-block-91",
+      "boundarySegmentFingerprint": "sha256:35b9c832a6ee5deaeff787c995aab62b479dbef8c1ee0d1bc95064dd93893d62",
+      "ledgerSegmentFingerprint": "sha256:35b9c832a6ee5deaeff787c995aab62b479dbef8c1ee0d1bc95064dd93893d62"
+    },
+    {
+      "recordId": "C-S03-0094",
+      "locator": "speaker-block-93",
+      "boundarySegmentFingerprint": "sha256:061f703ef853a377f924476131169899ffbc03584444a439bdebc57b67a8e859",
+      "ledgerSegmentFingerprint": "sha256:061f703ef853a377f924476131169899ffbc03584444a439bdebc57b67a8e859"
+    },
+    {
+      "recordId": "C-S03-0096",
+      "locator": "speaker-block-95",
+      "boundarySegmentFingerprint": "sha256:2fb0186f95d1bcd05987b89cd4c0c84aacc829a41250069d3bd29728bd023ebf",
+      "ledgerSegmentFingerprint": "sha256:2fb0186f95d1bcd05987b89cd4c0c84aacc829a41250069d3bd29728bd023ebf"
+    },
+    {
+      "recordId": "C-S03-0098",
+      "locator": "speaker-block-97",
+      "boundarySegmentFingerprint": "sha256:f71769d0e6c0fb4d83c0789f47fa93762584502222c9b34e4459fbbd56d9c235",
+      "ledgerSegmentFingerprint": "sha256:f71769d0e6c0fb4d83c0789f47fa93762584502222c9b34e4459fbbd56d9c235"
+    },
+    {
+      "recordId": "C-S03-0100",
+      "locator": "speaker-block-99",
+      "boundarySegmentFingerprint": "sha256:8a4be5f9e61eba47d5375de3ccaab243cd91c002a32968d8447604def79cc864",
+      "ledgerSegmentFingerprint": "sha256:8a4be5f9e61eba47d5375de3ccaab243cd91c002a32968d8447604def79cc864"
+    },
+    {
+      "recordId": "C-S03-0102",
+      "locator": "speaker-block-101",
+      "boundarySegmentFingerprint": "sha256:53d6a3bbfcd95ea15c270dd63fa30980de64287f4329b0dbce81a2acb8c6c766",
+      "ledgerSegmentFingerprint": "sha256:53d6a3bbfcd95ea15c270dd63fa30980de64287f4329b0dbce81a2acb8c6c766"
+    },
+    {
+      "recordId": "C-S03-0104",
+      "locator": "speaker-block-103",
+      "boundarySegmentFingerprint": "sha256:03aa40d5d9558d37a17341dd3f40028a81ff7f4c5775ed3217042e3f1c0c0c68",
+      "ledgerSegmentFingerprint": "sha256:03aa40d5d9558d37a17341dd3f40028a81ff7f4c5775ed3217042e3f1c0c0c68"
+    },
+    {
+      "recordId": "C-S03-0106",
+      "locator": "speaker-block-105",
+      "boundarySegmentFingerprint": "sha256:1def64b300bf243c58743a72a9980f15a3b634f82936a5829da2e5eebeca86ec",
+      "ledgerSegmentFingerprint": "sha256:1def64b300bf243c58743a72a9980f15a3b634f82936a5829da2e5eebeca86ec"
+    },
+    {
+      "recordId": "C-S03-0108",
+      "locator": "speaker-block-107",
+      "boundarySegmentFingerprint": "sha256:d118493adcc25f7ace8f1fff5f7024326e423e1776b4bee159b60b3a952c7355",
+      "ledgerSegmentFingerprint": "sha256:d118493adcc25f7ace8f1fff5f7024326e423e1776b4bee159b60b3a952c7355"
+    },
+    {
+      "recordId": "C-S03-0110",
+      "locator": "speaker-block-109",
+      "boundarySegmentFingerprint": "sha256:de0dded43d46b573fe790220e1e915e8b1072de9856cca74f24bd92acc6023a1",
+      "ledgerSegmentFingerprint": "sha256:de0dded43d46b573fe790220e1e915e8b1072de9856cca74f24bd92acc6023a1"
+    },
+    {
+      "recordId": "C-S03-0112",
+      "locator": "speaker-block-111",
+      "boundarySegmentFingerprint": "sha256:b2cd98d2cabca3ee4ddb95472efce186f6292e41df5b75e4e7079ec7a95abb35",
+      "ledgerSegmentFingerprint": "sha256:b2cd98d2cabca3ee4ddb95472efce186f6292e41df5b75e4e7079ec7a95abb35"
+    },
+    {
+      "recordId": "C-S03-0114",
+      "locator": "speaker-block-113",
+      "boundarySegmentFingerprint": "sha256:78e0d2e5e4b57dad5a88341b676505fd4ba71f838949b727ba0bd04426de5a40",
+      "ledgerSegmentFingerprint": "sha256:78e0d2e5e4b57dad5a88341b676505fd4ba71f838949b727ba0bd04426de5a40"
+    },
+    {
+      "recordId": "C-S03-0116",
+      "locator": "speaker-block-115",
+      "boundarySegmentFingerprint": "sha256:97e292d6ed46c865f665adfbd3561c6535577583f766aa0a2c1dc3e4caf11946",
+      "ledgerSegmentFingerprint": "sha256:97e292d6ed46c865f665adfbd3561c6535577583f766aa0a2c1dc3e4caf11946"
+    },
+    {
+      "recordId": "C-S03-0118",
+      "locator": "speaker-block-117",
+      "boundarySegmentFingerprint": "sha256:1e1da251f0be0728f73ac0a22dc688f7c31365934b899e10f6ad3759c57623c6",
+      "ledgerSegmentFingerprint": "sha256:1e1da251f0be0728f73ac0a22dc688f7c31365934b899e10f6ad3759c57623c6"
+    },
+    {
+      "recordId": "C-S03-0120",
+      "locator": "speaker-block-119",
+      "boundarySegmentFingerprint": "sha256:e1badf1ee7de1d8f4825fdb3b2a1bf709ec51e7137cbb6e808e0d204e1a184e6",
+      "ledgerSegmentFingerprint": "sha256:e1badf1ee7de1d8f4825fdb3b2a1bf709ec51e7137cbb6e808e0d204e1a184e6"
+    },
+    {
+      "recordId": "C-S03-0122",
+      "locator": "speaker-block-121",
+      "boundarySegmentFingerprint": "sha256:2125d8bed147d93185a4677960ccce025e1c6b1978baaf1fe86d3f83c918fd38",
+      "ledgerSegmentFingerprint": "sha256:2125d8bed147d93185a4677960ccce025e1c6b1978baaf1fe86d3f83c918fd38"
+    },
+    {
+      "recordId": "C-S03-0124",
+      "locator": "speaker-block-123",
+      "boundarySegmentFingerprint": "sha256:0a5d1cbb33252f8eadd94978b0c94fdafa0b21db059b7e9d0862ae04e33229b3",
+      "ledgerSegmentFingerprint": "sha256:0a5d1cbb33252f8eadd94978b0c94fdafa0b21db059b7e9d0862ae04e33229b3"
+    },
+    {
+      "recordId": "C-S03-0126",
+      "locator": "speaker-block-125",
+      "boundarySegmentFingerprint": "sha256:fd07c386c4b613b5ff5f4af72dcf76c85f51bd70cf76f290cd888a47708c06c2",
+      "ledgerSegmentFingerprint": "sha256:fd07c386c4b613b5ff5f4af72dcf76c85f51bd70cf76f290cd888a47708c06c2"
+    },
+    {
+      "recordId": "C-S03-0128",
+      "locator": "speaker-block-127",
+      "boundarySegmentFingerprint": "sha256:48055de221b825954fc57af0551d70cf210a53b436fcb918123d8928cf1e78b6",
+      "ledgerSegmentFingerprint": "sha256:48055de221b825954fc57af0551d70cf210a53b436fcb918123d8928cf1e78b6"
+    },
+    {
+      "recordId": "C-S03-0130",
+      "locator": "speaker-block-129",
+      "boundarySegmentFingerprint": "sha256:0a4d9d087a5330a25f42b50f2e65a6ce8715285e05f4efb1ab3c46015745c408",
+      "ledgerSegmentFingerprint": "sha256:0a4d9d087a5330a25f42b50f2e65a6ce8715285e05f4efb1ab3c46015745c408"
+    },
+    {
+      "recordId": "C-S03-0132",
+      "locator": "speaker-block-131",
+      "boundarySegmentFingerprint": "sha256:0a700322722400afc131f3cab23a0f723e152eee9cecf7d671bec6883cb86850",
+      "ledgerSegmentFingerprint": "sha256:0a700322722400afc131f3cab23a0f723e152eee9cecf7d671bec6883cb86850"
+    },
+    {
+      "recordId": "C-S03-0134",
+      "locator": "speaker-block-133",
+      "boundarySegmentFingerprint": "sha256:fde480042d5f68cc5a94f614b31fbfbce9d6596b74aef176245e23852171c7ed",
+      "ledgerSegmentFingerprint": "sha256:fde480042d5f68cc5a94f614b31fbfbce9d6596b74aef176245e23852171c7ed"
+    },
+    {
+      "recordId": "C-S03-0135",
+      "locator": "speaker-block-134",
+      "boundarySegmentFingerprint": "sha256:a7ddf0a18bdde56f22d98fb20981a7c2f851965928435a284d98246758479588",
+      "ledgerSegmentFingerprint": "sha256:a7ddf0a18bdde56f22d98fb20981a7c2f851965928435a284d98246758479588"
+    },
+    {
+      "recordId": "C-S03-0137",
+      "locator": "speaker-block-136",
+      "boundarySegmentFingerprint": "sha256:08f216d4a1f996e77f288fde9a240355119fbb65faa2ef100dab11d71fe68759",
+      "ledgerSegmentFingerprint": "sha256:08f216d4a1f996e77f288fde9a240355119fbb65faa2ef100dab11d71fe68759"
+    },
+    {
+      "recordId": "C-S03-0139",
+      "locator": "speaker-block-138",
+      "boundarySegmentFingerprint": "sha256:707a1a8ac2b76110156f53e00ee440a82da98491dddb6b13cab88ffa663ec1de",
+      "ledgerSegmentFingerprint": "sha256:707a1a8ac2b76110156f53e00ee440a82da98491dddb6b13cab88ffa663ec1de"
+    },
+    {
+      "recordId": "C-S03-0142",
+      "locator": "speaker-block-141",
+      "boundarySegmentFingerprint": "sha256:dac141d854cb4ab3ca263e93fa85a5a62ab0286f0f4c0d4659a412c01bf1c716",
+      "ledgerSegmentFingerprint": "sha256:dac141d854cb4ab3ca263e93fa85a5a62ab0286f0f4c0d4659a412c01bf1c716"
+    },
+    {
+      "recordId": "C-S03-0144",
+      "locator": "speaker-block-143",
+      "boundarySegmentFingerprint": "sha256:9c5ad90f5a7b63b158886bad09d2dd9e39861a1b0705789675ab629e6506e876",
+      "ledgerSegmentFingerprint": "sha256:9c5ad90f5a7b63b158886bad09d2dd9e39861a1b0705789675ab629e6506e876"
+    },
+    {
+      "recordId": "C-S03-0146",
+      "locator": "speaker-block-145",
+      "boundarySegmentFingerprint": "sha256:2879dae65c8a5dced7e88d4998126cc3c378b8262ad586e62e9065eb07c6e915",
+      "ledgerSegmentFingerprint": "sha256:2879dae65c8a5dced7e88d4998126cc3c378b8262ad586e62e9065eb07c6e915"
+    },
+    {
+      "recordId": "C-S03-0147",
+      "locator": "speaker-block-146",
+      "boundarySegmentFingerprint": "sha256:b4cb891c2138c3b2473172f163412bec449720e4f2354d5f9fbc981c18213d5a",
+      "ledgerSegmentFingerprint": "sha256:b4cb891c2138c3b2473172f163412bec449720e4f2354d5f9fbc981c18213d5a"
+    },
+    {
+      "recordId": "C-S03-0149",
+      "locator": "speaker-block-148",
+      "boundarySegmentFingerprint": "sha256:2a410e174173439c14fc23163154344db7f8827d6652254faec3e6eb6a352660",
+      "ledgerSegmentFingerprint": "sha256:2a410e174173439c14fc23163154344db7f8827d6652254faec3e6eb6a352660"
+    },
+    {
+      "recordId": "C-S03-0151",
+      "locator": "speaker-block-150",
+      "boundarySegmentFingerprint": "sha256:466a8bfafe792668e6505ae0d368d4d0d9a131adacf5fbb587fafdfc96cc0d9f",
+      "ledgerSegmentFingerprint": "sha256:466a8bfafe792668e6505ae0d368d4d0d9a131adacf5fbb587fafdfc96cc0d9f"
+    },
+    {
+      "recordId": "C-S03-0153",
+      "locator": "speaker-block-152",
+      "boundarySegmentFingerprint": "sha256:a14066362d2149abf78f967d1e7bd6909f62b4383cf8a4428991c735af95e19e",
+      "ledgerSegmentFingerprint": "sha256:a14066362d2149abf78f967d1e7bd6909f62b4383cf8a4428991c735af95e19e"
+    },
+    {
+      "recordId": "C-S03-0155",
+      "locator": "speaker-block-154",
+      "boundarySegmentFingerprint": "sha256:c330c8d15d0605dff754094c017762d93996e9a43e3f9ab45ee75cd1f878fac9",
+      "ledgerSegmentFingerprint": "sha256:c330c8d15d0605dff754094c017762d93996e9a43e3f9ab45ee75cd1f878fac9"
+    },
+    {
+      "recordId": "C-S03-0157",
+      "locator": "speaker-block-156",
+      "boundarySegmentFingerprint": "sha256:8553d72e55da04888376c49ebc9840ecd379b624ca8a9b0bd03cea8eaae77b75",
+      "ledgerSegmentFingerprint": "sha256:8553d72e55da04888376c49ebc9840ecd379b624ca8a9b0bd03cea8eaae77b75"
+    },
+    {
+      "recordId": "C-S03-0159",
+      "locator": "speaker-block-158",
+      "boundarySegmentFingerprint": "sha256:366abfae753d1bd342071a4fa78392aff696600ace8bb37d1333f5883fbc024d",
+      "ledgerSegmentFingerprint": "sha256:366abfae753d1bd342071a4fa78392aff696600ace8bb37d1333f5883fbc024d"
+    },
+    {
+      "recordId": "C-S03-0161",
+      "locator": "speaker-block-160",
+      "boundarySegmentFingerprint": "sha256:5206e010e7e58df9c4e49c15a433c190bff428f50801b801d578530a088721eb",
+      "ledgerSegmentFingerprint": "sha256:5206e010e7e58df9c4e49c15a433c190bff428f50801b801d578530a088721eb"
+    },
+    {
+      "recordId": "C-S03-0163",
+      "locator": "speaker-block-162",
+      "boundarySegmentFingerprint": "sha256:1af1513f3b923c134a6580f7f882aac253c2ff914f36505630d406ed0cf9c0d6",
+      "ledgerSegmentFingerprint": "sha256:1af1513f3b923c134a6580f7f882aac253c2ff914f36505630d406ed0cf9c0d6"
+    },
+    {
+      "recordId": "C-S03-0165",
+      "locator": "speaker-block-164",
+      "boundarySegmentFingerprint": "sha256:a39aecc2c2f18ba23d8526e265e368ccdfae7484ddc182ae40a6dede855bb8a6",
+      "ledgerSegmentFingerprint": "sha256:a39aecc2c2f18ba23d8526e265e368ccdfae7484ddc182ae40a6dede855bb8a6"
+    },
+    {
+      "recordId": "C-S03-0167",
+      "locator": "speaker-block-166",
+      "boundarySegmentFingerprint": "sha256:26335336df911dc2565f26cb899866f98668c0c4ad9649844d34305bc4fc95b7",
+      "ledgerSegmentFingerprint": "sha256:26335336df911dc2565f26cb899866f98668c0c4ad9649844d34305bc4fc95b7"
+    },
+    {
+      "recordId": "C-S03-0169",
+      "locator": "speaker-block-168",
+      "boundarySegmentFingerprint": "sha256:f50fdfa22c6dbee8313c1bd330d1b817371c757256e441baf41374044e643710",
+      "ledgerSegmentFingerprint": "sha256:f50fdfa22c6dbee8313c1bd330d1b817371c757256e441baf41374044e643710"
+    },
+    {
+      "recordId": "C-S03-0171",
+      "locator": "speaker-block-170",
+      "boundarySegmentFingerprint": "sha256:0f5192197201093f4891f47e2724b86dd8c9b6b3c99a78f0c4b6b78ae08e9b64",
+      "ledgerSegmentFingerprint": "sha256:0f5192197201093f4891f47e2724b86dd8c9b6b3c99a78f0c4b6b78ae08e9b64"
+    },
+    {
+      "recordId": "C-S03-0173",
+      "locator": "speaker-block-172",
+      "boundarySegmentFingerprint": "sha256:f41a8a41a48ed23bf4df4dcbfb9b1a0f8f7f8c504a0f2b30af0cecc191146ba3",
+      "ledgerSegmentFingerprint": "sha256:f41a8a41a48ed23bf4df4dcbfb9b1a0f8f7f8c504a0f2b30af0cecc191146ba3"
+    },
+    {
+      "recordId": "C-S03-0175",
+      "locator": "speaker-block-174",
+      "boundarySegmentFingerprint": "sha256:1347aed9cf0150b70baed6a303989eda8651810e4b17fa253dc5bcc381391628",
+      "ledgerSegmentFingerprint": "sha256:1347aed9cf0150b70baed6a303989eda8651810e4b17fa253dc5bcc381391628"
+    },
+    {
+      "recordId": "C-S03-0176",
+      "locator": "speaker-block-175",
+      "boundarySegmentFingerprint": "sha256:83ca6010c141013b020b3d71e440025343b88140e1eb81fba3972425755e5981",
+      "ledgerSegmentFingerprint": "sha256:83ca6010c141013b020b3d71e440025343b88140e1eb81fba3972425755e5981"
+    },
+    {
+      "recordId": "C-S03-0178",
+      "locator": "speaker-block-177",
+      "boundarySegmentFingerprint": "sha256:297e818df60eafec928e933e16d601eba4a6cf8bdf8baa5dc5451162d3973d04",
+      "ledgerSegmentFingerprint": "sha256:297e818df60eafec928e933e16d601eba4a6cf8bdf8baa5dc5451162d3973d04"
+    },
+    {
+      "recordId": "C-S03-0180",
+      "locator": "speaker-block-179",
+      "boundarySegmentFingerprint": "sha256:33da2617a3432415dcd68c21afe8b80b6832488bbd5b136753e269b206fb78a4",
+      "ledgerSegmentFingerprint": "sha256:33da2617a3432415dcd68c21afe8b80b6832488bbd5b136753e269b206fb78a4"
+    },
+    {
+      "recordId": "C-S03-0182",
+      "locator": "speaker-block-181",
+      "boundarySegmentFingerprint": "sha256:f21cfe395aa6452d9154a806c93096dac691c8902ab135b0ef705bdf11113e93",
+      "ledgerSegmentFingerprint": "sha256:f21cfe395aa6452d9154a806c93096dac691c8902ab135b0ef705bdf11113e93"
+    },
+    {
+      "recordId": "C-S03-0184",
+      "locator": "speaker-block-183",
+      "boundarySegmentFingerprint": "sha256:c34aaabf9767fb0472aad47fdd422e0df90644b07dafd9a7f246e544a6a6eb94",
+      "ledgerSegmentFingerprint": "sha256:c34aaabf9767fb0472aad47fdd422e0df90644b07dafd9a7f246e544a6a6eb94"
+    },
+    {
+      "recordId": "C-S03-0186",
+      "locator": "speaker-block-185",
+      "boundarySegmentFingerprint": "sha256:a51bb24ff06ce3cdcc186d427872ccb126c4c5aa498e1064a26fb5ace7596342",
+      "ledgerSegmentFingerprint": "sha256:a51bb24ff06ce3cdcc186d427872ccb126c4c5aa498e1064a26fb5ace7596342"
+    },
+    {
+      "recordId": "C-S03-0188",
+      "locator": "speaker-block-187",
+      "boundarySegmentFingerprint": "sha256:2953104e0a49839197da407ca167333b29c12e8c212b86682246c55a6fda1070",
+      "ledgerSegmentFingerprint": "sha256:2953104e0a49839197da407ca167333b29c12e8c212b86682246c55a6fda1070"
+    },
+    {
+      "recordId": "C-S03-0190",
+      "locator": "speaker-block-189",
+      "boundarySegmentFingerprint": "sha256:3b3be1eca122efd37f956f30470bb72c332baa39794ccdda93bbf80ee0e2ded3",
+      "ledgerSegmentFingerprint": "sha256:3b3be1eca122efd37f956f30470bb72c332baa39794ccdda93bbf80ee0e2ded3"
+    },
+    {
+      "recordId": "C-S03-0192",
+      "locator": "speaker-block-191",
+      "boundarySegmentFingerprint": "sha256:822627c2041c15fb2ece0b284e833a1bea3ea7c46e8a96039c55d692e5b59ae1",
+      "ledgerSegmentFingerprint": "sha256:822627c2041c15fb2ece0b284e833a1bea3ea7c46e8a96039c55d692e5b59ae1"
+    },
+    {
+      "recordId": "C-S03-0194",
+      "locator": "speaker-block-193",
+      "boundarySegmentFingerprint": "sha256:9ceb2e8fc08407837df2746554d2c18da11e0866798476109dd8c11604de83e4",
+      "ledgerSegmentFingerprint": "sha256:9ceb2e8fc08407837df2746554d2c18da11e0866798476109dd8c11604de83e4"
+    },
+    {
+      "recordId": "C-S03-0196",
+      "locator": "speaker-block-195",
+      "boundarySegmentFingerprint": "sha256:0b59b01da735bdf4c1d45dd74f6e57c4733ef6a30ad9d373516235117137d6df",
+      "ledgerSegmentFingerprint": "sha256:0b59b01da735bdf4c1d45dd74f6e57c4733ef6a30ad9d373516235117137d6df"
+    },
+    {
+      "recordId": "C-S03-0198",
+      "locator": "speaker-block-197",
+      "boundarySegmentFingerprint": "sha256:f632ccd9468a75bd494b7dec39808cfa30d665c6e9a75aad7c7661e511dc7fe2",
+      "ledgerSegmentFingerprint": "sha256:f632ccd9468a75bd494b7dec39808cfa30d665c6e9a75aad7c7661e511dc7fe2"
+    },
+    {
+      "recordId": "C-S03-0200",
+      "locator": "speaker-block-199",
+      "boundarySegmentFingerprint": "sha256:707a1a8ac2b76110156f53e00ee440a82da98491dddb6b13cab88ffa663ec1de",
+      "ledgerSegmentFingerprint": "sha256:707a1a8ac2b76110156f53e00ee440a82da98491dddb6b13cab88ffa663ec1de"
+    },
+    {
+      "recordId": "C-S03-0202",
+      "locator": "speaker-block-201",
+      "boundarySegmentFingerprint": "sha256:1a71f822712df168116f9a6ee0ec17a14532c6a4954021aae9fe6efe94b0fc7a",
+      "ledgerSegmentFingerprint": "sha256:1a71f822712df168116f9a6ee0ec17a14532c6a4954021aae9fe6efe94b0fc7a"
+    },
+    {
+      "recordId": "C-S03-0205",
+      "locator": "speaker-block-204",
+      "boundarySegmentFingerprint": "sha256:73f5d111f0f25521c556fb67a9cd1e8e888484d31cf630e3759a3ef8aa09bc3a",
+      "ledgerSegmentFingerprint": "sha256:73f5d111f0f25521c556fb67a9cd1e8e888484d31cf630e3759a3ef8aa09bc3a"
+    },
+    {
+      "recordId": "C-S03-0207",
+      "locator": "speaker-block-206",
+      "boundarySegmentFingerprint": "sha256:e8c7aba402e8374ca5086fcf002799a0eefdd2abf18ff298e2610413ae4a2155",
+      "ledgerSegmentFingerprint": "sha256:e8c7aba402e8374ca5086fcf002799a0eefdd2abf18ff298e2610413ae4a2155"
+    },
+    {
+      "recordId": "C-S03-0209",
+      "locator": "speaker-block-208",
+      "boundarySegmentFingerprint": "sha256:c6e2f0ad48a995347aa7bb838d4bc4e13f7067ea3438706f1d19318c11239103",
+      "ledgerSegmentFingerprint": "sha256:c6e2f0ad48a995347aa7bb838d4bc4e13f7067ea3438706f1d19318c11239103"
+    },
+    {
+      "recordId": "C-S03-0211",
+      "locator": "speaker-block-210",
+      "boundarySegmentFingerprint": "sha256:329ea91327da6e5a62a98a82905c24c99499af96c2f2f3ac26094c7552ea2c23",
+      "ledgerSegmentFingerprint": "sha256:329ea91327da6e5a62a98a82905c24c99499af96c2f2f3ac26094c7552ea2c23"
+    },
+    {
+      "recordId": "C-S03-0212",
+      "locator": "speaker-block-211",
+      "boundarySegmentFingerprint": "sha256:19a0c989f226f07e957c809cce9e3ed2008ce3bbec596dfcb11ecaf2b11480b6",
+      "ledgerSegmentFingerprint": "sha256:19a0c989f226f07e957c809cce9e3ed2008ce3bbec596dfcb11ecaf2b11480b6"
+    },
+    {
+      "recordId": "C-S03-0214",
+      "locator": "speaker-block-213",
+      "boundarySegmentFingerprint": "sha256:51e0173fdee08402f5b1db8cf97f368aa57d58ad98b5b25c0b5ff44af427ab24",
+      "ledgerSegmentFingerprint": "sha256:51e0173fdee08402f5b1db8cf97f368aa57d58ad98b5b25c0b5ff44af427ab24"
+    },
+    {
+      "recordId": "C-S03-0216",
+      "locator": "speaker-block-215",
+      "boundarySegmentFingerprint": "sha256:f9b7a5eb43e91cd0b43a276df0dc134e4eb7b42937e5fa8edb798e3ab01487d4",
+      "ledgerSegmentFingerprint": "sha256:f9b7a5eb43e91cd0b43a276df0dc134e4eb7b42937e5fa8edb798e3ab01487d4"
+    },
+    {
+      "recordId": "C-S03-0218",
+      "locator": "speaker-block-217",
+      "boundarySegmentFingerprint": "sha256:75236ed4be1f805bf963d78e844fa9bfca4682a0be2cee67e360bd2aff350faf",
+      "ledgerSegmentFingerprint": "sha256:75236ed4be1f805bf963d78e844fa9bfca4682a0be2cee67e360bd2aff350faf"
+    },
+    {
+      "recordId": "C-S03-0220",
+      "locator": "speaker-block-219",
+      "boundarySegmentFingerprint": "sha256:48636b2ca8c0fee3cd3c3aac819817027b22b282cd1cd9b8eef97326655c50c7",
+      "ledgerSegmentFingerprint": "sha256:48636b2ca8c0fee3cd3c3aac819817027b22b282cd1cd9b8eef97326655c50c7"
+    },
+    {
+      "recordId": "C-S03-0222",
+      "locator": "speaker-block-221",
+      "boundarySegmentFingerprint": "sha256:c4b56b0ca56c24d2697fe767be51305e04850e17a3a3cb69d924a1bb36dad33a",
+      "ledgerSegmentFingerprint": "sha256:c4b56b0ca56c24d2697fe767be51305e04850e17a3a3cb69d924a1bb36dad33a"
+    },
+    {
+      "recordId": "C-S03-0224",
+      "locator": "speaker-block-223",
+      "boundarySegmentFingerprint": "sha256:54539f8d4e5bc5c406cd0efbeee0f7d6c428021965826c3b3cacc51da65dc9d6",
+      "ledgerSegmentFingerprint": "sha256:54539f8d4e5bc5c406cd0efbeee0f7d6c428021965826c3b3cacc51da65dc9d6"
+    },
+    {
+      "recordId": "C-S03-0226",
+      "locator": "speaker-block-225",
+      "boundarySegmentFingerprint": "sha256:ef2d2dda0c7b1a3f57631dcce330cc4f1f28dcafb21b437fb60010de9a5d204e",
+      "ledgerSegmentFingerprint": "sha256:ef2d2dda0c7b1a3f57631dcce330cc4f1f28dcafb21b437fb60010de9a5d204e"
+    },
+    {
+      "recordId": "C-S03-0229",
+      "locator": "speaker-block-228",
+      "boundarySegmentFingerprint": "sha256:05f6121b50a11eccf3166a7dea6db54d18d2ef4758e16afe73ea4fc3ffa20f05",
+      "ledgerSegmentFingerprint": "sha256:05f6121b50a11eccf3166a7dea6db54d18d2ef4758e16afe73ea4fc3ffa20f05"
+    },
+    {
+      "recordId": "C-S03-0231",
+      "locator": "speaker-block-230",
+      "boundarySegmentFingerprint": "sha256:76ac3cedcbfecfb186c98407b792b26090cb022ad9c1164a40935a0dbdffd63c",
+      "ledgerSegmentFingerprint": "sha256:76ac3cedcbfecfb186c98407b792b26090cb022ad9c1164a40935a0dbdffd63c"
+    },
+    {
+      "recordId": "C-S03-0233",
+      "locator": "speaker-block-232",
+      "boundarySegmentFingerprint": "sha256:aee494ed7355497111c2a7974bccb3a592d9d8e056cff1269a7ce40657092906",
+      "ledgerSegmentFingerprint": "sha256:aee494ed7355497111c2a7974bccb3a592d9d8e056cff1269a7ce40657092906"
+    },
+    {
+      "recordId": "C-S03-0235",
+      "locator": "speaker-block-234",
+      "boundarySegmentFingerprint": "sha256:b11bd5b4398a6d666018593f7aeffdc3cd08b60f41351bc6a2749263449a84e5",
+      "ledgerSegmentFingerprint": "sha256:b11bd5b4398a6d666018593f7aeffdc3cd08b60f41351bc6a2749263449a84e5"
+    },
+    {
+      "recordId": "C-S03-0237",
+      "locator": "speaker-block-236",
+      "boundarySegmentFingerprint": "sha256:4519da5f78c409afb0775c31b33f92ed8464d3db30c6d656cf376a71712aebbf",
+      "ledgerSegmentFingerprint": "sha256:4519da5f78c409afb0775c31b33f92ed8464d3db30c6d656cf376a71712aebbf"
+    },
+    {
+      "recordId": "C-S03-0239",
+      "locator": "speaker-block-238",
+      "boundarySegmentFingerprint": "sha256:a1b13f979ac1bc7e1f0755f80eb4d64911e5e9c504daa752973bb6ad7b365f78",
+      "ledgerSegmentFingerprint": "sha256:a1b13f979ac1bc7e1f0755f80eb4d64911e5e9c504daa752973bb6ad7b365f78"
+    },
+    {
+      "recordId": "C-S03-0241",
+      "locator": "speaker-block-240",
+      "boundarySegmentFingerprint": "sha256:4cb8ef2c278ef0e9a6316fa50dc04e4865b7b3bf0cf3e6bb22823178e50d02e4",
+      "ledgerSegmentFingerprint": "sha256:4cb8ef2c278ef0e9a6316fa50dc04e4865b7b3bf0cf3e6bb22823178e50d02e4"
+    },
+    {
+      "recordId": "C-S03-0243",
+      "locator": "speaker-block-242",
+      "boundarySegmentFingerprint": "sha256:8ff28d8641afb21273f420e42634e23db1e501cafcbfe544ca0e22aaf53b8eff",
+      "ledgerSegmentFingerprint": "sha256:8ff28d8641afb21273f420e42634e23db1e501cafcbfe544ca0e22aaf53b8eff"
+    },
+    {
+      "recordId": "C-S03-0245",
+      "locator": "speaker-block-244",
+      "boundarySegmentFingerprint": "sha256:5c75a64f28443568b9a55ee9cde454f72e138c66f9b2e3ae6b1c20dcf98dc79d",
+      "ledgerSegmentFingerprint": "sha256:5c75a64f28443568b9a55ee9cde454f72e138c66f9b2e3ae6b1c20dcf98dc79d"
+    },
+    {
+      "recordId": "C-S03-0247",
+      "locator": "speaker-block-246",
+      "boundarySegmentFingerprint": "sha256:79010b859ac5212c0a8540182574f2805de389b1bc5a69f7f2fc362961636e08",
+      "ledgerSegmentFingerprint": "sha256:79010b859ac5212c0a8540182574f2805de389b1bc5a69f7f2fc362961636e08"
+    },
+    {
+      "recordId": "C-S03-0249",
+      "locator": "speaker-block-248",
+      "boundarySegmentFingerprint": "sha256:1c56850c18b4471d0132aa5073df1e8cb683a45e5158667437e30eaab493e4a0",
+      "ledgerSegmentFingerprint": "sha256:1c56850c18b4471d0132aa5073df1e8cb683a45e5158667437e30eaab493e4a0"
+    },
+    {
+      "recordId": "C-S03-0251",
+      "locator": "speaker-block-250",
+      "boundarySegmentFingerprint": "sha256:349985cbcb06645c655533aa90e7ddbdeeda8636e4d9c13c85c8822200e1f92b",
+      "ledgerSegmentFingerprint": "sha256:349985cbcb06645c655533aa90e7ddbdeeda8636e4d9c13c85c8822200e1f92b"
+    },
+    {
+      "recordId": "C-S03-0253",
+      "locator": "speaker-block-252",
+      "boundarySegmentFingerprint": "sha256:13f9a3e934d3f676f4e53e424bf8292da9d5deeb32faeaf57a8e1fe5fa35e421",
+      "ledgerSegmentFingerprint": "sha256:13f9a3e934d3f676f4e53e424bf8292da9d5deeb32faeaf57a8e1fe5fa35e421"
+    },
+    {
+      "recordId": "C-S03-0255",
+      "locator": "speaker-block-254",
+      "boundarySegmentFingerprint": "sha256:47be904e0af0f181f01b256966cebd0e67e767d83862cc8b086c87db62f2243b",
+      "ledgerSegmentFingerprint": "sha256:47be904e0af0f181f01b256966cebd0e67e767d83862cc8b086c87db62f2243b"
+    },
+    {
+      "recordId": "C-S03-0256",
+      "locator": "speaker-block-255",
+      "boundarySegmentFingerprint": "sha256:ab59a90d62f845cccde15ecb7b0d8e46c867d07b6a9803ded4f70d23ce086055",
+      "ledgerSegmentFingerprint": "sha256:ab59a90d62f845cccde15ecb7b0d8e46c867d07b6a9803ded4f70d23ce086055"
+    },
+    {
+      "recordId": "C-S03-0258",
+      "locator": "speaker-block-257",
+      "boundarySegmentFingerprint": "sha256:ece27b5a325a2a7ce556e2c30e5832be7a366c088cbb9c55af2ca6865407dee3",
+      "ledgerSegmentFingerprint": "sha256:ece27b5a325a2a7ce556e2c30e5832be7a366c088cbb9c55af2ca6865407dee3"
+    },
+    {
+      "recordId": "C-S03-0260",
+      "locator": "speaker-block-259",
+      "boundarySegmentFingerprint": "sha256:df0bdabb371e00364b0fa99a67e59baff4b31a7a622dccbd32beda07304ba1e9",
+      "ledgerSegmentFingerprint": "sha256:df0bdabb371e00364b0fa99a67e59baff4b31a7a622dccbd32beda07304ba1e9"
+    },
+    {
+      "recordId": "C-S03-0262",
+      "locator": "speaker-block-261",
+      "boundarySegmentFingerprint": "sha256:85579015a7f18191d28e6ed8a38b66ad48e6a276fd0f7e324d53443c75b59274",
+      "ledgerSegmentFingerprint": "sha256:85579015a7f18191d28e6ed8a38b66ad48e6a276fd0f7e324d53443c75b59274"
+    },
+    {
+      "recordId": "C-S03-0264",
+      "locator": "speaker-block-263",
+      "boundarySegmentFingerprint": "sha256:e5149650ef9617604a7c268c6e1f3f9835a645b8802a84a1eabcfc0f38ca460c",
+      "ledgerSegmentFingerprint": "sha256:e5149650ef9617604a7c268c6e1f3f9835a645b8802a84a1eabcfc0f38ca460c"
+    },
+    {
+      "recordId": "C-S03-0266",
+      "locator": "speaker-block-265",
+      "boundarySegmentFingerprint": "sha256:0be608a776862383afe54cee8fadcefe719f7495cfebed4fa5e063945fd8b0b3",
+      "ledgerSegmentFingerprint": "sha256:0be608a776862383afe54cee8fadcefe719f7495cfebed4fa5e063945fd8b0b3"
+    },
+    {
+      "recordId": "C-S03-0268",
+      "locator": "speaker-block-267",
+      "boundarySegmentFingerprint": "sha256:2c66d09602c04c5254e0b40f8b518f0f7667de99e9d24d8b99068e18408c9212",
+      "ledgerSegmentFingerprint": "sha256:2c66d09602c04c5254e0b40f8b518f0f7667de99e9d24d8b99068e18408c9212"
+    },
+    {
+      "recordId": "C-S03-0270",
+      "locator": "speaker-block-269",
+      "boundarySegmentFingerprint": "sha256:eb6cf1e2b36f582adab1691d1a40785196a2c0957dd6ce4d23dca3ba5cbbd1f2",
+      "ledgerSegmentFingerprint": "sha256:eb6cf1e2b36f582adab1691d1a40785196a2c0957dd6ce4d23dca3ba5cbbd1f2"
+    },
+    {
+      "recordId": "C-S03-0274",
+      "locator": "speaker-block-273",
+      "boundarySegmentFingerprint": "sha256:22cbc0f7089787a3a8adf8ef4c27a9b49dd42be4c7d4720a83d500994f47e74c",
+      "ledgerSegmentFingerprint": "sha256:22cbc0f7089787a3a8adf8ef4c27a9b49dd42be4c7d4720a83d500994f47e74c"
+    },
+    {
+      "recordId": "C-S03-0276",
+      "locator": "speaker-block-275",
+      "boundarySegmentFingerprint": "sha256:034be37b502aaaaf0e36dec5c2d77b4e2dbf9110448777ee450a07f39f773446",
+      "ledgerSegmentFingerprint": "sha256:034be37b502aaaaf0e36dec5c2d77b4e2dbf9110448777ee450a07f39f773446"
+    },
+    {
+      "recordId": "C-S03-0278",
+      "locator": "speaker-block-277",
+      "boundarySegmentFingerprint": "sha256:c9abd455b1358851dfac23da0355e801fdb6dcd8b83ad7d648c51721eb7433ba",
+      "ledgerSegmentFingerprint": "sha256:c9abd455b1358851dfac23da0355e801fdb6dcd8b83ad7d648c51721eb7433ba"
+    },
+    {
+      "recordId": "C-S03-0280",
+      "locator": "speaker-block-279",
+      "boundarySegmentFingerprint": "sha256:279dc71c241376232a1b571b2f85ed9b56ed7a94cedeb68a37ef4568820efe26",
+      "ledgerSegmentFingerprint": "sha256:279dc71c241376232a1b571b2f85ed9b56ed7a94cedeb68a37ef4568820efe26"
+    },
+    {
+      "recordId": "C-S03-0282",
+      "locator": "speaker-block-281",
+      "boundarySegmentFingerprint": "sha256:eb93dc93462c77d47c4553f1ca7d71c425cbc5c9e47c2a474912104120003cc4",
+      "ledgerSegmentFingerprint": "sha256:eb93dc93462c77d47c4553f1ca7d71c425cbc5c9e47c2a474912104120003cc4"
+    },
+    {
+      "recordId": "C-S03-0284",
+      "locator": "speaker-block-283",
+      "boundarySegmentFingerprint": "sha256:73d414151b9032080322325ec54fe18e8e2b9a09cc33a0d57635a470d02f7a81",
+      "ledgerSegmentFingerprint": "sha256:73d414151b9032080322325ec54fe18e8e2b9a09cc33a0d57635a470d02f7a81"
+    },
+    {
+      "recordId": "C-S03-0286",
+      "locator": "speaker-block-285",
+      "boundarySegmentFingerprint": "sha256:4c30957a3fde94df4d54d0b19d7f0b06f7aa6cbe7f403b783fa0ad83f6d8d38f",
+      "ledgerSegmentFingerprint": "sha256:4c30957a3fde94df4d54d0b19d7f0b06f7aa6cbe7f403b783fa0ad83f6d8d38f"
+    },
+    {
+      "recordId": "C-S03-0288",
+      "locator": "speaker-block-287",
+      "boundarySegmentFingerprint": "sha256:f37e56c7c6c1c3bd4b015d9c669b071fd8e2d32997245e701cd11daf1fcd19ea",
+      "ledgerSegmentFingerprint": "sha256:f37e56c7c6c1c3bd4b015d9c669b071fd8e2d32997245e701cd11daf1fcd19ea"
+    },
+    {
+      "recordId": "C-S03-0290",
+      "locator": "speaker-block-289",
+      "boundarySegmentFingerprint": "sha256:b29fcb2384c6d22feb35742205ed5060163f612b9ce9d5fdb58a7a9de70bdf86",
+      "ledgerSegmentFingerprint": "sha256:b29fcb2384c6d22feb35742205ed5060163f612b9ce9d5fdb58a7a9de70bdf86"
+    },
+    {
+      "recordId": "C-S03-0291",
+      "locator": "speaker-block-290",
+      "boundarySegmentFingerprint": "sha256:6bfdb52957cc5e36c3f305e1e33f16f596caf50cb1d242911b00a2ea9c56a1c2",
+      "ledgerSegmentFingerprint": "sha256:6bfdb52957cc5e36c3f305e1e33f16f596caf50cb1d242911b00a2ea9c56a1c2"
+    },
+    {
+      "recordId": "C-S03-0293",
+      "locator": "speaker-block-292",
+      "boundarySegmentFingerprint": "sha256:bf3f406d372acc633d8e5ad839f780dea2a5ba7f8c4731ad0eabc170c4fa5713",
+      "ledgerSegmentFingerprint": "sha256:bf3f406d372acc633d8e5ad839f780dea2a5ba7f8c4731ad0eabc170c4fa5713"
+    },
+    {
+      "recordId": "C-S03-0295",
+      "locator": "speaker-block-294",
+      "boundarySegmentFingerprint": "sha256:13be3f48427f75bd9a97044954e97b45879b32d80af777c2b58fa3f067d71afa",
+      "ledgerSegmentFingerprint": "sha256:13be3f48427f75bd9a97044954e97b45879b32d80af777c2b58fa3f067d71afa"
+    },
+    {
+      "recordId": "C-S03-0297",
+      "locator": "speaker-block-296",
+      "boundarySegmentFingerprint": "sha256:a4eca50983338990ccc04ac4de48184eac8edefe5ae2aa3139efc1f5d50a73bf",
+      "ledgerSegmentFingerprint": "sha256:a4eca50983338990ccc04ac4de48184eac8edefe5ae2aa3139efc1f5d50a73bf"
+    },
+    {
+      "recordId": "C-S03-0299",
+      "locator": "speaker-block-298",
+      "boundarySegmentFingerprint": "sha256:5318aadab45697366821d7b42cbacd724ddf3efbb6507e2b7a641639e9902a5e",
+      "ledgerSegmentFingerprint": "sha256:5318aadab45697366821d7b42cbacd724ddf3efbb6507e2b7a641639e9902a5e"
+    },
+    {
+      "recordId": "C-S03-0301",
+      "locator": "speaker-block-300",
+      "boundarySegmentFingerprint": "sha256:225fa8049f4f4d2255a7fdbaf17fdd583f916675b91abc632b998841f05dd47f",
+      "ledgerSegmentFingerprint": "sha256:225fa8049f4f4d2255a7fdbaf17fdd583f916675b91abc632b998841f05dd47f"
+    },
+    {
+      "recordId": "C-S03-0303",
+      "locator": "speaker-block-302",
+      "boundarySegmentFingerprint": "sha256:a8c93a3bddfb40722cecd99aff4334003eb27c0f7f42499c433c8062484e5e82",
+      "ledgerSegmentFingerprint": "sha256:a8c93a3bddfb40722cecd99aff4334003eb27c0f7f42499c433c8062484e5e82"
+    },
+    {
+      "recordId": "C-S03-0305",
+      "locator": "speaker-block-304",
+      "boundarySegmentFingerprint": "sha256:44b5e736e8faeedb4e4edeecbacd42d599a92f0c7a34cfec116ac851342b719c",
+      "ledgerSegmentFingerprint": "sha256:44b5e736e8faeedb4e4edeecbacd42d599a92f0c7a34cfec116ac851342b719c"
+    },
+    {
+      "recordId": "C-S03-0307",
+      "locator": "speaker-block-306",
+      "boundarySegmentFingerprint": "sha256:13e45dede6bc161c0e94eefa338f921e2d14937ed339c601ad6498781e926905",
+      "ledgerSegmentFingerprint": "sha256:13e45dede6bc161c0e94eefa338f921e2d14937ed339c601ad6498781e926905"
+    },
+    {
+      "recordId": "C-S03-0309",
+      "locator": "speaker-block-308",
+      "boundarySegmentFingerprint": "sha256:ec57076e685a526e993081fd7f0bc7e67c6752210430cd0e3073cdb3fff5fe41",
+      "ledgerSegmentFingerprint": "sha256:ec57076e685a526e993081fd7f0bc7e67c6752210430cd0e3073cdb3fff5fe41"
+    },
+    {
+      "recordId": "C-S03-0311",
+      "locator": "speaker-block-310",
+      "boundarySegmentFingerprint": "sha256:707a1a8ac2b76110156f53e00ee440a82da98491dddb6b13cab88ffa663ec1de",
+      "ledgerSegmentFingerprint": "sha256:707a1a8ac2b76110156f53e00ee440a82da98491dddb6b13cab88ffa663ec1de"
+    },
+    {
+      "recordId": "C-S03-0313",
+      "locator": "speaker-block-312",
+      "boundarySegmentFingerprint": "sha256:ac23854f18bf3c53cf89136cd721bb95969b27db5f6c2b193fb2b4a1002a9d3a",
+      "ledgerSegmentFingerprint": "sha256:ac23854f18bf3c53cf89136cd721bb95969b27db5f6c2b193fb2b4a1002a9d3a"
+    },
+    {
+      "recordId": "C-S03-0315",
+      "locator": "speaker-block-314",
+      "boundarySegmentFingerprint": "sha256:f309aa6fa9f7cd2667e17f2dddebe44bc7f59bf83df39d4bca59cde6aee6c904",
+      "ledgerSegmentFingerprint": "sha256:f309aa6fa9f7cd2667e17f2dddebe44bc7f59bf83df39d4bca59cde6aee6c904"
+    },
+    {
+      "recordId": "C-S03-0317",
+      "locator": "speaker-block-316",
+      "boundarySegmentFingerprint": "sha256:95298b51a7f7719063b629536e4430f5b513dbf23fbdffcfd9eb5373e1cdfb07",
+      "ledgerSegmentFingerprint": "sha256:95298b51a7f7719063b629536e4430f5b513dbf23fbdffcfd9eb5373e1cdfb07"
+    },
+    {
+      "recordId": "C-S03-0319",
+      "locator": "speaker-block-318",
+      "boundarySegmentFingerprint": "sha256:5ec377b50e57dddde79be0d2e06f501ace9aa5277651a9aa19e54c2ab36199d1",
+      "ledgerSegmentFingerprint": "sha256:5ec377b50e57dddde79be0d2e06f501ace9aa5277651a9aa19e54c2ab36199d1"
+    },
+    {
+      "recordId": "C-S03-0321",
+      "locator": "speaker-block-320",
+      "boundarySegmentFingerprint": "sha256:5dbc5d4d4b3e658246ac7ebd45f957caa2dfb05dc11507b3d9138a03f96b1207",
+      "ledgerSegmentFingerprint": "sha256:5dbc5d4d4b3e658246ac7ebd45f957caa2dfb05dc11507b3d9138a03f96b1207"
+    },
+    {
+      "recordId": "C-S03-0323",
+      "locator": "speaker-block-322",
+      "boundarySegmentFingerprint": "sha256:6584460610054ef510965bf1d63a81a5a8af16d60679588c7cffc9d23496ced8",
+      "ledgerSegmentFingerprint": "sha256:6584460610054ef510965bf1d63a81a5a8af16d60679588c7cffc9d23496ced8"
+    },
+    {
+      "recordId": "C-S03-0325",
+      "locator": "speaker-block-324",
+      "boundarySegmentFingerprint": "sha256:0ec62bce24dcd2a62cee3685c3bbd2460cee71a89e3d15df9aadd2a9f605907b",
+      "ledgerSegmentFingerprint": "sha256:0ec62bce24dcd2a62cee3685c3bbd2460cee71a89e3d15df9aadd2a9f605907b"
+    },
+    {
+      "recordId": "C-S03-0327",
+      "locator": "speaker-block-326",
+      "boundarySegmentFingerprint": "sha256:608fe05f416a13ae7cf0b415478d6db64df11fea91ba2e2464e120886dea58c9",
+      "ledgerSegmentFingerprint": "sha256:608fe05f416a13ae7cf0b415478d6db64df11fea91ba2e2464e120886dea58c9"
+    },
+    {
+      "recordId": "C-S03-0329",
+      "locator": "speaker-block-328",
+      "boundarySegmentFingerprint": "sha256:c200aed75ac7a41a212d76a327714416d3f9d2a693209bcac908d81ad6ba9c6c",
+      "ledgerSegmentFingerprint": "sha256:c200aed75ac7a41a212d76a327714416d3f9d2a693209bcac908d81ad6ba9c6c"
+    },
+    {
+      "recordId": "C-S03-0331",
+      "locator": "speaker-block-330",
+      "boundarySegmentFingerprint": "sha256:1e05f0e92821b59da0bf9bb3287604ab6169a6d9585d23514062863303f4bfc8",
+      "ledgerSegmentFingerprint": "sha256:1e05f0e92821b59da0bf9bb3287604ab6169a6d9585d23514062863303f4bfc8"
+    },
+    {
+      "recordId": "C-S03-0333",
+      "locator": "speaker-block-332",
+      "boundarySegmentFingerprint": "sha256:9648facb1eaa3f645c38dc5550cbdd1090c8284bf953db9049a8eea2d875e308",
+      "ledgerSegmentFingerprint": "sha256:9648facb1eaa3f645c38dc5550cbdd1090c8284bf953db9049a8eea2d875e308"
+    },
+    {
+      "recordId": "C-S03-0335",
+      "locator": "speaker-block-334",
+      "boundarySegmentFingerprint": "sha256:a13c656007585a7eca13ea1e63808e18b41a2e77ed8de84d4bb501f4e94bb6b6",
+      "ledgerSegmentFingerprint": "sha256:a13c656007585a7eca13ea1e63808e18b41a2e77ed8de84d4bb501f4e94bb6b6"
+    },
+    {
+      "recordId": "C-S03-0337",
+      "locator": "speaker-block-336",
+      "boundarySegmentFingerprint": "sha256:4682e18a3058c2863bf51f6b77180a7a7134b6c5b1a59417ffe178b516e5694c",
+      "ledgerSegmentFingerprint": "sha256:4682e18a3058c2863bf51f6b77180a7a7134b6c5b1a59417ffe178b516e5694c"
+    },
+    {
+      "recordId": "C-S03-0339",
+      "locator": "speaker-block-338",
+      "boundarySegmentFingerprint": "sha256:81dd12f822ea5929b7ffa0caaf84a00b16a845b0b0bed0fea66ddd9e1b2890cf",
+      "ledgerSegmentFingerprint": "sha256:81dd12f822ea5929b7ffa0caaf84a00b16a845b0b0bed0fea66ddd9e1b2890cf"
+    },
+    {
+      "recordId": "C-S03-0341",
+      "locator": "speaker-block-340",
+      "boundarySegmentFingerprint": "sha256:6c0bf9120b25d2b34729e1c3986fa0099806f9171c076430afd114096da4bab2",
+      "ledgerSegmentFingerprint": "sha256:6c0bf9120b25d2b34729e1c3986fa0099806f9171c076430afd114096da4bab2"
+    },
+    {
+      "recordId": "C-S03-0343",
+      "locator": "speaker-block-342",
+      "boundarySegmentFingerprint": "sha256:76fee2481aba4359b30a4008228024c9b3fbb3b91377f777eaeecf1e9cc15c8e",
+      "ledgerSegmentFingerprint": "sha256:76fee2481aba4359b30a4008228024c9b3fbb3b91377f777eaeecf1e9cc15c8e"
+    },
+    {
+      "recordId": "C-S03-0345",
+      "locator": "speaker-block-344",
+      "boundarySegmentFingerprint": "sha256:16089b05f9ab9f5dcde822b03edf67365ee527437e385f86e210cf281d02006f",
+      "ledgerSegmentFingerprint": "sha256:16089b05f9ab9f5dcde822b03edf67365ee527437e385f86e210cf281d02006f"
+    },
+    {
+      "recordId": "C-S03-0347",
+      "locator": "speaker-block-346",
+      "boundarySegmentFingerprint": "sha256:5bc284c215a070f45932e31f4f718454698b032490bf3bdd0443929ee343ee10",
+      "ledgerSegmentFingerprint": "sha256:5bc284c215a070f45932e31f4f718454698b032490bf3bdd0443929ee343ee10"
+    },
+    {
+      "recordId": "C-S03-0349",
+      "locator": "speaker-block-348",
+      "boundarySegmentFingerprint": "sha256:be7ce5c20578f90efe3faa71ee380bd3d94b3a6ccb47d224ef5dbeb1b95bb25b",
+      "ledgerSegmentFingerprint": "sha256:be7ce5c20578f90efe3faa71ee380bd3d94b3a6ccb47d224ef5dbeb1b95bb25b"
+    },
+    {
+      "recordId": "C-S03-0352",
+      "locator": "speaker-block-351",
+      "boundarySegmentFingerprint": "sha256:ee206a30cf44e3dfb7277d462ee1e190b782438a7aeb42eddbd2289b1c1844b5",
+      "ledgerSegmentFingerprint": "sha256:ee206a30cf44e3dfb7277d462ee1e190b782438a7aeb42eddbd2289b1c1844b5"
+    },
+    {
+      "recordId": "C-S03-0354",
+      "locator": "speaker-block-353",
+      "boundarySegmentFingerprint": "sha256:9e3391fce4595b096dda35ca5e023bdc32b0674204b3d5458c3663ac7a7334f4",
+      "ledgerSegmentFingerprint": "sha256:9e3391fce4595b096dda35ca5e023bdc32b0674204b3d5458c3663ac7a7334f4"
+    },
+    {
+      "recordId": "C-S03-0356",
+      "locator": "speaker-block-355",
+      "boundarySegmentFingerprint": "sha256:180a87804def8c26fec9e2e592185924ff7b82bb686a05953b814af52872bbab",
+      "ledgerSegmentFingerprint": "sha256:180a87804def8c26fec9e2e592185924ff7b82bb686a05953b814af52872bbab"
+    },
+    {
+      "recordId": "C-S03-0358",
+      "locator": "speaker-block-357",
+      "boundarySegmentFingerprint": "sha256:eaa775a0e845c1da4f235d358769bd632d2973c883ced4cba292da3ce3114258",
+      "ledgerSegmentFingerprint": "sha256:eaa775a0e845c1da4f235d358769bd632d2973c883ced4cba292da3ce3114258"
+    },
+    {
+      "recordId": "C-S03-0361",
+      "locator": "speaker-block-360",
+      "boundarySegmentFingerprint": "sha256:315251473cc84226f48c83292702285dfef3ab975a36dd2d2ab40592ab7e067f",
+      "ledgerSegmentFingerprint": "sha256:315251473cc84226f48c83292702285dfef3ab975a36dd2d2ab40592ab7e067f"
+    },
+    {
+      "recordId": "C-S03-0363",
+      "locator": "speaker-block-362",
+      "boundarySegmentFingerprint": "sha256:35b9c832a6ee5deaeff787c995aab62b479dbef8c1ee0d1bc95064dd93893d62",
+      "ledgerSegmentFingerprint": "sha256:35b9c832a6ee5deaeff787c995aab62b479dbef8c1ee0d1bc95064dd93893d62"
+    },
+    {
+      "recordId": "C-S03-0365",
+      "locator": "speaker-block-364",
+      "boundarySegmentFingerprint": "sha256:061f703ef853a377f924476131169899ffbc03584444a439bdebc57b67a8e859",
+      "ledgerSegmentFingerprint": "sha256:061f703ef853a377f924476131169899ffbc03584444a439bdebc57b67a8e859"
+    },
+    {
+      "recordId": "C-S03-0367",
+      "locator": "speaker-block-366",
+      "boundarySegmentFingerprint": "sha256:2fb0186f95d1bcd05987b89cd4c0c84aacc829a41250069d3bd29728bd023ebf",
+      "ledgerSegmentFingerprint": "sha256:2fb0186f95d1bcd05987b89cd4c0c84aacc829a41250069d3bd29728bd023ebf"
+    },
+    {
+      "recordId": "C-S03-0369",
+      "locator": "speaker-block-368",
+      "boundarySegmentFingerprint": "sha256:f71769d0e6c0fb4d83c0789f47fa93762584502222c9b34e4459fbbd56d9c235",
+      "ledgerSegmentFingerprint": "sha256:f71769d0e6c0fb4d83c0789f47fa93762584502222c9b34e4459fbbd56d9c235"
+    },
+    {
+      "recordId": "C-S03-0371",
+      "locator": "speaker-block-370",
+      "boundarySegmentFingerprint": "sha256:8a4be5f9e61eba47d5375de3ccaab243cd91c002a32968d8447604def79cc864",
+      "ledgerSegmentFingerprint": "sha256:8a4be5f9e61eba47d5375de3ccaab243cd91c002a32968d8447604def79cc864"
+    },
+    {
+      "recordId": "C-S03-0373",
+      "locator": "speaker-block-372",
+      "boundarySegmentFingerprint": "sha256:53d6a3bbfcd95ea15c270dd63fa30980de64287f4329b0dbce81a2acb8c6c766",
+      "ledgerSegmentFingerprint": "sha256:53d6a3bbfcd95ea15c270dd63fa30980de64287f4329b0dbce81a2acb8c6c766"
+    },
+    {
+      "recordId": "C-S03-0375",
+      "locator": "speaker-block-374",
+      "boundarySegmentFingerprint": "sha256:03aa40d5d9558d37a17341dd3f40028a81ff7f4c5775ed3217042e3f1c0c0c68",
+      "ledgerSegmentFingerprint": "sha256:03aa40d5d9558d37a17341dd3f40028a81ff7f4c5775ed3217042e3f1c0c0c68"
+    },
+    {
+      "recordId": "C-S03-0377",
+      "locator": "speaker-block-376",
+      "boundarySegmentFingerprint": "sha256:1def64b300bf243c58743a72a9980f15a3b634f82936a5829da2e5eebeca86ec",
+      "ledgerSegmentFingerprint": "sha256:1def64b300bf243c58743a72a9980f15a3b634f82936a5829da2e5eebeca86ec"
+    },
+    {
+      "recordId": "C-S03-0379",
+      "locator": "speaker-block-378",
+      "boundarySegmentFingerprint": "sha256:d118493adcc25f7ace8f1fff5f7024326e423e1776b4bee159b60b3a952c7355",
+      "ledgerSegmentFingerprint": "sha256:d118493adcc25f7ace8f1fff5f7024326e423e1776b4bee159b60b3a952c7355"
+    },
+    {
+      "recordId": "C-S03-0381",
+      "locator": "speaker-block-380",
+      "boundarySegmentFingerprint": "sha256:de0dded43d46b573fe790220e1e915e8b1072de9856cca74f24bd92acc6023a1",
+      "ledgerSegmentFingerprint": "sha256:de0dded43d46b573fe790220e1e915e8b1072de9856cca74f24bd92acc6023a1"
+    },
+    {
+      "recordId": "C-S03-0383",
+      "locator": "speaker-block-382",
+      "boundarySegmentFingerprint": "sha256:b2cd98d2cabca3ee4ddb95472efce186f6292e41df5b75e4e7079ec7a95abb35",
+      "ledgerSegmentFingerprint": "sha256:b2cd98d2cabca3ee4ddb95472efce186f6292e41df5b75e4e7079ec7a95abb35"
+    },
+    {
+      "recordId": "C-S03-0385",
+      "locator": "speaker-block-384",
+      "boundarySegmentFingerprint": "sha256:78e0d2e5e4b57dad5a88341b676505fd4ba71f838949b727ba0bd04426de5a40",
+      "ledgerSegmentFingerprint": "sha256:78e0d2e5e4b57dad5a88341b676505fd4ba71f838949b727ba0bd04426de5a40"
+    },
+    {
+      "recordId": "C-S03-0387",
+      "locator": "speaker-block-386",
+      "boundarySegmentFingerprint": "sha256:97e292d6ed46c865f665adfbd3561c6535577583f766aa0a2c1dc3e4caf11946",
+      "ledgerSegmentFingerprint": "sha256:97e292d6ed46c865f665adfbd3561c6535577583f766aa0a2c1dc3e4caf11946"
+    },
+    {
+      "recordId": "C-S03-0389",
+      "locator": "speaker-block-388",
+      "boundarySegmentFingerprint": "sha256:1e1da251f0be0728f73ac0a22dc688f7c31365934b899e10f6ad3759c57623c6",
+      "ledgerSegmentFingerprint": "sha256:1e1da251f0be0728f73ac0a22dc688f7c31365934b899e10f6ad3759c57623c6"
+    },
+    {
+      "recordId": "C-S03-0391",
+      "locator": "speaker-block-390",
+      "boundarySegmentFingerprint": "sha256:e1badf1ee7de1d8f4825fdb3b2a1bf709ec51e7137cbb6e808e0d204e1a184e6",
+      "ledgerSegmentFingerprint": "sha256:e1badf1ee7de1d8f4825fdb3b2a1bf709ec51e7137cbb6e808e0d204e1a184e6"
+    },
+    {
+      "recordId": "C-S03-0393",
+      "locator": "speaker-block-392",
+      "boundarySegmentFingerprint": "sha256:2125d8bed147d93185a4677960ccce025e1c6b1978baaf1fe86d3f83c918fd38",
+      "ledgerSegmentFingerprint": "sha256:2125d8bed147d93185a4677960ccce025e1c6b1978baaf1fe86d3f83c918fd38"
+    },
+    {
+      "recordId": "C-S03-0395",
+      "locator": "speaker-block-394",
+      "boundarySegmentFingerprint": "sha256:0a5d1cbb33252f8eadd94978b0c94fdafa0b21db059b7e9d0862ae04e33229b3",
+      "ledgerSegmentFingerprint": "sha256:0a5d1cbb33252f8eadd94978b0c94fdafa0b21db059b7e9d0862ae04e33229b3"
+    },
+    {
+      "recordId": "C-S03-0397",
+      "locator": "speaker-block-396",
+      "boundarySegmentFingerprint": "sha256:fd07c386c4b613b5ff5f4af72dcf76c85f51bd70cf76f290cd888a47708c06c2",
+      "ledgerSegmentFingerprint": "sha256:fd07c386c4b613b5ff5f4af72dcf76c85f51bd70cf76f290cd888a47708c06c2"
+    },
+    {
+      "recordId": "C-S03-0399",
+      "locator": "speaker-block-398",
+      "boundarySegmentFingerprint": "sha256:48055de221b825954fc57af0551d70cf210a53b436fcb918123d8928cf1e78b6",
+      "ledgerSegmentFingerprint": "sha256:48055de221b825954fc57af0551d70cf210a53b436fcb918123d8928cf1e78b6"
+    },
+    {
+      "recordId": "C-S03-0401",
+      "locator": "speaker-block-400",
+      "boundarySegmentFingerprint": "sha256:0a4d9d087a5330a25f42b50f2e65a6ce8715285e05f4efb1ab3c46015745c408",
+      "ledgerSegmentFingerprint": "sha256:0a4d9d087a5330a25f42b50f2e65a6ce8715285e05f4efb1ab3c46015745c408"
+    },
+    {
+      "recordId": "C-S03-0403",
+      "locator": "speaker-block-402",
+      "boundarySegmentFingerprint": "sha256:0a700322722400afc131f3cab23a0f723e152eee9cecf7d671bec6883cb86850",
+      "ledgerSegmentFingerprint": "sha256:0a700322722400afc131f3cab23a0f723e152eee9cecf7d671bec6883cb86850"
+    },
+    {
+      "recordId": "C-S03-0405",
+      "locator": "speaker-block-404",
+      "boundarySegmentFingerprint": "sha256:fde480042d5f68cc5a94f614b31fbfbce9d6596b74aef176245e23852171c7ed",
+      "ledgerSegmentFingerprint": "sha256:fde480042d5f68cc5a94f614b31fbfbce9d6596b74aef176245e23852171c7ed"
+    },
+    {
+      "recordId": "C-S03-0406",
+      "locator": "speaker-block-405",
+      "boundarySegmentFingerprint": "sha256:a7ddf0a18bdde56f22d98fb20981a7c2f851965928435a284d98246758479588",
+      "ledgerSegmentFingerprint": "sha256:a7ddf0a18bdde56f22d98fb20981a7c2f851965928435a284d98246758479588"
+    },
+    {
+      "recordId": "C-S03-0408",
+      "locator": "speaker-block-407",
+      "boundarySegmentFingerprint": "sha256:08f216d4a1f996e77f288fde9a240355119fbb65faa2ef100dab11d71fe68759",
+      "ledgerSegmentFingerprint": "sha256:08f216d4a1f996e77f288fde9a240355119fbb65faa2ef100dab11d71fe68759"
+    },
+    {
+      "recordId": "C-S03-0410",
+      "locator": "speaker-block-409",
+      "boundarySegmentFingerprint": "sha256:707a1a8ac2b76110156f53e00ee440a82da98491dddb6b13cab88ffa663ec1de",
+      "ledgerSegmentFingerprint": "sha256:707a1a8ac2b76110156f53e00ee440a82da98491dddb6b13cab88ffa663ec1de"
+    },
+    {
+      "recordId": "C-S03-0413",
+      "locator": "speaker-block-412",
+      "boundarySegmentFingerprint": "sha256:dac141d854cb4ab3ca263e93fa85a5a62ab0286f0f4c0d4659a412c01bf1c716",
+      "ledgerSegmentFingerprint": "sha256:dac141d854cb4ab3ca263e93fa85a5a62ab0286f0f4c0d4659a412c01bf1c716"
+    },
+    {
+      "recordId": "C-S03-0415",
+      "locator": "speaker-block-414",
+      "boundarySegmentFingerprint": "sha256:9c5ad90f5a7b63b158886bad09d2dd9e39861a1b0705789675ab629e6506e876",
+      "ledgerSegmentFingerprint": "sha256:9c5ad90f5a7b63b158886bad09d2dd9e39861a1b0705789675ab629e6506e876"
+    },
+    {
+      "recordId": "C-S03-0417",
+      "locator": "speaker-block-416",
+      "boundarySegmentFingerprint": "sha256:2879dae65c8a5dced7e88d4998126cc3c378b8262ad586e62e9065eb07c6e915",
+      "ledgerSegmentFingerprint": "sha256:2879dae65c8a5dced7e88d4998126cc3c378b8262ad586e62e9065eb07c6e915"
+    },
+    {
+      "recordId": "C-S03-0418",
+      "locator": "speaker-block-417",
+      "boundarySegmentFingerprint": "sha256:b4cb891c2138c3b2473172f163412bec449720e4f2354d5f9fbc981c18213d5a",
+      "ledgerSegmentFingerprint": "sha256:b4cb891c2138c3b2473172f163412bec449720e4f2354d5f9fbc981c18213d5a"
+    },
+    {
+      "recordId": "C-S03-0420",
+      "locator": "speaker-block-419",
+      "boundarySegmentFingerprint": "sha256:2a410e174173439c14fc23163154344db7f8827d6652254faec3e6eb6a352660",
+      "ledgerSegmentFingerprint": "sha256:2a410e174173439c14fc23163154344db7f8827d6652254faec3e6eb6a352660"
+    },
+    {
+      "recordId": "C-S03-0422",
+      "locator": "speaker-block-421",
+      "boundarySegmentFingerprint": "sha256:466a8bfafe792668e6505ae0d368d4d0d9a131adacf5fbb587fafdfc96cc0d9f",
+      "ledgerSegmentFingerprint": "sha256:466a8bfafe792668e6505ae0d368d4d0d9a131adacf5fbb587fafdfc96cc0d9f"
+    },
+    {
+      "recordId": "C-S03-0424",
+      "locator": "speaker-block-423",
+      "boundarySegmentFingerprint": "sha256:a14066362d2149abf78f967d1e7bd6909f62b4383cf8a4428991c735af95e19e",
+      "ledgerSegmentFingerprint": "sha256:a14066362d2149abf78f967d1e7bd6909f62b4383cf8a4428991c735af95e19e"
+    },
+    {
+      "recordId": "C-S03-0426",
+      "locator": "speaker-block-425",
+      "boundarySegmentFingerprint": "sha256:c330c8d15d0605dff754094c017762d93996e9a43e3f9ab45ee75cd1f878fac9",
+      "ledgerSegmentFingerprint": "sha256:c330c8d15d0605dff754094c017762d93996e9a43e3f9ab45ee75cd1f878fac9"
+    },
+    {
+      "recordId": "C-S03-0428",
+      "locator": "speaker-block-427",
+      "boundarySegmentFingerprint": "sha256:8553d72e55da04888376c49ebc9840ecd379b624ca8a9b0bd03cea8eaae77b75",
+      "ledgerSegmentFingerprint": "sha256:8553d72e55da04888376c49ebc9840ecd379b624ca8a9b0bd03cea8eaae77b75"
+    },
+    {
+      "recordId": "C-S03-0430",
+      "locator": "speaker-block-429",
+      "boundarySegmentFingerprint": "sha256:366abfae753d1bd342071a4fa78392aff696600ace8bb37d1333f5883fbc024d",
+      "ledgerSegmentFingerprint": "sha256:366abfae753d1bd342071a4fa78392aff696600ace8bb37d1333f5883fbc024d"
+    },
+    {
+      "recordId": "C-S03-0432",
+      "locator": "speaker-block-431",
+      "boundarySegmentFingerprint": "sha256:5206e010e7e58df9c4e49c15a433c190bff428f50801b801d578530a088721eb",
+      "ledgerSegmentFingerprint": "sha256:5206e010e7e58df9c4e49c15a433c190bff428f50801b801d578530a088721eb"
+    },
+    {
+      "recordId": "C-S03-0434",
+      "locator": "speaker-block-433",
+      "boundarySegmentFingerprint": "sha256:1af1513f3b923c134a6580f7f882aac253c2ff914f36505630d406ed0cf9c0d6",
+      "ledgerSegmentFingerprint": "sha256:1af1513f3b923c134a6580f7f882aac253c2ff914f36505630d406ed0cf9c0d6"
+    },
+    {
+      "recordId": "C-S03-0436",
+      "locator": "speaker-block-435",
+      "boundarySegmentFingerprint": "sha256:a39aecc2c2f18ba23d8526e265e368ccdfae7484ddc182ae40a6dede855bb8a6",
+      "ledgerSegmentFingerprint": "sha256:a39aecc2c2f18ba23d8526e265e368ccdfae7484ddc182ae40a6dede855bb8a6"
+    },
+    {
+      "recordId": "C-S03-0438",
+      "locator": "speaker-block-437",
+      "boundarySegmentFingerprint": "sha256:26335336df911dc2565f26cb899866f98668c0c4ad9649844d34305bc4fc95b7",
+      "ledgerSegmentFingerprint": "sha256:26335336df911dc2565f26cb899866f98668c0c4ad9649844d34305bc4fc95b7"
+    },
+    {
+      "recordId": "C-S03-0440",
+      "locator": "speaker-block-439",
+      "boundarySegmentFingerprint": "sha256:f50fdfa22c6dbee8313c1bd330d1b817371c757256e441baf41374044e643710",
+      "ledgerSegmentFingerprint": "sha256:f50fdfa22c6dbee8313c1bd330d1b817371c757256e441baf41374044e643710"
+    },
+    {
+      "recordId": "C-S03-0442",
+      "locator": "speaker-block-441",
+      "boundarySegmentFingerprint": "sha256:0f5192197201093f4891f47e2724b86dd8c9b6b3c99a78f0c4b6b78ae08e9b64",
+      "ledgerSegmentFingerprint": "sha256:0f5192197201093f4891f47e2724b86dd8c9b6b3c99a78f0c4b6b78ae08e9b64"
+    },
+    {
+      "recordId": "C-S03-0444",
+      "locator": "speaker-block-443",
+      "boundarySegmentFingerprint": "sha256:f41a8a41a48ed23bf4df4dcbfb9b1a0f8f7f8c504a0f2b30af0cecc191146ba3",
+      "ledgerSegmentFingerprint": "sha256:f41a8a41a48ed23bf4df4dcbfb9b1a0f8f7f8c504a0f2b30af0cecc191146ba3"
+    },
+    {
+      "recordId": "C-S03-0446",
+      "locator": "speaker-block-445",
+      "boundarySegmentFingerprint": "sha256:1347aed9cf0150b70baed6a303989eda8651810e4b17fa253dc5bcc381391628",
+      "ledgerSegmentFingerprint": "sha256:1347aed9cf0150b70baed6a303989eda8651810e4b17fa253dc5bcc381391628"
+    },
+    {
+      "recordId": "C-S03-0447",
+      "locator": "speaker-block-446",
+      "boundarySegmentFingerprint": "sha256:83ca6010c141013b020b3d71e440025343b88140e1eb81fba3972425755e5981",
+      "ledgerSegmentFingerprint": "sha256:83ca6010c141013b020b3d71e440025343b88140e1eb81fba3972425755e5981"
+    },
+    {
+      "recordId": "C-S03-0449",
+      "locator": "speaker-block-448",
+      "boundarySegmentFingerprint": "sha256:297e818df60eafec928e933e16d601eba4a6cf8bdf8baa5dc5451162d3973d04",
+      "ledgerSegmentFingerprint": "sha256:297e818df60eafec928e933e16d601eba4a6cf8bdf8baa5dc5451162d3973d04"
+    },
+    {
+      "recordId": "C-S03-0451",
+      "locator": "speaker-block-450",
+      "boundarySegmentFingerprint": "sha256:33da2617a3432415dcd68c21afe8b80b6832488bbd5b136753e269b206fb78a4",
+      "ledgerSegmentFingerprint": "sha256:33da2617a3432415dcd68c21afe8b80b6832488bbd5b136753e269b206fb78a4"
+    },
+    {
+      "recordId": "C-S03-0453",
+      "locator": "speaker-block-452",
+      "boundarySegmentFingerprint": "sha256:f21cfe395aa6452d9154a806c93096dac691c8902ab135b0ef705bdf11113e93",
+      "ledgerSegmentFingerprint": "sha256:f21cfe395aa6452d9154a806c93096dac691c8902ab135b0ef705bdf11113e93"
+    },
+    {
+      "recordId": "C-S03-0455",
+      "locator": "speaker-block-454",
+      "boundarySegmentFingerprint": "sha256:c34aaabf9767fb0472aad47fdd422e0df90644b07dafd9a7f246e544a6a6eb94",
+      "ledgerSegmentFingerprint": "sha256:c34aaabf9767fb0472aad47fdd422e0df90644b07dafd9a7f246e544a6a6eb94"
+    },
+    {
+      "recordId": "C-S03-0457",
+      "locator": "speaker-block-456",
+      "boundarySegmentFingerprint": "sha256:a51bb24ff06ce3cdcc186d427872ccb126c4c5aa498e1064a26fb5ace7596342",
+      "ledgerSegmentFingerprint": "sha256:a51bb24ff06ce3cdcc186d427872ccb126c4c5aa498e1064a26fb5ace7596342"
+    },
+    {
+      "recordId": "C-S03-0459",
+      "locator": "speaker-block-458",
+      "boundarySegmentFingerprint": "sha256:2953104e0a49839197da407ca167333b29c12e8c212b86682246c55a6fda1070",
+      "ledgerSegmentFingerprint": "sha256:2953104e0a49839197da407ca167333b29c12e8c212b86682246c55a6fda1070"
+    },
+    {
+      "recordId": "C-S03-0461",
+      "locator": "speaker-block-460",
+      "boundarySegmentFingerprint": "sha256:3b3be1eca122efd37f956f30470bb72c332baa39794ccdda93bbf80ee0e2ded3",
+      "ledgerSegmentFingerprint": "sha256:3b3be1eca122efd37f956f30470bb72c332baa39794ccdda93bbf80ee0e2ded3"
+    },
+    {
+      "recordId": "C-S03-0463",
+      "locator": "speaker-block-462",
+      "boundarySegmentFingerprint": "sha256:822627c2041c15fb2ece0b284e833a1bea3ea7c46e8a96039c55d692e5b59ae1",
+      "ledgerSegmentFingerprint": "sha256:822627c2041c15fb2ece0b284e833a1bea3ea7c46e8a96039c55d692e5b59ae1"
+    },
+    {
+      "recordId": "C-S03-0465",
+      "locator": "speaker-block-464",
+      "boundarySegmentFingerprint": "sha256:9ceb2e8fc08407837df2746554d2c18da11e0866798476109dd8c11604de83e4",
+      "ledgerSegmentFingerprint": "sha256:9ceb2e8fc08407837df2746554d2c18da11e0866798476109dd8c11604de83e4"
+    },
+    {
+      "recordId": "C-S03-0467",
+      "locator": "speaker-block-466",
+      "boundarySegmentFingerprint": "sha256:0b59b01da735bdf4c1d45dd74f6e57c4733ef6a30ad9d373516235117137d6df",
+      "ledgerSegmentFingerprint": "sha256:0b59b01da735bdf4c1d45dd74f6e57c4733ef6a30ad9d373516235117137d6df"
+    },
+    {
+      "recordId": "C-S03-0469",
+      "locator": "speaker-block-468",
+      "boundarySegmentFingerprint": "sha256:f632ccd9468a75bd494b7dec39808cfa30d665c6e9a75aad7c7661e511dc7fe2",
+      "ledgerSegmentFingerprint": "sha256:f632ccd9468a75bd494b7dec39808cfa30d665c6e9a75aad7c7661e511dc7fe2"
+    },
+    {
+      "recordId": "C-S03-0471",
+      "locator": "speaker-block-470",
+      "boundarySegmentFingerprint": "sha256:707a1a8ac2b76110156f53e00ee440a82da98491dddb6b13cab88ffa663ec1de",
+      "ledgerSegmentFingerprint": "sha256:707a1a8ac2b76110156f53e00ee440a82da98491dddb6b13cab88ffa663ec1de"
+    },
+    {
+      "recordId": "C-S03-0473",
+      "locator": "speaker-block-472",
+      "boundarySegmentFingerprint": "sha256:1a71f822712df168116f9a6ee0ec17a14532c6a4954021aae9fe6efe94b0fc7a",
+      "ledgerSegmentFingerprint": "sha256:1a71f822712df168116f9a6ee0ec17a14532c6a4954021aae9fe6efe94b0fc7a"
+    },
+    {
+      "recordId": "C-S03-0476",
+      "locator": "speaker-block-475",
+      "boundarySegmentFingerprint": "sha256:73f5d111f0f25521c556fb67a9cd1e8e888484d31cf630e3759a3ef8aa09bc3a",
+      "ledgerSegmentFingerprint": "sha256:73f5d111f0f25521c556fb67a9cd1e8e888484d31cf630e3759a3ef8aa09bc3a"
+    },
+    {
+      "recordId": "C-S03-0478",
+      "locator": "speaker-block-477",
+      "boundarySegmentFingerprint": "sha256:e8c7aba402e8374ca5086fcf002799a0eefdd2abf18ff298e2610413ae4a2155",
+      "ledgerSegmentFingerprint": "sha256:e8c7aba402e8374ca5086fcf002799a0eefdd2abf18ff298e2610413ae4a2155"
+    },
+    {
+      "recordId": "C-S03-0480",
+      "locator": "speaker-block-479",
+      "boundarySegmentFingerprint": "sha256:c6e2f0ad48a995347aa7bb838d4bc4e13f7067ea3438706f1d19318c11239103",
+      "ledgerSegmentFingerprint": "sha256:c6e2f0ad48a995347aa7bb838d4bc4e13f7067ea3438706f1d19318c11239103"
+    },
+    {
+      "recordId": "C-S03-0482",
+      "locator": "speaker-block-481",
+      "boundarySegmentFingerprint": "sha256:329ea91327da6e5a62a98a82905c24c99499af96c2f2f3ac26094c7552ea2c23",
+      "ledgerSegmentFingerprint": "sha256:329ea91327da6e5a62a98a82905c24c99499af96c2f2f3ac26094c7552ea2c23"
+    },
+    {
+      "recordId": "C-S03-0483",
+      "locator": "speaker-block-482",
+      "boundarySegmentFingerprint": "sha256:19a0c989f226f07e957c809cce9e3ed2008ce3bbec596dfcb11ecaf2b11480b6",
+      "ledgerSegmentFingerprint": "sha256:19a0c989f226f07e957c809cce9e3ed2008ce3bbec596dfcb11ecaf2b11480b6"
+    },
+    {
+      "recordId": "C-S03-0485",
+      "locator": "speaker-block-484",
+      "boundarySegmentFingerprint": "sha256:51e0173fdee08402f5b1db8cf97f368aa57d58ad98b5b25c0b5ff44af427ab24",
+      "ledgerSegmentFingerprint": "sha256:51e0173fdee08402f5b1db8cf97f368aa57d58ad98b5b25c0b5ff44af427ab24"
+    },
+    {
+      "recordId": "C-S03-0487",
+      "locator": "speaker-block-486",
+      "boundarySegmentFingerprint": "sha256:f9b7a5eb43e91cd0b43a276df0dc134e4eb7b42937e5fa8edb798e3ab01487d4",
+      "ledgerSegmentFingerprint": "sha256:f9b7a5eb43e91cd0b43a276df0dc134e4eb7b42937e5fa8edb798e3ab01487d4"
+    },
+    {
+      "recordId": "C-S03-0489",
+      "locator": "speaker-block-488",
+      "boundarySegmentFingerprint": "sha256:75236ed4be1f805bf963d78e844fa9bfca4682a0be2cee67e360bd2aff350faf",
+      "ledgerSegmentFingerprint": "sha256:75236ed4be1f805bf963d78e844fa9bfca4682a0be2cee67e360bd2aff350faf"
+    },
+    {
+      "recordId": "C-S03-0491",
+      "locator": "speaker-block-490",
+      "boundarySegmentFingerprint": "sha256:48636b2ca8c0fee3cd3c3aac819817027b22b282cd1cd9b8eef97326655c50c7",
+      "ledgerSegmentFingerprint": "sha256:48636b2ca8c0fee3cd3c3aac819817027b22b282cd1cd9b8eef97326655c50c7"
+    },
+    {
+      "recordId": "C-S03-0493",
+      "locator": "speaker-block-492",
+      "boundarySegmentFingerprint": "sha256:c4b56b0ca56c24d2697fe767be51305e04850e17a3a3cb69d924a1bb36dad33a",
+      "ledgerSegmentFingerprint": "sha256:c4b56b0ca56c24d2697fe767be51305e04850e17a3a3cb69d924a1bb36dad33a"
+    },
+    {
+      "recordId": "C-S03-0495",
+      "locator": "speaker-block-494",
+      "boundarySegmentFingerprint": "sha256:54539f8d4e5bc5c406cd0efbeee0f7d6c428021965826c3b3cacc51da65dc9d6",
+      "ledgerSegmentFingerprint": "sha256:54539f8d4e5bc5c406cd0efbeee0f7d6c428021965826c3b3cacc51da65dc9d6"
+    },
+    {
+      "recordId": "C-S03-0497",
+      "locator": "speaker-block-496",
+      "boundarySegmentFingerprint": "sha256:ef2d2dda0c7b1a3f57631dcce330cc4f1f28dcafb21b437fb60010de9a5d204e",
+      "ledgerSegmentFingerprint": "sha256:ef2d2dda0c7b1a3f57631dcce330cc4f1f28dcafb21b437fb60010de9a5d204e"
+    },
+    {
+      "recordId": "C-S03-0500",
+      "locator": "speaker-block-499",
+      "boundarySegmentFingerprint": "sha256:05f6121b50a11eccf3166a7dea6db54d18d2ef4758e16afe73ea4fc3ffa20f05",
+      "ledgerSegmentFingerprint": "sha256:05f6121b50a11eccf3166a7dea6db54d18d2ef4758e16afe73ea4fc3ffa20f05"
+    },
+    {
+      "recordId": "C-S03-0502",
+      "locator": "speaker-block-501",
+      "boundarySegmentFingerprint": "sha256:76ac3cedcbfecfb186c98407b792b26090cb022ad9c1164a40935a0dbdffd63c",
+      "ledgerSegmentFingerprint": "sha256:76ac3cedcbfecfb186c98407b792b26090cb022ad9c1164a40935a0dbdffd63c"
+    },
+    {
+      "recordId": "C-S03-0504",
+      "locator": "speaker-block-503",
+      "boundarySegmentFingerprint": "sha256:aee494ed7355497111c2a7974bccb3a592d9d8e056cff1269a7ce40657092906",
+      "ledgerSegmentFingerprint": "sha256:aee494ed7355497111c2a7974bccb3a592d9d8e056cff1269a7ce40657092906"
+    },
+    {
+      "recordId": "C-S03-0506",
+      "locator": "speaker-block-505",
+      "boundarySegmentFingerprint": "sha256:b11bd5b4398a6d666018593f7aeffdc3cd08b60f41351bc6a2749263449a84e5",
+      "ledgerSegmentFingerprint": "sha256:b11bd5b4398a6d666018593f7aeffdc3cd08b60f41351bc6a2749263449a84e5"
+    },
+    {
+      "recordId": "C-S03-0508",
+      "locator": "speaker-block-507",
+      "boundarySegmentFingerprint": "sha256:4519da5f78c409afb0775c31b33f92ed8464d3db30c6d656cf376a71712aebbf",
+      "ledgerSegmentFingerprint": "sha256:4519da5f78c409afb0775c31b33f92ed8464d3db30c6d656cf376a71712aebbf"
+    },
+    {
+      "recordId": "C-S03-0510",
+      "locator": "speaker-block-509",
+      "boundarySegmentFingerprint": "sha256:a1b13f979ac1bc7e1f0755f80eb4d64911e5e9c504daa752973bb6ad7b365f78",
+      "ledgerSegmentFingerprint": "sha256:a1b13f979ac1bc7e1f0755f80eb4d64911e5e9c504daa752973bb6ad7b365f78"
+    },
+    {
+      "recordId": "C-S03-0512",
+      "locator": "speaker-block-511",
+      "boundarySegmentFingerprint": "sha256:4cb8ef2c278ef0e9a6316fa50dc04e4865b7b3bf0cf3e6bb22823178e50d02e4",
+      "ledgerSegmentFingerprint": "sha256:4cb8ef2c278ef0e9a6316fa50dc04e4865b7b3bf0cf3e6bb22823178e50d02e4"
+    },
+    {
+      "recordId": "C-S03-0514",
+      "locator": "speaker-block-513",
+      "boundarySegmentFingerprint": "sha256:8ff28d8641afb21273f420e42634e23db1e501cafcbfe544ca0e22aaf53b8eff",
+      "ledgerSegmentFingerprint": "sha256:8ff28d8641afb21273f420e42634e23db1e501cafcbfe544ca0e22aaf53b8eff"
+    },
+    {
+      "recordId": "C-S03-0516",
+      "locator": "speaker-block-515",
+      "boundarySegmentFingerprint": "sha256:5c75a64f28443568b9a55ee9cde454f72e138c66f9b2e3ae6b1c20dcf98dc79d",
+      "ledgerSegmentFingerprint": "sha256:5c75a64f28443568b9a55ee9cde454f72e138c66f9b2e3ae6b1c20dcf98dc79d"
+    },
+    {
+      "recordId": "C-S03-0518",
+      "locator": "speaker-block-517",
+      "boundarySegmentFingerprint": "sha256:79010b859ac5212c0a8540182574f2805de389b1bc5a69f7f2fc362961636e08",
+      "ledgerSegmentFingerprint": "sha256:79010b859ac5212c0a8540182574f2805de389b1bc5a69f7f2fc362961636e08"
+    },
+    {
+      "recordId": "C-S03-0520",
+      "locator": "speaker-block-519",
+      "boundarySegmentFingerprint": "sha256:1c56850c18b4471d0132aa5073df1e8cb683a45e5158667437e30eaab493e4a0",
+      "ledgerSegmentFingerprint": "sha256:1c56850c18b4471d0132aa5073df1e8cb683a45e5158667437e30eaab493e4a0"
+    },
+    {
+      "recordId": "C-S03-0522",
+      "locator": "speaker-block-521",
+      "boundarySegmentFingerprint": "sha256:349985cbcb06645c655533aa90e7ddbdeeda8636e4d9c13c85c8822200e1f92b",
+      "ledgerSegmentFingerprint": "sha256:349985cbcb06645c655533aa90e7ddbdeeda8636e4d9c13c85c8822200e1f92b"
+    },
+    {
+      "recordId": "C-S03-0524",
+      "locator": "speaker-block-523",
+      "boundarySegmentFingerprint": "sha256:13f9a3e934d3f676f4e53e424bf8292da9d5deeb32faeaf57a8e1fe5fa35e421",
+      "ledgerSegmentFingerprint": "sha256:13f9a3e934d3f676f4e53e424bf8292da9d5deeb32faeaf57a8e1fe5fa35e421"
+    },
+    {
+      "recordId": "C-S03-0526",
+      "locator": "speaker-block-525",
+      "boundarySegmentFingerprint": "sha256:47be904e0af0f181f01b256966cebd0e67e767d83862cc8b086c87db62f2243b",
+      "ledgerSegmentFingerprint": "sha256:47be904e0af0f181f01b256966cebd0e67e767d83862cc8b086c87db62f2243b"
+    },
+    {
+      "recordId": "C-S03-0527",
+      "locator": "speaker-block-526",
+      "boundarySegmentFingerprint": "sha256:ab59a90d62f845cccde15ecb7b0d8e46c867d07b6a9803ded4f70d23ce086055",
+      "ledgerSegmentFingerprint": "sha256:ab59a90d62f845cccde15ecb7b0d8e46c867d07b6a9803ded4f70d23ce086055"
+    },
+    {
+      "recordId": "C-S03-0529",
+      "locator": "speaker-block-528",
+      "boundarySegmentFingerprint": "sha256:ece27b5a325a2a7ce556e2c30e5832be7a366c088cbb9c55af2ca6865407dee3",
+      "ledgerSegmentFingerprint": "sha256:ece27b5a325a2a7ce556e2c30e5832be7a366c088cbb9c55af2ca6865407dee3"
+    },
+    {
+      "recordId": "C-S03-0531",
+      "locator": "speaker-block-530",
+      "boundarySegmentFingerprint": "sha256:df0bdabb371e00364b0fa99a67e59baff4b31a7a622dccbd32beda07304ba1e9",
+      "ledgerSegmentFingerprint": "sha256:df0bdabb371e00364b0fa99a67e59baff4b31a7a622dccbd32beda07304ba1e9"
+    },
+    {
+      "recordId": "C-S03-0533",
+      "locator": "speaker-block-532",
+      "boundarySegmentFingerprint": "sha256:85579015a7f18191d28e6ed8a38b66ad48e6a276fd0f7e324d53443c75b59274",
+      "ledgerSegmentFingerprint": "sha256:85579015a7f18191d28e6ed8a38b66ad48e6a276fd0f7e324d53443c75b59274"
+    },
+    {
+      "recordId": "C-S03-0535",
+      "locator": "speaker-block-534",
+      "boundarySegmentFingerprint": "sha256:e5149650ef9617604a7c268c6e1f3f9835a645b8802a84a1eabcfc0f38ca460c",
+      "ledgerSegmentFingerprint": "sha256:e5149650ef9617604a7c268c6e1f3f9835a645b8802a84a1eabcfc0f38ca460c"
+    },
+    {
+      "recordId": "C-S03-0537",
+      "locator": "speaker-block-536",
+      "boundarySegmentFingerprint": "sha256:0be608a776862383afe54cee8fadcefe719f7495cfebed4fa5e063945fd8b0b3",
+      "ledgerSegmentFingerprint": "sha256:0be608a776862383afe54cee8fadcefe719f7495cfebed4fa5e063945fd8b0b3"
+    },
+    {
+      "recordId": "C-S03-0539",
+      "locator": "speaker-block-538",
+      "boundarySegmentFingerprint": "sha256:2c66d09602c04c5254e0b40f8b518f0f7667de99e9d24d8b99068e18408c9212",
+      "ledgerSegmentFingerprint": "sha256:2c66d09602c04c5254e0b40f8b518f0f7667de99e9d24d8b99068e18408c9212"
+    },
+    {
+      "recordId": "C-S03-0541",
+      "locator": "speaker-block-540",
+      "boundarySegmentFingerprint": "sha256:eb6cf1e2b36f582adab1691d1a40785196a2c0957dd6ce4d23dca3ba5cbbd1f2",
+      "ledgerSegmentFingerprint": "sha256:eb6cf1e2b36f582adab1691d1a40785196a2c0957dd6ce4d23dca3ba5cbbd1f2"
+    },
+    {
+      "recordId": "CX-S03-0001",
+      "locator": "speaker-block-0-0",
+      "boundarySegmentFingerprint": "sha256:268651999970dc53c13e0490048f8d7a9f3ff2b130b4d8e0b871db1995c1905d",
+      "ledgerSegmentFingerprint": "sha256:268651999970dc53c13e0490048f8d7a9f3ff2b130b4d8e0b871db1995c1905d"
+    },
+    {
+      "recordId": "CX-S03-0002",
+      "locator": "speaker-block-1-1",
+      "boundarySegmentFingerprint": "sha256:d4a4dc2b73f65d7f04ca751ad82080cba4a815d1dcfca15eb445d01ca5b21c3e",
+      "ledgerSegmentFingerprint": "sha256:d4a4dc2b73f65d7f04ca751ad82080cba4a815d1dcfca15eb445d01ca5b21c3e"
+    },
+    {
+      "recordId": "CX-S03-0003",
+      "locator": "speaker-block-3-3",
+      "boundarySegmentFingerprint": "sha256:06e950b03cd7f5ef187969443b374589b30b7944ecf94a89b54baaec8697dce1",
+      "ledgerSegmentFingerprint": "sha256:06e950b03cd7f5ef187969443b374589b30b7944ecf94a89b54baaec8697dce1"
+    },
+    {
+      "recordId": "CX-S03-0004",
+      "locator": "speaker-block-5-5",
+      "boundarySegmentFingerprint": "sha256:c9f99e67639950622dd407371ab99d6b4efb3667ce9d3220859feb1f6489c696",
+      "ledgerSegmentFingerprint": "sha256:c9f99e67639950622dd407371ab99d6b4efb3667ce9d3220859feb1f6489c696"
+    },
+    {
+      "recordId": "CX-S03-0005",
+      "locator": "speaker-block-7-7",
+      "boundarySegmentFingerprint": "sha256:5f54394ed9d7b20db7d192b01f810a4dc6d51c4627beb1779be59178fca8018c",
+      "ledgerSegmentFingerprint": "sha256:5f54394ed9d7b20db7d192b01f810a4dc6d51c4627beb1779be59178fca8018c"
+    },
+    {
+      "recordId": "CX-S03-0006",
+      "locator": "speaker-block-9-9",
+      "boundarySegmentFingerprint": "sha256:76d11ef037cbe918a038a2a312f42fea73d7e8b2d08b5e17bbda4016dcaa2c1c",
+      "ledgerSegmentFingerprint": "sha256:76d11ef037cbe918a038a2a312f42fea73d7e8b2d08b5e17bbda4016dcaa2c1c"
+    },
+    {
+      "recordId": "CX-S03-0007",
+      "locator": "speaker-block-11-11",
+      "boundarySegmentFingerprint": "sha256:4c88135b7d8935744805398ef3f2140b4ae5cf86fa9de94fd473ac37f4b9b4ed",
+      "ledgerSegmentFingerprint": "sha256:4c88135b7d8935744805398ef3f2140b4ae5cf86fa9de94fd473ac37f4b9b4ed"
+    },
+    {
+      "recordId": "CX-S03-0008",
+      "locator": "speaker-block-13-13",
+      "boundarySegmentFingerprint": "sha256:e8162e794040c35e1d3aa5529b01337eb92c9a40eb79c20320a547097ae66c78",
+      "ledgerSegmentFingerprint": "sha256:e8162e794040c35e1d3aa5529b01337eb92c9a40eb79c20320a547097ae66c78"
+    },
+    {
+      "recordId": "CX-S03-0009",
+      "locator": "speaker-block-15-15",
+      "boundarySegmentFingerprint": "sha256:359cd90f36efebdeaf5ea4fe5684d750a68f6e3dcdacb2c94075c7be3522d58b",
+      "ledgerSegmentFingerprint": "sha256:359cd90f36efebdeaf5ea4fe5684d750a68f6e3dcdacb2c94075c7be3522d58b"
+    },
+    {
+      "recordId": "CX-S03-0010",
+      "locator": "speaker-block-17-17",
+      "boundarySegmentFingerprint": "sha256:2fbd498c3ec3fc1df5e7a11a5f4c7b516d16fbbdc2e0b4b554877cbad3e91461",
+      "ledgerSegmentFingerprint": "sha256:2fbd498c3ec3fc1df5e7a11a5f4c7b516d16fbbdc2e0b4b554877cbad3e91461"
+    },
+    {
+      "recordId": "CX-S03-0011",
+      "locator": "speaker-block-20-20",
+      "boundarySegmentFingerprint": "sha256:975cbc3ec6d351704036ec9438d95266961eb49f487ab35a71908d2e852d1749",
+      "ledgerSegmentFingerprint": "sha256:975cbc3ec6d351704036ec9438d95266961eb49f487ab35a71908d2e852d1749"
+    },
+    {
+      "recordId": "CX-S03-0012",
+      "locator": "speaker-block-22-22",
+      "boundarySegmentFingerprint": "sha256:5b74e9bc85cd07c80abf97b1c1c9e20af249a44f698a39ce4aae8335cf0790cf",
+      "ledgerSegmentFingerprint": "sha256:5b74e9bc85cd07c80abf97b1c1c9e20af249a44f698a39ce4aae8335cf0790cf"
+    },
+    {
+      "recordId": "CX-S03-0013",
+      "locator": "speaker-block-24-24",
+      "boundarySegmentFingerprint": "sha256:dccbbe030803be33073ed76155ff1da4dd24843a703ebe555fead6bc3f6a4e51",
+      "ledgerSegmentFingerprint": "sha256:dccbbe030803be33073ed76155ff1da4dd24843a703ebe555fead6bc3f6a4e51"
+    },
+    {
+      "recordId": "CX-S03-0014",
+      "locator": "speaker-block-26-26",
+      "boundarySegmentFingerprint": "sha256:77827d979223c4e80f38345c6d70838a9e694fdb656be61639d27abe905e259d",
+      "ledgerSegmentFingerprint": "sha256:77827d979223c4e80f38345c6d70838a9e694fdb656be61639d27abe905e259d"
+    },
+    {
+      "recordId": "CX-S03-0015",
+      "locator": "speaker-block-28-28",
+      "boundarySegmentFingerprint": "sha256:8746331ee1a363a0eb522465f8ee04a95821bef53915031822ac9a1e98c5ec8a",
+      "ledgerSegmentFingerprint": "sha256:8746331ee1a363a0eb522465f8ee04a95821bef53915031822ac9a1e98c5ec8a"
+    },
+    {
+      "recordId": "CX-S03-0016",
+      "locator": "speaker-block-30-30",
+      "boundarySegmentFingerprint": "sha256:67301071af5d5e9873c55be204511500ec98bb56a5cc0acaac9561442c4c3d6b",
+      "ledgerSegmentFingerprint": "sha256:67301071af5d5e9873c55be204511500ec98bb56a5cc0acaac9561442c4c3d6b"
+    },
+    {
+      "recordId": "CX-S03-0017",
+      "locator": "speaker-block-32-32",
+      "boundarySegmentFingerprint": "sha256:9a9f96e2dabe4fc113b9c4b85fd9c03ba716dbcbbdb5ebe94cae66c9f788ea0b",
+      "ledgerSegmentFingerprint": "sha256:9a9f96e2dabe4fc113b9c4b85fd9c03ba716dbcbbdb5ebe94cae66c9f788ea0b"
+    },
+    {
+      "recordId": "CX-S03-0018",
+      "locator": "speaker-block-34-34",
+      "boundarySegmentFingerprint": "sha256:e080144df074c8ddbdd60ec1311fae16f32a25bc8b41d47d68a816a2b7c60e67",
+      "ledgerSegmentFingerprint": "sha256:e080144df074c8ddbdd60ec1311fae16f32a25bc8b41d47d68a816a2b7c60e67"
+    },
+    {
+      "recordId": "CX-S03-0019",
+      "locator": "speaker-block-36-36",
+      "boundarySegmentFingerprint": "sha256:bbcae4d8ac91660c1b51c1162d104650687abc1cc864069836ac23ed2c745499",
+      "ledgerSegmentFingerprint": "sha256:bbcae4d8ac91660c1b51c1162d104650687abc1cc864069836ac23ed2c745499"
+    },
+    {
+      "recordId": "CX-S03-0020",
+      "locator": "speaker-block-38-38",
+      "boundarySegmentFingerprint": "sha256:5dd1457e90262ec4f5246a2378ec88d72c7122070a2a92c0245a2ce2606f4cd9",
+      "ledgerSegmentFingerprint": "sha256:5dd1457e90262ec4f5246a2378ec88d72c7122070a2a92c0245a2ce2606f4cd9"
+    },
+    {
+      "recordId": "CX-S03-0021",
+      "locator": "speaker-block-40-40",
+      "boundarySegmentFingerprint": "sha256:cb02f599c8677784fc3b574e32a920395f65271c487b9a0971de5b58c9545bd2",
+      "ledgerSegmentFingerprint": "sha256:cb02f599c8677784fc3b574e32a920395f65271c487b9a0971de5b58c9545bd2"
+    },
+    {
+      "recordId": "CX-S03-0022",
+      "locator": "speaker-block-42-42",
+      "boundarySegmentFingerprint": "sha256:d621cd6b89a285016ad444aaf0d9b74353848fbee4dc0bbfc2797fcbf71ad5ac",
+      "ledgerSegmentFingerprint": "sha256:d621cd6b89a285016ad444aaf0d9b74353848fbee4dc0bbfc2797fcbf71ad5ac"
+    },
+    {
+      "recordId": "CX-S03-0023",
+      "locator": "speaker-block-44-44",
+      "boundarySegmentFingerprint": "sha256:6f155a253b9d916c19e41760818eccdeec9a7433637df0c54e71567f29976b40",
+      "ledgerSegmentFingerprint": "sha256:6f155a253b9d916c19e41760818eccdeec9a7433637df0c54e71567f29976b40"
+    },
+    {
+      "recordId": "CX-S03-0024",
+      "locator": "speaker-block-46-46",
+      "boundarySegmentFingerprint": "sha256:622d13c60464fe9ab7c9e132dc12de1c8604b26faf88a3af21155e194ba861e3",
+      "ledgerSegmentFingerprint": "sha256:622d13c60464fe9ab7c9e132dc12de1c8604b26faf88a3af21155e194ba861e3"
+    },
+    {
+      "recordId": "CX-S03-0025",
+      "locator": "speaker-block-48-48",
+      "boundarySegmentFingerprint": "sha256:a245bdd7faff0b380c23b7e46303af597973eadcce49e8972ad3297b3784b0c8",
+      "ledgerSegmentFingerprint": "sha256:a245bdd7faff0b380c23b7e46303af597973eadcce49e8972ad3297b3784b0c8"
+    },
+    {
+      "recordId": "CX-S03-0026",
+      "locator": "speaker-block-50-50",
+      "boundarySegmentFingerprint": "sha256:4ec5d766c94fbd86b938ad23aecc7cdc969a3da3d07e719cf415607f21f2ddc4",
+      "ledgerSegmentFingerprint": "sha256:4ec5d766c94fbd86b938ad23aecc7cdc969a3da3d07e719cf415607f21f2ddc4"
+    },
+    {
+      "recordId": "CX-S03-0027",
+      "locator": "speaker-block-52-52",
+      "boundarySegmentFingerprint": "sha256:9c555cb516c5761e86730a0465b5f429434d285e8ee064fd4ed14b3b15bcf40a",
+      "ledgerSegmentFingerprint": "sha256:9c555cb516c5761e86730a0465b5f429434d285e8ee064fd4ed14b3b15bcf40a"
+    },
+    {
+      "recordId": "CX-S03-0028",
+      "locator": "speaker-block-54-54",
+      "boundarySegmentFingerprint": "sha256:67301071af5d5e9873c55be204511500ec98bb56a5cc0acaac9561442c4c3d6b",
+      "ledgerSegmentFingerprint": "sha256:67301071af5d5e9873c55be204511500ec98bb56a5cc0acaac9561442c4c3d6b"
+    },
+    {
+      "recordId": "CX-S03-0029",
+      "locator": "speaker-block-56-56",
+      "boundarySegmentFingerprint": "sha256:f0a9ff5847fd7e7462ecb7cd82f2e69a31fdd1f137c0f37943bc624a6b0362a9",
+      "ledgerSegmentFingerprint": "sha256:f0a9ff5847fd7e7462ecb7cd82f2e69a31fdd1f137c0f37943bc624a6b0362a9"
+    },
+    {
+      "recordId": "CX-S03-0030",
+      "locator": "speaker-block-58-58",
+      "boundarySegmentFingerprint": "sha256:e9cc4b4b5c00a39d8f79099224767aed8a324ce1de37db0f6f0046e016e61c63",
+      "ledgerSegmentFingerprint": "sha256:e9cc4b4b5c00a39d8f79099224767aed8a324ce1de37db0f6f0046e016e61c63"
+    },
+    {
+      "recordId": "CX-S03-0031",
+      "locator": "speaker-block-60-60",
+      "boundarySegmentFingerprint": "sha256:05c1a4b719de8a352f42c09bc2d91e9c7c357e5dae54058679dcac18685433c4",
+      "ledgerSegmentFingerprint": "sha256:05c1a4b719de8a352f42c09bc2d91e9c7c357e5dae54058679dcac18685433c4"
+    },
+    {
+      "recordId": "CX-S03-0032",
+      "locator": "speaker-block-62-62",
+      "boundarySegmentFingerprint": "sha256:78974df322851e62c810da720b0fac2e13315da6309bd8111980b27fbee600fa",
+      "ledgerSegmentFingerprint": "sha256:78974df322851e62c810da720b0fac2e13315da6309bd8111980b27fbee600fa"
+    },
+    {
+      "recordId": "CX-S03-0033",
+      "locator": "speaker-block-64-64",
+      "boundarySegmentFingerprint": "sha256:8bae647c2388bf59a8ab18848916272d61dbe57b5ae97424af52c14b12c9a1ea",
+      "ledgerSegmentFingerprint": "sha256:8bae647c2388bf59a8ab18848916272d61dbe57b5ae97424af52c14b12c9a1ea"
+    },
+    {
+      "recordId": "CX-S03-0034",
+      "locator": "speaker-block-66-66",
+      "boundarySegmentFingerprint": "sha256:5b3a2efb8a0f0527988d4def7a6e9432ebeed52e1b9953ebb0462a06e2c08259",
+      "ledgerSegmentFingerprint": "sha256:5b3a2efb8a0f0527988d4def7a6e9432ebeed52e1b9953ebb0462a06e2c08259"
+    },
+    {
+      "recordId": "CX-S03-0035",
+      "locator": "speaker-block-68-68",
+      "boundarySegmentFingerprint": "sha256:19a45bd4c600b9c7342a5e14abcacc9ca94b70c58ce2ddd5b7883a71a2d36022",
+      "ledgerSegmentFingerprint": "sha256:19a45bd4c600b9c7342a5e14abcacc9ca94b70c58ce2ddd5b7883a71a2d36022"
+    },
+    {
+      "recordId": "CX-S03-0036",
+      "locator": "speaker-block-70-70",
+      "boundarySegmentFingerprint": "sha256:4b32ec7865c433e5807936368a183392330ba6eed7b9e46e959027828970baf6",
+      "ledgerSegmentFingerprint": "sha256:4b32ec7865c433e5807936368a183392330ba6eed7b9e46e959027828970baf6"
+    },
+    {
+      "recordId": "CX-S03-0037",
+      "locator": "speaker-block-72-72",
+      "boundarySegmentFingerprint": "sha256:3e2271f454c8dd3d7ee2529a16330d13a706b090eb8d09e5a823ec2b53aafbd4",
+      "ledgerSegmentFingerprint": "sha256:3e2271f454c8dd3d7ee2529a16330d13a706b090eb8d09e5a823ec2b53aafbd4"
+    },
+    {
+      "recordId": "CX-S03-0038",
+      "locator": "speaker-block-74-74",
+      "boundarySegmentFingerprint": "sha256:97540c44a4fb56c64fa1f04f5e3d4b74f19c87c61673479f96cb29574c938f2c",
+      "ledgerSegmentFingerprint": "sha256:97540c44a4fb56c64fa1f04f5e3d4b74f19c87c61673479f96cb29574c938f2c"
+    },
+    {
+      "recordId": "CX-S03-0039",
+      "locator": "speaker-block-76-76",
+      "boundarySegmentFingerprint": "sha256:62d5b53d2bbfca31d7fdfe5bc7f39fba575c892101b6e17e47df14c8bcdd9b30",
+      "ledgerSegmentFingerprint": "sha256:62d5b53d2bbfca31d7fdfe5bc7f39fba575c892101b6e17e47df14c8bcdd9b30"
+    },
+    {
+      "recordId": "CX-S03-0040",
+      "locator": "speaker-block-78-79",
+      "boundarySegmentFingerprint": "sha256:a516df587d54a8fdb3506c41645765d2e59123788609773b0eb6bf53493a5ea1",
+      "ledgerSegmentFingerprint": "sha256:a516df587d54a8fdb3506c41645765d2e59123788609773b0eb6bf53493a5ea1"
+    },
+    {
+      "recordId": "CX-S03-0041",
+      "locator": "speaker-block-81-81",
+      "boundarySegmentFingerprint": "sha256:ff632b90e833099208e971408f126facfd9eec777672cefd32a40d7b8cda83d2",
+      "ledgerSegmentFingerprint": "sha256:ff632b90e833099208e971408f126facfd9eec777672cefd32a40d7b8cda83d2"
+    },
+    {
+      "recordId": "CX-S03-0042",
+      "locator": "speaker-block-83-83",
+      "boundarySegmentFingerprint": "sha256:a710b475f672e3b6ef6b198b0a40d154541cece75c298c9caa7313a00a70b14d",
+      "ledgerSegmentFingerprint": "sha256:a710b475f672e3b6ef6b198b0a40d154541cece75c298c9caa7313a00a70b14d"
+    },
+    {
+      "recordId": "CX-S03-0043",
+      "locator": "speaker-block-85-85",
+      "boundarySegmentFingerprint": "sha256:67301071af5d5e9873c55be204511500ec98bb56a5cc0acaac9561442c4c3d6b",
+      "ledgerSegmentFingerprint": "sha256:67301071af5d5e9873c55be204511500ec98bb56a5cc0acaac9561442c4c3d6b"
+    },
+    {
+      "recordId": "CX-S03-0044",
+      "locator": "speaker-block-87-88",
+      "boundarySegmentFingerprint": "sha256:d07b2cfcbfa981a2c43349ac88c3aaf32352621b641fdf5e84767e22e4c7a4e6",
+      "ledgerSegmentFingerprint": "sha256:d07b2cfcbfa981a2c43349ac88c3aaf32352621b641fdf5e84767e22e4c7a4e6"
+    },
+    {
+      "recordId": "CX-S03-0045",
+      "locator": "speaker-block-90-90",
+      "boundarySegmentFingerprint": "sha256:0befbe16f5acd418ab84f80e8756025e62046afe01d50e6b2fc1f72e38929537",
+      "ledgerSegmentFingerprint": "sha256:0befbe16f5acd418ab84f80e8756025e62046afe01d50e6b2fc1f72e38929537"
+    },
+    {
+      "recordId": "CX-S03-0046",
+      "locator": "speaker-block-92-92",
+      "boundarySegmentFingerprint": "sha256:38ebadf8243a8a9180d04dad9318b4f270f28a1aabc0b857b2c856fd621f74fc",
+      "ledgerSegmentFingerprint": "sha256:38ebadf8243a8a9180d04dad9318b4f270f28a1aabc0b857b2c856fd621f74fc"
+    },
+    {
+      "recordId": "CX-S03-0047",
+      "locator": "speaker-block-94-94",
+      "boundarySegmentFingerprint": "sha256:d1d89d3549253c63a97d7c512ca9649e5d256db6d63d17f0be91bd470c22dbeb",
+      "ledgerSegmentFingerprint": "sha256:d1d89d3549253c63a97d7c512ca9649e5d256db6d63d17f0be91bd470c22dbeb"
+    },
+    {
+      "recordId": "CX-S03-0048",
+      "locator": "speaker-block-96-96",
+      "boundarySegmentFingerprint": "sha256:62efdf5e053d841b3762078ce5af8dbfdd62cf0cbb9dd0722871029411719b46",
+      "ledgerSegmentFingerprint": "sha256:62efdf5e053d841b3762078ce5af8dbfdd62cf0cbb9dd0722871029411719b46"
+    },
+    {
+      "recordId": "CX-S03-0049",
+      "locator": "speaker-block-98-98",
+      "boundarySegmentFingerprint": "sha256:7df600c95a40204fb30db8b9ee7d3aa8c2c8827b1e6d1b3a8920c28b1e28aa3f",
+      "ledgerSegmentFingerprint": "sha256:7df600c95a40204fb30db8b9ee7d3aa8c2c8827b1e6d1b3a8920c28b1e28aa3f"
+    },
+    {
+      "recordId": "CX-S03-0050",
+      "locator": "speaker-block-100-100",
+      "boundarySegmentFingerprint": "sha256:bf06ce8fbe45e5a8179ab8c47428096b1a39bf2d838ff332ebcfffbbf7256d07",
+      "ledgerSegmentFingerprint": "sha256:bf06ce8fbe45e5a8179ab8c47428096b1a39bf2d838ff332ebcfffbbf7256d07"
+    },
+    {
+      "recordId": "CX-S03-0051",
+      "locator": "speaker-block-102-102",
+      "boundarySegmentFingerprint": "sha256:4d3df145d7afb80537935b24f7adb246cff4e94dea83ce505773caeda510c161",
+      "ledgerSegmentFingerprint": "sha256:4d3df145d7afb80537935b24f7adb246cff4e94dea83ce505773caeda510c161"
+    },
+    {
+      "recordId": "CX-S03-0052",
+      "locator": "speaker-block-104-104",
+      "boundarySegmentFingerprint": "sha256:f82ca87d3d045ee9c36bf2530ede07eeea2d4c91dbedeb5762a01942208e5013",
+      "ledgerSegmentFingerprint": "sha256:f82ca87d3d045ee9c36bf2530ede07eeea2d4c91dbedeb5762a01942208e5013"
+    },
+    {
+      "recordId": "CX-S03-0053",
+      "locator": "speaker-block-106-106",
+      "boundarySegmentFingerprint": "sha256:29c61d6268527da85847337256724355a7a32c59022089fc3d3ca36c336a9a7b",
+      "ledgerSegmentFingerprint": "sha256:29c61d6268527da85847337256724355a7a32c59022089fc3d3ca36c336a9a7b"
+    },
+    {
+      "recordId": "CX-S03-0054",
+      "locator": "speaker-block-108-108",
+      "boundarySegmentFingerprint": "sha256:f46d728e9bc9e8ac5a706cb9a9bea921e550b92b06b1699dec057f890f22b5ce",
+      "ledgerSegmentFingerprint": "sha256:f46d728e9bc9e8ac5a706cb9a9bea921e550b92b06b1699dec057f890f22b5ce"
+    },
+    {
+      "recordId": "CX-S03-0055",
+      "locator": "speaker-block-110-110",
+      "boundarySegmentFingerprint": "sha256:482e5d9c36219b547803ddd2fe6880f6fb21b5b8f66b4096cd12426c36b5e2d8",
+      "ledgerSegmentFingerprint": "sha256:482e5d9c36219b547803ddd2fe6880f6fb21b5b8f66b4096cd12426c36b5e2d8"
+    },
+    {
+      "recordId": "CX-S03-0056",
+      "locator": "speaker-block-112-112",
+      "boundarySegmentFingerprint": "sha256:d152665497a135eb97a5556da286b20ff8ce356a3a7d859d467011034c7db1a9",
+      "ledgerSegmentFingerprint": "sha256:d152665497a135eb97a5556da286b20ff8ce356a3a7d859d467011034c7db1a9"
+    },
+    {
+      "recordId": "CX-S03-0057",
+      "locator": "speaker-block-114-114",
+      "boundarySegmentFingerprint": "sha256:6523a13ccde69f368cdf756c04a8766f2ef455a627db17f7c1aab944ca80310a",
+      "ledgerSegmentFingerprint": "sha256:6523a13ccde69f368cdf756c04a8766f2ef455a627db17f7c1aab944ca80310a"
+    },
+    {
+      "recordId": "CX-S03-0058",
+      "locator": "speaker-block-116-116",
+      "boundarySegmentFingerprint": "sha256:f94068076f9751c177b9bf19679cbed46ca3f0d3d90fdea2dbeeb7123dab0959",
+      "ledgerSegmentFingerprint": "sha256:f94068076f9751c177b9bf19679cbed46ca3f0d3d90fdea2dbeeb7123dab0959"
+    },
+    {
+      "recordId": "CX-S03-0059",
+      "locator": "speaker-block-118-118",
+      "boundarySegmentFingerprint": "sha256:ff388a9a1a03c4071ced1af4c770a9fac9c4113173797594221251c1db985deb",
+      "ledgerSegmentFingerprint": "sha256:ff388a9a1a03c4071ced1af4c770a9fac9c4113173797594221251c1db985deb"
+    },
+    {
+      "recordId": "CX-S03-0060",
+      "locator": "speaker-block-120-120",
+      "boundarySegmentFingerprint": "sha256:b7ae12362f7b870470394312023043035bcbcccd45492783ca9a2c6360b980dd",
+      "ledgerSegmentFingerprint": "sha256:b7ae12362f7b870470394312023043035bcbcccd45492783ca9a2c6360b980dd"
+    },
+    {
+      "recordId": "CX-S03-0061",
+      "locator": "speaker-block-122-122",
+      "boundarySegmentFingerprint": "sha256:f844bd241946d9100ba49f12f512a257b56b89005c0d13a59b879bff41d1d5d3",
+      "ledgerSegmentFingerprint": "sha256:f844bd241946d9100ba49f12f512a257b56b89005c0d13a59b879bff41d1d5d3"
+    },
+    {
+      "recordId": "CX-S03-0062",
+      "locator": "speaker-block-124-124",
+      "boundarySegmentFingerprint": "sha256:b145e0e9c65e745cab1055dc746f06ba4f6020faf61079309718173239b0e208",
+      "ledgerSegmentFingerprint": "sha256:b145e0e9c65e745cab1055dc746f06ba4f6020faf61079309718173239b0e208"
+    },
+    {
+      "recordId": "CX-S03-0063",
+      "locator": "speaker-block-126-126",
+      "boundarySegmentFingerprint": "sha256:67301071af5d5e9873c55be204511500ec98bb56a5cc0acaac9561442c4c3d6b",
+      "ledgerSegmentFingerprint": "sha256:67301071af5d5e9873c55be204511500ec98bb56a5cc0acaac9561442c4c3d6b"
+    },
+    {
+      "recordId": "CX-S03-0064",
+      "locator": "speaker-block-128-128",
+      "boundarySegmentFingerprint": "sha256:a8b747c6e408c7c4219b2fc3db26ca1b862732ac19eb1435b26ee9cd957bd966",
+      "ledgerSegmentFingerprint": "sha256:a8b747c6e408c7c4219b2fc3db26ca1b862732ac19eb1435b26ee9cd957bd966"
+    },
+    {
+      "recordId": "CX-S03-0065",
+      "locator": "speaker-block-130-130",
+      "boundarySegmentFingerprint": "sha256:c8779d923f71b08b433e80498f143095b57415ebc0caab2f644938254401cca7",
+      "ledgerSegmentFingerprint": "sha256:c8779d923f71b08b433e80498f143095b57415ebc0caab2f644938254401cca7"
+    },
+    {
+      "recordId": "CX-S03-0066",
+      "locator": "speaker-block-132-132",
+      "boundarySegmentFingerprint": "sha256:37ffd41514bc5b6a9f0c52772dd8d013dc3b6e8903e3a03ca1751470f3c4cae3",
+      "ledgerSegmentFingerprint": "sha256:37ffd41514bc5b6a9f0c52772dd8d013dc3b6e8903e3a03ca1751470f3c4cae3"
+    },
+    {
+      "recordId": "CX-S03-0067",
+      "locator": "speaker-block-135-135",
+      "boundarySegmentFingerprint": "sha256:e1f11cf9cd16acbdaafd4a53d89ac7267daabcb5eb2092b03478b4d618b24507",
+      "ledgerSegmentFingerprint": "sha256:e1f11cf9cd16acbdaafd4a53d89ac7267daabcb5eb2092b03478b4d618b24507"
+    },
+    {
+      "recordId": "CX-S03-0068",
+      "locator": "speaker-block-137-137",
+      "boundarySegmentFingerprint": "sha256:3597f1d9e5a636e86cf75ca35883f1751623ab18b4f07eda7b6d557b4c6ed22c",
+      "ledgerSegmentFingerprint": "sha256:3597f1d9e5a636e86cf75ca35883f1751623ab18b4f07eda7b6d557b4c6ed22c"
+    },
+    {
+      "recordId": "CX-S03-0069",
+      "locator": "speaker-block-139-140",
+      "boundarySegmentFingerprint": "sha256:2ba1702eb35abc1ba8fefb2596774a44692a9b18bff8cfdf1c1e5794289db53c",
+      "ledgerSegmentFingerprint": "sha256:2ba1702eb35abc1ba8fefb2596774a44692a9b18bff8cfdf1c1e5794289db53c"
+    },
+    {
+      "recordId": "CX-S03-0070",
+      "locator": "speaker-block-142-142",
+      "boundarySegmentFingerprint": "sha256:bbcae4d8ac91660c1b51c1162d104650687abc1cc864069836ac23ed2c745499",
+      "ledgerSegmentFingerprint": "sha256:bbcae4d8ac91660c1b51c1162d104650687abc1cc864069836ac23ed2c745499"
+    },
+    {
+      "recordId": "CX-S03-0071",
+      "locator": "speaker-block-144-144",
+      "boundarySegmentFingerprint": "sha256:43cbc6d8052ca73b9fa9d87e775d385146f9d908becf4e8e35dac027dbae5985",
+      "ledgerSegmentFingerprint": "sha256:43cbc6d8052ca73b9fa9d87e775d385146f9d908becf4e8e35dac027dbae5985"
+    },
+    {
+      "recordId": "CX-S03-0072",
+      "locator": "speaker-block-147-147",
+      "boundarySegmentFingerprint": "sha256:d0d4e49cb964ccc083509c1a7a1e0eba6d2f194c900d109ac90e3afcb3527e11",
+      "ledgerSegmentFingerprint": "sha256:d0d4e49cb964ccc083509c1a7a1e0eba6d2f194c900d109ac90e3afcb3527e11"
+    },
+    {
+      "recordId": "CX-S03-0073",
+      "locator": "speaker-block-149-149",
+      "boundarySegmentFingerprint": "sha256:22d8f846802df70f1eb0e737afaa458cc36cdb39b75395299b80a3c7d31c01bc",
+      "ledgerSegmentFingerprint": "sha256:22d8f846802df70f1eb0e737afaa458cc36cdb39b75395299b80a3c7d31c01bc"
+    },
+    {
+      "recordId": "CX-S03-0074",
+      "locator": "speaker-block-151-151",
+      "boundarySegmentFingerprint": "sha256:dc02d0a5729d4098f2706ad8f374ce9771da09917e14906d598ff7688e3185ed",
+      "ledgerSegmentFingerprint": "sha256:dc02d0a5729d4098f2706ad8f374ce9771da09917e14906d598ff7688e3185ed"
+    },
+    {
+      "recordId": "CX-S03-0075",
+      "locator": "speaker-block-153-153",
+      "boundarySegmentFingerprint": "sha256:828dbff2c194c423a8d1f8c1d2c9404338390e68eac95fbb074010d2606a5e84",
+      "ledgerSegmentFingerprint": "sha256:828dbff2c194c423a8d1f8c1d2c9404338390e68eac95fbb074010d2606a5e84"
+    },
+    {
+      "recordId": "CX-S03-0076",
+      "locator": "speaker-block-155-155",
+      "boundarySegmentFingerprint": "sha256:e86f5be7e893e2266ed9f17f8e8b2913206fb2d507df41a00846d82a1208b5a2",
+      "ledgerSegmentFingerprint": "sha256:e86f5be7e893e2266ed9f17f8e8b2913206fb2d507df41a00846d82a1208b5a2"
+    },
+    {
+      "recordId": "CX-S03-0077",
+      "locator": "speaker-block-157-157",
+      "boundarySegmentFingerprint": "sha256:ff267c974715c0e12af9bef7d5debbb08e80d9c3305c2e17f4342879c1335d49",
+      "ledgerSegmentFingerprint": "sha256:ff267c974715c0e12af9bef7d5debbb08e80d9c3305c2e17f4342879c1335d49"
+    },
+    {
+      "recordId": "CX-S03-0078",
+      "locator": "speaker-block-159-159",
+      "boundarySegmentFingerprint": "sha256:80507eaad9e13f60b65a2d185735380c99daf8b5d152e52ac9f25d61c3d7ea98",
+      "ledgerSegmentFingerprint": "sha256:80507eaad9e13f60b65a2d185735380c99daf8b5d152e52ac9f25d61c3d7ea98"
+    },
+    {
+      "recordId": "CX-S03-0079",
+      "locator": "speaker-block-161-161",
+      "boundarySegmentFingerprint": "sha256:71dfe85a6d067c313c6724e12a827059df526bd07e3fc8243009ba9424214b91",
+      "ledgerSegmentFingerprint": "sha256:71dfe85a6d067c313c6724e12a827059df526bd07e3fc8243009ba9424214b91"
+    },
+    {
+      "recordId": "CX-S03-0080",
+      "locator": "speaker-block-163-163",
+      "boundarySegmentFingerprint": "sha256:6e794d6e281bf9e59d4a4b94211066ca1eb54af75cb4b19161a1f4f69d241458",
+      "ledgerSegmentFingerprint": "sha256:6e794d6e281bf9e59d4a4b94211066ca1eb54af75cb4b19161a1f4f69d241458"
+    },
+    {
+      "recordId": "CX-S03-0081",
+      "locator": "speaker-block-165-165",
+      "boundarySegmentFingerprint": "sha256:2fc9e13b8fead326f9a842b60733b73e0640b5616b62ac6f8a94dbdccf89d849",
+      "ledgerSegmentFingerprint": "sha256:2fc9e13b8fead326f9a842b60733b73e0640b5616b62ac6f8a94dbdccf89d849"
+    },
+    {
+      "recordId": "CX-S03-0082",
+      "locator": "speaker-block-167-167",
+      "boundarySegmentFingerprint": "sha256:6e794d6e281bf9e59d4a4b94211066ca1eb54af75cb4b19161a1f4f69d241458",
+      "ledgerSegmentFingerprint": "sha256:6e794d6e281bf9e59d4a4b94211066ca1eb54af75cb4b19161a1f4f69d241458"
+    },
+    {
+      "recordId": "CX-S03-0083",
+      "locator": "speaker-block-169-169",
+      "boundarySegmentFingerprint": "sha256:b215dc51585ec6ba8c43a456c685319784b52cea930c3db246683fe3c10625ea",
+      "ledgerSegmentFingerprint": "sha256:b215dc51585ec6ba8c43a456c685319784b52cea930c3db246683fe3c10625ea"
+    },
+    {
+      "recordId": "CX-S03-0084",
+      "locator": "speaker-block-171-171",
+      "boundarySegmentFingerprint": "sha256:bbcae4d8ac91660c1b51c1162d104650687abc1cc864069836ac23ed2c745499",
+      "ledgerSegmentFingerprint": "sha256:bbcae4d8ac91660c1b51c1162d104650687abc1cc864069836ac23ed2c745499"
+    },
+    {
+      "recordId": "CX-S03-0085",
+      "locator": "speaker-block-173-173",
+      "boundarySegmentFingerprint": "sha256:ec08001b8c1a7d1bd41b0d5208980da4bb1d5aa573317a7f765ed3c73be99686",
+      "ledgerSegmentFingerprint": "sha256:ec08001b8c1a7d1bd41b0d5208980da4bb1d5aa573317a7f765ed3c73be99686"
+    },
+    {
+      "recordId": "CX-S03-0086",
+      "locator": "speaker-block-176-176",
+      "boundarySegmentFingerprint": "sha256:67301071af5d5e9873c55be204511500ec98bb56a5cc0acaac9561442c4c3d6b",
+      "ledgerSegmentFingerprint": "sha256:67301071af5d5e9873c55be204511500ec98bb56a5cc0acaac9561442c4c3d6b"
+    },
+    {
+      "recordId": "CX-S03-0087",
+      "locator": "speaker-block-178-178",
+      "boundarySegmentFingerprint": "sha256:a8a8023b8f24a043efa6a78b4c1503ed8de834449f9d76576cbb83c4ee5bb037",
+      "ledgerSegmentFingerprint": "sha256:a8a8023b8f24a043efa6a78b4c1503ed8de834449f9d76576cbb83c4ee5bb037"
+    },
+    {
+      "recordId": "CX-S03-0088",
+      "locator": "speaker-block-180-180",
+      "boundarySegmentFingerprint": "sha256:67301071af5d5e9873c55be204511500ec98bb56a5cc0acaac9561442c4c3d6b",
+      "ledgerSegmentFingerprint": "sha256:67301071af5d5e9873c55be204511500ec98bb56a5cc0acaac9561442c4c3d6b"
+    },
+    {
+      "recordId": "CX-S03-0089",
+      "locator": "speaker-block-182-182",
+      "boundarySegmentFingerprint": "sha256:843b44f32d9a6b4a6ef346988f18613586fc86c588c19eca56767fd78baded83",
+      "ledgerSegmentFingerprint": "sha256:843b44f32d9a6b4a6ef346988f18613586fc86c588c19eca56767fd78baded83"
+    },
+    {
+      "recordId": "CX-S03-0090",
+      "locator": "speaker-block-184-184",
+      "boundarySegmentFingerprint": "sha256:7a5c467f1613126362e28d0bd3795282bb56c9825a7147a3f2bf50a6117aaea0",
+      "ledgerSegmentFingerprint": "sha256:7a5c467f1613126362e28d0bd3795282bb56c9825a7147a3f2bf50a6117aaea0"
+    },
+    {
+      "recordId": "CX-S03-0091",
+      "locator": "speaker-block-186-186",
+      "boundarySegmentFingerprint": "sha256:78d08d7549c8c2e9f4d47579801e6114abe8f5f1465585e4e20a0dfb54561e8d",
+      "ledgerSegmentFingerprint": "sha256:78d08d7549c8c2e9f4d47579801e6114abe8f5f1465585e4e20a0dfb54561e8d"
+    },
+    {
+      "recordId": "CX-S03-0092",
+      "locator": "speaker-block-188-188",
+      "boundarySegmentFingerprint": "sha256:280ef3044ec9802aef999d24c11b19085205f857839150d87d1ea306d468d9e0",
+      "ledgerSegmentFingerprint": "sha256:280ef3044ec9802aef999d24c11b19085205f857839150d87d1ea306d468d9e0"
+    },
+    {
+      "recordId": "CX-S03-0093",
+      "locator": "speaker-block-190-190",
+      "boundarySegmentFingerprint": "sha256:3383944c09444018f6235c66abd89f85e449db3a07f580d110229b88cd7ca979",
+      "ledgerSegmentFingerprint": "sha256:3383944c09444018f6235c66abd89f85e449db3a07f580d110229b88cd7ca979"
+    },
+    {
+      "recordId": "CX-S03-0094",
+      "locator": "speaker-block-192-192",
+      "boundarySegmentFingerprint": "sha256:c3d315caac36b1d4dd8de28fed556641ebc5954b6c1c3f4e4d8e9ab03ae2a09e",
+      "ledgerSegmentFingerprint": "sha256:c3d315caac36b1d4dd8de28fed556641ebc5954b6c1c3f4e4d8e9ab03ae2a09e"
+    },
+    {
+      "recordId": "CX-S03-0095",
+      "locator": "speaker-block-194-194",
+      "boundarySegmentFingerprint": "sha256:67301071af5d5e9873c55be204511500ec98bb56a5cc0acaac9561442c4c3d6b",
+      "ledgerSegmentFingerprint": "sha256:67301071af5d5e9873c55be204511500ec98bb56a5cc0acaac9561442c4c3d6b"
+    },
+    {
+      "recordId": "CX-S03-0096",
+      "locator": "speaker-block-196-196",
+      "boundarySegmentFingerprint": "sha256:67301071af5d5e9873c55be204511500ec98bb56a5cc0acaac9561442c4c3d6b",
+      "ledgerSegmentFingerprint": "sha256:67301071af5d5e9873c55be204511500ec98bb56a5cc0acaac9561442c4c3d6b"
+    },
+    {
+      "recordId": "CX-S03-0097",
+      "locator": "speaker-block-198-198",
+      "boundarySegmentFingerprint": "sha256:a1213df32421299d62bd6aae4e4cb1b7bc0421ab35c81720bc6240fc6acb1aa4",
+      "ledgerSegmentFingerprint": "sha256:a1213df32421299d62bd6aae4e4cb1b7bc0421ab35c81720bc6240fc6acb1aa4"
+    },
+    {
+      "recordId": "CX-S03-0098",
+      "locator": "speaker-block-200-200",
+      "boundarySegmentFingerprint": "sha256:662f376a0eafa7e0eb32172bbf1f68be1e09f88adc029c75bbcd55a44638183e",
+      "ledgerSegmentFingerprint": "sha256:662f376a0eafa7e0eb32172bbf1f68be1e09f88adc029c75bbcd55a44638183e"
+    },
+    {
+      "recordId": "CX-S03-0099",
+      "locator": "speaker-block-202-203",
+      "boundarySegmentFingerprint": "sha256:41e6edc54ee3a70f6dddee9acd16f201d35039609fc6c1b5616bf2a10ca8c5ab",
+      "ledgerSegmentFingerprint": "sha256:41e6edc54ee3a70f6dddee9acd16f201d35039609fc6c1b5616bf2a10ca8c5ab"
+    },
+    {
+      "recordId": "CX-S03-0100",
+      "locator": "speaker-block-205-205",
+      "boundarySegmentFingerprint": "sha256:73b5e15e13432bec5e42a3ad1ab3dca58a14164aef4c50273bc94e89622430fe",
+      "ledgerSegmentFingerprint": "sha256:73b5e15e13432bec5e42a3ad1ab3dca58a14164aef4c50273bc94e89622430fe"
+    },
+    {
+      "recordId": "CX-S03-0101",
+      "locator": "speaker-block-207-207",
+      "boundarySegmentFingerprint": "sha256:730c0ed4c3889094c6ca6febff4d37a237ec4d509ca5b6b38a8ef255b9baaaa1",
+      "ledgerSegmentFingerprint": "sha256:730c0ed4c3889094c6ca6febff4d37a237ec4d509ca5b6b38a8ef255b9baaaa1"
+    },
+    {
+      "recordId": "CX-S03-0102",
+      "locator": "speaker-block-209-209",
+      "boundarySegmentFingerprint": "sha256:730c0ed4c3889094c6ca6febff4d37a237ec4d509ca5b6b38a8ef255b9baaaa1",
+      "ledgerSegmentFingerprint": "sha256:730c0ed4c3889094c6ca6febff4d37a237ec4d509ca5b6b38a8ef255b9baaaa1"
+    },
+    {
+      "recordId": "CX-S03-0103",
+      "locator": "speaker-block-212-212",
+      "boundarySegmentFingerprint": "sha256:991dff6441e566b67280a7c1b97ffdf6aa1eeb3fc8ef3074260d713612d7d548",
+      "ledgerSegmentFingerprint": "sha256:991dff6441e566b67280a7c1b97ffdf6aa1eeb3fc8ef3074260d713612d7d548"
+    },
+    {
+      "recordId": "CX-S03-0104",
+      "locator": "speaker-block-214-214",
+      "boundarySegmentFingerprint": "sha256:be8eb1766127f59b448a42a82dfcdb087d8b76d92b09101cdc68ecc5cd27a59b",
+      "ledgerSegmentFingerprint": "sha256:be8eb1766127f59b448a42a82dfcdb087d8b76d92b09101cdc68ecc5cd27a59b"
+    },
+    {
+      "recordId": "CX-S03-0105",
+      "locator": "speaker-block-216-216",
+      "boundarySegmentFingerprint": "sha256:bbcae4d8ac91660c1b51c1162d104650687abc1cc864069836ac23ed2c745499",
+      "ledgerSegmentFingerprint": "sha256:bbcae4d8ac91660c1b51c1162d104650687abc1cc864069836ac23ed2c745499"
+    },
+    {
+      "recordId": "CX-S03-0106",
+      "locator": "speaker-block-218-218",
+      "boundarySegmentFingerprint": "sha256:00330a3ae6a5ef74ac1439aa213375539d1d40bf3392d187f8731969ec5aa5d9",
+      "ledgerSegmentFingerprint": "sha256:00330a3ae6a5ef74ac1439aa213375539d1d40bf3392d187f8731969ec5aa5d9"
+    },
+    {
+      "recordId": "CX-S03-0107",
+      "locator": "speaker-block-220-220",
+      "boundarySegmentFingerprint": "sha256:3d84f8b0edb487d7f05dc1940ed5ef83fa1209693973a439b5f63608902d8b4f",
+      "ledgerSegmentFingerprint": "sha256:3d84f8b0edb487d7f05dc1940ed5ef83fa1209693973a439b5f63608902d8b4f"
+    },
+    {
+      "recordId": "CX-S03-0108",
+      "locator": "speaker-block-222-222",
+      "boundarySegmentFingerprint": "sha256:343b7487eda57f664ce6a23823df6721bad6e6eed3fc5ac476867cd6143a2ffc",
+      "ledgerSegmentFingerprint": "sha256:343b7487eda57f664ce6a23823df6721bad6e6eed3fc5ac476867cd6143a2ffc"
+    },
+    {
+      "recordId": "CX-S03-0109",
+      "locator": "speaker-block-224-224",
+      "boundarySegmentFingerprint": "sha256:67301071af5d5e9873c55be204511500ec98bb56a5cc0acaac9561442c4c3d6b",
+      "ledgerSegmentFingerprint": "sha256:67301071af5d5e9873c55be204511500ec98bb56a5cc0acaac9561442c4c3d6b"
+    },
+    {
+      "recordId": "CX-S03-0110",
+      "locator": "speaker-block-226-227",
+      "boundarySegmentFingerprint": "sha256:60b4568593898c8312645c9c88ee0244d2072973b432bba632577c331ccf1584",
+      "ledgerSegmentFingerprint": "sha256:60b4568593898c8312645c9c88ee0244d2072973b432bba632577c331ccf1584"
+    },
+    {
+      "recordId": "CX-S03-0111",
+      "locator": "speaker-block-229-229",
+      "boundarySegmentFingerprint": "sha256:b9ff88ef1cf5e93a22a5676ca1e27e843011175511e1bbe2ae96822b20159b0d",
+      "ledgerSegmentFingerprint": "sha256:b9ff88ef1cf5e93a22a5676ca1e27e843011175511e1bbe2ae96822b20159b0d"
+    },
+    {
+      "recordId": "CX-S03-0112",
+      "locator": "speaker-block-231-231",
+      "boundarySegmentFingerprint": "sha256:1ba972d7cc74a95b1cb5a1fe893091e6fffc85aa54c87ae0af612fef95032654",
+      "ledgerSegmentFingerprint": "sha256:1ba972d7cc74a95b1cb5a1fe893091e6fffc85aa54c87ae0af612fef95032654"
+    },
+    {
+      "recordId": "CX-S03-0113",
+      "locator": "speaker-block-233-233",
+      "boundarySegmentFingerprint": "sha256:dc03b676bfc4a11e9b5f2a748c40d5e1d07188c936168f3016667c28d63fe24e",
+      "ledgerSegmentFingerprint": "sha256:dc03b676bfc4a11e9b5f2a748c40d5e1d07188c936168f3016667c28d63fe24e"
+    },
+    {
+      "recordId": "CX-S03-0114",
+      "locator": "speaker-block-235-235",
+      "boundarySegmentFingerprint": "sha256:5bb77f65cdba760a6fd8ab8bf9280385c0eabb190b1dc0dec5c5158cc9aacee1",
+      "ledgerSegmentFingerprint": "sha256:5bb77f65cdba760a6fd8ab8bf9280385c0eabb190b1dc0dec5c5158cc9aacee1"
+    },
+    {
+      "recordId": "CX-S03-0115",
+      "locator": "speaker-block-237-237",
+      "boundarySegmentFingerprint": "sha256:ba6fb4a97631146c613fd7979bbb960d2b42a0e75da820124affe5fd77177fbb",
+      "ledgerSegmentFingerprint": "sha256:ba6fb4a97631146c613fd7979bbb960d2b42a0e75da820124affe5fd77177fbb"
+    },
+    {
+      "recordId": "CX-S03-0116",
+      "locator": "speaker-block-239-239",
+      "boundarySegmentFingerprint": "sha256:3af296b9e04bcbf8cd26bd5f98ae76314857f60a8a01b6585d1a73ab89c67317",
+      "ledgerSegmentFingerprint": "sha256:3af296b9e04bcbf8cd26bd5f98ae76314857f60a8a01b6585d1a73ab89c67317"
+    },
+    {
+      "recordId": "CX-S03-0117",
+      "locator": "speaker-block-241-241",
+      "boundarySegmentFingerprint": "sha256:c1cb5643a37ea734c681c52b0192c54e2624fd41de55a7415ef9a5be0a9ba52b",
+      "ledgerSegmentFingerprint": "sha256:c1cb5643a37ea734c681c52b0192c54e2624fd41de55a7415ef9a5be0a9ba52b"
+    },
+    {
+      "recordId": "CX-S03-0118",
+      "locator": "speaker-block-243-243",
+      "boundarySegmentFingerprint": "sha256:798ac5cf7c5f47c65d7fe870f8bc415b71ae781562d769b8d8d3971a7bc39e25",
+      "ledgerSegmentFingerprint": "sha256:798ac5cf7c5f47c65d7fe870f8bc415b71ae781562d769b8d8d3971a7bc39e25"
+    },
+    {
+      "recordId": "CX-S03-0119",
+      "locator": "speaker-block-245-245",
+      "boundarySegmentFingerprint": "sha256:8b34c83efcd04f269bed9f1ba3d85c094c504884cacf5e01eeb6e0281925d594",
+      "ledgerSegmentFingerprint": "sha256:8b34c83efcd04f269bed9f1ba3d85c094c504884cacf5e01eeb6e0281925d594"
+    },
+    {
+      "recordId": "CX-S03-0120",
+      "locator": "speaker-block-247-247",
+      "boundarySegmentFingerprint": "sha256:8e517c5098e25a9516a588814e8700861c05fc94a1e294bbab879af95b20ebf3",
+      "ledgerSegmentFingerprint": "sha256:8e517c5098e25a9516a588814e8700861c05fc94a1e294bbab879af95b20ebf3"
+    },
+    {
+      "recordId": "CX-S03-0121",
+      "locator": "speaker-block-249-249",
+      "boundarySegmentFingerprint": "sha256:011eae4ca1a4016153a12552e11bd11ee54ae9db5642a1a730e48216a5e276ee",
+      "ledgerSegmentFingerprint": "sha256:011eae4ca1a4016153a12552e11bd11ee54ae9db5642a1a730e48216a5e276ee"
+    },
+    {
+      "recordId": "CX-S03-0122",
+      "locator": "speaker-block-251-251",
+      "boundarySegmentFingerprint": "sha256:959fcf6faaf91440dd7434820aeddd9c2f0600e3ffd805bb42f71cf04ac1454c",
+      "ledgerSegmentFingerprint": "sha256:959fcf6faaf91440dd7434820aeddd9c2f0600e3ffd805bb42f71cf04ac1454c"
+    },
+    {
+      "recordId": "CX-S03-0123",
+      "locator": "speaker-block-253-253",
+      "boundarySegmentFingerprint": "sha256:daeee075ecbc708702c796f4f333025d513edaa50ccde938460ccaccd73f9aff",
+      "ledgerSegmentFingerprint": "sha256:daeee075ecbc708702c796f4f333025d513edaa50ccde938460ccaccd73f9aff"
+    },
+    {
+      "recordId": "CX-S03-0124",
+      "locator": "speaker-block-256-256",
+      "boundarySegmentFingerprint": "sha256:d874a10d439f0602c6cf306a4935a16d68d082945845c799765c9c5693def8ef",
+      "ledgerSegmentFingerprint": "sha256:d874a10d439f0602c6cf306a4935a16d68d082945845c799765c9c5693def8ef"
+    },
+    {
+      "recordId": "CX-S03-0125",
+      "locator": "speaker-block-258-258",
+      "boundarySegmentFingerprint": "sha256:eeaf3ed89399eff94a5fb37073449e8d2e72c9bf79a8e998a51aeceb97eb615f",
+      "ledgerSegmentFingerprint": "sha256:eeaf3ed89399eff94a5fb37073449e8d2e72c9bf79a8e998a51aeceb97eb615f"
+    },
+    {
+      "recordId": "CX-S03-0126",
+      "locator": "speaker-block-260-260",
+      "boundarySegmentFingerprint": "sha256:b9d377f78caceef920726d77cfc842dae439638a870cfbf77531297edccbc705",
+      "ledgerSegmentFingerprint": "sha256:b9d377f78caceef920726d77cfc842dae439638a870cfbf77531297edccbc705"
+    },
+    {
+      "recordId": "CX-S03-0127",
+      "locator": "speaker-block-262-262",
+      "boundarySegmentFingerprint": "sha256:41ef034f945ad687c6bc1ec4121740188f7ea7c931c063bbb596f2c9abdaf521",
+      "ledgerSegmentFingerprint": "sha256:41ef034f945ad687c6bc1ec4121740188f7ea7c931c063bbb596f2c9abdaf521"
+    },
+    {
+      "recordId": "CX-S03-0128",
+      "locator": "speaker-block-264-264",
+      "boundarySegmentFingerprint": "sha256:67301071af5d5e9873c55be204511500ec98bb56a5cc0acaac9561442c4c3d6b",
+      "ledgerSegmentFingerprint": "sha256:67301071af5d5e9873c55be204511500ec98bb56a5cc0acaac9561442c4c3d6b"
+    },
+    {
+      "recordId": "CX-S03-0129",
+      "locator": "speaker-block-266-266",
+      "boundarySegmentFingerprint": "sha256:ec321299992674cee45ed00c0ad2cd0e5f62c0d91636f4358d9997bf790eefe6",
+      "ledgerSegmentFingerprint": "sha256:ec321299992674cee45ed00c0ad2cd0e5f62c0d91636f4358d9997bf790eefe6"
+    },
+    {
+      "recordId": "CX-S03-0130",
+      "locator": "speaker-block-268-268",
+      "boundarySegmentFingerprint": "sha256:a7ec6459fad01b74d0bdbfd789ea1208adc6825240fcd2b5096eb877a576a3df",
+      "ledgerSegmentFingerprint": "sha256:a7ec6459fad01b74d0bdbfd789ea1208adc6825240fcd2b5096eb877a576a3df"
+    },
+    {
+      "recordId": "CX-S03-0131",
+      "locator": "speaker-block-270-272",
+      "boundarySegmentFingerprint": "sha256:2968995e229e80d83cb3bc64b2838939ffc0b3f5801901adaf485832369d68d6",
+      "ledgerSegmentFingerprint": "sha256:2968995e229e80d83cb3bc64b2838939ffc0b3f5801901adaf485832369d68d6"
+    },
+    {
+      "recordId": "CX-S03-0132",
+      "locator": "speaker-block-274-274",
+      "boundarySegmentFingerprint": "sha256:06e950b03cd7f5ef187969443b374589b30b7944ecf94a89b54baaec8697dce1",
+      "ledgerSegmentFingerprint": "sha256:06e950b03cd7f5ef187969443b374589b30b7944ecf94a89b54baaec8697dce1"
+    },
+    {
+      "recordId": "CX-S03-0133",
+      "locator": "speaker-block-276-276",
+      "boundarySegmentFingerprint": "sha256:c9f99e67639950622dd407371ab99d6b4efb3667ce9d3220859feb1f6489c696",
+      "ledgerSegmentFingerprint": "sha256:c9f99e67639950622dd407371ab99d6b4efb3667ce9d3220859feb1f6489c696"
+    },
+    {
+      "recordId": "CX-S03-0134",
+      "locator": "speaker-block-278-278",
+      "boundarySegmentFingerprint": "sha256:5f54394ed9d7b20db7d192b01f810a4dc6d51c4627beb1779be59178fca8018c",
+      "ledgerSegmentFingerprint": "sha256:5f54394ed9d7b20db7d192b01f810a4dc6d51c4627beb1779be59178fca8018c"
+    },
+    {
+      "recordId": "CX-S03-0135",
+      "locator": "speaker-block-280-280",
+      "boundarySegmentFingerprint": "sha256:76d11ef037cbe918a038a2a312f42fea73d7e8b2d08b5e17bbda4016dcaa2c1c",
+      "ledgerSegmentFingerprint": "sha256:76d11ef037cbe918a038a2a312f42fea73d7e8b2d08b5e17bbda4016dcaa2c1c"
+    },
+    {
+      "recordId": "CX-S03-0136",
+      "locator": "speaker-block-282-282",
+      "boundarySegmentFingerprint": "sha256:4c88135b7d8935744805398ef3f2140b4ae5cf86fa9de94fd473ac37f4b9b4ed",
+      "ledgerSegmentFingerprint": "sha256:4c88135b7d8935744805398ef3f2140b4ae5cf86fa9de94fd473ac37f4b9b4ed"
+    },
+    {
+      "recordId": "CX-S03-0137",
+      "locator": "speaker-block-284-284",
+      "boundarySegmentFingerprint": "sha256:e8162e794040c35e1d3aa5529b01337eb92c9a40eb79c20320a547097ae66c78",
+      "ledgerSegmentFingerprint": "sha256:e8162e794040c35e1d3aa5529b01337eb92c9a40eb79c20320a547097ae66c78"
+    },
+    {
+      "recordId": "CX-S03-0138",
+      "locator": "speaker-block-286-286",
+      "boundarySegmentFingerprint": "sha256:359cd90f36efebdeaf5ea4fe5684d750a68f6e3dcdacb2c94075c7be3522d58b",
+      "ledgerSegmentFingerprint": "sha256:359cd90f36efebdeaf5ea4fe5684d750a68f6e3dcdacb2c94075c7be3522d58b"
+    },
+    {
+      "recordId": "CX-S03-0139",
+      "locator": "speaker-block-288-288",
+      "boundarySegmentFingerprint": "sha256:2fbd498c3ec3fc1df5e7a11a5f4c7b516d16fbbdc2e0b4b554877cbad3e91461",
+      "ledgerSegmentFingerprint": "sha256:2fbd498c3ec3fc1df5e7a11a5f4c7b516d16fbbdc2e0b4b554877cbad3e91461"
+    },
+    {
+      "recordId": "CX-S03-0140",
+      "locator": "speaker-block-291-291",
+      "boundarySegmentFingerprint": "sha256:975cbc3ec6d351704036ec9438d95266961eb49f487ab35a71908d2e852d1749",
+      "ledgerSegmentFingerprint": "sha256:975cbc3ec6d351704036ec9438d95266961eb49f487ab35a71908d2e852d1749"
+    },
+    {
+      "recordId": "CX-S03-0141",
+      "locator": "speaker-block-293-293",
+      "boundarySegmentFingerprint": "sha256:5b74e9bc85cd07c80abf97b1c1c9e20af249a44f698a39ce4aae8335cf0790cf",
+      "ledgerSegmentFingerprint": "sha256:5b74e9bc85cd07c80abf97b1c1c9e20af249a44f698a39ce4aae8335cf0790cf"
+    },
+    {
+      "recordId": "CX-S03-0142",
+      "locator": "speaker-block-295-295",
+      "boundarySegmentFingerprint": "sha256:dccbbe030803be33073ed76155ff1da4dd24843a703ebe555fead6bc3f6a4e51",
+      "ledgerSegmentFingerprint": "sha256:dccbbe030803be33073ed76155ff1da4dd24843a703ebe555fead6bc3f6a4e51"
+    },
+    {
+      "recordId": "CX-S03-0143",
+      "locator": "speaker-block-297-297",
+      "boundarySegmentFingerprint": "sha256:77827d979223c4e80f38345c6d70838a9e694fdb656be61639d27abe905e259d",
+      "ledgerSegmentFingerprint": "sha256:77827d979223c4e80f38345c6d70838a9e694fdb656be61639d27abe905e259d"
+    },
+    {
+      "recordId": "CX-S03-0144",
+      "locator": "speaker-block-299-299",
+      "boundarySegmentFingerprint": "sha256:8746331ee1a363a0eb522465f8ee04a95821bef53915031822ac9a1e98c5ec8a",
+      "ledgerSegmentFingerprint": "sha256:8746331ee1a363a0eb522465f8ee04a95821bef53915031822ac9a1e98c5ec8a"
+    },
+    {
+      "recordId": "CX-S03-0145",
+      "locator": "speaker-block-301-301",
+      "boundarySegmentFingerprint": "sha256:67301071af5d5e9873c55be204511500ec98bb56a5cc0acaac9561442c4c3d6b",
+      "ledgerSegmentFingerprint": "sha256:67301071af5d5e9873c55be204511500ec98bb56a5cc0acaac9561442c4c3d6b"
+    },
+    {
+      "recordId": "CX-S03-0146",
+      "locator": "speaker-block-303-303",
+      "boundarySegmentFingerprint": "sha256:9a9f96e2dabe4fc113b9c4b85fd9c03ba716dbcbbdb5ebe94cae66c9f788ea0b",
+      "ledgerSegmentFingerprint": "sha256:9a9f96e2dabe4fc113b9c4b85fd9c03ba716dbcbbdb5ebe94cae66c9f788ea0b"
+    },
+    {
+      "recordId": "CX-S03-0147",
+      "locator": "speaker-block-305-305",
+      "boundarySegmentFingerprint": "sha256:e080144df074c8ddbdd60ec1311fae16f32a25bc8b41d47d68a816a2b7c60e67",
+      "ledgerSegmentFingerprint": "sha256:e080144df074c8ddbdd60ec1311fae16f32a25bc8b41d47d68a816a2b7c60e67"
+    },
+    {
+      "recordId": "CX-S03-0148",
+      "locator": "speaker-block-307-307",
+      "boundarySegmentFingerprint": "sha256:bbcae4d8ac91660c1b51c1162d104650687abc1cc864069836ac23ed2c745499",
+      "ledgerSegmentFingerprint": "sha256:bbcae4d8ac91660c1b51c1162d104650687abc1cc864069836ac23ed2c745499"
+    },
+    {
+      "recordId": "CX-S03-0149",
+      "locator": "speaker-block-309-309",
+      "boundarySegmentFingerprint": "sha256:5dd1457e90262ec4f5246a2378ec88d72c7122070a2a92c0245a2ce2606f4cd9",
+      "ledgerSegmentFingerprint": "sha256:5dd1457e90262ec4f5246a2378ec88d72c7122070a2a92c0245a2ce2606f4cd9"
+    },
+    {
+      "recordId": "CX-S03-0150",
+      "locator": "speaker-block-311-311",
+      "boundarySegmentFingerprint": "sha256:cb02f599c8677784fc3b574e32a920395f65271c487b9a0971de5b58c9545bd2",
+      "ledgerSegmentFingerprint": "sha256:cb02f599c8677784fc3b574e32a920395f65271c487b9a0971de5b58c9545bd2"
+    },
+    {
+      "recordId": "CX-S03-0151",
+      "locator": "speaker-block-313-313",
+      "boundarySegmentFingerprint": "sha256:d621cd6b89a285016ad444aaf0d9b74353848fbee4dc0bbfc2797fcbf71ad5ac",
+      "ledgerSegmentFingerprint": "sha256:d621cd6b89a285016ad444aaf0d9b74353848fbee4dc0bbfc2797fcbf71ad5ac"
+    },
+    {
+      "recordId": "CX-S03-0152",
+      "locator": "speaker-block-315-315",
+      "boundarySegmentFingerprint": "sha256:6f155a253b9d916c19e41760818eccdeec9a7433637df0c54e71567f29976b40",
+      "ledgerSegmentFingerprint": "sha256:6f155a253b9d916c19e41760818eccdeec9a7433637df0c54e71567f29976b40"
+    },
+    {
+      "recordId": "CX-S03-0153",
+      "locator": "speaker-block-317-317",
+      "boundarySegmentFingerprint": "sha256:622d13c60464fe9ab7c9e132dc12de1c8604b26faf88a3af21155e194ba861e3",
+      "ledgerSegmentFingerprint": "sha256:622d13c60464fe9ab7c9e132dc12de1c8604b26faf88a3af21155e194ba861e3"
+    },
+    {
+      "recordId": "CX-S03-0154",
+      "locator": "speaker-block-319-319",
+      "boundarySegmentFingerprint": "sha256:a245bdd7faff0b380c23b7e46303af597973eadcce49e8972ad3297b3784b0c8",
+      "ledgerSegmentFingerprint": "sha256:a245bdd7faff0b380c23b7e46303af597973eadcce49e8972ad3297b3784b0c8"
+    },
+    {
+      "recordId": "CX-S03-0155",
+      "locator": "speaker-block-321-321",
+      "boundarySegmentFingerprint": "sha256:4ec5d766c94fbd86b938ad23aecc7cdc969a3da3d07e719cf415607f21f2ddc4",
+      "ledgerSegmentFingerprint": "sha256:4ec5d766c94fbd86b938ad23aecc7cdc969a3da3d07e719cf415607f21f2ddc4"
+    },
+    {
+      "recordId": "CX-S03-0156",
+      "locator": "speaker-block-323-323",
+      "boundarySegmentFingerprint": "sha256:9c555cb516c5761e86730a0465b5f429434d285e8ee064fd4ed14b3b15bcf40a",
+      "ledgerSegmentFingerprint": "sha256:9c555cb516c5761e86730a0465b5f429434d285e8ee064fd4ed14b3b15bcf40a"
+    },
+    {
+      "recordId": "CX-S03-0157",
+      "locator": "speaker-block-325-325",
+      "boundarySegmentFingerprint": "sha256:67301071af5d5e9873c55be204511500ec98bb56a5cc0acaac9561442c4c3d6b",
+      "ledgerSegmentFingerprint": "sha256:67301071af5d5e9873c55be204511500ec98bb56a5cc0acaac9561442c4c3d6b"
+    },
+    {
+      "recordId": "CX-S03-0158",
+      "locator": "speaker-block-327-327",
+      "boundarySegmentFingerprint": "sha256:f0a9ff5847fd7e7462ecb7cd82f2e69a31fdd1f137c0f37943bc624a6b0362a9",
+      "ledgerSegmentFingerprint": "sha256:f0a9ff5847fd7e7462ecb7cd82f2e69a31fdd1f137c0f37943bc624a6b0362a9"
+    },
+    {
+      "recordId": "CX-S03-0159",
+      "locator": "speaker-block-329-329",
+      "boundarySegmentFingerprint": "sha256:e9cc4b4b5c00a39d8f79099224767aed8a324ce1de37db0f6f0046e016e61c63",
+      "ledgerSegmentFingerprint": "sha256:e9cc4b4b5c00a39d8f79099224767aed8a324ce1de37db0f6f0046e016e61c63"
+    },
+    {
+      "recordId": "CX-S03-0160",
+      "locator": "speaker-block-331-331",
+      "boundarySegmentFingerprint": "sha256:05c1a4b719de8a352f42c09bc2d91e9c7c357e5dae54058679dcac18685433c4",
+      "ledgerSegmentFingerprint": "sha256:05c1a4b719de8a352f42c09bc2d91e9c7c357e5dae54058679dcac18685433c4"
+    },
+    {
+      "recordId": "CX-S03-0161",
+      "locator": "speaker-block-333-333",
+      "boundarySegmentFingerprint": "sha256:78974df322851e62c810da720b0fac2e13315da6309bd8111980b27fbee600fa",
+      "ledgerSegmentFingerprint": "sha256:78974df322851e62c810da720b0fac2e13315da6309bd8111980b27fbee600fa"
+    },
+    {
+      "recordId": "CX-S03-0162",
+      "locator": "speaker-block-335-335",
+      "boundarySegmentFingerprint": "sha256:8bae647c2388bf59a8ab18848916272d61dbe57b5ae97424af52c14b12c9a1ea",
+      "ledgerSegmentFingerprint": "sha256:8bae647c2388bf59a8ab18848916272d61dbe57b5ae97424af52c14b12c9a1ea"
+    },
+    {
+      "recordId": "CX-S03-0163",
+      "locator": "speaker-block-337-337",
+      "boundarySegmentFingerprint": "sha256:5b3a2efb8a0f0527988d4def7a6e9432ebeed52e1b9953ebb0462a06e2c08259",
+      "ledgerSegmentFingerprint": "sha256:5b3a2efb8a0f0527988d4def7a6e9432ebeed52e1b9953ebb0462a06e2c08259"
+    },
+    {
+      "recordId": "CX-S03-0164",
+      "locator": "speaker-block-339-339",
+      "boundarySegmentFingerprint": "sha256:19a45bd4c600b9c7342a5e14abcacc9ca94b70c58ce2ddd5b7883a71a2d36022",
+      "ledgerSegmentFingerprint": "sha256:19a45bd4c600b9c7342a5e14abcacc9ca94b70c58ce2ddd5b7883a71a2d36022"
+    },
+    {
+      "recordId": "CX-S03-0165",
+      "locator": "speaker-block-341-341",
+      "boundarySegmentFingerprint": "sha256:4b32ec7865c433e5807936368a183392330ba6eed7b9e46e959027828970baf6",
+      "ledgerSegmentFingerprint": "sha256:4b32ec7865c433e5807936368a183392330ba6eed7b9e46e959027828970baf6"
+    },
+    {
+      "recordId": "CX-S03-0166",
+      "locator": "speaker-block-343-343",
+      "boundarySegmentFingerprint": "sha256:3e2271f454c8dd3d7ee2529a16330d13a706b090eb8d09e5a823ec2b53aafbd4",
+      "ledgerSegmentFingerprint": "sha256:3e2271f454c8dd3d7ee2529a16330d13a706b090eb8d09e5a823ec2b53aafbd4"
+    },
+    {
+      "recordId": "CX-S03-0167",
+      "locator": "speaker-block-345-345",
+      "boundarySegmentFingerprint": "sha256:97540c44a4fb56c64fa1f04f5e3d4b74f19c87c61673479f96cb29574c938f2c",
+      "ledgerSegmentFingerprint": "sha256:97540c44a4fb56c64fa1f04f5e3d4b74f19c87c61673479f96cb29574c938f2c"
+    },
+    {
+      "recordId": "CX-S03-0168",
+      "locator": "speaker-block-347-347",
+      "boundarySegmentFingerprint": "sha256:62d5b53d2bbfca31d7fdfe5bc7f39fba575c892101b6e17e47df14c8bcdd9b30",
+      "ledgerSegmentFingerprint": "sha256:62d5b53d2bbfca31d7fdfe5bc7f39fba575c892101b6e17e47df14c8bcdd9b30"
+    },
+    {
+      "recordId": "CX-S03-0169",
+      "locator": "speaker-block-349-350",
+      "boundarySegmentFingerprint": "sha256:a516df587d54a8fdb3506c41645765d2e59123788609773b0eb6bf53493a5ea1",
+      "ledgerSegmentFingerprint": "sha256:a516df587d54a8fdb3506c41645765d2e59123788609773b0eb6bf53493a5ea1"
+    },
+    {
+      "recordId": "CX-S03-0170",
+      "locator": "speaker-block-352-352",
+      "boundarySegmentFingerprint": "sha256:ff632b90e833099208e971408f126facfd9eec777672cefd32a40d7b8cda83d2",
+      "ledgerSegmentFingerprint": "sha256:ff632b90e833099208e971408f126facfd9eec777672cefd32a40d7b8cda83d2"
+    },
+    {
+      "recordId": "CX-S03-0171",
+      "locator": "speaker-block-354-354",
+      "boundarySegmentFingerprint": "sha256:a710b475f672e3b6ef6b198b0a40d154541cece75c298c9caa7313a00a70b14d",
+      "ledgerSegmentFingerprint": "sha256:a710b475f672e3b6ef6b198b0a40d154541cece75c298c9caa7313a00a70b14d"
+    },
+    {
+      "recordId": "CX-S03-0172",
+      "locator": "speaker-block-356-356",
+      "boundarySegmentFingerprint": "sha256:67301071af5d5e9873c55be204511500ec98bb56a5cc0acaac9561442c4c3d6b",
+      "ledgerSegmentFingerprint": "sha256:67301071af5d5e9873c55be204511500ec98bb56a5cc0acaac9561442c4c3d6b"
+    },
+    {
+      "recordId": "CX-S03-0173",
+      "locator": "speaker-block-358-359",
+      "boundarySegmentFingerprint": "sha256:d07b2cfcbfa981a2c43349ac88c3aaf32352621b641fdf5e84767e22e4c7a4e6",
+      "ledgerSegmentFingerprint": "sha256:d07b2cfcbfa981a2c43349ac88c3aaf32352621b641fdf5e84767e22e4c7a4e6"
+    },
+    {
+      "recordId": "CX-S03-0174",
+      "locator": "speaker-block-361-361",
+      "boundarySegmentFingerprint": "sha256:0befbe16f5acd418ab84f80e8756025e62046afe01d50e6b2fc1f72e38929537",
+      "ledgerSegmentFingerprint": "sha256:0befbe16f5acd418ab84f80e8756025e62046afe01d50e6b2fc1f72e38929537"
+    },
+    {
+      "recordId": "CX-S03-0175",
+      "locator": "speaker-block-363-363",
+      "boundarySegmentFingerprint": "sha256:38ebadf8243a8a9180d04dad9318b4f270f28a1aabc0b857b2c856fd621f74fc",
+      "ledgerSegmentFingerprint": "sha256:38ebadf8243a8a9180d04dad9318b4f270f28a1aabc0b857b2c856fd621f74fc"
+    },
+    {
+      "recordId": "CX-S03-0176",
+      "locator": "speaker-block-365-365",
+      "boundarySegmentFingerprint": "sha256:d1d89d3549253c63a97d7c512ca9649e5d256db6d63d17f0be91bd470c22dbeb",
+      "ledgerSegmentFingerprint": "sha256:d1d89d3549253c63a97d7c512ca9649e5d256db6d63d17f0be91bd470c22dbeb"
+    },
+    {
+      "recordId": "CX-S03-0177",
+      "locator": "speaker-block-367-367",
+      "boundarySegmentFingerprint": "sha256:62efdf5e053d841b3762078ce5af8dbfdd62cf0cbb9dd0722871029411719b46",
+      "ledgerSegmentFingerprint": "sha256:62efdf5e053d841b3762078ce5af8dbfdd62cf0cbb9dd0722871029411719b46"
+    },
+    {
+      "recordId": "CX-S03-0178",
+      "locator": "speaker-block-369-369",
+      "boundarySegmentFingerprint": "sha256:7df600c95a40204fb30db8b9ee7d3aa8c2c8827b1e6d1b3a8920c28b1e28aa3f",
+      "ledgerSegmentFingerprint": "sha256:7df600c95a40204fb30db8b9ee7d3aa8c2c8827b1e6d1b3a8920c28b1e28aa3f"
+    },
+    {
+      "recordId": "CX-S03-0179",
+      "locator": "speaker-block-371-371",
+      "boundarySegmentFingerprint": "sha256:bf06ce8fbe45e5a8179ab8c47428096b1a39bf2d838ff332ebcfffbbf7256d07",
+      "ledgerSegmentFingerprint": "sha256:bf06ce8fbe45e5a8179ab8c47428096b1a39bf2d838ff332ebcfffbbf7256d07"
+    },
+    {
+      "recordId": "CX-S03-0180",
+      "locator": "speaker-block-373-373",
+      "boundarySegmentFingerprint": "sha256:4d3df145d7afb80537935b24f7adb246cff4e94dea83ce505773caeda510c161",
+      "ledgerSegmentFingerprint": "sha256:4d3df145d7afb80537935b24f7adb246cff4e94dea83ce505773caeda510c161"
+    },
+    {
+      "recordId": "CX-S03-0181",
+      "locator": "speaker-block-375-375",
+      "boundarySegmentFingerprint": "sha256:f82ca87d3d045ee9c36bf2530ede07eeea2d4c91dbedeb5762a01942208e5013",
+      "ledgerSegmentFingerprint": "sha256:f82ca87d3d045ee9c36bf2530ede07eeea2d4c91dbedeb5762a01942208e5013"
+    },
+    {
+      "recordId": "CX-S03-0182",
+      "locator": "speaker-block-377-377",
+      "boundarySegmentFingerprint": "sha256:29c61d6268527da85847337256724355a7a32c59022089fc3d3ca36c336a9a7b",
+      "ledgerSegmentFingerprint": "sha256:29c61d6268527da85847337256724355a7a32c59022089fc3d3ca36c336a9a7b"
+    },
+    {
+      "recordId": "CX-S03-0183",
+      "locator": "speaker-block-379-379",
+      "boundarySegmentFingerprint": "sha256:f46d728e9bc9e8ac5a706cb9a9bea921e550b92b06b1699dec057f890f22b5ce",
+      "ledgerSegmentFingerprint": "sha256:f46d728e9bc9e8ac5a706cb9a9bea921e550b92b06b1699dec057f890f22b5ce"
+    },
+    {
+      "recordId": "CX-S03-0184",
+      "locator": "speaker-block-381-381",
+      "boundarySegmentFingerprint": "sha256:482e5d9c36219b547803ddd2fe6880f6fb21b5b8f66b4096cd12426c36b5e2d8",
+      "ledgerSegmentFingerprint": "sha256:482e5d9c36219b547803ddd2fe6880f6fb21b5b8f66b4096cd12426c36b5e2d8"
+    },
+    {
+      "recordId": "CX-S03-0185",
+      "locator": "speaker-block-383-383",
+      "boundarySegmentFingerprint": "sha256:d152665497a135eb97a5556da286b20ff8ce356a3a7d859d467011034c7db1a9",
+      "ledgerSegmentFingerprint": "sha256:d152665497a135eb97a5556da286b20ff8ce356a3a7d859d467011034c7db1a9"
+    },
+    {
+      "recordId": "CX-S03-0186",
+      "locator": "speaker-block-385-385",
+      "boundarySegmentFingerprint": "sha256:6523a13ccde69f368cdf756c04a8766f2ef455a627db17f7c1aab944ca80310a",
+      "ledgerSegmentFingerprint": "sha256:6523a13ccde69f368cdf756c04a8766f2ef455a627db17f7c1aab944ca80310a"
+    },
+    {
+      "recordId": "CX-S03-0187",
+      "locator": "speaker-block-387-387",
+      "boundarySegmentFingerprint": "sha256:f94068076f9751c177b9bf19679cbed46ca3f0d3d90fdea2dbeeb7123dab0959",
+      "ledgerSegmentFingerprint": "sha256:f94068076f9751c177b9bf19679cbed46ca3f0d3d90fdea2dbeeb7123dab0959"
+    },
+    {
+      "recordId": "CX-S03-0188",
+      "locator": "speaker-block-389-389",
+      "boundarySegmentFingerprint": "sha256:ff388a9a1a03c4071ced1af4c770a9fac9c4113173797594221251c1db985deb",
+      "ledgerSegmentFingerprint": "sha256:ff388a9a1a03c4071ced1af4c770a9fac9c4113173797594221251c1db985deb"
+    },
+    {
+      "recordId": "CX-S03-0189",
+      "locator": "speaker-block-391-391",
+      "boundarySegmentFingerprint": "sha256:b7ae12362f7b870470394312023043035bcbcccd45492783ca9a2c6360b980dd",
+      "ledgerSegmentFingerprint": "sha256:b7ae12362f7b870470394312023043035bcbcccd45492783ca9a2c6360b980dd"
+    },
+    {
+      "recordId": "CX-S03-0190",
+      "locator": "speaker-block-393-393",
+      "boundarySegmentFingerprint": "sha256:f844bd241946d9100ba49f12f512a257b56b89005c0d13a59b879bff41d1d5d3",
+      "ledgerSegmentFingerprint": "sha256:f844bd241946d9100ba49f12f512a257b56b89005c0d13a59b879bff41d1d5d3"
+    },
+    {
+      "recordId": "CX-S03-0191",
+      "locator": "speaker-block-395-395",
+      "boundarySegmentFingerprint": "sha256:b145e0e9c65e745cab1055dc746f06ba4f6020faf61079309718173239b0e208",
+      "ledgerSegmentFingerprint": "sha256:b145e0e9c65e745cab1055dc746f06ba4f6020faf61079309718173239b0e208"
+    },
+    {
+      "recordId": "CX-S03-0192",
+      "locator": "speaker-block-397-397",
+      "boundarySegmentFingerprint": "sha256:67301071af5d5e9873c55be204511500ec98bb56a5cc0acaac9561442c4c3d6b",
+      "ledgerSegmentFingerprint": "sha256:67301071af5d5e9873c55be204511500ec98bb56a5cc0acaac9561442c4c3d6b"
+    },
+    {
+      "recordId": "CX-S03-0193",
+      "locator": "speaker-block-399-399",
+      "boundarySegmentFingerprint": "sha256:a8b747c6e408c7c4219b2fc3db26ca1b862732ac19eb1435b26ee9cd957bd966",
+      "ledgerSegmentFingerprint": "sha256:a8b747c6e408c7c4219b2fc3db26ca1b862732ac19eb1435b26ee9cd957bd966"
+    },
+    {
+      "recordId": "CX-S03-0194",
+      "locator": "speaker-block-401-401",
+      "boundarySegmentFingerprint": "sha256:c8779d923f71b08b433e80498f143095b57415ebc0caab2f644938254401cca7",
+      "ledgerSegmentFingerprint": "sha256:c8779d923f71b08b433e80498f143095b57415ebc0caab2f644938254401cca7"
+    },
+    {
+      "recordId": "CX-S03-0195",
+      "locator": "speaker-block-403-403",
+      "boundarySegmentFingerprint": "sha256:37ffd41514bc5b6a9f0c52772dd8d013dc3b6e8903e3a03ca1751470f3c4cae3",
+      "ledgerSegmentFingerprint": "sha256:37ffd41514bc5b6a9f0c52772dd8d013dc3b6e8903e3a03ca1751470f3c4cae3"
+    },
+    {
+      "recordId": "CX-S03-0196",
+      "locator": "speaker-block-406-406",
+      "boundarySegmentFingerprint": "sha256:e1f11cf9cd16acbdaafd4a53d89ac7267daabcb5eb2092b03478b4d618b24507",
+      "ledgerSegmentFingerprint": "sha256:e1f11cf9cd16acbdaafd4a53d89ac7267daabcb5eb2092b03478b4d618b24507"
+    },
+    {
+      "recordId": "CX-S03-0197",
+      "locator": "speaker-block-408-408",
+      "boundarySegmentFingerprint": "sha256:3597f1d9e5a636e86cf75ca35883f1751623ab18b4f07eda7b6d557b4c6ed22c",
+      "ledgerSegmentFingerprint": "sha256:3597f1d9e5a636e86cf75ca35883f1751623ab18b4f07eda7b6d557b4c6ed22c"
+    },
+    {
+      "recordId": "CX-S03-0198",
+      "locator": "speaker-block-410-411",
+      "boundarySegmentFingerprint": "sha256:2ba1702eb35abc1ba8fefb2596774a44692a9b18bff8cfdf1c1e5794289db53c",
+      "ledgerSegmentFingerprint": "sha256:2ba1702eb35abc1ba8fefb2596774a44692a9b18bff8cfdf1c1e5794289db53c"
+    },
+    {
+      "recordId": "CX-S03-0199",
+      "locator": "speaker-block-413-413",
+      "boundarySegmentFingerprint": "sha256:bbcae4d8ac91660c1b51c1162d104650687abc1cc864069836ac23ed2c745499",
+      "ledgerSegmentFingerprint": "sha256:bbcae4d8ac91660c1b51c1162d104650687abc1cc864069836ac23ed2c745499"
+    },
+    {
+      "recordId": "CX-S03-0200",
+      "locator": "speaker-block-415-415",
+      "boundarySegmentFingerprint": "sha256:43cbc6d8052ca73b9fa9d87e775d385146f9d908becf4e8e35dac027dbae5985",
+      "ledgerSegmentFingerprint": "sha256:43cbc6d8052ca73b9fa9d87e775d385146f9d908becf4e8e35dac027dbae5985"
+    },
+    {
+      "recordId": "CX-S03-0201",
+      "locator": "speaker-block-418-418",
+      "boundarySegmentFingerprint": "sha256:d0d4e49cb964ccc083509c1a7a1e0eba6d2f194c900d109ac90e3afcb3527e11",
+      "ledgerSegmentFingerprint": "sha256:d0d4e49cb964ccc083509c1a7a1e0eba6d2f194c900d109ac90e3afcb3527e11"
+    },
+    {
+      "recordId": "CX-S03-0202",
+      "locator": "speaker-block-420-420",
+      "boundarySegmentFingerprint": "sha256:22d8f846802df70f1eb0e737afaa458cc36cdb39b75395299b80a3c7d31c01bc",
+      "ledgerSegmentFingerprint": "sha256:22d8f846802df70f1eb0e737afaa458cc36cdb39b75395299b80a3c7d31c01bc"
+    },
+    {
+      "recordId": "CX-S03-0203",
+      "locator": "speaker-block-422-422",
+      "boundarySegmentFingerprint": "sha256:dc02d0a5729d4098f2706ad8f374ce9771da09917e14906d598ff7688e3185ed",
+      "ledgerSegmentFingerprint": "sha256:dc02d0a5729d4098f2706ad8f374ce9771da09917e14906d598ff7688e3185ed"
+    },
+    {
+      "recordId": "CX-S03-0204",
+      "locator": "speaker-block-424-424",
+      "boundarySegmentFingerprint": "sha256:828dbff2c194c423a8d1f8c1d2c9404338390e68eac95fbb074010d2606a5e84",
+      "ledgerSegmentFingerprint": "sha256:828dbff2c194c423a8d1f8c1d2c9404338390e68eac95fbb074010d2606a5e84"
+    },
+    {
+      "recordId": "CX-S03-0205",
+      "locator": "speaker-block-426-426",
+      "boundarySegmentFingerprint": "sha256:e86f5be7e893e2266ed9f17f8e8b2913206fb2d507df41a00846d82a1208b5a2",
+      "ledgerSegmentFingerprint": "sha256:e86f5be7e893e2266ed9f17f8e8b2913206fb2d507df41a00846d82a1208b5a2"
+    },
+    {
+      "recordId": "CX-S03-0206",
+      "locator": "speaker-block-428-428",
+      "boundarySegmentFingerprint": "sha256:ff267c974715c0e12af9bef7d5debbb08e80d9c3305c2e17f4342879c1335d49",
+      "ledgerSegmentFingerprint": "sha256:ff267c974715c0e12af9bef7d5debbb08e80d9c3305c2e17f4342879c1335d49"
+    },
+    {
+      "recordId": "CX-S03-0207",
+      "locator": "speaker-block-430-430",
+      "boundarySegmentFingerprint": "sha256:80507eaad9e13f60b65a2d185735380c99daf8b5d152e52ac9f25d61c3d7ea98",
+      "ledgerSegmentFingerprint": "sha256:80507eaad9e13f60b65a2d185735380c99daf8b5d152e52ac9f25d61c3d7ea98"
+    },
+    {
+      "recordId": "CX-S03-0208",
+      "locator": "speaker-block-432-432",
+      "boundarySegmentFingerprint": "sha256:71dfe85a6d067c313c6724e12a827059df526bd07e3fc8243009ba9424214b91",
+      "ledgerSegmentFingerprint": "sha256:71dfe85a6d067c313c6724e12a827059df526bd07e3fc8243009ba9424214b91"
+    },
+    {
+      "recordId": "CX-S03-0209",
+      "locator": "speaker-block-434-434",
+      "boundarySegmentFingerprint": "sha256:6e794d6e281bf9e59d4a4b94211066ca1eb54af75cb4b19161a1f4f69d241458",
+      "ledgerSegmentFingerprint": "sha256:6e794d6e281bf9e59d4a4b94211066ca1eb54af75cb4b19161a1f4f69d241458"
+    },
+    {
+      "recordId": "CX-S03-0210",
+      "locator": "speaker-block-436-436",
+      "boundarySegmentFingerprint": "sha256:2fc9e13b8fead326f9a842b60733b73e0640b5616b62ac6f8a94dbdccf89d849",
+      "ledgerSegmentFingerprint": "sha256:2fc9e13b8fead326f9a842b60733b73e0640b5616b62ac6f8a94dbdccf89d849"
+    },
+    {
+      "recordId": "CX-S03-0211",
+      "locator": "speaker-block-438-438",
+      "boundarySegmentFingerprint": "sha256:6e794d6e281bf9e59d4a4b94211066ca1eb54af75cb4b19161a1f4f69d241458",
+      "ledgerSegmentFingerprint": "sha256:6e794d6e281bf9e59d4a4b94211066ca1eb54af75cb4b19161a1f4f69d241458"
+    },
+    {
+      "recordId": "CX-S03-0212",
+      "locator": "speaker-block-440-440",
+      "boundarySegmentFingerprint": "sha256:b215dc51585ec6ba8c43a456c685319784b52cea930c3db246683fe3c10625ea",
+      "ledgerSegmentFingerprint": "sha256:b215dc51585ec6ba8c43a456c685319784b52cea930c3db246683fe3c10625ea"
+    },
+    {
+      "recordId": "CX-S03-0213",
+      "locator": "speaker-block-442-442",
+      "boundarySegmentFingerprint": "sha256:bbcae4d8ac91660c1b51c1162d104650687abc1cc864069836ac23ed2c745499",
+      "ledgerSegmentFingerprint": "sha256:bbcae4d8ac91660c1b51c1162d104650687abc1cc864069836ac23ed2c745499"
+    },
+    {
+      "recordId": "CX-S03-0214",
+      "locator": "speaker-block-444-444",
+      "boundarySegmentFingerprint": "sha256:ec08001b8c1a7d1bd41b0d5208980da4bb1d5aa573317a7f765ed3c73be99686",
+      "ledgerSegmentFingerprint": "sha256:ec08001b8c1a7d1bd41b0d5208980da4bb1d5aa573317a7f765ed3c73be99686"
+    },
+    {
+      "recordId": "CX-S03-0215",
+      "locator": "speaker-block-447-447",
+      "boundarySegmentFingerprint": "sha256:67301071af5d5e9873c55be204511500ec98bb56a5cc0acaac9561442c4c3d6b",
+      "ledgerSegmentFingerprint": "sha256:67301071af5d5e9873c55be204511500ec98bb56a5cc0acaac9561442c4c3d6b"
+    },
+    {
+      "recordId": "CX-S03-0216",
+      "locator": "speaker-block-449-449",
+      "boundarySegmentFingerprint": "sha256:a8a8023b8f24a043efa6a78b4c1503ed8de834449f9d76576cbb83c4ee5bb037",
+      "ledgerSegmentFingerprint": "sha256:a8a8023b8f24a043efa6a78b4c1503ed8de834449f9d76576cbb83c4ee5bb037"
+    },
+    {
+      "recordId": "CX-S03-0217",
+      "locator": "speaker-block-451-451",
+      "boundarySegmentFingerprint": "sha256:67301071af5d5e9873c55be204511500ec98bb56a5cc0acaac9561442c4c3d6b",
+      "ledgerSegmentFingerprint": "sha256:67301071af5d5e9873c55be204511500ec98bb56a5cc0acaac9561442c4c3d6b"
+    },
+    {
+      "recordId": "CX-S03-0218",
+      "locator": "speaker-block-453-453",
+      "boundarySegmentFingerprint": "sha256:843b44f32d9a6b4a6ef346988f18613586fc86c588c19eca56767fd78baded83",
+      "ledgerSegmentFingerprint": "sha256:843b44f32d9a6b4a6ef346988f18613586fc86c588c19eca56767fd78baded83"
+    },
+    {
+      "recordId": "CX-S03-0219",
+      "locator": "speaker-block-455-455",
+      "boundarySegmentFingerprint": "sha256:7a5c467f1613126362e28d0bd3795282bb56c9825a7147a3f2bf50a6117aaea0",
+      "ledgerSegmentFingerprint": "sha256:7a5c467f1613126362e28d0bd3795282bb56c9825a7147a3f2bf50a6117aaea0"
+    },
+    {
+      "recordId": "CX-S03-0220",
+      "locator": "speaker-block-457-457",
+      "boundarySegmentFingerprint": "sha256:78d08d7549c8c2e9f4d47579801e6114abe8f5f1465585e4e20a0dfb54561e8d",
+      "ledgerSegmentFingerprint": "sha256:78d08d7549c8c2e9f4d47579801e6114abe8f5f1465585e4e20a0dfb54561e8d"
+    },
+    {
+      "recordId": "CX-S03-0221",
+      "locator": "speaker-block-459-459",
+      "boundarySegmentFingerprint": "sha256:280ef3044ec9802aef999d24c11b19085205f857839150d87d1ea306d468d9e0",
+      "ledgerSegmentFingerprint": "sha256:280ef3044ec9802aef999d24c11b19085205f857839150d87d1ea306d468d9e0"
+    },
+    {
+      "recordId": "CX-S03-0222",
+      "locator": "speaker-block-461-461",
+      "boundarySegmentFingerprint": "sha256:3383944c09444018f6235c66abd89f85e449db3a07f580d110229b88cd7ca979",
+      "ledgerSegmentFingerprint": "sha256:3383944c09444018f6235c66abd89f85e449db3a07f580d110229b88cd7ca979"
+    },
+    {
+      "recordId": "CX-S03-0223",
+      "locator": "speaker-block-463-463",
+      "boundarySegmentFingerprint": "sha256:c3d315caac36b1d4dd8de28fed556641ebc5954b6c1c3f4e4d8e9ab03ae2a09e",
+      "ledgerSegmentFingerprint": "sha256:c3d315caac36b1d4dd8de28fed556641ebc5954b6c1c3f4e4d8e9ab03ae2a09e"
+    },
+    {
+      "recordId": "CX-S03-0224",
+      "locator": "speaker-block-465-465",
+      "boundarySegmentFingerprint": "sha256:67301071af5d5e9873c55be204511500ec98bb56a5cc0acaac9561442c4c3d6b",
+      "ledgerSegmentFingerprint": "sha256:67301071af5d5e9873c55be204511500ec98bb56a5cc0acaac9561442c4c3d6b"
+    },
+    {
+      "recordId": "CX-S03-0225",
+      "locator": "speaker-block-467-467",
+      "boundarySegmentFingerprint": "sha256:67301071af5d5e9873c55be204511500ec98bb56a5cc0acaac9561442c4c3d6b",
+      "ledgerSegmentFingerprint": "sha256:67301071af5d5e9873c55be204511500ec98bb56a5cc0acaac9561442c4c3d6b"
+    },
+    {
+      "recordId": "CX-S03-0226",
+      "locator": "speaker-block-469-469",
+      "boundarySegmentFingerprint": "sha256:a1213df32421299d62bd6aae4e4cb1b7bc0421ab35c81720bc6240fc6acb1aa4",
+      "ledgerSegmentFingerprint": "sha256:a1213df32421299d62bd6aae4e4cb1b7bc0421ab35c81720bc6240fc6acb1aa4"
+    },
+    {
+      "recordId": "CX-S03-0227",
+      "locator": "speaker-block-471-471",
+      "boundarySegmentFingerprint": "sha256:662f376a0eafa7e0eb32172bbf1f68be1e09f88adc029c75bbcd55a44638183e",
+      "ledgerSegmentFingerprint": "sha256:662f376a0eafa7e0eb32172bbf1f68be1e09f88adc029c75bbcd55a44638183e"
+    },
+    {
+      "recordId": "CX-S03-0228",
+      "locator": "speaker-block-473-474",
+      "boundarySegmentFingerprint": "sha256:41e6edc54ee3a70f6dddee9acd16f201d35039609fc6c1b5616bf2a10ca8c5ab",
+      "ledgerSegmentFingerprint": "sha256:41e6edc54ee3a70f6dddee9acd16f201d35039609fc6c1b5616bf2a10ca8c5ab"
+    },
+    {
+      "recordId": "CX-S03-0229",
+      "locator": "speaker-block-476-476",
+      "boundarySegmentFingerprint": "sha256:73b5e15e13432bec5e42a3ad1ab3dca58a14164aef4c50273bc94e89622430fe",
+      "ledgerSegmentFingerprint": "sha256:73b5e15e13432bec5e42a3ad1ab3dca58a14164aef4c50273bc94e89622430fe"
+    },
+    {
+      "recordId": "CX-S03-0230",
+      "locator": "speaker-block-478-478",
+      "boundarySegmentFingerprint": "sha256:730c0ed4c3889094c6ca6febff4d37a237ec4d509ca5b6b38a8ef255b9baaaa1",
+      "ledgerSegmentFingerprint": "sha256:730c0ed4c3889094c6ca6febff4d37a237ec4d509ca5b6b38a8ef255b9baaaa1"
+    },
+    {
+      "recordId": "CX-S03-0231",
+      "locator": "speaker-block-480-480",
+      "boundarySegmentFingerprint": "sha256:730c0ed4c3889094c6ca6febff4d37a237ec4d509ca5b6b38a8ef255b9baaaa1",
+      "ledgerSegmentFingerprint": "sha256:730c0ed4c3889094c6ca6febff4d37a237ec4d509ca5b6b38a8ef255b9baaaa1"
+    },
+    {
+      "recordId": "CX-S03-0232",
+      "locator": "speaker-block-483-483",
+      "boundarySegmentFingerprint": "sha256:991dff6441e566b67280a7c1b97ffdf6aa1eeb3fc8ef3074260d713612d7d548",
+      "ledgerSegmentFingerprint": "sha256:991dff6441e566b67280a7c1b97ffdf6aa1eeb3fc8ef3074260d713612d7d548"
+    },
+    {
+      "recordId": "CX-S03-0233",
+      "locator": "speaker-block-485-485",
+      "boundarySegmentFingerprint": "sha256:be8eb1766127f59b448a42a82dfcdb087d8b76d92b09101cdc68ecc5cd27a59b",
+      "ledgerSegmentFingerprint": "sha256:be8eb1766127f59b448a42a82dfcdb087d8b76d92b09101cdc68ecc5cd27a59b"
+    },
+    {
+      "recordId": "CX-S03-0234",
+      "locator": "speaker-block-487-487",
+      "boundarySegmentFingerprint": "sha256:bbcae4d8ac91660c1b51c1162d104650687abc1cc864069836ac23ed2c745499",
+      "ledgerSegmentFingerprint": "sha256:bbcae4d8ac91660c1b51c1162d104650687abc1cc864069836ac23ed2c745499"
+    },
+    {
+      "recordId": "CX-S03-0235",
+      "locator": "speaker-block-489-489",
+      "boundarySegmentFingerprint": "sha256:00330a3ae6a5ef74ac1439aa213375539d1d40bf3392d187f8731969ec5aa5d9",
+      "ledgerSegmentFingerprint": "sha256:00330a3ae6a5ef74ac1439aa213375539d1d40bf3392d187f8731969ec5aa5d9"
+    },
+    {
+      "recordId": "CX-S03-0236",
+      "locator": "speaker-block-491-491",
+      "boundarySegmentFingerprint": "sha256:3d84f8b0edb487d7f05dc1940ed5ef83fa1209693973a439b5f63608902d8b4f",
+      "ledgerSegmentFingerprint": "sha256:3d84f8b0edb487d7f05dc1940ed5ef83fa1209693973a439b5f63608902d8b4f"
+    },
+    {
+      "recordId": "CX-S03-0237",
+      "locator": "speaker-block-493-493",
+      "boundarySegmentFingerprint": "sha256:343b7487eda57f664ce6a23823df6721bad6e6eed3fc5ac476867cd6143a2ffc",
+      "ledgerSegmentFingerprint": "sha256:343b7487eda57f664ce6a23823df6721bad6e6eed3fc5ac476867cd6143a2ffc"
+    },
+    {
+      "recordId": "CX-S03-0238",
+      "locator": "speaker-block-495-495",
+      "boundarySegmentFingerprint": "sha256:67301071af5d5e9873c55be204511500ec98bb56a5cc0acaac9561442c4c3d6b",
+      "ledgerSegmentFingerprint": "sha256:67301071af5d5e9873c55be204511500ec98bb56a5cc0acaac9561442c4c3d6b"
+    },
+    {
+      "recordId": "CX-S03-0239",
+      "locator": "speaker-block-497-498",
+      "boundarySegmentFingerprint": "sha256:60b4568593898c8312645c9c88ee0244d2072973b432bba632577c331ccf1584",
+      "ledgerSegmentFingerprint": "sha256:60b4568593898c8312645c9c88ee0244d2072973b432bba632577c331ccf1584"
+    },
+    {
+      "recordId": "CX-S03-0240",
+      "locator": "speaker-block-500-500",
+      "boundarySegmentFingerprint": "sha256:b9ff88ef1cf5e93a22a5676ca1e27e843011175511e1bbe2ae96822b20159b0d",
+      "ledgerSegmentFingerprint": "sha256:b9ff88ef1cf5e93a22a5676ca1e27e843011175511e1bbe2ae96822b20159b0d"
+    },
+    {
+      "recordId": "CX-S03-0241",
+      "locator": "speaker-block-502-502",
+      "boundarySegmentFingerprint": "sha256:1ba972d7cc74a95b1cb5a1fe893091e6fffc85aa54c87ae0af612fef95032654",
+      "ledgerSegmentFingerprint": "sha256:1ba972d7cc74a95b1cb5a1fe893091e6fffc85aa54c87ae0af612fef95032654"
+    },
+    {
+      "recordId": "CX-S03-0242",
+      "locator": "speaker-block-504-504",
+      "boundarySegmentFingerprint": "sha256:dc03b676bfc4a11e9b5f2a748c40d5e1d07188c936168f3016667c28d63fe24e",
+      "ledgerSegmentFingerprint": "sha256:dc03b676bfc4a11e9b5f2a748c40d5e1d07188c936168f3016667c28d63fe24e"
+    },
+    {
+      "recordId": "CX-S03-0243",
+      "locator": "speaker-block-506-506",
+      "boundarySegmentFingerprint": "sha256:5bb77f65cdba760a6fd8ab8bf9280385c0eabb190b1dc0dec5c5158cc9aacee1",
+      "ledgerSegmentFingerprint": "sha256:5bb77f65cdba760a6fd8ab8bf9280385c0eabb190b1dc0dec5c5158cc9aacee1"
+    },
+    {
+      "recordId": "CX-S03-0244",
+      "locator": "speaker-block-508-508",
+      "boundarySegmentFingerprint": "sha256:ba6fb4a97631146c613fd7979bbb960d2b42a0e75da820124affe5fd77177fbb",
+      "ledgerSegmentFingerprint": "sha256:ba6fb4a97631146c613fd7979bbb960d2b42a0e75da820124affe5fd77177fbb"
+    },
+    {
+      "recordId": "CX-S03-0245",
+      "locator": "speaker-block-510-510",
+      "boundarySegmentFingerprint": "sha256:3af296b9e04bcbf8cd26bd5f98ae76314857f60a8a01b6585d1a73ab89c67317",
+      "ledgerSegmentFingerprint": "sha256:3af296b9e04bcbf8cd26bd5f98ae76314857f60a8a01b6585d1a73ab89c67317"
+    },
+    {
+      "recordId": "CX-S03-0246",
+      "locator": "speaker-block-512-512",
+      "boundarySegmentFingerprint": "sha256:c1cb5643a37ea734c681c52b0192c54e2624fd41de55a7415ef9a5be0a9ba52b",
+      "ledgerSegmentFingerprint": "sha256:c1cb5643a37ea734c681c52b0192c54e2624fd41de55a7415ef9a5be0a9ba52b"
+    },
+    {
+      "recordId": "CX-S03-0247",
+      "locator": "speaker-block-514-514",
+      "boundarySegmentFingerprint": "sha256:798ac5cf7c5f47c65d7fe870f8bc415b71ae781562d769b8d8d3971a7bc39e25",
+      "ledgerSegmentFingerprint": "sha256:798ac5cf7c5f47c65d7fe870f8bc415b71ae781562d769b8d8d3971a7bc39e25"
+    },
+    {
+      "recordId": "CX-S03-0248",
+      "locator": "speaker-block-516-516",
+      "boundarySegmentFingerprint": "sha256:8b34c83efcd04f269bed9f1ba3d85c094c504884cacf5e01eeb6e0281925d594",
+      "ledgerSegmentFingerprint": "sha256:8b34c83efcd04f269bed9f1ba3d85c094c504884cacf5e01eeb6e0281925d594"
+    },
+    {
+      "recordId": "CX-S03-0249",
+      "locator": "speaker-block-518-518",
+      "boundarySegmentFingerprint": "sha256:8e517c5098e25a9516a588814e8700861c05fc94a1e294bbab879af95b20ebf3",
+      "ledgerSegmentFingerprint": "sha256:8e517c5098e25a9516a588814e8700861c05fc94a1e294bbab879af95b20ebf3"
+    },
+    {
+      "recordId": "CX-S03-0250",
+      "locator": "speaker-block-520-520",
+      "boundarySegmentFingerprint": "sha256:011eae4ca1a4016153a12552e11bd11ee54ae9db5642a1a730e48216a5e276ee",
+      "ledgerSegmentFingerprint": "sha256:011eae4ca1a4016153a12552e11bd11ee54ae9db5642a1a730e48216a5e276ee"
+    },
+    {
+      "recordId": "CX-S03-0251",
+      "locator": "speaker-block-522-522",
+      "boundarySegmentFingerprint": "sha256:959fcf6faaf91440dd7434820aeddd9c2f0600e3ffd805bb42f71cf04ac1454c",
+      "ledgerSegmentFingerprint": "sha256:959fcf6faaf91440dd7434820aeddd9c2f0600e3ffd805bb42f71cf04ac1454c"
+    },
+    {
+      "recordId": "CX-S03-0252",
+      "locator": "speaker-block-524-524",
+      "boundarySegmentFingerprint": "sha256:daeee075ecbc708702c796f4f333025d513edaa50ccde938460ccaccd73f9aff",
+      "ledgerSegmentFingerprint": "sha256:daeee075ecbc708702c796f4f333025d513edaa50ccde938460ccaccd73f9aff"
+    },
+    {
+      "recordId": "CX-S03-0253",
+      "locator": "speaker-block-527-527",
+      "boundarySegmentFingerprint": "sha256:d874a10d439f0602c6cf306a4935a16d68d082945845c799765c9c5693def8ef",
+      "ledgerSegmentFingerprint": "sha256:d874a10d439f0602c6cf306a4935a16d68d082945845c799765c9c5693def8ef"
+    },
+    {
+      "recordId": "CX-S03-0254",
+      "locator": "speaker-block-529-529",
+      "boundarySegmentFingerprint": "sha256:eeaf3ed89399eff94a5fb37073449e8d2e72c9bf79a8e998a51aeceb97eb615f",
+      "ledgerSegmentFingerprint": "sha256:eeaf3ed89399eff94a5fb37073449e8d2e72c9bf79a8e998a51aeceb97eb615f"
+    },
+    {
+      "recordId": "CX-S03-0255",
+      "locator": "speaker-block-531-531",
+      "boundarySegmentFingerprint": "sha256:b9d377f78caceef920726d77cfc842dae439638a870cfbf77531297edccbc705",
+      "ledgerSegmentFingerprint": "sha256:b9d377f78caceef920726d77cfc842dae439638a870cfbf77531297edccbc705"
+    },
+    {
+      "recordId": "CX-S03-0256",
+      "locator": "speaker-block-533-533",
+      "boundarySegmentFingerprint": "sha256:41ef034f945ad687c6bc1ec4121740188f7ea7c931c063bbb596f2c9abdaf521",
+      "ledgerSegmentFingerprint": "sha256:41ef034f945ad687c6bc1ec4121740188f7ea7c931c063bbb596f2c9abdaf521"
+    },
+    {
+      "recordId": "CX-S03-0257",
+      "locator": "speaker-block-535-535",
+      "boundarySegmentFingerprint": "sha256:67301071af5d5e9873c55be204511500ec98bb56a5cc0acaac9561442c4c3d6b",
+      "ledgerSegmentFingerprint": "sha256:67301071af5d5e9873c55be204511500ec98bb56a5cc0acaac9561442c4c3d6b"
+    },
+    {
+      "recordId": "CX-S03-0258",
+      "locator": "speaker-block-537-537",
+      "boundarySegmentFingerprint": "sha256:ec321299992674cee45ed00c0ad2cd0e5f62c0d91636f4358d9997bf790eefe6",
+      "ledgerSegmentFingerprint": "sha256:ec321299992674cee45ed00c0ad2cd0e5f62c0d91636f4358d9997bf790eefe6"
+    },
+    {
+      "recordId": "CX-S03-0259",
+      "locator": "speaker-block-539-539",
+      "boundarySegmentFingerprint": "sha256:a7ec6459fad01b74d0bdbfd789ea1208adc6825240fcd2b5096eb877a576a3df",
+      "ledgerSegmentFingerprint": "sha256:a7ec6459fad01b74d0bdbfd789ea1208adc6825240fcd2b5096eb877a576a3df"
+    },
+    {
+      "recordId": "CX-S03-0260",
+      "locator": "speaker-block-541-542",
+      "boundarySegmentFingerprint": "sha256:8955542761d97cff7cc3466a7ed72b857d5f0e5e5deaf7c8fa1ce8afec68e2a8",
+      "ledgerSegmentFingerprint": "sha256:8955542761d97cff7cc3466a7ed72b857d5f0e5e5deaf7c8fa1ce8afec68e2a8"
+    }
+  ],
+  "sourceContentStored": false,
+  "selectionPerformed": false,
+  "observationCodingPerformed": false,
+  "runtimeActivation": "prohibited"
+}

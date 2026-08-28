@@ -1,0 +1,95 @@
+{
+  "schemaVersion": "jolene.personality-evaluation-baseline.v1",
+  "status": "validated-non-activating",
+  "evaluatedAt": "2026-08-28T21:02:14.539Z",
+  "sourceBindings": {
+    "behaviorSpecificationFingerprint": "sha256:cd1848a670edeb79761498c211b25abab6baf8c6e5ecc8e229043bff76d2f6df",
+    "trustRightsReviewFingerprint": "sha256:52eb24a4b32c98cb5ce2daf55e211fb453a337a4707ba0faf48f046bb044ad9b",
+    "conversationalQualitySuiteFingerprint": "sha256:610c5b1098252204d878606b290058b830431a178fe667a85f0a22a91092a735",
+    "conversationalQualitySuiteVersion": "1.0.0",
+    "invarianceSuiteVersion": "jolene.personality-invariance-suite.v1",
+    "rendererSchemaVersion": "jolene.personality-renderer.v1",
+    "runtimePersonalityPolicyVersion": "jolene.runtime-personality.v2",
+    "runtimePersonalityAdmissionsVersion": "jolene.runtime-personality-admissions.v1",
+    "runtimePolicyFingerprint": "sha256:afbbac5bb31cfa59e135e2f10654daf844d6b2b16b9a50843276d305e8e544fc"
+  },
+  "coverage": {
+    "behaviorContexts": [
+      "normal",
+      "sensitive",
+      "urgent",
+      "public",
+      "private",
+      "error",
+      "conflict"
+    ],
+    "conversationalCategories": [
+      "continuity",
+      "follow_up",
+      "grief_high_stakes",
+      "personal_private",
+      "project_exploration",
+      "recipe",
+      "recruiter",
+      "refusal",
+      "skeptical"
+    ],
+    "rendererContexts": [
+      "casual_planning",
+      "technical_work",
+      "overwhelmed",
+      "grief_or_acute_pain",
+      "conflict",
+      "error_ownership",
+      "high_stakes",
+      "urgent_incident",
+      "celebration",
+      "public_or_shared",
+      "voice"
+    ],
+    "conversationalCases": 9,
+    "conversationalHardFailureCodes": [
+      "canned_pr_language",
+      "empty_evidence_rendering",
+      "fabricated_biography_or_quotation",
+      "private_disclosure",
+      "personality_displaces_substance",
+      "factual_or_citation_drift",
+      "high_stakes_personality_not_suppressed",
+      "conversation_continuity_lost"
+    ],
+    "invarianceHardFailureCodes": [
+      "semantic_fingerprint_changed",
+      "semantic_segments_changed",
+      "rendered_text_changed",
+      "completion_state_hidden",
+      "permission_state_hidden",
+      "personality_flourish_budget_exceeded",
+      "personality_ornament_not_suppressed",
+      "celebrity_identity_or_endorsement",
+      "borrowed_quote_or_biography",
+      "dialect_or_default_intimacy"
+    ]
+  },
+  "thresholds": {
+    "minimumWeightedMean": 3.3,
+    "minimumOriginalityPerCase": 3,
+    "humanReview": "required",
+    "approvedPacketStorage": "private-external-not-embedded"
+  },
+  "neutralBaseline": {
+    "mode": "paired-neutral-and-jolene-deterministic-renderer",
+    "passed": true,
+    "caseCount": 11,
+    "semanticInvariantRate": 1,
+    "maximumOrnamentCount": 1,
+    "hardFailureCount": 0
+  },
+  "releaseDisposition": {
+    "evaluationContract": "complete-local",
+    "humanReview": "preserved-not-recaptured",
+    "runtimeActivation": "not-authorized-by-this-baseline",
+    "deployment": "separate-release-gate"
+  },
+  "evaluationFingerprint": "sha256:18968c77c449a4d62bfa8dfe25644de505652bf91b8fe795c604e646468a91fc"
+}

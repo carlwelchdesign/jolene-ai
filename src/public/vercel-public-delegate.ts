@@ -20,10 +20,27 @@ import { OpenAIPublicEmbeddingProvider } from
   "./openai-public-embedding-provider.js";
 import { HybridPublicEvidenceRetriever } from
   "./public-hybrid-evidence-retriever.js";
-import { InMemoryPublicModelRequestBudget } from
+import type { PublicModelRequestBudget } from
   "./public-model-request-budget.js";
-import { FixedWindowPublicRequestAdmission } from "./public-request-admission.js";
+import type { PublicRequestAdmissionController } from "./public-request-admission.js";
+import type { PublicAuditRecorder } from "./public-audit-ledger.js";
 import { PublicContactQueueUnavailableError } from "./public-contact-intent-queue.js";
+import type { PublicOperationalTelemetry } from "./public-operational-telemetry.js";
+import { InMemoryPublicOperationalTelemetry } from "./public-operational-telemetry.js";
+import {
+  RedisRestCoordinationClient,
+} from "./redis-rest-coordination-client.js";
+import {
+  PreflightedPublicRequestAdmission,
+  SharedPublicModelRequestBudget,
+  SharedPublicRequestAdmission,
+} from "./shared-public-coordination.js";
+import {
+  SharedPublicAuditTelemetry,
+  SharedSecurityTelemetry,
+} from "./shared-public-observability.js";
+import type { SecurityTelemetryRecorder } from "../security/security-telemetry.js";
+import { personalityModeSchema } from "../personality/personality-mode.js";
 
 const vercelPublicEnvironmentSchema = z.object({
   JOLENE_PUBLIC_ENABLED: z.literal("true"),
@@ -40,6 +57,7 @@ const vercelPublicEnvironmentSchema = z.object({
     .default(8),
   JOLENE_PUBLIC_ANSWER_MODE: z.enum(["deterministic", "openai"])
     .default("deterministic"),
+  JOLENE_PERSONALITY_MODE: personalityModeSchema.default("jolene"),
   JOLENE_PUBLIC_OPENAI_MODEL: z.string().trim().min(1).default("gpt-5.4-mini"),
   JOLENE_PUBLIC_OPENAI_TIMEOUT_MS: z.coerce.number().int().min(1_000)
     .max(30_000).default(12_000),
@@ -78,10 +96,36 @@ const vercelPublicEnvironmentSchema = z.object({
   }
 });
 
+const hostedCoordinationEnvironmentSchema = z.object({
+  JOLENE_PUBLIC_COORDINATION_URL: z.string().url().startsWith("https://"),
+  JOLENE_PUBLIC_COORDINATION_HOST: z.string().trim().min(1).max(253),
+  JOLENE_PUBLIC_COORDINATION_TOKEN: z.string().trim().min(32).max(4_096),
+  JOLENE_PUBLIC_COORDINATION_NAMESPACE: z.string()
+    .regex(/^[a-z][a-z0-9-]{2,31}$/),
+  JOLENE_PUBLIC_CLIENT_HASH_KEY: z.string().min(32).max(4_096),
+  JOLENE_PUBLIC_COORDINATION_TIMEOUT_MS: z.coerce.number().int().min(250)
+    .max(10_000).default(2_000),
+  JOLENE_PUBLIC_COORDINATION_PREFLIGHT_FRESHNESS_MS: z.coerce.number().int()
+    .min(1_000).max(300_000).default(60_000),
+  JOLENE_PUBLIC_SHARED_AUDIT_RETENTION_DAYS: z.coerce.number().int().min(1)
+    .max(90).default(30),
+  JOLENE_PUBLIC_SHARED_AUDIT_MAX_ENTRIES: z.coerce.number().int().min(1)
+    .max(10_000).default(5_000),
+  JOLENE_PUBLIC_SHARED_SECURITY_RETENTION_DAYS: z.coerce.number().int().min(1)
+    .max(90).default(30),
+  JOLENE_PUBLIC_SHARED_SECURITY_MAX_ENTRIES: z.coerce.number().int().min(1)
+    .max(10_000).default(5_000),
+}).strict();
+
 export function createVercelPublicDelegateHandler(
   environment: Record<string, string | undefined> = process.env,
+  coordination?: HostedPublicCoordination,
 ) {
   const config = vercelPublicEnvironmentSchema.parse(environment);
+  const hostedCoordination = coordination ?? createRedisHostedCoordination(
+    environment,
+    config,
+  );
   const artifacts = new HttpsPublicArtifactSource({
     url: config.JOLENE_PUBLIC_ARTIFACT_URL,
     expectedCorpusVersion: config.JOLENE_PUBLIC_EXPECTED_CORPUS_VERSION,
@@ -89,19 +133,25 @@ export function createVercelPublicDelegateHandler(
   });
 
   return createPublicDelegateRequestHandler({
-    enabled: true,
+    enabled: hostedCoordination?.scope === "shared",
     artifacts,
-    answers: createAnswerService(config),
+    answers: createAnswerService(
+      config,
+      hostedCoordination?.modelBudget ?? new FailClosedPublicModelBudget(),
+    ),
     jobFit: new DeterministicPublicJobFitService(),
     contactIntents: {
       stage: async () => {
         throw new PublicContactQueueUnavailableError();
       },
     },
-    admissions: new FixedWindowPublicRequestAdmission({
-      requestsPerWindow: config.JOLENE_PUBLIC_REQUESTS_PER_MINUTE,
-      maxConcurrentRequests: config.JOLENE_PUBLIC_MAX_CONCURRENT_REQUESTS,
-    }),
+    admissions: hostedCoordination?.admissions ?? new FailClosedHostedAdmission(),
+    ...(hostedCoordination
+      ? {
+          audits: hostedCoordination.audits,
+          telemetry: hostedCoordination.telemetry,
+        }
+      : {}),
     clientKey: vercelClientKey,
     apiToken: config.JOLENE_PUBLIC_API_TOKEN,
   });
@@ -109,6 +159,7 @@ export function createVercelPublicDelegateHandler(
 
 function createAnswerService(
   config: z.infer<typeof vercelPublicEnvironmentSchema>,
+  modelBudget: PublicModelRequestBudget,
 ): PublicPortfolioAnswerer {
   if (config.JOLENE_PUBLIC_ANSWER_MODE === "deterministic") {
     return new DeterministicPublicAnswerService();
@@ -117,11 +168,9 @@ function createAnswerService(
     client: new OpenAI({ apiKey: requireOpenAIApiKey(config.OPENAI_API_KEY) }),
     model: config.JOLENE_PUBLIC_OPENAI_MODEL,
     timeoutMilliseconds: config.JOLENE_PUBLIC_OPENAI_TIMEOUT_MS,
+    personalityMode: config.JOLENE_PERSONALITY_MODE,
   }), {
-    budget: new InMemoryPublicModelRequestBudget({
-      maxRequestsPerWindow: config.JOLENE_PUBLIC_OPENAI_REQUESTS_PER_DAY,
-      windowMilliseconds: 24 * 60 * 60 * 1_000,
-    }),
+    budget: modelBudget,
     ...(config.JOLENE_PUBLIC_RETRIEVAL_MODE === "hybrid"
       ? {
         retriever: new HybridPublicEvidenceRetriever(
@@ -133,6 +182,101 @@ function createAnswerService(
       }
       : {}),
   });
+}
+
+export interface HostedPublicCoordination {
+  readonly scope: "shared";
+  readonly admissions: PublicRequestAdmissionController;
+  readonly modelBudget: PublicModelRequestBudget;
+  readonly audits: PublicAuditRecorder;
+  readonly telemetry: PublicOperationalTelemetry;
+  readonly securityTelemetry: SecurityTelemetryRecorder;
+}
+
+export function createRedisHostedCoordination(
+  environment: Record<string, string | undefined>,
+  publicConfig?: z.infer<typeof vercelPublicEnvironmentSchema>,
+  fetch: typeof globalThis.fetch = globalThis.fetch,
+): HostedPublicCoordination | undefined {
+  const parsed = hostedCoordinationEnvironmentSchema.safeParse(
+    coordinationEnvironment(environment),
+  );
+  if (!parsed.success) return undefined;
+  let client: RedisRestCoordinationClient;
+  try {
+    client = new RedisRestCoordinationClient({
+      url: parsed.data.JOLENE_PUBLIC_COORDINATION_URL,
+      token: parsed.data.JOLENE_PUBLIC_COORDINATION_TOKEN,
+      allowedHosts: [parsed.data.JOLENE_PUBLIC_COORDINATION_HOST],
+      namespace: parsed.data.JOLENE_PUBLIC_COORDINATION_NAMESPACE,
+      timeoutMilliseconds: parsed.data.JOLENE_PUBLIC_COORDINATION_TIMEOUT_MS,
+      fetch,
+    });
+  } catch {
+    return undefined;
+  }
+  const config = publicConfig ?? vercelPublicEnvironmentSchema.safeParse(environment).data;
+  if (!config) return undefined;
+  const admissions = new SharedPublicRequestAdmission({
+    client,
+    clientHashKey: parsed.data.JOLENE_PUBLIC_CLIENT_HASH_KEY,
+    requestsPerWindow: config.JOLENE_PUBLIC_REQUESTS_PER_MINUTE,
+    maxConcurrentRequests: config.JOLENE_PUBLIC_MAX_CONCURRENT_REQUESTS,
+  });
+  const audits = new SharedPublicAuditTelemetry({
+    client,
+    maxEntries: parsed.data.JOLENE_PUBLIC_SHARED_AUDIT_MAX_ENTRIES,
+    retentionMilliseconds:
+      parsed.data.JOLENE_PUBLIC_SHARED_AUDIT_RETENTION_DAYS * 86_400_000,
+  });
+  const securityTelemetry = new SharedSecurityTelemetry({
+    client,
+    maxEntries: parsed.data.JOLENE_PUBLIC_SHARED_SECURITY_MAX_ENTRIES,
+    retentionMilliseconds:
+      parsed.data.JOLENE_PUBLIC_SHARED_SECURITY_RETENTION_DAYS * 86_400_000,
+  });
+  return {
+    scope: "shared",
+    admissions: new PreflightedPublicRequestAdmission({
+      client,
+      delegate: admissions,
+      freshnessMilliseconds:
+        parsed.data.JOLENE_PUBLIC_COORDINATION_PREFLIGHT_FRESHNESS_MS,
+    }),
+    modelBudget: new SharedPublicModelRequestBudget({
+      client,
+      maxRequestsPerWindow: config.JOLENE_PUBLIC_OPENAI_REQUESTS_PER_DAY,
+      windowMilliseconds: 86_400_000,
+    }),
+    audits,
+    telemetry: new InMemoryPublicOperationalTelemetry(),
+    securityTelemetry,
+  };
+}
+
+class FailClosedHostedAdmission implements PublicRequestAdmissionController {
+  acquire() {
+    return {
+      accepted: false as const,
+      status: 503 as const,
+      code: "public_delegate_busy" as const,
+      retryAfterSeconds: 60,
+    };
+  }
+}
+
+class FailClosedPublicModelBudget implements PublicModelRequestBudget {
+  async reserve(): Promise<boolean> {
+    return false;
+  }
+}
+
+function coordinationEnvironment(environment: Record<string, string | undefined>) {
+  return Object.fromEntries(Object.entries(environment).filter(([key]) =>
+    key.startsWith("JOLENE_PUBLIC_COORDINATION_") ||
+    key === "JOLENE_PUBLIC_CLIENT_HASH_KEY" ||
+    key.startsWith("JOLENE_PUBLIC_SHARED_")
+  ));
 }
 
 function requireOpenAIApiKey(value: string | undefined): string {

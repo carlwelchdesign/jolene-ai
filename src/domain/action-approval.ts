@@ -52,6 +52,15 @@ export interface DecideActionProposalInput {
   readonly actorId: string;
   readonly workspaceId: string;
   readonly decision: ActionDecision;
+  readonly payloadFingerprint: string;
+  readonly authority: ExactActionApprovalAuthority;
+}
+
+export interface ExactActionApprovalAuthority {
+  readonly source: "authenticated_owner_review_ui";
+  readonly authority: "user";
+  readonly taintIds: readonly never[];
+  readonly derivationIds: readonly never[];
 }
 
 export interface ListActionProposalsInput {

@@ -93,6 +93,7 @@ describe("public delegate manifest boundary", () => {
       authMode: "disabled",
       apiToken: undefined,
       answerMode: "deterministic",
+      personalityMode: "jolene",
       openaiModel: "gpt-5.4-mini",
       openaiTimeoutMilliseconds: 8_000,
       openaiBudgetPath: path.resolve(".jolene/public/model-budget.json"),
@@ -101,6 +102,15 @@ describe("public delegate manifest boundary", () => {
       openaiEmbeddingModel: "text-embedding-3-small",
       openaiApiKey: undefined,
     });
+  });
+
+  it("accepts one exact neutral personality rollback value", () => {
+    expect(parsePublicDelegateConfig({
+      JOLENE_PERSONALITY_MODE: "neutral",
+    }).personalityMode).toBe("neutral");
+    expect(() => parsePublicDelegateConfig({
+      JOLENE_PERSONALITY_MODE: "off",
+    })).toThrow();
   });
 
   it("requires an API key only when OpenAI answer synthesis is selected", () => {
@@ -394,6 +404,24 @@ describe("public delegate manifest boundary", () => {
     expect(JSON.stringify(events)).not.toMatch(/remote|address|client|header|url/i);
   });
 
+  it("fails closed with a sanitized response when shared admission is unavailable", async () => {
+    const fixture = await loadFixture();
+    const { baseUrl } = await start(await writeArtifact(fixture), {
+      admissions: {
+        acquire: async () => {
+          throw new Error("provider endpoint token and private client identity");
+        },
+      },
+    });
+    const response = await fetch(`${baseUrl}/health`);
+    expect(response.status).toBe(503);
+    expect(response.headers.get("retry-after")).toBe("60");
+    const body = JSON.stringify(await response.json());
+    expect(body).toContain("unavailable");
+    expect(body).not.toContain("provider endpoint");
+    expect(body).not.toContain("private client identity");
+  });
+
   it("serves a frozen-contract answer from matching public evidence", async () => {
     const artifact = createPublicEvidenceArtifact();
     const { baseUrl } = await start(await writeArtifact(artifact));
@@ -440,7 +468,7 @@ describe("public delegate manifest boundary", () => {
     expect(body.claims).toEqual([]);
     expect(body.citations).toEqual([]);
     expect(body.limitations).toEqual([
-      "No matching public-approved evidence was available.",
+      "No relevant published information was found for this question.",
     ]);
   });
 
@@ -576,7 +604,14 @@ describe("public delegate manifest boundary", () => {
     const model = await start(await writeArtifact(artifact), {
       audits,
       answers: new GroundedPublicAnswerService({
-        generate: async () => "A concise grounded model answer.",
+        generate: async (input) => ({
+          contractVersion: "1.0.0",
+          corpusVersion: input.corpusVersion,
+          segments: [{
+            text: "Carl builds typed React product systems with explicit review boundaries.",
+            supportIds: [input.evidence[0]!.evidenceId],
+          }],
+        }),
       }),
     });
     const fallback = await start(await writeArtifact(artifact), {

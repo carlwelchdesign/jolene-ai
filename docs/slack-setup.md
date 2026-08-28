@@ -12,6 +12,8 @@ The ChatGPT Slack connection and this standalone Slack app are separate integrat
 4. Under **OAuth & Permissions**, copy the Bot User OAuth Token beginning with `xoxb-`.
 5. Under **Basic Information → App-Level Tokens**, generate a token with the `connections:write` scope and copy the token beginning with `xapp-`.
 6. Copy Carl's Slack member ID from his Slack profile using **Copy member ID**.
+   Copy the workspace ID from the Slack app/workspace URL or app-management
+   workspace details. The workspace ID begins with `T`.
 7. Add these values to `.env.local` without committing the file for direct host
    development:
 
@@ -19,6 +21,7 @@ The ChatGPT Slack connection and this standalone Slack app are separate integrat
    SLACK_BOT_TOKEN=xoxb-...
    SLACK_APP_TOKEN=xapp-...
    SLACK_OWNER_USER_ID=U...
+   SLACK_OWNER_TEAM_ID=T...
    JOLENE_OWNER_ACTOR_ID=carl
    JOLENE_OWNER_WORKSPACE_ID=personal
    ```
@@ -68,7 +71,10 @@ another Slack user. See [Private owner briefings](private-briefings.md).
 
 ## Privacy behavior
 
-- Only direct messages from `SLACK_OWNER_USER_ID` are considered private and may use allowlisted Obsidian knowledge.
+- Only direct messages matching the exact `SLACK_OWNER_TEAM_ID` and
+  `SLACK_OWNER_USER_ID` pair are considered private and may use allowlisted
+  Obsidian knowledge. Member-ID-only matches and events from another workspace
+  are ignored.
 - The configured owner DM resolves private task and workflow reads to
   `JOLENE_OWNER_ACTOR_ID` and `JOLENE_OWNER_WORKSPACE_ID`. Slack conversation
   history and delivery records retain the actual Slack user, workspace, channel,

@@ -1,0 +1,79 @@
+schema_version: personality-pdf-cue-adjudication-amendment-v1
+status: prospective-reviewed-non-activating
+created_at: 2026-08-28T05:52:33Z
+source_register_fingerprint: sha256:29dcfbe68ffc7b7be13758be298739179146dab5041ff73ee9e49fc74218481f
+predecessor_boundary_protocol_fingerprint: sha256:7ef6eba7a8eee9fde9be225f4e4b3dc7045a5165974091e008e41a592330bda7
+predecessor_cue_audit_fingerprint: sha256:199833b9ec0df708df265d65b1949cf801a5c8530d58a48052ce147c05cb0276
+boundary_manifest_fingerprint: sha256:678c1d9d7fb8a1ea1d67ae0e9295451e969582c4b7e083805a5b5ac0b8c26654
+source_register_id: S04
+source_event_id: E004
+source_content_fingerprint: sha256:7f7db3b1766d2656041cbbe6bfdf5df3c2f3342bf4904a4be94027260a018cc5
+runtime:
+  python: 3.12.13
+  pdfplumber: 0.11.9
+  pdfminer_six: "20251230"
+  pypdf: 6.10.0
+  version_drift: fail-closed
+rule:
+  id: pdf-cue-adjudication-conservative-v1
+  atomic_unit: complete-labeled-speaker-block
+  disposition_precedence:
+    - other-or-prelabel-exclusion
+    - performance-cue-whole-block-exclusion
+    - nonverbal-unreadable-cue-stripping
+    - empty-residual-exclusion
+    - closed-set-fragment-exclusion
+    - eligible-spoken-payload
+  performance_cue_result: exclude-whole-atomic-block
+  performance_exclusion_is_irreversible: true
+  nonverbal_unreadable_result: strip-structurally-delimited-cue-only
+  cue_only_result: exclude
+  fragment_rule: inherit-pdf-boundary-protocol-v2
+reproduced_counts:
+  boundary_units: 101
+  prelabel_units: 1
+  labeled_speaker_blocks: 100
+  target_speaker_blocks: 49
+  other_speaker_blocks: 51
+  target_blocks_with_any_controlled_cue: 23
+  performance_excluded_target_blocks: 4
+  eligible_target_blocks: 45
+  cue_occurrences:
+    PERFORMANCE: 1
+    SINGING: 4
+    LAUGHTER: 13
+    APPLAUSE: 10
+    INAUDIBLE: 5
+supersession:
+  frozen_expected_eligible_units: 48
+  result: superseded-for-future-plans-only
+  reason: No stated deterministic rule reproduced 48; the conservative reviewed rule reproduces 45.
+independent_reviews:
+  - reviewer_id: independent-data-methodology-reviewer
+    role: data-methodology
+    reviewed_at: 2026-08-28T05:50:00Z
+    scope: independent-full-boundary-live-reproduction
+    verdict: pass
+    eligible_target_blocks: 45
+    attestation_fingerprint: sha256:410200a6983834304e154327db89ba3b8565800394af87b4bf6eb1e72d16c33d
+  - reviewer_id: independent-trust-rights-reviewer
+    role: trust-rights
+    reviewed_at: 2026-08-28T05:51:00Z
+    scope: independent-full-boundary-live-reproduction
+    verdict: pass
+    eligible_target_blocks: 45
+    attestation_fingerprint: sha256:07a0dc812378d4acee795bc701ac628b7e507f1a13b921c62442b0670074de9c
+rights:
+  repository_storage: metadata-hashes-locators-and-controlled-labels-only
+  source_content: prohibited
+  excerpts: prohibited
+  transcripts: prohibited
+  lyrics: prohibited
+  performance_material: prohibited
+  audio_video: prohibited
+  recognizable_expression: prohibited
+source_content_stored: false
+selection_performed: false
+observation_coding_performed: false
+runtime_activation: prohibited
+next_action: generate-reviewed-pdf-capacity-ledgers-under-amended-rule

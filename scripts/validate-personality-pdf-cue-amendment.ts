@@ -1,0 +1,9 @@
+import { loadPersonalityPdfCueAdjudicationAmendmentV1 } from
+  "../src/personality/personality-pdf-cue-amendment.js";
+
+loadPersonalityPdfCueAdjudicationAmendmentV1()
+  .then((result) => process.stdout.write(`${JSON.stringify(result, null, 2)}\n`))
+  .catch((error: unknown) => {
+    process.stderr.write(`${error instanceof Error ? error.message : "Validation failed"}\n`);
+    process.exitCode = 1;
+  });

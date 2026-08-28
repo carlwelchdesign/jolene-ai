@@ -13,6 +13,15 @@ import {
   type PortfolioAnswerResponse,
 } from "../domain/public-portfolio-contract.js";
 import type { PublicModelRequestBudget } from "./public-model-request-budget.js";
+import {
+  PublicAnswerGroundingValidator,
+  type PublicAnswerGroundingValidatorLike,
+} from "./public-answer-grounding-validator.js";
+import {
+  containsInternalPublicProcessLanguage,
+  visitorFacingClaim,
+  visitorFacingLimitations,
+} from "./public-visitor-language.js";
 
 export interface PublicPortfolioAnswerer {
   execute(
@@ -28,7 +37,9 @@ export interface PublicAnswerExecution {
 
 export interface GroundedPublicAnswerInput {
   readonly question: string;
+  readonly corpusVersion: string;
   readonly evidence: readonly {
+    readonly evidenceId: string;
     readonly claimText: string;
     readonly limitations: readonly string[];
     readonly citationTitle: string;
@@ -36,7 +47,7 @@ export interface GroundedPublicAnswerInput {
 }
 
 export interface PublicAnswerTextGenerator {
-  generate(input: GroundedPublicAnswerInput): Promise<string>;
+  generate(input: GroundedPublicAnswerInput): Promise<unknown>;
 }
 
 export interface PublicEvidenceRetriever {
@@ -72,6 +83,9 @@ export class DeterministicPublicAnswerService
     request: PortfolioAnswerRequest,
     selectedEvidence: readonly PublicCareerEvidenceRecord[],
   ): PortfolioAnswerResponse {
+    if (isPrivateDisclosureRequest(request.question)) {
+      return privateDisclosureResponse(artifact);
+    }
     const hiringValueQuestion = isHiringValueQuestion(request.question);
     const activeEvidence = new Map(
       artifact.evidence.map((record) => [record.evidenceId, record]),
@@ -109,6 +123,7 @@ export class GroundedPublicAnswerService implements PublicPortfolioAnswerer {
   readonly #baseline: DeterministicPublicAnswerService;
   readonly #budget: PublicModelRequestBudget | undefined;
   readonly #retriever: PublicEvidenceRetriever | undefined;
+  readonly #validator: PublicAnswerGroundingValidatorLike;
 
   constructor(
     private readonly generator: PublicAnswerTextGenerator,
@@ -116,17 +131,25 @@ export class GroundedPublicAnswerService implements PublicPortfolioAnswerer {
       readonly baseline?: DeterministicPublicAnswerService;
       readonly budget?: PublicModelRequestBudget;
       readonly retriever?: PublicEvidenceRetriever;
+      readonly validator?: PublicAnswerGroundingValidatorLike;
     } = {},
   ) {
     this.#baseline = options.baseline ?? new DeterministicPublicAnswerService();
     this.#budget = options.budget;
     this.#retriever = options.retriever;
+    this.#validator = options.validator ?? new PublicAnswerGroundingValidator();
   }
 
   async execute(
     artifact: PublicCareerEvidenceArtifact,
     request: PortfolioAnswerRequest,
   ): Promise<PublicAnswerExecution> {
+    if (isPrivateDisclosureRequest(request.question)) {
+      return {
+        response: this.#baseline.answerFromSelected(artifact, request, []),
+        mode: "deterministic",
+      };
+    }
     const exactRelationshipEvidence = selectRecommendationRelationshipEvidence(
       artifact.evidence,
       request.question,
@@ -165,14 +188,24 @@ export class GroundedPublicAnswerService implements PublicPortfolioAnswerer {
       }
     }
     try {
-      const answer = generatedAnswerSchema.parse(await this.generator.generate({
+      const generation = await this.generator.generate({
         question: request.question,
+        corpusVersion: baseline.corpusVersion,
         evidence: baseline.claims.map((claim, index) => ({
+          evidenceId: baseline.citations[index]?.evidenceId ?? "missing",
           claimText: claim.text,
           limitations: claim.limitations,
           citationTitle: baseline.citations[index]?.title ?? "Reviewed evidence",
         })),
-      }));
+      });
+      const validation = this.#validator.validate(artifact, baseline, generation);
+      if (validation.status === "rejected") {
+        return { response: baseline, mode: "fallback" };
+      }
+      const answer = generatedAnswerSchema.parse(validation.answer);
+      if (containsInternalPublicProcessLanguage(answer)) {
+        return { response: baseline, mode: "fallback" };
+      }
       return {
         mode: "model",
         response: portfolioAnswerResponseSchema.parse({
@@ -430,6 +463,16 @@ const HIRING_VALUE_PATTERNS = [
 const HIRING_VALUE_UNSAFE_PATTERN =
   /\b(?:bypass|contact|ignore|private|reveal|secret|system prompt)\b/u;
 
+function isPrivateDisclosureRequest(question: string): boolean {
+  const normalized = question.normalize("NFKC");
+  const requestsPrivateMaterial = /\b(?:private|unpublished)\b.{0,48}\b(?:memory|notes?|files?|data|details?|material|work|information)\b/iu.test(normalized)
+    || /\b(?:reveal|share|show|tell|expose|leak)\b.{0,64}\b(?:private|secret|unpublished)\b/iu.test(normalized)
+    || /\b(?:system prompt|api key|password|home address|phone number|email address|medical record|salary|compensation)\b/iu.test(normalized);
+  const includesPublicCareerQuestion = /\b(?:describe|explain|summarize|what|which|how)\b.{0,96}\b(?:react|projects?|systems?|portfolio|experience|roles?|skills?|recommendations?|career|aviation|leadership)\b/iu
+    .test(normalized);
+  return requestsPrivateMaterial && !includesPublicCareerQuestion;
+}
+
 function supportedResponse(
   artifact: PublicCareerEvidenceArtifact,
   selected: readonly PublicCareerEvidenceRecord[],
@@ -443,11 +486,11 @@ function supportedResponse(
       : hiringValueQuestion
       ? boundedHiringValueAnswer(selected)
       : boundedSupportedAnswer(selected),
-    claims: selected.map((record) => record.claim),
+    claims: selected.map((record) => visitorFacingClaim(record.claim)),
     citations: selected.map((record) => record.citation),
     limitations: unique(hiringValueQuestion
       ? ["A hiring decision should still be based on the role, interviews, and direct references."]
-      : selected.flatMap((record) => record.claim.limitations))
+      : visitorFacingLimitations(selected.flatMap((record) => record.claim.limitations)))
       .slice(0, PUBLIC_PORTFOLIO_ANSWER_LIMITS.responseLimitations),
     suggestedFollowUpQuestions: relationshipFact
       ? [
@@ -482,12 +525,30 @@ function noEvidenceResponse(
   return portfolioAnswerResponseSchema.parse({
     schemaVersion: PUBLIC_CAREER_EVIDENCE_SCHEMA_VERSION,
     answer:
-      "The reviewed public evidence does not support a reliable answer to that question.",
+      "I don’t have enough published information to answer that reliably.",
     claims: [],
     citations: [],
-    limitations: ["No matching public-approved evidence was available."],
+    limitations: ["No relevant published information was found for this question."],
     suggestedFollowUpQuestions: [
       "Would you like to ask about a published project, professional role, skill, or contribution?",
+    ],
+    corpusVersion: artifact.manifest.corpusVersion,
+  });
+}
+
+function privateDisclosureResponse(
+  artifact: PublicCareerEvidenceArtifact,
+): PortfolioAnswerResponse {
+  return portfolioAnswerResponseSchema.parse({
+    schemaVersion: PUBLIC_CAREER_EVIDENCE_SCHEMA_VERSION,
+    answer: "I can’t share Carl’s private notes or unpublished material. Ask me about his published work, professional experience, or public recommendations instead.",
+    claims: [],
+    citations: [],
+    limitations: [
+      "Private and unpublished material is outside this public assistant’s scope.",
+    ],
+    suggestedFollowUpQuestions: [
+      "Which published project or professional role would you like to explore?",
     ],
     corpusVersion: artifact.manifest.corpusVersion,
   });
@@ -499,11 +560,11 @@ function conflictResponse(
   return portfolioAnswerResponseSchema.parse({
     schemaVersion: PUBLIC_CAREER_EVIDENCE_SCHEMA_VERSION,
     answer:
-      "The reviewed public evidence contains an unresolved conflict, so it does not support a reliable answer yet.",
+      "The published information available to me conflicts on this point, so I can’t answer it reliably.",
     claims: [],
     citations: [],
     limitations: [
-      "Conflicting public evidence requires Carl's review before it can support an answer.",
+      "The conflicting accounts need clarification before I can use them here.",
     ],
     suggestedFollowUpQuestions: [
       "Would you like to ask about a different published project, role, skill, or contribution?",
@@ -530,7 +591,7 @@ function uniqueRecords(
 function boundedSupportedAnswer(
   selected: readonly PublicCareerEvidenceRecord[],
 ): string {
-  const prefix = "Reviewed public evidence: ";
+  const prefix = "Here’s what Carl’s published work shows: ";
   const available = PUBLIC_PORTFOLIO_ANSWER_LIMITS.answerCharacters -
     prefix.length;
   return `${prefix}${selected
@@ -547,7 +608,7 @@ function boundedHiringValueAnswer(
   const strengths = HIRING_CATEGORY_PRIORITY
     .filter((category) => categories.has(category))
     .map((category) => HIRING_CATEGORY_SUMMARIES[category]);
-  return `The reviewed public record supports considering Carl for roles that value ${formatNaturalList(strengths)}. The cited evidence below provides the concrete details and boundaries.`;
+  return `Carl may be worth considering for roles that value ${formatNaturalList(strengths)}. The examples below show what he has actually done and where the evidence has limits.`;
 }
 
 const HIRING_CATEGORY_SUMMARIES: Readonly<Record<

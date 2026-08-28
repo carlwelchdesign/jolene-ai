@@ -1,0 +1,143 @@
+schemaVersion: jolene.personality-preallocation-capacity-manifest.v1
+status: all-coding-ready-sources-independently-reviewed-before-allocation
+frozenAt: 2026-08-28T07:15:00Z
+sourceRegisterFingerprint: sha256:29dcfbe68ffc7b7be13758be298739179146dab5041ff73ee9e49fc74218481f
+boundaryProtocolFingerprint: sha256:7ef6eba7a8eee9fde9be225f4e4b3dc7045a5165974091e008e41a592330bda7
+highRiskTaxonomyFingerprint: sha256:e56f2bd612a511a18eb9c1b47fc51b51715cdf1ed0e6bd6209f700c72351ee07
+pdfReviewEvidenceFingerprint: sha256:1f3e92576ca519cf68c69d5fc6e2c8889087a267f11201bef25b425a1dee44eb
+htmlReviewEvidenceFingerprint: sha256:3097254b3956fb8d31b192653b3894698e82ff5fd7a5015abdf1dfa5b1ff9460
+ledgers:
+  - sourceRegisterId: S02
+    sourceEventId: E002
+    medium: html
+    ledgerArtifact: research/preallocation-capacity-ledgers-v1/source-S02.json
+    ledgerArtifactFingerprint: sha256:ec2c436679bbc732b5d9d0f460ba518384b81fb710f5b9ed5967efa3db4003eb
+    ledgerFingerprint: sha256:1f2ad52e7167dfc2f8faa01b3b90244db9e7b39b12382f1ae1e78c367a01c806
+    boundaryUnits: 257
+    eligibleUnits: 43
+    excludedUnits: 214
+    excludedRanges: 112
+    agreedHighRiskUnits: 36
+    uncertainHighRiskUnits: 0
+  - sourceRegisterId: S03
+    sourceEventId: E003
+    medium: html
+    ledgerArtifact: research/preallocation-capacity-ledgers-v1/source-S03.json
+    ledgerArtifactFingerprint: sha256:d193b8134b986443079b7eeed79f204e71d2ff0c5e91f667ccd9d5af00497fa4
+    ledgerFingerprint: sha256:21a609a44e3dcd8c92485f3b13479fc78441a24785b8a644048d6d2bd8b0bf51
+    boundaryUnits: 543
+    eligibleUnits: 270
+    excludedUnits: 273
+    excludedRanges: 260
+    agreedHighRiskUnits: 166
+    uncertainHighRiskUnits: 38
+  - sourceRegisterId: S04
+    sourceEventId: E004
+    medium: pdf
+    ledgerArtifact: research/preallocation-capacity-ledgers-v1/source-S04.json
+    ledgerArtifactFingerprint: sha256:ebf236bc24f7c7d12c31bdb1e3e504fa5b85bda52adcc33a17556bdfa2521933
+    ledgerFingerprint: sha256:0e05d2b59b9a5890acda1588a9e768ee4631f7b7661924e4931c4f218dd27ffd
+    boundaryUnits: 101
+    eligibleUnits: 45
+    excludedUnits: 56
+    excludedRanges: 56
+    agreedHighRiskUnits: 30
+    uncertainHighRiskUnits: 1
+  - sourceRegisterId: S05
+    sourceEventId: E005
+    medium: html
+    ledgerArtifact: research/preallocation-capacity-ledgers-v1/source-S05.json
+    ledgerArtifactFingerprint: sha256:71b321fbc7c75d8122be271a4ffa5254cd572463f26a9d9fcb5688df84a5d5f0
+    ledgerFingerprint: sha256:bb7d48082679859e5e719ae6558c0a450f52a1a6334a765e7076328b0bac5bda
+    boundaryUnits: 72
+    eligibleUnits: 29
+    excludedUnits: 43
+    excludedRanges: 41
+    agreedHighRiskUnits: 18
+    uncertainHighRiskUnits: 1
+  - sourceRegisterId: S08
+    sourceEventId: E007
+    medium: pdf
+    ledgerArtifact: research/preallocation-capacity-ledgers-v1/source-S08.json
+    ledgerArtifactFingerprint: sha256:f14065a142bb1f7a8452fbcac9209faaa80bb61b11888c49310651cc1a64d712
+    ledgerFingerprint: sha256:666091b7f8f176f3e100f1a37a8be78b236861c28be8dabc58c01c9f75d462d1
+    boundaryUnits: 199
+    eligibleUnits: 88
+    excludedUnits: 111
+    excludedRanges: 111
+    agreedHighRiskUnits: 56
+    uncertainHighRiskUnits: 8
+  - sourceRegisterId: S09
+    sourceEventId: E008
+    medium: pdf
+    ledgerArtifact: research/preallocation-capacity-ledgers-v1/source-S09.json
+    ledgerArtifactFingerprint: sha256:ea2e729144018ad55a7fa1484786e8f18a617ad409322bbb02a01b82ed44a56d
+    ledgerFingerprint: sha256:9cf18b3930be7ef2f8036de56427567540d6d0c5b7e371aa7ca3e5107c2db881
+    boundaryUnits: 11
+    eligibleUnits: 5
+    excludedUnits: 6
+    excludedRanges: 6
+    agreedHighRiskUnits: 5
+    uncertainHighRiskUnits: 0
+  - sourceRegisterId: S13
+    sourceEventId: E010
+    medium: html
+    ledgerArtifact: research/preallocation-capacity-ledgers-v1/source-S13.json
+    ledgerArtifactFingerprint: sha256:aec160dc7d3a449fc3eedf9750f1263c78fe236cf181391f06ed6fc164a42cad
+    ledgerFingerprint: sha256:3efe60430d738f110e3ca4e6a78921119cc1f6d971d265a58dc35c5ceaea16e4
+    boundaryUnits: 61
+    eligibleUnits: 23
+    excludedUnits: 38
+    excludedRanges: 34
+    agreedHighRiskUnits: 20
+    uncertainHighRiskUnits: 0
+  - sourceRegisterId: S18
+    sourceEventId: E014
+    medium: pdf
+    ledgerArtifact: research/preallocation-capacity-ledgers-v1/source-S18.json
+    ledgerArtifactFingerprint: sha256:96e8dad39b537d72a1f25b65a42b8d00c48beb6fb921839b35d9248e0420d846
+    ledgerFingerprint: sha256:e70819205a83318d7a309845734114ddb076eaa86d873449c755f946ee2affc8
+    boundaryUnits: 19
+    eligibleUnits: 2
+    excludedUnits: 17
+    excludedRanges: 17
+    agreedHighRiskUnits: 1
+    uncertainHighRiskUnits: 0
+  - sourceRegisterId: S19
+    sourceEventId: E015
+    medium: html
+    ledgerArtifact: research/preallocation-capacity-ledgers-v1/source-S19.json
+    ledgerArtifactFingerprint: sha256:7b95504bedb8230c1f72e5725bb2d7246ef769e0389446145ae9a67df99db410
+    ledgerFingerprint: sha256:2877f9f08b5985c4f10c945174573bc508ab020e04ff9e39ad3212999bb9254b
+    boundaryUnits: 118
+    eligibleUnits: 58
+    excludedUnits: 60
+    excludedRanges: 58
+    agreedHighRiskUnits: 47
+    uncertainHighRiskUnits: 2
+  - sourceRegisterId: S20
+    sourceEventId: E016
+    medium: html
+    ledgerArtifact: research/preallocation-capacity-ledgers-v1/source-S20.json
+    ledgerArtifactFingerprint: sha256:5761289e357cbd2f64ffd7d720babcbe6713ddfffd21b25de570720d3258855d
+    ledgerFingerprint: sha256:c64cab13b92877b161e0e71867a7f0200db34974f8b8068dfef8479de5ead930
+    boundaryUnits: 25
+    eligibleUnits: 25
+    excludedUnits: 0
+    excludedRanges: 0
+    agreedHighRiskUnits: 10
+    uncertainHighRiskUnits: 0
+totals:
+  sources: 10
+  boundaryUnits: 1406
+  eligibleUnits: 588
+  excludedUnits: 818
+  excludedRanges: 695
+  agreedHighRiskUnits: 389
+  uncertainHighRiskUnits: 50
+sourceContentStored: false
+frozenBeforeAllocation: true
+selectionPerformed: false
+observationCodingPerformed: false
+traitAdmission: prohibited
+runtimeActivation: prohibited

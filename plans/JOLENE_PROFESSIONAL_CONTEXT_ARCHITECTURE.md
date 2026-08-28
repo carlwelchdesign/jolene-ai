@@ -740,6 +740,31 @@ This repairs an operational source-of-truth defect; it does not copy the
 artifact into the portfolio, activate an endpoint, deploy, publish, or authorize
 launch.
 
+`JOL-PUBLIC-010` import-safety checkpoint:
+
+- portfolio import now treats a newer capture timestamp as freshness metadata,
+  not evidence that previously reviewed content changed;
+- unchanged imports preserve explicit `public_approved` and
+  `internal_approved` claim decisions while actual content, contribution,
+  maturity, citation, type, or metadata changes still require review;
+- `npm run career:import-portfolio:audit` uses a SQLite-native temporary clone,
+  emits only aggregate counts and fixed validation codes, deletes the clone, and
+  leaves the configured database unchanged;
+- `npm run career:import-portfolio:review-packet` writes a schema-validated,
+  mode-0600, SHA-256-bound owner-only packet containing the exact changed public
+  projection without database paths, private provenance, Obsidian material,
+  credentials, or private source bodies;
+- the current `origin/main` portfolio snapshot, evaluated against the latest
+  external canonical backup, would retain 14 of 41 immediately export-eligible
+  claims while placing 12 changed sources and 6 changed claims back into review;
+- the current packet contains 12 changed source entries and 27 affected public
+  claim entries, including 6 materially changed claims, with stable hash
+  `sha256:eb385ddf47365e4cc423591143997cc44c7a46a07589cf6f285150ca4c23aedb`;
+  and
+- no canonical import, approval decision, artifact regeneration, portfolio
+  transfer, Vercel action, deployment, publication, or launch is authorized by
+  this checkpoint.
+
 `JOL-CAREER-005K` isolated-container boundary:
 
 - implementation commit: `3db8b16` (`JOL-CAREER-005K isolate public delegate

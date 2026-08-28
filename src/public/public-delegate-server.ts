@@ -125,9 +125,20 @@ export function createPublicDelegateRequestHandler(
         );
         return;
       }
-      const admission = options.admissions.acquire(
-        (options.clientKey ?? socketClientKey)(request),
-      );
+      let admission;
+      try {
+        admission = await options.admissions.acquire(
+          (options.clientKey ?? socketClientKey)(request),
+        );
+      } catch {
+        await respond(
+          503,
+          publicError("public_delegate_busy", requestId, 60),
+          "busy",
+          { "retry-after": "60" },
+        );
+        return;
+      }
       if (!admission.accepted) {
         await respond(
           admission.status,
@@ -174,7 +185,12 @@ export function createPublicDelegateRequestHandler(
           "public_evidence_unavailable",
         );
       } finally {
-        admission.release();
+        try {
+          await admission.release();
+        } catch {
+          // The accepted lease has a bounded expiry; release failure cannot
+          // make an already-sent response disclose coordination internals.
+        }
       }
     };
 }
@@ -376,16 +392,17 @@ function createAuditedResponder(
     });
     if (audits) {
       try {
-        void audits.record({
+        await audits.record({
           operation,
           method,
           status: guarded.status,
           outcome: guarded.outcome,
           durationMs: Date.now() - startedAt,
           ...guarded.details,
-        }).catch(() => undefined);
+        });
       } catch {
-        // Auditing is best-effort and must never change the public response.
+        // The bounded audit attempt completes before a serverless response can
+        // freeze, but telemetry failure must never change the safe response.
       }
     }
     sendJson(response, guarded.status, guarded.body, guarded.headers);

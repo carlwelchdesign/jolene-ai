@@ -224,7 +224,7 @@ export class PortfolioEvidenceImporter {
         sourceHash: hashRecord(recommendation),
         capturedAt,
       });
-      this.store.upsertDraftClaim({
+      const claim = this.store.upsertDraftClaim({
         ...scope,
         sourceId,
         logicalKey: "quotation",
@@ -232,6 +232,17 @@ export class PortfolioEvidenceImporter {
         proposition: recommendation.quote,
         contribution: `Third-party statement attributed to ${recommendation.name} (${recommendation.relationship}); exact wording and publication rights require reconciliation.`,
         maturity: "not_applicable",
+      });
+      this.store.upsertRelationship({
+        id: `${sourceId}:recommender-support`,
+        ...scope,
+        sourceId,
+        claimId: claim.id,
+        fromKind: "person",
+        fromId: slug(recommendation.name),
+        relationship: "supports",
+        toKind: "person",
+        toId: scope.actorId,
       });
     });
 

@@ -1,0 +1,24 @@
+schema_version: personality-av-attribution-recovery-outcome-v1
+status: failed-before-map-creation
+evaluated_at: 2026-08-27T10:25:00Z
+boundary_protocol_fingerprint: sha256:7ef6eba7a8eee9fde9be225f4e4b3dc7045a5165974091e008e41a592330bda7
+source_register_fingerprint: sha256:b17ed2346343313d1940071177573c95a7ecaf5bcc273e1da09b3592639d1db1
+sources:
+  - source_register_id: S16
+    source_event_id: E012
+    expected_units: 20
+    reviewed_units: 0
+    map_files_created: 0
+    failure_code: bound-reviewable-media-unavailable
+  - source_register_id: S17
+    source_event_id: E013
+    expected_units: 210
+    reviewed_units: 0
+    map_files_created: 0
+    failure_code: bound-reviewable-media-unavailable
+source_content_stored: false
+selection_performed: false
+observations_created: 0
+replacement_performed: false
+required_next_action: prospective-source-register-downgrade-and-replacement-research
+runtime_activation: prohibited

@@ -1,4 +1,5 @@
 import type { ChannelKind } from "./conversation.js";
+import type { SlackDisclosureScope } from "./channel-retrieval-policy.js";
 
 export interface PrivateWorkScope {
   readonly actorId: string;
@@ -11,11 +12,13 @@ export interface PrivateWorkScopeRequest extends PrivateWorkScope {
 
 export interface PrivateWorkScopeResolver {
   resolve(request: PrivateWorkScopeRequest): PrivateWorkScope | null;
+  slackDisclosureScope(request: PrivateWorkScopeRequest): SlackDisclosureScope;
 }
 
 export interface CanonicalPrivateWorkScopeOptions {
   readonly ownerScope: PrivateWorkScope;
   readonly slackOwnerUserId: string | undefined;
+  readonly slackOwnerWorkspaceId: string | undefined;
 }
 
 export class CanonicalPrivateWorkScopeResolver
@@ -27,8 +30,7 @@ export class CanonicalPrivateWorkScopeResolver
     if (request.channelKind === "slack_shared") return null;
     if (request.channelKind === "cli") return this.options.ownerScope;
     if (request.channelKind === "slack_dm") {
-      return this.options.slackOwnerUserId &&
-          request.actorId === this.options.slackOwnerUserId
+      return this.isSlackOwner(request)
         ? this.options.ownerScope
         : null;
     }
@@ -36,6 +38,20 @@ export class CanonicalPrivateWorkScopeResolver
       actorId: request.actorId,
       workspaceId: request.workspaceId,
     };
+  }
+
+  slackDisclosureScope(request: PrivateWorkScopeRequest): SlackDisclosureScope {
+    return this.isSlackOwner(request)
+      ? "verified_owner_dm"
+      : "none";
+  }
+
+  private isSlackOwner(request: PrivateWorkScopeRequest): boolean {
+    return request.channelKind === "slack_dm" &&
+      Boolean(this.options.slackOwnerUserId) &&
+      Boolean(this.options.slackOwnerWorkspaceId) &&
+      request.actorId === this.options.slackOwnerUserId &&
+      request.workspaceId === this.options.slackOwnerWorkspaceId;
   }
 }
 
@@ -46,5 +62,9 @@ export class TransportPrivateWorkScopeResolver
     return request.channelKind === "slack_shared"
       ? null
       : { actorId: request.actorId, workspaceId: request.workspaceId };
+  }
+
+  slackDisclosureScope(_request: PrivateWorkScopeRequest): SlackDisclosureScope {
+    return "none";
   }
 }

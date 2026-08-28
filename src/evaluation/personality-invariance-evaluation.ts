@@ -18,17 +18,20 @@ export interface PersonalityInvarianceFixture {
   readonly payload: GroundedResponsePayload;
 }
 
-export type PersonalityHardFailureCode =
-  | "semantic_fingerprint_changed"
-  | "semantic_segments_changed"
-  | "rendered_text_changed"
-  | "completion_state_hidden"
-  | "permission_state_hidden"
-  | "personality_flourish_budget_exceeded"
-  | "personality_ornament_not_suppressed"
-  | "celebrity_identity_or_endorsement"
-  | "borrowed_quote_or_biography"
-  | "dialect_or_default_intimacy";
+export const PERSONALITY_HARD_FAILURE_CODES = [
+  "semantic_fingerprint_changed",
+  "semantic_segments_changed",
+  "rendered_text_changed",
+  "completion_state_hidden",
+  "permission_state_hidden",
+  "personality_flourish_budget_exceeded",
+  "personality_ornament_not_suppressed",
+  "celebrity_identity_or_endorsement",
+  "borrowed_quote_or_biography",
+  "dialect_or_default_intimacy",
+] as const;
+
+export type PersonalityHardFailureCode = typeof PERSONALITY_HARD_FAILURE_CODES[number];
 
 export interface PersonalityEvaluationFailure {
   readonly fixtureId: string;

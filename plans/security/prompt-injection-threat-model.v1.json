@@ -1,0 +1,1399 @@
+{
+  "schemaVersion": "jolene.prompt-injection-threat-model.v1",
+  "ticketId": "JOL-SEC-003",
+  "reviewedAt": "2026-08-27T23:59:00.000Z",
+  "status": "implementation_ready",
+  "scope": {
+    "surfaces": [
+      "private_cli",
+      "private_http",
+      "slack_owner_dm",
+      "slack_shared",
+      "public_portfolio_answer",
+      "public_job_fit",
+      "public_contact_intent",
+      "private_career_mcp",
+      "client_ai_packets",
+      "future_mutating_tools"
+    ],
+    "assets": [
+      "governing_policy",
+      "private_knowledge",
+      "public_evidence_integrity",
+      "tool_authority",
+      "human_approval",
+      "identity_and_commitments",
+      "answer_integrity",
+      "credentials",
+      "audit_integrity",
+      "provider_budget"
+    ],
+    "nonGoals": [
+      "Add a mutating model tool.",
+      "Treat prompt wording or a classifier as an authorization boundary.",
+      "Deploy, promote, publish, or change a Vercel environment.",
+      "Claim complete prompt-injection protection before all blocking gates pass."
+    ]
+  },
+  "assumptions": [
+    {
+      "id": "A01",
+      "statement": "The public delegate remains physically isolated from Obsidian, private memory, the canonical career database, and private model tools.",
+      "verification": "JOL-SEC-006 and JOL-SEC-008"
+    },
+    {
+      "id": "A02",
+      "statement": "The private model has only the five registered read-only tools; external messaging remains proposal-only with no model tool.",
+      "verification": "JOL-SEC-005"
+    },
+    {
+      "id": "A03",
+      "statement": "Slack owner identity is matched to the configured immutable member ID before private retrieval is exposed.",
+      "verification": "JOL-SEC-005 and JOL-SEC-008"
+    },
+    {
+      "id": "A04",
+      "statement": "All retrieved, remembered, quoted, imported, submitted, and external-AI content is data and can never grant authority.",
+      "verification": "JOL-SEC-004 through JOL-SEC-008"
+    }
+  ],
+  "actors": [
+    {
+      "id": "ACT01",
+      "name": "Carl Welch",
+      "authority": "May state current intent and make explicit owner decisions after authenticated scope is established.",
+      "cannotAuthorize": "Instructions attributed to Carl inside retrieved, quoted, forwarded, historical or external-AI content."
+    },
+    {
+      "id": "ACT02",
+      "name": "Public portfolio visitor",
+      "authority": "May ask a bounded public question or submit literal contact consent and contact data.",
+      "cannotAuthorize": "Private retrieval, identity claims, commitments, contact delivery, policy changes or tools."
+    },
+    {
+      "id": "ACT03",
+      "name": "Shared Slack participant",
+      "authority": "May provide conversational input within the shared thread.",
+      "cannotAuthorize": "Private retrieval, durable memory, Carl identity, commitments or consequential actions."
+    },
+    {
+      "id": "ACT04",
+      "name": "Retrieved or persisted content source",
+      "authority": "None; may supply evidence within its reviewed purpose and disclosure ceiling.",
+      "cannotAuthorize": "Policy, tool calls, query expansion, recipients, data classification, approval or execution."
+    },
+    {
+      "id": "ACT05",
+      "name": "External AI or model provider",
+      "authority": "None; may return bounded candidate output for deterministic validation.",
+      "cannotAuthorize": "Human decisions, tool scope, commitments, evidence approval or release."
+    },
+    {
+      "id": "ACT06",
+      "name": "Deterministic runtime policy",
+      "authority": "Defines authenticated scope, disclosure ceilings, capability availability, schemas, approvals, fallbacks and release gates.",
+      "cannotAuthorize": "Facts not supported by reviewed evidence or owner decisions not represented by an exact approval record."
+    },
+    {
+      "id": "ACT07",
+      "name": "Unauthenticated local HTTP caller",
+      "authority": "None until JOL-SEC-004A authenticates the principal and derives scope server-side.",
+      "cannotAuthorize": "Actor, workspace, channel, Slack owner identity, private work scope or private tools."
+    }
+  ],
+  "dataInventory": [
+    {
+      "id": "DATA01",
+      "name": "Private inbound messages and assistant turns",
+      "classification": "private_to_sensitive",
+      "purpose": "Same-thread continuity and retry-safe delivery.",
+      "modelVisible": true,
+      "providerEgress": "Private model requests may contain current and recent same-thread content.",
+      "currentRetention": "Stored in SQLite without a documented TTL.",
+      "currentDeletion": "No owner-facing conversation deletion or quarantine workflow.",
+      "ownerTicket": "JOL-SEC-009"
+    },
+    {
+      "id": "DATA02",
+      "name": "Approved memories and task events",
+      "classification": "private_to_sensitive",
+      "purpose": "Authorized task continuity, standing rules and corrected facts.",
+      "modelVisible": true,
+      "providerEgress": "Selected items may be included in private model context.",
+      "currentRetention": "Memory supports expiry/supersession/forget; task-event retention is not time-bounded.",
+      "currentDeletion": "Memory forget exists; derivation cleanup across other stores is not documented.",
+      "ownerTicket": "JOL-SEC-007"
+    },
+    {
+      "id": "DATA03",
+      "name": "Allowlisted Obsidian sections",
+      "classification": "private_to_restricted",
+      "purpose": "Owner-requested personal, career, project, engineering and recipe retrieval.",
+      "modelVisible": true,
+      "providerEgress": "Raw bounded excerpts may be sent to the private model after a tool call.",
+      "currentRetention": "Canonical notes remain in the vault; excerpts are not separately persisted by the source adapter.",
+      "currentDeletion": "Vault edits/allowlist removal apply on future reads; provider/cache revocation is not represented.",
+      "ownerTicket": "JOL-SEC-007"
+    },
+    {
+      "id": "DATA04",
+      "name": "Reviewed private career evidence and embeddings",
+      "classification": "restricted",
+      "purpose": "Professional retrieval, comparison and source-grounded citations.",
+      "modelVisible": true,
+      "providerEgress": "Retrieved claims may reach the private model; chunk text may reach an embedding provider when enabled.",
+      "currentRetention": "Canonical SQLite and retrieval index retain current and historical records under evidence lifecycle rules.",
+      "currentDeletion": "Revocation excludes future eligibility; index/provider/cache propagation requires explicit verification.",
+      "ownerTicket": "JOL-SEC-007"
+    },
+    {
+      "id": "DATA05",
+      "name": "Versioned public career artifact",
+      "classification": "public_approved",
+      "purpose": "Isolated public RAG, citations, job-fit and manifest responses.",
+      "modelVisible": true,
+      "providerEgress": "Selected claims and the visitor question may reach public generation/embedding providers.",
+      "currentRetention": "Versioned artifact host and warm-runtime embedding cache.",
+      "currentDeletion": "Revocation requires a new artifact and exact corpus pin; downstream cache SLA is release work.",
+      "ownerTicket": "JOL-SEC-006"
+    },
+    {
+      "id": "DATA06",
+      "name": "Public visitor questions",
+      "classification": "untrusted_public",
+      "purpose": "Evidence selection and bounded public answer generation.",
+      "modelVisible": true,
+      "providerEgress": "May be sent to embedding and answer providers; app runtime does not create conversation continuity.",
+      "currentRetention": "Not stored in public application audit; provider processing/retention remains an external policy dependency.",
+      "currentDeletion": "No application record to delete; provider terms and logs require documented review.",
+      "ownerTicket": "JOL-SEC-009"
+    },
+    {
+      "id": "DATA07",
+      "name": "Public contact intents",
+      "classification": "private_contact",
+      "purpose": "Owner-reviewed recruiter or hiring-manager follow-up request.",
+      "modelVisible": false,
+      "providerEgress": "None in the current queue path.",
+      "currentRetention": "Bounded queue retention and maximum entries; hosted contact remains disabled.",
+      "currentDeletion": "Owner deletion exists; consent receipt and backup-erasure contract remain incomplete.",
+      "ownerTicket": "JOL-SEC-009"
+    },
+    {
+      "id": "DATA08",
+      "name": "Client-AI packet context, turns and handoffs",
+      "classification": "general_to_restricted",
+      "purpose": "Bounded owner-approved coordination with Jenny or Maria AI.",
+      "modelVisible": false,
+      "providerEgress": "No transport/model summarization is active; future transport is release-gated.",
+      "currentRetention": "Owner-scoped packet store; a complete retention schedule is not documented.",
+      "currentDeletion": "Cancellation exists before completion; correction/erasure and recipient propagation remain planned.",
+      "ownerTicket": "JOL-SEC-009"
+    },
+    {
+      "id": "DATA09",
+      "name": "Capability, knowledge, career, MCP and public audit events",
+      "classification": "restricted_metadata",
+      "purpose": "Accountability, failure analysis and bounded operational metrics.",
+      "modelVisible": false,
+      "providerEgress": "None by design.",
+      "currentRetention": "Content-minimizing but not consistently time-bounded or tamper-evident.",
+      "currentDeletion": "No unified retention/deletion policy.",
+      "ownerTicket": "JOL-SEC-009"
+    }
+  ],
+  "boundaries": [
+    {
+      "id": "B01",
+      "name": "Private transport to request validation",
+      "source": "CLI or local private HTTP caller",
+      "destination": "JoleneService",
+      "dataClasses": ["private", "restricted", "sensitive"],
+      "modelVisible": true,
+      "currentControlIds": ["C01", "C02", "C03"]
+    },
+    {
+      "id": "B02",
+      "name": "Slack event to authenticated channel scope",
+      "source": "Slack Events API",
+      "destination": "Slack mapper and private-work-scope resolver",
+      "dataClasses": ["general", "private", "restricted"],
+      "modelVisible": true,
+      "currentControlIds": ["C01", "C02", "C04", "C05"]
+    },
+    {
+      "id": "B03",
+      "name": "Conversation history to private model input",
+      "source": "SQLite same-thread turns",
+      "destination": "OpenAI Agents runner",
+      "dataClasses": ["private", "restricted", "sensitive"],
+      "modelVisible": true,
+      "currentControlIds": ["C02", "C06", "C10"]
+    },
+    {
+      "id": "B04",
+      "name": "Approved task memory to private model input",
+      "source": "Authorized work-context store",
+      "destination": "OpenAI Agents runner",
+      "dataClasses": ["private", "restricted", "sensitive"],
+      "modelVisible": true,
+      "currentControlIds": ["C02", "C07", "C10"]
+    },
+    {
+      "id": "B05",
+      "name": "Obsidian retrieval to private model tool result",
+      "source": "Allowlisted local Markdown",
+      "destination": "search_obsidian tool output",
+      "dataClasses": ["private", "restricted"],
+      "modelVisible": true,
+      "currentControlIds": ["C02", "C05", "C08", "C09", "C10"]
+    },
+    {
+      "id": "B06",
+      "name": "Career retrieval to private model tool result",
+      "source": "Approved career evidence index",
+      "destination": "search_career_evidence tool output",
+      "dataClasses": ["restricted"],
+      "modelVisible": true,
+      "currentControlIds": ["C02", "C05", "C09", "C10", "C11"]
+    },
+    {
+      "id": "B07",
+      "name": "Project and work-status tools to private model",
+      "source": "Scoped task and watched-project stores",
+      "destination": "Read-only model tool output",
+      "dataClasses": ["restricted"],
+      "modelVisible": true,
+      "currentControlIds": ["C02", "C05", "C09", "C10"]
+    },
+    {
+      "id": "B08",
+      "name": "Public visitor question to evidence selector",
+      "source": "Portfolio BFF",
+      "destination": "Isolated public delegate",
+      "dataClasses": ["general"],
+      "modelVisible": true,
+      "currentControlIds": ["C01", "C12", "C13", "C14", "C15"]
+    },
+    {
+      "id": "B09",
+      "name": "Approved public corpus to public model",
+      "source": "Versioned public artifact",
+      "destination": "OpenAI Responses API",
+      "dataClasses": ["general"],
+      "modelVisible": true,
+      "currentControlIds": ["C12", "C13", "C16", "C17"]
+    },
+    {
+      "id": "B10",
+      "name": "Public model output to portfolio response",
+      "source": "OpenAI Responses API",
+      "destination": "Portfolio BFF and browser",
+      "dataClasses": ["general"],
+      "modelVisible": false,
+      "currentControlIds": ["C13", "C17", "C18", "C19"]
+    },
+    {
+      "id": "B11",
+      "name": "Job description to deterministic comparison",
+      "source": "Portfolio visitor or private MCP client",
+      "destination": "Job-fit comparison service",
+      "dataClasses": ["general"],
+      "modelVisible": false,
+      "currentControlIds": ["C01", "C12", "C20"]
+    },
+    {
+      "id": "B12",
+      "name": "Contact intent to review queue",
+      "source": "Portfolio visitor",
+      "destination": "Owner-reviewed local queue",
+      "dataClasses": ["general", "private"],
+      "modelVisible": false,
+      "currentControlIds": ["C01", "C14", "C21"]
+    },
+    {
+      "id": "B13",
+      "name": "Local MCP client to approved career evidence",
+      "source": "OS-launched stdio MCP client",
+      "destination": "Private career MCP service",
+      "dataClasses": ["restricted"],
+      "modelVisible": false,
+      "currentControlIds": ["C01", "C11", "C20", "C22"]
+    },
+    {
+      "id": "B14",
+      "name": "External AI transcript to client-AI packet",
+      "source": "Jenny or Maria AI output",
+      "destination": "Owner-scoped packet store and handoff review",
+      "dataClasses": ["general", "private", "restricted"],
+      "modelVisible": false,
+      "currentControlIds": ["C01", "C23", "C24"]
+    },
+    {
+      "id": "B15",
+      "name": "Future model request to consequential action",
+      "source": "Any future reasoning model",
+      "destination": "External system mutation",
+      "dataClasses": ["general", "private", "restricted", "sensitive"],
+      "modelVisible": true,
+      "currentControlIds": ["C05", "C24", "C25"]
+    },
+    {
+      "id": "B16",
+      "name": "Loopback HTTP caller to private control-plane identity",
+      "source": "Local process or browser capable of reaching loopback",
+      "destination": "Private chat, task, memory, workflow and review routes",
+      "dataClasses": ["private", "restricted", "sensitive"],
+      "modelVisible": true,
+      "currentControlIds": ["C01", "C03"]
+    },
+    {
+      "id": "B17",
+      "name": "Private content to model and embedding providers",
+      "source": "Messages, history, memories, notes and career chunks",
+      "destination": "External model or embedding provider",
+      "dataClasses": ["private", "restricted", "sensitive"],
+      "modelVisible": true,
+      "currentControlIds": ["C01", "C08", "C11"]
+    },
+    {
+      "id": "B18",
+      "name": "Serverless public ingress to per-instance admission and telemetry",
+      "source": "Portfolio BFF and Vercel function instances",
+      "destination": "Hosted public delegate adapter",
+      "dataClasses": ["general"],
+      "modelVisible": true,
+      "currentControlIds": ["C12", "C13", "C14"]
+    }
+  ],
+  "controls": [
+    {
+      "id": "C01",
+      "name": "Strict runtime schemas and bounded inputs",
+      "phase": "current",
+      "kind": "deterministic",
+      "ownerTicket": "JOL-SEC-003",
+      "implementationRefs": ["src/application/jolene-service.ts", "src/domain/public-portfolio-contract.ts", "src/mcp/private-career-mcp-service.ts"],
+      "evidenceRefs": ["tests/jolene-service.test.ts", "tests/public-answer-service.test.ts", "tests/private-career-mcp-service.test.ts"],
+      "limitations": ["Schema validity does not establish that text is safe to treat as instructions."]
+    },
+    {
+      "id": "C02",
+      "name": "Versioned channel-aware retrieval policy",
+      "phase": "current",
+      "kind": "deterministic",
+      "ownerTicket": "JOL-KNOW-002",
+      "implementationRefs": ["src/domain/channel-retrieval-policy.ts", "src/application/jolene-service.ts"],
+      "evidenceRefs": ["tests/channel-retrieval-policy.test.ts", "tests/jolene-service.test.ts"],
+      "limitations": ["Policy selects data/tool availability but does not constrain semantic use of already-allowed content."]
+    },
+    {
+      "id": "C03",
+      "name": "Private local binding and owner-scoped service configuration",
+      "phase": "current",
+      "kind": "isolation",
+      "ownerTicket": "JOL-ARCH-001",
+      "implementationRefs": ["src/config.ts", "src/server.ts"],
+      "evidenceRefs": ["tests/config.test.ts", "tests/docker-config.test.ts"],
+      "limitations": ["A trusted local caller can still submit attacker-authored text."]
+    },
+    {
+      "id": "C04",
+      "name": "Slack owner-DM identity verification and event filtering",
+      "phase": "current",
+      "kind": "deterministic",
+      "ownerTicket": "JOL-SLACK-001",
+      "implementationRefs": ["src/slack/event-mapper.ts", "src/domain/private-work-scope.ts"],
+      "evidenceRefs": ["tests/slack-event-mapper.test.ts", "tests/private-work-scope.test.ts"],
+      "limitations": ["A verified owner can paste or forward malicious third-party content."]
+    },
+    {
+      "id": "C05",
+      "name": "Capability registry denies private tools in shared contexts and exposes no send tool",
+      "phase": "current",
+      "kind": "deterministic",
+      "ownerTicket": "JOL-ARCH-001A",
+      "implementationRefs": ["src/domain/capability-registry.ts", "src/agent/agent-runner.ts"],
+      "evidenceRefs": ["tests/capability-registry.test.ts", "tests/capability-invocation-audit.test.ts"],
+      "limitations": ["Allowed read-only tool arguments are not yet bound to the initiating user intent."]
+    },
+    {
+      "id": "C06",
+      "name": "Same-thread conversation isolation",
+      "phase": "current",
+      "kind": "deterministic",
+      "ownerTicket": "JOL-MEM-001",
+      "implementationRefs": ["src/persistence/sqlite-conversation-store.ts", "src/application/jolene-service.ts"],
+      "evidenceRefs": ["tests/sqlite-conversation-store.test.ts", "tests/agent-runner-input.test.ts"],
+      "limitations": ["Malicious instructions persist within the same thread and are replayed as raw text."]
+    },
+    {
+      "id": "C07",
+      "name": "Explicit memory proposal, approval, sensitivity and revocation lifecycle",
+      "phase": "current",
+      "kind": "process",
+      "ownerTicket": "JOL-MEM-001",
+      "implementationRefs": ["src/application/work-context-service.ts", "src/persistence/sqlite-work-context-store.ts"],
+      "evidenceRefs": ["tests/sqlite-work-context-store.test.ts", "tests/work-context-service.test.ts"],
+      "limitations": ["Approved memory content is still raw model-visible text and can contain embedded instructions."]
+    },
+    {
+      "id": "C08",
+      "name": "Filesystem allowlist and bounded Obsidian excerpts",
+      "phase": "current",
+      "kind": "deterministic",
+      "ownerTicket": "JOL-KNOW-001",
+      "implementationRefs": ["src/knowledge/obsidian-vault.ts", "src/knowledge/obsidian-source.ts"],
+      "evidenceRefs": ["tests/obsidian-source.test.ts"],
+      "limitations": ["Allowlisted note bodies and headings are not classified for instruction-like content."]
+    },
+    {
+      "id": "C09",
+      "name": "Content-minimizing private retrieval audit",
+      "phase": "current",
+      "kind": "detection",
+      "ownerTicket": "JOL-ARCH-001A",
+      "implementationRefs": ["src/application/capability-invocation-auditor.ts", "src/application/career-retrieval-service.ts"],
+      "evidenceRefs": ["tests/capability-invocation-audit.test.ts", "tests/career-retrieval.test.ts"],
+      "limitations": ["Current ledgers do not record an injection-risk reason code or intent binding."]
+    },
+    {
+      "id": "C10",
+      "name": "Prompt instruction labels retrieved and quoted content as untrusted",
+      "phase": "current",
+      "kind": "prompt",
+      "ownerTicket": "JOL-KNOW-002",
+      "implementationRefs": ["src/agent/agent-runner.ts", "docs/prompt.md"],
+      "evidenceRefs": ["tests/agent-runner-input.test.ts"],
+      "limitations": ["This is model guidance, not a security boundary; raw content can close or imitate delimiters."]
+    },
+    {
+      "id": "C11",
+      "name": "Reviewed career-evidence eligibility and citations",
+      "phase": "current",
+      "kind": "deterministic",
+      "ownerTicket": "JOL-CAREER-004",
+      "implementationRefs": ["src/application/career-retrieval-service.ts", "src/mcp/private-career-mcp-service.ts"],
+      "evidenceRefs": ["tests/career-retrieval.test.ts", "tests/private-career-mcp-service.test.ts"],
+      "limitations": ["Human approval establishes factual/public eligibility, not absence of embedded instructions."]
+    },
+    {
+      "id": "C12",
+      "name": "Physically isolated public artifact and public-only retrieval",
+      "phase": "current",
+      "kind": "isolation",
+      "ownerTicket": "JOL-PUBLIC-001",
+      "implementationRefs": ["src/public/public-artifact-source.ts", "src/public/public-hybrid-evidence-retriever.ts"],
+      "evidenceRefs": ["tests/public-artifact-source.test.ts", "tests/public-hybrid-evidence-retriever.test.ts"],
+      "limitations": ["Approved public claims can still contain instruction-like or poisoned prose."]
+    },
+    {
+      "id": "C13",
+      "name": "Public model has no tools, no session continuity, store false and strict JSON output",
+      "phase": "current",
+      "kind": "isolation",
+      "ownerTicket": "JOL-PUBLIC-006",
+      "implementationRefs": ["src/public/openai-public-answer-generator.ts"],
+      "evidenceRefs": ["tests/openai-public-answer-generator.test.ts"],
+      "limitations": ["Strict JSON validates shape, not semantic grounding or refusal to follow injected text."]
+    },
+    {
+      "id": "C14",
+      "name": "Public authorization, admission limits, body bounds and kill switch",
+      "phase": "current",
+      "kind": "deterministic",
+      "ownerTicket": "PORT-JOL-008",
+      "implementationRefs": ["src/public/public-delegate-server.ts", "src/public/public-request-admission.ts"],
+      "evidenceRefs": ["tests/public-delegate-manifest.test.ts", "tests/public-request-admission.test.ts"],
+      "limitations": ["Local fixed-window admission is not a distributed edge limiter."]
+    },
+    {
+      "id": "C15",
+      "name": "Sensitive public queries bypass semantic retrieval",
+      "phase": "current",
+      "kind": "deterministic",
+      "ownerTicket": "JOL-PUBLIC-009",
+      "implementationRefs": ["src/public/public-hybrid-evidence-retriever.ts"],
+      "evidenceRefs": ["tests/public-hybrid-evidence-retriever.test.ts"],
+      "limitations": ["Keyword matching is narrow and can be evaded with encoding, paraphrase or another language."]
+    },
+    {
+      "id": "C16",
+      "name": "Deterministic evidence baseline, conflict exclusion and provider fallback",
+      "phase": "current",
+      "kind": "deterministic",
+      "ownerTicket": "JOL-PUBLIC-006",
+      "implementationRefs": ["src/public/public-answer-service.ts"],
+      "evidenceRefs": ["tests/public-answer-service.test.ts", "tests/grounded-public-answer-service.test.ts"],
+      "limitations": ["A hostile question containing relevant keywords can still reach model generation with selected evidence."]
+    },
+    {
+      "id": "C17",
+      "name": "Public model instructions label question and evidence as untrusted",
+      "phase": "current",
+      "kind": "prompt",
+      "ownerTicket": "JOL-PUBLIC-006",
+      "implementationRefs": ["src/public/openai-public-answer-generator.ts"],
+      "evidenceRefs": ["tests/openai-public-answer-generator.test.ts", "evaluations/public-live-model-v1.json"],
+      "limitations": ["Model compliance is probabilistic and does not prove that generated prose is entailed by evidence."]
+    },
+    {
+      "id": "C18",
+      "name": "Fail-closed public disclosure-pattern filter",
+      "phase": "current",
+      "kind": "deterministic",
+      "ownerTicket": "PORT-JOL-008",
+      "implementationRefs": ["src/domain/public-disclosure-policy.ts", "src/public/public-delegate-server.ts"],
+      "evidenceRefs": ["tests/public-disclosure-policy.test.ts", "tests/public-delegate-manifest.test.ts"],
+      "limitations": ["Pattern blocking cannot detect every semantic disclosure, system-prompt leak, or unsupported public-safe claim."]
+    },
+    {
+      "id": "C19",
+      "name": "Content-minimizing public audit and operational telemetry",
+      "phase": "current",
+      "kind": "detection",
+      "ownerTicket": "JOL-PUBLIC-007",
+      "implementationRefs": ["src/public/public-audit-ledger.ts", "src/public/public-operational-telemetry.ts"],
+      "evidenceRefs": ["tests/public-audit-ledger.test.ts", "tests/public-operational-telemetry.test.ts"],
+      "limitations": ["No prompt-injection or semantic-grounding reason codes are currently recorded."]
+    },
+    {
+      "id": "C20",
+      "name": "Instruction-like job text returns unknown without evidence",
+      "phase": "current",
+      "kind": "deterministic",
+      "ownerTicket": "JOL-CAREER-005",
+      "implementationRefs": ["src/public/public-job-fit-service.ts", "src/mcp/private-career-mcp-service.ts"],
+      "evidenceRefs": ["tests/public-job-fit-service.test.ts", "tests/private-career-mcp-service.test.ts"],
+      "limitations": ["A small phrase list is not robust to obfuscation, translation, encoding or novel attacks."]
+    },
+    {
+      "id": "C21",
+      "name": "Contact input is staged as data for owner review and never sent automatically",
+      "phase": "current",
+      "kind": "process",
+      "ownerTicket": "PORT-JOL-009",
+      "implementationRefs": ["src/public/public-contact-intent-queue.ts", "src/application/contact-intent-review-service.ts"],
+      "evidenceRefs": ["tests/public-contact-intent-queue.test.ts", "tests/contact-intent-review-service.test.ts"],
+      "limitations": ["Instruction-like content remains visible to a human reviewer and must never be promoted into model authority."]
+    },
+    {
+      "id": "C22",
+      "name": "Private career MCP is local stdio, read-only, networkless and schema-bound",
+      "phase": "current",
+      "kind": "isolation",
+      "ownerTicket": "JOL-CAREER-007",
+      "implementationRefs": ["src/mcp/private-career-mcp-server.ts", "compose.yaml"],
+      "evidenceRefs": ["tests/private-career-mcp-stdio.test.ts", "tests/docker-config.test.ts"],
+      "limitations": ["Process launch is the trust boundary; an authorized local client can still make broad read requests."]
+    },
+    {
+      "id": "C23",
+      "name": "External-AI turns are bounded, attributed and stored as untrusted transcript data",
+      "phase": "current",
+      "kind": "process",
+      "ownerTicket": "JOL-CLIENTAI-001",
+      "implementationRefs": ["src/application/client-ai-task-packet-service.ts"],
+      "evidenceRefs": ["tests/client-ai-task-packet.test.ts", "tests/client-ai-task-packet-api.test.ts"],
+      "limitations": ["Future model summarization of external-AI turns requires an explicit untrusted envelope and output validator."]
+    },
+    {
+      "id": "C24",
+      "name": "Exact-action approval is actor, workspace, task, destination, content, purpose and expiry bound",
+      "phase": "current",
+      "kind": "deterministic",
+      "ownerTicket": "JOL-ARCH-001B",
+      "implementationRefs": ["src/application/action-approval-service.ts", "src/domain/action-approval.ts"],
+      "evidenceRefs": ["tests/action-approval.test.ts", "tests/client-ai-task-packet.test.ts"],
+      "limitations": ["The claim path is internal only today; any future adapter must preserve exact fingerprint matching and single consumption."]
+    },
+    {
+      "id": "C25",
+      "name": "No consequential model tool or public action adapter exists",
+      "phase": "current",
+      "kind": "isolation",
+      "ownerTicket": "JOL-ARCH-001A",
+      "implementationRefs": ["src/domain/capability-registry.ts", "docs/action-approvals.md"],
+      "evidenceRefs": ["tests/capability-registry.test.ts", "tests/action-approval.test.ts"],
+      "limitations": ["This invariant must become a release-blocking gate before any future mutating capability is added."]
+    },
+    {
+      "id": "C26",
+      "name": "Typed untrusted-content envelopes with provenance and risk metadata",
+      "phase": "current",
+      "kind": "deterministic",
+      "ownerTicket": "JOL-SEC-004",
+      "implementationRefs": ["src/domain/untrusted-content.ts", "src/agent/private-model-data.ts", "src/agent/agent-runner.ts"],
+      "evidenceRefs": ["tests/untrusted-content.test.ts", "tests/private-model-data.test.ts", "scripts/validate-untrusted-content-envelopes.ts"],
+      "limitations": ["Must preserve useful source content and citations while preventing authority confusion."]
+    },
+    {
+      "id": "C27",
+      "name": "Intent-bound per-turn capability and tool-argument authorization",
+      "phase": "current",
+      "kind": "deterministic",
+      "ownerTicket": "JOL-SEC-005",
+      "implementationRefs": ["src/agent/agent-runner.ts", "src/domain/tool-call-authorization.ts", "src/application/capability-invocation-auditor.ts", "src/persistence/sqlite-capability-invocation-store.ts"],
+      "evidenceRefs": ["docs/tool-call-authorization.md", "tests/tool-call-authorization.test.ts", "tests/capability-invocation-audit.test.ts", "scripts/validate-tool-call-authorization.ts"],
+      "limitations": ["Authenticated ingress remains a prerequisite; this control does not sanitize or quarantine retrieved content used for answer prose."]
+    },
+    {
+      "id": "C28",
+      "name": "Public semantic entailment and instruction-following output validator",
+      "phase": "current",
+      "kind": "deterministic",
+      "ownerTicket": "JOL-SEC-006",
+      "implementationRefs": ["src/public/public-answer-grounding-contract.ts", "src/public/public-answer-grounding-validator.ts", "src/public/public-answer-service.ts", "src/public/openai-public-answer-generator.ts"],
+      "evidenceRefs": ["docs/public-answer-grounding-contract.md", "evaluations/public-answer-grounding-adversarial-v1.json", "tests/public-answer-grounding-contract.test.ts", "tests/public-answer-grounding-validator.test.ts", "tests/public-answer-grounding-adversarial.test.ts"],
+      "limitations": ["Deterministic lexical entailment and finite prohibited-pattern families can miss novel semantic, multilingual or steganographic attacks; exact deterministic fallback and later live-model red-team gates remain required."]
+    },
+    {
+      "id": "C29",
+      "name": "Private RAG instruction-risk classification, quarantine and cross-source containment",
+      "phase": "current",
+      "kind": "deterministic",
+      "ownerTicket": "JOL-SEC-007",
+      "implementationRefs": ["src/application/private-rag-provider-gate.ts", "src/application/private-rag-security-coordinator.ts", "src/persistence/sqlite-private-rag-security-store.ts"],
+      "evidenceRefs": ["docs/private-rag-security.md", "evaluations/private-rag-security-v1.json", "tests/private-rag-adversarial-evaluation.test.ts", "tests/private-rag-security.test.ts", "scripts/validate-private-rag-security.ts"],
+      "limitations": ["Finite deterministic detection can miss novel semantic, multilingual or steganographic attacks; collection quarantine is intentionally conservative."]
+    },
+    {
+      "id": "C30",
+      "name": "Release-blocking deterministic and live-model adversarial suite",
+      "phase": "current",
+      "kind": "model_evaluation",
+      "ownerTicket": "JOL-SEC-008",
+      "implementationRefs": ["src/evaluation/prompt-injection-red-team-contract.ts", "src/evaluation/public-live-model-evaluation.ts", "src/application/private-rag-provider-gate.ts", "src/public/public-answer-grounding-validator.ts"],
+      "evidenceRefs": ["docs/prompt-injection-red-team.md", "evaluations/prompt-injection-cross-channel-v1.json", "evaluations/public-live-model-v1.json", "tests/prompt-injection-cross-channel.test.ts", "tests/public-live-model-evaluation.test.ts"],
+      "limitations": ["Finite deterministic and live suites reduce known risk but cannot prove absence of novel prompt injection; human review and deployment evidence remain separate release blockers."]
+    },
+    {
+      "id": "C31",
+      "name": "Content-minimizing injection telemetry, incident runbook and stale-gate release block",
+      "phase": "planned",
+      "kind": "detection",
+      "ownerTicket": "JOL-SEC-009",
+      "implementationRefs": ["src/public/public-audit-ledger.ts", "src/application/capability-invocation-auditor.ts", "docs"],
+      "evidenceRefs": ["JOL-SEC-009 acceptance criteria"],
+      "limitations": ["Telemetry must never retain prompts, retrieved text, credentials, contact content or provider error bodies."]
+    },
+    {
+      "id": "C32",
+      "name": "Authenticated private ingress with server-derived principal and channel scope",
+      "phase": "planned",
+      "kind": "deterministic",
+      "ownerTicket": "JOL-SEC-004A",
+      "implementationRefs": ["src/server.ts", "src/http/request-origin.ts", "src/domain/private-work-scope.ts", "src/slack/event-mapper.ts"],
+      "evidenceRefs": ["JOL-SEC-004A acceptance criteria"],
+      "limitations": ["Loopback and same-origin remain defense in depth and cannot replace authenticated principal derivation."]
+    },
+    {
+      "id": "C33",
+      "name": "Explicit private provider-egress policy and sensitivity screen",
+      "phase": "current",
+      "kind": "deterministic",
+      "ownerTicket": "JOL-SEC-007",
+      "implementationRefs": ["src/agent/agent-runner.ts", "src/agent/private-model-data.ts", "src/application/private-rag-provider-gate.ts", "src/domain/private-rag-policy.ts"],
+      "evidenceRefs": ["docs/private-rag-security.md", "tests/agent-runner-input.test.ts", "tests/capability-invocation-audit.test.ts", "tests/private-rag-provider-gate.test.ts"],
+      "limitations": ["Provider policy and filtering reduce exposure but cannot protect a host or provider account that is already compromised."]
+    },
+    {
+      "id": "C34",
+      "name": "Retention, deletion, quarantine and downstream revocation contracts",
+      "phase": "planned",
+      "kind": "process",
+      "ownerTicket": "JOL-SEC-009",
+      "implementationRefs": ["src/persistence/sqlite-conversation-store.ts", "src/persistence/sqlite-work-context-store.ts", "src/public/public-contact-intent-queue.ts", "src/application/client-ai-task-packet-service.ts"],
+      "evidenceRefs": ["JOL-SEC-009 acceptance criteria"],
+      "limitations": ["Backups, provider retention and already-public downstream copies require explicit external handling and cannot be silently inferred as erased."]
+    },
+    {
+      "id": "C35",
+      "name": "Durable hosted admission, budget, telemetry and trusted client identity",
+      "phase": "planned",
+      "kind": "deterministic",
+      "ownerTicket": "JOL-SEC-009",
+      "implementationRefs": ["src/public/vercel-public-delegate.ts", "src/public/public-request-admission.ts", "src/public/public-model-request-budget.ts"],
+      "evidenceRefs": ["JOL-SEC-009 acceptance criteria"],
+      "limitations": ["Distributed edge enforcement and trusted forwarding require provider-specific configuration and production verification in a separate release ticket."]
+    }
+  ],
+  "threats": [
+    {
+      "id": "T01",
+      "title": "Direct public instruction injection changes generated prose",
+      "families": ["direct_injection", "output_integrity"],
+      "surfaces": ["public_portfolio_answer"],
+      "assets": ["answer_integrity", "public_evidence_integrity"],
+      "impact": 3,
+      "likelihood": 4,
+      "currentControlIds": ["C01", "C12", "C13", "C16", "C17", "C18"],
+      "residualRisk": "high",
+      "residualReason": "The model sees the hostile question and can produce unsupported but pattern-safe prose while claims and citations remain unchanged.",
+      "preventionControlIds": ["C26", "C28"],
+      "detectionControlIds": ["C30", "C31"],
+      "containmentControlIds": ["C16", "C28"],
+      "recoveryControlIds": ["C16", "C31"],
+      "testOwnerTicket": "JOL-SEC-008"
+    },
+    {
+      "id": "T02",
+      "title": "Approved public evidence contains indirect instructions",
+      "families": ["indirect_injection", "poisoned_corpus", "output_integrity"],
+      "surfaces": ["public_portfolio_answer", "public_job_fit"],
+      "assets": ["answer_integrity", "public_evidence_integrity"],
+      "impact": 3,
+      "likelihood": 3,
+      "currentControlIds": ["C11", "C12", "C13", "C16", "C17"],
+      "residualRisk": "high",
+      "residualReason": "Public approval checks factual and disclosure status but does not prove that claim text is instruction-free.",
+      "preventionControlIds": ["C26", "C28", "C29"],
+      "detectionControlIds": ["C30", "C31"],
+      "containmentControlIds": ["C16", "C28"],
+      "recoveryControlIds": ["C16", "C31"],
+      "testOwnerTicket": "JOL-SEC-008"
+    },
+    {
+      "id": "T03",
+      "title": "Obsidian note instructs the model to broaden retrieval or disclose other notes",
+      "families": ["indirect_injection", "tool_manipulation", "data_exfiltration"],
+      "surfaces": ["private_cli", "private_http", "slack_owner_dm"],
+      "assets": ["private_knowledge", "tool_authority", "answer_integrity"],
+      "impact": 5,
+      "likelihood": 4,
+      "currentControlIds": ["C02", "C05", "C08", "C09", "C10", "C26", "C27", "C29", "C33"],
+      "residualRisk": "medium",
+      "residualReason": "Intent-bound tools, explicit provider egress, content screening and durable taint quarantine block covered attacks, but finite detection cannot prove all hostile note text will be recognized.",
+      "preventionControlIds": ["C26", "C27", "C29"],
+      "detectionControlIds": ["C30", "C31"],
+      "containmentControlIds": ["C05", "C27", "C29"],
+      "recoveryControlIds": ["C29", "C31"],
+      "testOwnerTicket": "JOL-SEC-008"
+    },
+    {
+      "id": "T04",
+      "title": "Career evidence or recommendation manipulates later tool use or answer framing",
+      "families": ["indirect_injection", "tool_manipulation", "poisoned_corpus"],
+      "surfaces": ["private_cli", "private_http", "slack_owner_dm", "private_career_mcp"],
+      "assets": ["private_knowledge", "tool_authority", "answer_integrity", "public_evidence_integrity"],
+      "impact": 4,
+      "likelihood": 3,
+      "currentControlIds": ["C02", "C05", "C09", "C10", "C11", "C22", "C26", "C27", "C29", "C33"],
+      "residualRisk": "medium",
+      "residualReason": "Career evidence and recommendation payloads retain authority none, exact payload classes and durable taint lineage, while novel semantic poisoning remains possible.",
+      "preventionControlIds": ["C26", "C27", "C29"],
+      "detectionControlIds": ["C30", "C31"],
+      "containmentControlIds": ["C05", "C27", "C29"],
+      "recoveryControlIds": ["C29", "C31"],
+      "testOwnerTicket": "JOL-SEC-008"
+    },
+    {
+      "id": "T05",
+      "title": "Conversation-history injection persists across turns",
+      "families": ["cross_turn_persistence", "direct_injection", "tool_manipulation"],
+      "surfaces": ["private_cli", "private_http", "slack_owner_dm", "slack_shared"],
+      "assets": ["governing_policy", "tool_authority", "answer_integrity"],
+      "impact": 4,
+      "likelihood": 4,
+      "currentControlIds": ["C02", "C05", "C06", "C10", "C26", "C27", "C29", "C33"],
+      "residualRisk": "medium",
+      "residualReason": "History is gated as untrusted conversation context, collection-level split attacks are quarantined, and taint blocks later replay; novel semantic attacks remain residual.",
+      "preventionControlIds": ["C26", "C27", "C29", "C33"],
+      "detectionControlIds": ["C30", "C31"],
+      "containmentControlIds": ["C05", "C27"],
+      "recoveryControlIds": ["C31"],
+      "testOwnerTicket": "JOL-SEC-008"
+    },
+    {
+      "id": "T06",
+      "title": "Approved memory or task event carries delayed embedded instructions",
+      "families": ["cross_turn_persistence", "indirect_injection", "tool_manipulation"],
+      "surfaces": ["private_cli", "private_http", "slack_owner_dm"],
+      "assets": ["governing_policy", "private_knowledge", "tool_authority", "answer_integrity"],
+      "impact": 5,
+      "likelihood": 3,
+      "currentControlIds": ["C02", "C05", "C07", "C10", "C26", "C27", "C29", "C33"],
+      "residualRisk": "medium",
+      "residualReason": "Durable memory and task events remain authority-free and cross the provider boundary only after policy and risk gates; finite detection remains residual.",
+      "preventionControlIds": ["C26", "C27", "C29"],
+      "detectionControlIds": ["C30", "C31"],
+      "containmentControlIds": ["C07", "C27", "C29"],
+      "recoveryControlIds": ["C07", "C31"],
+      "testOwnerTicket": "JOL-SEC-008"
+    },
+    {
+      "id": "T07",
+      "title": "Quoted or forwarded content in a verified owner DM drives unrelated private retrieval",
+      "families": ["direct_injection", "tool_manipulation", "data_exfiltration"],
+      "surfaces": ["slack_owner_dm"],
+      "assets": ["private_knowledge", "tool_authority", "answer_integrity"],
+      "impact": 5,
+      "likelihood": 4,
+      "currentControlIds": ["C02", "C04", "C05", "C09", "C10"],
+      "residualRisk": "critical",
+      "residualReason": "Owner identity authenticates the channel, not the authority of every pasted or quoted instruction inside the message.",
+      "preventionControlIds": ["C26", "C27"],
+      "detectionControlIds": ["C30", "C31"],
+      "containmentControlIds": ["C05", "C27"],
+      "recoveryControlIds": ["C31"],
+      "testOwnerTicket": "JOL-SEC-008"
+    },
+    {
+      "id": "T08",
+      "title": "Shared Slack injection impersonates authority or requests private disclosure",
+      "families": ["direct_injection", "identity_impersonation", "data_exfiltration"],
+      "surfaces": ["slack_shared"],
+      "assets": ["private_knowledge", "identity_and_commitments", "answer_integrity"],
+      "impact": 4,
+      "likelihood": 4,
+      "currentControlIds": ["C02", "C04", "C05", "C10", "C25"],
+      "residualRisk": "medium",
+      "residualReason": "Private tools are structurally absent, but the unconstrained final prose can still impersonate Carl or make unsupported statements.",
+      "preventionControlIds": ["C26", "C28"],
+      "detectionControlIds": ["C30", "C31"],
+      "containmentControlIds": ["C05", "C25"],
+      "recoveryControlIds": ["C31"],
+      "testOwnerTicket": "JOL-SEC-008"
+    },
+    {
+      "id": "T09",
+      "title": "Tool result uses delimiter or role confusion to override governing policy",
+      "families": ["tool_result_injection", "indirect_injection", "tool_manipulation"],
+      "surfaces": ["private_cli", "private_http", "slack_owner_dm"],
+      "assets": ["governing_policy", "tool_authority", "answer_integrity"],
+      "impact": 5,
+      "likelihood": 4,
+      "currentControlIds": ["C05", "C08", "C10", "C11", "C26", "C27", "C29", "C33"],
+      "residualRisk": "medium",
+      "residualReason": "Private tool observations use typed authority-free envelopes, exact provider payload classes and pre-provider quarantine; unrecognized semantic attacks remain residual.",
+      "preventionControlIds": ["C26", "C27", "C29"],
+      "detectionControlIds": ["C30", "C31"],
+      "containmentControlIds": ["C05", "C27"],
+      "recoveryControlIds": ["C31"],
+      "testOwnerTicket": "JOL-SEC-008"
+    },
+    {
+      "id": "T10",
+      "title": "External AI output is mistaken for Carl approval or executable instruction",
+      "families": ["indirect_injection", "identity_impersonation", "tool_manipulation"],
+      "surfaces": ["client_ai_packets", "future_mutating_tools"],
+      "assets": ["human_approval", "identity_and_commitments", "tool_authority"],
+      "impact": 5,
+      "likelihood": 3,
+      "currentControlIds": ["C23", "C24", "C25"],
+      "residualRisk": "medium",
+      "residualReason": "The current packet path is inert and owner-reviewed, but future model summarization or delivery adapters could blur transcript and approval authority.",
+      "preventionControlIds": ["C26", "C27"],
+      "detectionControlIds": ["C30", "C31"],
+      "containmentControlIds": ["C24", "C25", "C27"],
+      "recoveryControlIds": ["C31"],
+      "testOwnerTicket": "JOL-SEC-008"
+    },
+    {
+      "id": "T11",
+      "title": "Injected content attempts to stage contact or create a binding promise",
+      "families": ["contact_manipulation", "identity_impersonation", "tool_manipulation"],
+      "surfaces": ["public_portfolio_answer", "public_contact_intent", "slack_shared", "client_ai_packets", "future_mutating_tools"],
+      "assets": ["human_approval", "identity_and_commitments", "tool_authority"],
+      "impact": 5,
+      "likelihood": 4,
+      "currentControlIds": ["C05", "C13", "C21", "C24", "C25"],
+      "residualRisk": "medium",
+      "residualReason": "No automatic send path exists, but public/private generated prose can still falsely claim that contact or commitment occurred.",
+      "preventionControlIds": ["C27", "C28"],
+      "detectionControlIds": ["C30", "C31"],
+      "containmentControlIds": ["C21", "C24", "C25", "C28"],
+      "recoveryControlIds": ["C31"],
+      "testOwnerTicket": "JOL-SEC-008"
+    },
+    {
+      "id": "T12",
+      "title": "Obfuscated, encoded, multilingual or split-turn injection evades phrase detection",
+      "families": ["encoding_evasion", "cross_turn_persistence", "direct_injection"],
+      "surfaces": ["private_cli", "private_http", "slack_owner_dm", "slack_shared", "public_portfolio_answer", "public_job_fit", "private_career_mcp"],
+      "assets": ["governing_policy", "private_knowledge", "tool_authority", "answer_integrity"],
+      "impact": 5,
+      "likelihood": 5,
+      "currentControlIds": ["C01", "C10", "C15", "C17", "C20"],
+      "residualRisk": "critical",
+      "residualReason": "Existing keyword checks and representative tests cover only a narrow English attack subset.",
+      "preventionControlIds": ["C26", "C27", "C28", "C29"],
+      "detectionControlIds": ["C30", "C31"],
+      "containmentControlIds": ["C05", "C16", "C27", "C28", "C29"],
+      "recoveryControlIds": ["C16", "C31"],
+      "testOwnerTicket": "JOL-SEC-008"
+    },
+    {
+      "id": "T13",
+      "title": "Public output leaks system instructions or unsupported private-sounding details without matching a secret pattern",
+      "families": ["data_exfiltration", "output_integrity"],
+      "surfaces": ["public_portfolio_answer"],
+      "assets": ["governing_policy", "answer_integrity", "credentials"],
+      "impact": 4,
+      "likelihood": 3,
+      "currentControlIds": ["C12", "C13", "C17", "C18"],
+      "residualRisk": "high",
+      "residualReason": "The public model has no private data or tools, but the disclosure filter does not detect semantic prompt leakage or invented private-sounding claims.",
+      "preventionControlIds": ["C28"],
+      "detectionControlIds": ["C30", "C31"],
+      "containmentControlIds": ["C16", "C28"],
+      "recoveryControlIds": ["C16", "C31"],
+      "testOwnerTicket": "JOL-SEC-008"
+    },
+    {
+      "id": "T14",
+      "title": "Prompt injection consumes provider budget or triggers repeated expensive model work",
+      "families": ["resource_abuse", "direct_injection"],
+      "surfaces": ["public_portfolio_answer", "private_cli", "private_http", "slack_owner_dm", "slack_shared"],
+      "assets": ["provider_budget", "audit_integrity"],
+      "impact": 3,
+      "likelihood": 4,
+      "currentControlIds": ["C01", "C13", "C14", "C16", "C19"],
+      "residualRisk": "medium",
+      "residualReason": "Public requests are bounded, but private surfaces and local admission do not provide a complete distributed cost-control boundary.",
+      "preventionControlIds": ["C27", "C31"],
+      "detectionControlIds": ["C30", "C31"],
+      "containmentControlIds": ["C14", "C16", "C31"],
+      "recoveryControlIds": ["C31"],
+      "testOwnerTicket": "JOL-SEC-008"
+    },
+    {
+      "id": "T15",
+      "title": "Injection attempt is hidden by over-minimized logs or contaminates telemetry",
+      "families": ["audit_evasion", "indirect_injection"],
+      "surfaces": ["private_cli", "private_http", "slack_owner_dm", "slack_shared", "public_portfolio_answer", "private_career_mcp"],
+      "assets": ["audit_integrity", "private_knowledge", "credentials"],
+      "impact": 4,
+      "likelihood": 3,
+      "currentControlIds": ["C09", "C19", "C22"],
+      "residualRisk": "high",
+      "residualReason": "Current privacy-preserving ledgers omit prompt content correctly but also lack stable injection-risk, policy and fallback reason codes.",
+      "preventionControlIds": ["C31"],
+      "detectionControlIds": ["C31"],
+      "containmentControlIds": ["C31"],
+      "recoveryControlIds": ["C31"],
+      "testOwnerTicket": "JOL-SEC-009"
+    },
+    {
+      "id": "T16",
+      "title": "Unauthenticated loopback caller asserts Carl identity or a private channel",
+      "families": ["identity_impersonation", "tool_manipulation", "data_exfiltration"],
+      "surfaces": ["private_http"],
+      "assets": ["private_knowledge", "tool_authority", "human_approval", "identity_and_commitments"],
+      "impact": 5,
+      "likelihood": 4,
+      "currentControlIds": ["C01", "C03"],
+      "residualRisk": "critical",
+      "residualReason": "The local private HTTP API accepts caller-supplied actor, workspace and channel values; loopback binding is not principal authentication.",
+      "preventionControlIds": ["C32"],
+      "detectionControlIds": ["C31", "C32"],
+      "containmentControlIds": ["C05", "C32"],
+      "recoveryControlIds": ["C31", "C32"],
+      "testOwnerTicket": "JOL-SEC-004A"
+    },
+    {
+      "id": "T17",
+      "title": "Slack owner member ID is accepted outside the configured workspace identity",
+      "families": ["identity_impersonation", "cross_channel_confusion"],
+      "surfaces": ["slack_owner_dm", "slack_shared"],
+      "assets": ["private_knowledge", "tool_authority", "identity_and_commitments"],
+      "impact": 5,
+      "likelihood": 2,
+      "currentControlIds": ["C02", "C04", "C05"],
+      "residualRisk": "high",
+      "residualReason": "Current mapping checks the member ID but does not bind canonical owner scope to the exact configured workspace/member pair in the domain policy.",
+      "preventionControlIds": ["C32"],
+      "detectionControlIds": ["C31", "C32"],
+      "containmentControlIds": ["C05", "C32"],
+      "recoveryControlIds": ["C31"],
+      "testOwnerTicket": "JOL-SEC-004A"
+    },
+    {
+      "id": "T18",
+      "title": "Private or sensitive content is sent to a model or embedding provider without an explicit egress decision",
+      "families": ["data_exfiltration", "indirect_injection", "provider_boundary"],
+      "surfaces": ["private_cli", "private_http", "slack_owner_dm", "slack_shared", "private_career_mcp"],
+      "assets": ["private_knowledge", "credentials", "human_approval"],
+      "impact": 5,
+      "likelihood": 4,
+      "currentControlIds": ["C01", "C08", "C11"],
+      "residualRisk": "critical",
+      "residualReason": "Raw excerpts, messages and career chunks can cross a provider boundary without per-item sensitivity, provider-use and retention metadata.",
+      "preventionControlIds": ["C26", "C29", "C33"],
+      "detectionControlIds": ["C30", "C31"],
+      "containmentControlIds": ["C29", "C33"],
+      "recoveryControlIds": ["C31", "C34"],
+      "testOwnerTicket": "JOL-SEC-007"
+    },
+    {
+      "id": "T19",
+      "title": "Injected or sensitive raw content persists indefinitely and re-enters later model context",
+      "families": ["cross_turn_persistence", "indirect_injection", "retention_abuse"],
+      "surfaces": ["private_cli", "private_http", "slack_owner_dm", "slack_shared", "client_ai_packets"],
+      "assets": ["private_knowledge", "audit_integrity", "answer_integrity"],
+      "impact": 4,
+      "likelihood": 4,
+      "currentControlIds": ["C06", "C07", "C23"],
+      "residualRisk": "critical",
+      "residualReason": "Conversation, task-event, audit and client-AI retention is not consistently time-bounded, quarantinable or derivation-aware.",
+      "preventionControlIds": ["C26", "C29", "C34"],
+      "detectionControlIds": ["C30", "C31"],
+      "containmentControlIds": ["C29", "C34"],
+      "recoveryControlIds": ["C31", "C34"],
+      "testOwnerTicket": "JOL-SEC-009"
+    },
+    {
+      "id": "T20",
+      "title": "Parallel or cold-started hosted instances bypass local admission, budget or security telemetry",
+      "families": ["resource_abuse", "audit_evasion", "identity_impersonation"],
+      "surfaces": ["public_portfolio_answer", "public_job_fit", "public_contact_intent"],
+      "assets": ["provider_budget", "audit_integrity", "answer_integrity"],
+      "impact": 3,
+      "likelihood": 4,
+      "currentControlIds": ["C12", "C13", "C14", "C19"],
+      "residualRisk": "high",
+      "residualReason": "In-memory per-instance limits reset across cold starts and parallel instances, and forwarded client identity is an external trust assumption.",
+      "preventionControlIds": ["C35"],
+      "detectionControlIds": ["C31", "C35"],
+      "containmentControlIds": ["C14", "C35"],
+      "recoveryControlIds": ["C31", "C35"],
+      "testOwnerTicket": "JOL-SEC-009"
+    }
+  ],
+  "risks": [
+    {
+      "id": "R01",
+      "title": "Private indirect injection causes unrelated retrieval or disclosure",
+      "threatIds": ["T03", "T04", "T06", "T07", "T09", "T12"],
+      "impact": 5,
+      "likelihood": 4,
+      "score": 20,
+      "ownerTicket": "JOL-SEC-007",
+      "trigger": "A retrieved item changes tool selection, broadens a query, or appears as uncited authority.",
+      "mitigation": "Typed envelopes, intent-bound tools, source-risk metadata, quarantine and release-blocking adversarial tests.",
+      "fallback": "Disable private model tools and continue with explicit user-supplied context only.",
+      "status": "open"
+    },
+    {
+      "id": "R02",
+      "title": "Public model produces injected or unsupported prose",
+      "threatIds": ["T01", "T02", "T11", "T12", "T13"],
+      "impact": 4,
+      "likelihood": 4,
+      "score": 16,
+      "ownerTicket": "JOL-SEC-006",
+      "trigger": "Generated prose is not entailed by selected claims or repeats attacker instructions.",
+      "mitigation": "Deterministic semantic validation plus disclosure rules and exact deterministic fallback.",
+      "fallback": "Disable public model generation and serve deterministic evidence responses.",
+      "status": "open"
+    },
+    {
+      "id": "R03",
+      "title": "Future action adapters inherit model authority",
+      "threatIds": ["T05", "T07", "T09", "T10", "T11"],
+      "impact": 5,
+      "likelihood": 3,
+      "score": 15,
+      "ownerTicket": "JOL-SEC-005",
+      "trigger": "A consequential capability is exposed without exact intent, approval and payload fingerprint binding.",
+      "mitigation": "Block model-tool exposure until independent policy authorization, exact approval and adversarial gates pass.",
+      "fallback": "Remove or disable the adapter and leave proposal-only records for human handling.",
+      "status": "open"
+    },
+    {
+      "id": "R04",
+      "title": "Finite tests create false confidence against novel attacks",
+      "threatIds": ["T12", "T15"],
+      "impact": 4,
+      "likelihood": 4,
+      "score": 16,
+      "ownerTicket": "JOL-SEC-008",
+      "trigger": "Model, prompt, corpus, tool, channel or provider changes after the last reviewed suite hash.",
+      "mitigation": "Hash-bound live review, mutation families, stale-gate invalidation and explicit residual-risk language.",
+      "fallback": "Revert to deterministic/no-tool mode until the changed stack is re-evaluated.",
+      "status": "open"
+    },
+    {
+      "id": "R05",
+      "title": "Security telemetry either leaks content or cannot support incident response",
+      "threatIds": ["T14", "T15"],
+      "impact": 4,
+      "likelihood": 3,
+      "score": 12,
+      "ownerTicket": "JOL-SEC-009",
+      "trigger": "Incident review requires raw prompts, or logs contain prompts, excerpts, contact content, paths, credentials or provider bodies.",
+      "mitigation": "Stable reason codes, version/hash metadata, counts, timing and correlation identifiers only.",
+      "fallback": "Disable affected logging sink and rely on local deterministic gate reports until repaired.",
+      "status": "open"
+    },
+    {
+      "id": "R06",
+      "title": "Private control-plane identity can be impersonated locally",
+      "threatIds": ["T16", "T17"],
+      "impact": 5,
+      "likelihood": 4,
+      "score": 20,
+      "ownerTicket": "JOL-SEC-004A",
+      "trigger": "A request can select actor, workspace, private channel or owner-DM scope without a server-derived authenticated principal.",
+      "mitigation": "Authenticate private ingress, derive scope server-side, bind Slack workspace/member identity and fail closed on origin/host/token mismatch.",
+      "fallback": "Disable private HTTP chat/control routes and retain authenticated Slack owner DM or CLI-only recovery access as separately reviewed.",
+      "status": "open"
+    },
+    {
+      "id": "R07",
+      "title": "Private provider egress exposes more content than Carl intended",
+      "threatIds": ["T03", "T04", "T07", "T09", "T18"],
+      "impact": 5,
+      "likelihood": 4,
+      "score": 20,
+      "ownerTicket": "JOL-SEC-007",
+      "trigger": "A retrieved item or embedding chunk crosses a provider boundary without explicit sensitivity, purpose and provider-use authorization.",
+      "mitigation": "Typed envelopes, per-item egress policy, deterministic secret/PII screening, provider registry and content-minimizing audit.",
+      "fallback": "Disable provider-backed private retrieval and use local deterministic retrieval with owner-visible excerpts only.",
+      "status": "open"
+    },
+    {
+      "id": "R08",
+      "title": "Raw-content retention enables delayed re-injection and incomplete erasure",
+      "threatIds": ["T05", "T06", "T19"],
+      "impact": 4,
+      "likelihood": 4,
+      "score": 16,
+      "ownerTicket": "JOL-SEC-009",
+      "trigger": "Compromised content is replayed from a conversation, task event, memory, packet, audit record, backup or derived index after revocation.",
+      "mitigation": "Record-specific retention, quarantine, deletion, backup treatment and derivation-aware revocation contracts.",
+      "fallback": "Disable affected context source, rebuild indexes from reviewed inputs and restore from a known-good snapshot.",
+      "status": "open"
+    },
+    {
+      "id": "R09",
+      "title": "Hosted instance topology defeats local security budgets and incident visibility",
+      "threatIds": ["T14", "T15", "T20"],
+      "impact": 3,
+      "likelihood": 4,
+      "score": 12,
+      "ownerTicket": "JOL-SEC-009",
+      "trigger": "Parallel instances exceed intended requests, cost or concurrency, or production requests have no durable content-minimizing audit chain.",
+      "mitigation": "Distributed admission/budget storage, trusted forwarding policy, durable telemetry and provider-level alerting.",
+      "fallback": "Disable public model generation or the public delegate and serve static portfolio content until controls recover.",
+      "status": "open"
+    }
+  ],
+  "gates": [
+    {
+      "id": "G01",
+      "ownerTicket": "JOL-SEC-004",
+      "requirement": "Every model-visible retrieved, remembered, quoted, imported, submitted and external-AI item is typed as untrusted data with source and provenance metadata.",
+      "blocking": true,
+      "verification": ["unit", "contract", "adversarial"],
+      "appliesTo": ["private_release", "public_release", "future_tool_release"]
+    },
+    {
+      "id": "G02",
+      "ownerTicket": "JOL-SEC-005",
+      "requirement": "Every model tool is independently authorized for actor, workspace, channel, current user intent, purpose and bounded arguments; retrieved content cannot grant authority.",
+      "blocking": true,
+      "verification": ["unit", "contract", "adversarial", "audit"],
+      "appliesTo": ["private_release", "slack_release", "future_tool_release"]
+    },
+    {
+      "id": "G03",
+      "ownerTicket": "JOL-SEC-006",
+      "requirement": "Public generated prose passes deterministic disclosure and semantic-grounding validation or falls back byte-for-contract to the deterministic response.",
+      "blocking": true,
+      "verification": ["unit", "contract", "offline_model", "live_model", "human_review"],
+      "appliesTo": ["public_release"]
+    },
+    {
+      "id": "G04",
+      "ownerTicket": "JOL-SEC-007",
+      "requirement": "Private RAG cannot broaden retrieval, cross namespaces, invoke another tool or disclose unrelated content because of embedded instructions.",
+      "blocking": true,
+      "verification": ["unit", "integration", "adversarial", "human_review"],
+      "appliesTo": ["private_release", "slack_release"]
+    },
+    {
+      "id": "G05",
+      "ownerTicket": "JOL-SEC-008",
+      "requirement": "All blocker metrics pass at 100 percent across deterministic, indirect, cross-turn, tool-result, encoding, multilingual, impersonation, contact and exfiltration families; live cases receive hash-bound human review.",
+      "blocking": true,
+      "verification": ["offline_model", "live_model", "human_review"],
+      "appliesTo": ["private_release", "public_release", "slack_release", "future_tool_release"]
+    },
+    {
+      "id": "G06",
+      "ownerTicket": "JOL-SEC-009",
+      "requirement": "Security telemetry and incident response use content-minimizing reason codes and invalidate release approval when policy, prompt, model, corpus, tools or evaluation hash changes.",
+      "blocking": true,
+      "verification": ["unit", "contract", "audit", "human_review"],
+      "appliesTo": ["private_release", "public_release", "slack_release", "future_tool_release"]
+    },
+    {
+      "id": "G07",
+      "ownerTicket": "JOL-SEC-005",
+      "requirement": "No consequential action capability is model-exposed until exact-action approval, single-consumption, destination/content fingerprinting, intent binding and the full security suite pass.",
+      "blocking": true,
+      "verification": ["contract", "integration", "adversarial", "human_review"],
+      "appliesTo": ["future_tool_release"]
+    },
+    {
+      "id": "G08",
+      "ownerTicket": "JOL-SEC-004A",
+      "requirement": "Private HTTP and Slack owner scope is derived from an authenticated transport principal; caller-supplied actor, workspace and channel fields cannot grant authority.",
+      "blocking": true,
+      "verification": ["unit", "integration", "adversarial", "audit"],
+      "appliesTo": ["private_release", "slack_release", "future_tool_release"]
+    },
+    {
+      "id": "G09",
+      "ownerTicket": "JOL-SEC-009",
+      "requirement": "Every retained private/security record and provider egress path has purpose, classification, retention, deletion, revocation, backup and external-processor behavior documented and tested where enforceable.",
+      "blocking": true,
+      "verification": ["contract", "integration", "audit", "human_review"],
+      "appliesTo": ["private_release", "public_release", "slack_release", "future_tool_release"]
+    }
+  ],
+  "decisions": [
+    {
+      "id": "D01",
+      "decision": "Treat content provenance and execution authority as separate types.",
+      "rationale": "Owner approval, public approval and factual review do not make embedded instructions authoritative.",
+      "status": "accepted"
+    },
+    {
+      "id": "D02",
+      "decision": "Keep public Portfolio Jolene physically isolated from private knowledge and tools.",
+      "rationale": "Isolation reduces public prompt injection from a confidentiality and action risk to primarily answer-integrity and cost risk.",
+      "status": "accepted"
+    },
+    {
+      "id": "D03",
+      "decision": "Use deterministic authorization outside the model for channel, data, tool and action scope.",
+      "rationale": "A model cannot safely decide whether injected content has granted it more authority.",
+      "status": "accepted"
+    },
+    {
+      "id": "D04",
+      "decision": "Preserve deterministic fallbacks and kill switches for every model-generated public or future consequential path.",
+      "rationale": "Containment must work when the provider, validator or evaluation is unavailable or unsafe.",
+      "status": "accepted"
+    },
+    {
+      "id": "D05",
+      "decision": "Never log raw prompts, retrieved excerpts, contact messages, private paths, credentials or provider error bodies as security telemetry.",
+      "rationale": "Incident detection must not create a secondary private-data corpus or attacker-controlled log sink.",
+      "status": "accepted"
+    },
+    {
+      "id": "D06",
+      "decision": "A finite passing evaluation reduces known risk but never proves complete prompt-injection protection.",
+      "rationale": "Prompts, models, tools, providers and attacks evolve; approvals must be versioned and invalidated on change.",
+      "status": "accepted"
+    }
+  ],
+  "raci": [
+    {
+      "activity": "Threat model and control-matrix maintenance",
+      "responsible": "Jolene development agent",
+      "accountable": "Carl Welch",
+      "consulted": ["Portfolio agent", "Security reviewers"],
+      "informed": ["Future integration owners"]
+    },
+    {
+      "activity": "Private retrieval and tool authorization implementation",
+      "responsible": "Jolene development agent",
+      "accountable": "Carl Welch",
+      "consulted": ["Trust/privacy reviewer"],
+      "informed": ["Slack integration owner"]
+    },
+    {
+      "activity": "Public answer validation and portfolio integration",
+      "responsible": "Jolene development agent",
+      "accountable": "Carl Welch",
+      "consulted": ["Portfolio agent"],
+      "informed": ["Recruiter-facing product reviewer"]
+    },
+    {
+      "activity": "Live-model adversarial review and release approval",
+      "responsible": "Jolene development agent",
+      "accountable": "Carl Welch",
+      "consulted": ["Independent security reviewer"],
+      "informed": ["Portfolio agent", "Slack integration owner"]
+    },
+    {
+      "activity": "Incident containment, credential rotation and recovery",
+      "responsible": "Carl Welch",
+      "accountable": "Carl Welch",
+      "consulted": ["Jolene development agent", "Affected provider owner"],
+      "informed": ["Affected integration owners"]
+    }
+  ],
+  "deliverySequence": [
+    "JOL-SEC-003",
+    "JOL-SEC-004A",
+    "JOL-SEC-004",
+    "JOL-SEC-005",
+    "JOL-SEC-007",
+    "JOL-SEC-006",
+    "JOL-SEC-008",
+    "JOL-SEC-009"
+  ],
+  "tickets": [
+    {
+      "id": "JOL-SEC-003",
+      "asanaGid": "1217931645187988",
+      "purpose": "Freeze the threat model, current/planned control distinction, risks, gates, ownership and implementation sequence.",
+      "prerequisites": [],
+      "completionBoundary": "Planning artifacts validate, specialist findings are integrated, repository verification passes, and the ticket is moved to Complete before a child begins."
+    },
+    {
+      "id": "JOL-SEC-004A",
+      "asanaGid": "1217931226744770",
+      "purpose": "Authenticate the private local control plane and derive actor, workspace, channel and owner scope server-side.",
+      "prerequisites": ["JOL-SEC-003"],
+      "completionBoundary": "Unauthenticated or mismatched local/Slack ingress cannot obtain private scope or tools; focused and full security tests pass."
+    },
+    {
+      "id": "JOL-SEC-004",
+      "asanaGid": "1217930650527754",
+      "purpose": "Implement typed untrusted-content envelopes and provenance.",
+      "prerequisites": ["JOL-SEC-003", "JOL-SEC-004A"],
+      "completionBoundary": "All model-visible untrusted content uses the versioned envelope and contract tests pass."
+    },
+    {
+      "id": "JOL-SEC-005",
+      "asanaGid": "1217931645187924",
+      "purpose": "Implement intent-bound tool-call authorization and future action prerequisites.",
+      "prerequisites": ["JOL-SEC-004"],
+      "completionBoundary": "Every private tool call is policy- and intent-bound outside the model; no consequential tool is added."
+    },
+    {
+      "id": "JOL-SEC-006",
+      "asanaGid": "1217931645028346",
+      "purpose": "Implement public semantic grounding and fail-closed output validation.",
+      "prerequisites": ["JOL-SEC-004", "JOL-SEC-005"],
+      "completionBoundary": "Generated prose is evidence-entailing or deterministic fallback is returned; focused and full tests pass."
+    },
+    {
+      "id": "JOL-SEC-007",
+      "asanaGid": "1217930650515009",
+      "purpose": "Harden private Obsidian, memory and career RAG against indirect injection.",
+      "prerequisites": ["JOL-SEC-004", "JOL-SEC-005"],
+      "completionBoundary": "Indirect content cannot broaden retrieval, cross source scope or authorize tools; owner review remains available."
+    },
+    {
+      "id": "JOL-SEC-008",
+      "asanaGid": "1217931211439161",
+      "purpose": "Expand deterministic and live-model injection gates and repair evaluation reliability.",
+      "prerequisites": ["JOL-SEC-006", "JOL-SEC-007"],
+      "completionBoundary": "All blocker metrics pass, live review is hash-bound, and the evaluation harness exits cleanly in focused and full suites."
+    },
+    {
+      "id": "JOL-SEC-009",
+      "asanaGid": "1217930864790453",
+      "purpose": "Add security telemetry, incident recovery and stale-gate release blocking.",
+      "prerequisites": ["JOL-SEC-008"],
+      "completionBoundary": "Content-minimizing telemetry and the incident/release runbook are verified; no deployment is part of this ticket."
+    }
+  ]
+}

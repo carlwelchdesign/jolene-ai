@@ -4,8 +4,17 @@ import path from "node:path";
 import dotenv from "dotenv";
 import ts from "typescript";
 
+import { applyApprovedPortfolioEvidenceImport } from "../src/application/approved-portfolio-evidence-import.js";
 import { PortfolioEvidenceImporter } from "../src/application/portfolio-evidence-importer.js";
+import {
+  createPortfolioEvidenceImportReviewPacket,
+  runPortfolioEvidenceImportAudit,
+} from "../src/application/portfolio-evidence-import-audit.js";
 import { SqliteCareerEvidenceStore } from "../src/persistence/sqlite-career-evidence-store.js";
+import {
+  readPortfolioEvidenceImportReviewPacket,
+  writePortfolioEvidenceImportReviewPacket,
+} from "../src/publication/portfolio-evidence-import-review-writer.js";
 
 dotenv.config({ path: path.resolve(process.cwd(), ".env.local"), quiet: true });
 
@@ -16,6 +25,11 @@ const portfolioRoot = path.resolve(
 const databasePath = path.resolve(
   process.cwd(),
   process.env.JOLENE_DATABASE_PATH ?? ".jolene/jolene.sqlite",
+);
+const reviewPacketPath = path.resolve(
+  process.cwd(),
+  process.env.JOLENE_PUBLIC_CORPUS_REVIEW_PACKET_PATH ??
+    ".jolene/evaluations/public-corpus-import-review.json",
 );
 const dataDirectory = path.join(portfolioRoot, "site/app");
 const portfolioDataPath = path.join(dataDirectory, "portfolio-data.ts");
@@ -33,22 +47,59 @@ const [portfolio, recommendations, capabilities, timestamps] = await Promise.all
   ]),
 ]);
 
-const store = new SqliteCareerEvidenceStore(databasePath);
-try {
-  const report = new PortfolioEvidenceImporter(store).import({
-    actorId: process.env.JOLENE_OWNER_ACTOR_ID ?? "carl",
-    workspaceId: process.env.JOLENE_CAREER_WORKSPACE_ID ?? "professional",
-    capturedAt: new Date(Math.max(...timestamps.map((entry) => entry.mtimeMs))).toISOString(),
-    snapshot: {
-      projects: portfolio.projects,
-      experience: portfolio.experience,
-      recommendations: recommendations.recommendations,
-      capabilities: capabilities.capabilities,
-    },
+const importInput = {
+  actorId: process.env.JOLENE_OWNER_ACTOR_ID ?? "carl",
+  workspaceId: process.env.JOLENE_CAREER_WORKSPACE_ID ?? "professional",
+  capturedAt: new Date(Math.max(...timestamps.map((entry) => entry.mtimeMs))).toISOString(),
+  snapshot: {
+    projects: portfolio.projects,
+    experience: portfolio.experience,
+    recommendations: recommendations.recommendations,
+    capabilities: capabilities.capabilities,
+  },
+};
+
+if (process.argv.includes("--apply-approved-packet")) {
+  const expectedPacketHash = requiredArgument("--packet-hash");
+  const reviewerId = requiredArgument("--reviewer-id");
+  const packet = await readPortfolioEvidenceImportReviewPacket(reviewPacketPath);
+  const result = await applyApprovedPortfolioEvidenceImport({
+    databasePath,
+    expectedPacketHash,
+    importInput,
+    packet,
+    reviewerId,
   });
-  process.stdout.write(`${JSON.stringify({ databasePath, portfolioRoot, ...report }, null, 2)}\n`);
-} finally {
-  store.close();
+  process.stdout.write(`${JSON.stringify(result, null, 2)}\n`);
+} else if (process.argv.includes("--review-packet")) {
+  const packet = await createPortfolioEvidenceImportReviewPacket({
+    databasePath,
+    importInput,
+  });
+  await writePortfolioEvidenceImportReviewPacket(reviewPacketPath, packet);
+  process.stdout.write(`${JSON.stringify({
+    packetWritten: true,
+    packetHash: packet.packetHash,
+    ...packet.summary,
+  }, null, 2)}\n`);
+} else if (process.argv.includes("--audit")) {
+  const report = await runPortfolioEvidenceImportAudit({ databasePath, importInput });
+  process.stdout.write(`${JSON.stringify(report, null, 2)}\n`);
+} else {
+  const store = new SqliteCareerEvidenceStore(databasePath);
+  try {
+    const report = new PortfolioEvidenceImporter(store).import(importInput);
+    process.stdout.write(`${JSON.stringify({ databasePath, portfolioRoot, ...report }, null, 2)}\n`);
+  } finally {
+    store.close();
+  }
+}
+
+function requiredArgument(name: string): string {
+  const index = process.argv.indexOf(name);
+  const value = index >= 0 ? process.argv[index + 1] : undefined;
+  if (!value || value.startsWith("--")) throw new Error(`${name} is required.`);
+  return value;
 }
 
 async function loadTypescriptData(filePath: string): Promise<Record<string, unknown>> {

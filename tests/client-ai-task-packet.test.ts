@@ -288,6 +288,13 @@ function approveOutbound(
     ...ownerScope,
     id: proposal.id,
     decision: "approved",
+    payloadFingerprint: proposal.payloadFingerprint,
+    authority: {
+      source: "authenticated_owner_review_ui",
+      authority: "user",
+      taintIds: [],
+      derivationIds: [],
+    },
   });
   return proposal.id;
 }

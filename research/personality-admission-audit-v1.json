@@ -1,0 +1,292 @@
+{
+  "schemaVersion": "jolene.personality-admission-audit.v1",
+  "status": "audited-non-activating",
+  "completedAt": "2026-08-28T21:02:14.539Z",
+  "primaryCodingFingerprint": "sha256:06c613bb907263b82b93ec301c8e6eaa850fc2d15ed87d7ac08e4bcfb2ce5d57",
+  "round1Fingerprint": "sha256:758d985edb6a5774ce85f8db9cc4320420d0d15700fc8745f4e0f2e52db75937",
+  "recodingFingerprint": "sha256:cbd14d80dce797a73d6921685ee192b88cfd4be05f5d395a175726535130e034",
+  "codebookFingerprint": "sha256:f2f358a4aea566a783c4c4c0841a407c5bdb530cb3a4c01ac4cbcca6299815df",
+  "corpusFingerprint": "sha256:15b24aace81d077ff41b7e479cf85db883c6e129991a8577fc8d2ec4aa432aac",
+  "rights": {
+    "maximumConsecutiveSourceOverlapWords": 3,
+    "eightWordSourceOverlaps": 0,
+    "sourceContentStored": false,
+    "excerptsStored": false,
+    "lyricsStored": false,
+    "recognizableExpression": "prohibited",
+    "dialectImitation": "prohibited",
+    "voiceImitation": "prohibited",
+    "defaultIntimacy": "prohibited",
+    "biographyOrBeliefTransfer": "excluded-from-trait-support",
+    "excludedRightsRiskTurns": 67
+  },
+  "samplingBias": {
+    "turns": 120,
+    "sources": 10,
+    "settings": 8,
+    "timeBands": 4,
+    "contexts": 8,
+    "maximumSourceShare": 0.15,
+    "maximumTimeBandShare": 0.4
+  },
+  "contradictionAudit": {
+    "rejectedTraitTurns": 89,
+    "rejectedAdaptationTurns": 85,
+    "everyAdmittedTraitHasCounterexamples": true
+  },
+  "antiCaricatureRules": [
+    "Write every runtime behavior rule in Jolene's original professional voice, never as a copy of source expression.",
+    "Do not borrow biography, beliefs, identity claims, politics, family history, career history, or personal relationships.",
+    "Do not imitate dialect, accent, singing, vocal timbre, cadence, catchphrases, lyrics, quotations, or recognizable jokes.",
+    "Do not use sexualized workplace material, body commentary, pet names, or unearned intimacy as personality behavior.",
+    "Treat humor as optional and context-sensitive; factual clarity, dignity, and the user's goal take priority.",
+    "Preserve counterexamples and uncertainty so admitted behavior never becomes a one-note caricature or universal rule.",
+    "Never convert public performance into a claim about private psychology, intent, endorsement, or authorization."
+  ],
+  "traitDecisions": [
+    {
+      "traitFamilyId": "bounded-warmth",
+      "decision": "deferred-insufficient-evidence",
+      "eligibleSupportCount": 1,
+      "sourceEvents": 1,
+      "settingFamilies": 1,
+      "timeBands": 1,
+      "supportingObservationIds": [
+        "T049"
+      ],
+      "counterexampleObservationIds": [
+        "T013",
+        "T020",
+        "T025",
+        "T031",
+        "T043",
+        "T055",
+        "T056",
+        "T062",
+        "T063",
+        "T096"
+      ],
+      "contradictionSearch": "Searched all reconciled bounded-warmth observations for rejected evidence, source concentration, rights-risk transfer, and missing cross-context support.",
+      "originalDesignedRule": null,
+      "ownerDecision": "not-reached",
+      "decisionReason": "The rights-safe evidence does not meet every minimum support and diversity gate, so owner approval cannot substitute for missing evidence."
+    },
+    {
+      "traitFamilyId": "calibrated-wit",
+      "decision": "deferred-insufficient-evidence",
+      "eligibleSupportCount": 1,
+      "sourceEvents": 1,
+      "settingFamilies": 1,
+      "timeBands": 1,
+      "supportingObservationIds": [
+        "T118"
+      ],
+      "counterexampleObservationIds": [
+        "T005",
+        "T009",
+        "T014",
+        "T015",
+        "T026",
+        "T039",
+        "T050",
+        "T083",
+        "T086",
+        "T088",
+        "T091",
+        "T119",
+        "T120"
+      ],
+      "contradictionSearch": "Searched all reconciled calibrated-wit observations for rejected evidence, source concentration, rights-risk transfer, and missing cross-context support.",
+      "originalDesignedRule": null,
+      "ownerDecision": "not-reached",
+      "decisionReason": "The rights-safe evidence does not meet every minimum support and diversity gate, so owner approval cannot substitute for missing evidence."
+    },
+    {
+      "traitFamilyId": "candid-repair",
+      "decision": "deferred-insufficient-evidence",
+      "eligibleSupportCount": 0,
+      "sourceEvents": 0,
+      "settingFamilies": 0,
+      "timeBands": 0,
+      "supportingObservationIds": [],
+      "counterexampleObservationIds": [
+        "T066",
+        "T077",
+        "T093",
+        "T095",
+        "T097",
+        "T114"
+      ],
+      "contradictionSearch": "Searched all reconciled candid-repair observations for rejected evidence, source concentration, rights-risk transfer, and missing cross-context support.",
+      "originalDesignedRule": null,
+      "ownerDecision": "not-reached",
+      "decisionReason": "The rights-safe evidence does not meet every minimum support and diversity gate, so owner approval cannot substitute for missing evidence."
+    },
+    {
+      "traitFamilyId": "credit-aware-authority",
+      "decision": "deferred-insufficient-evidence",
+      "eligibleSupportCount": 2,
+      "sourceEvents": 2,
+      "settingFamilies": 2,
+      "timeBands": 2,
+      "supportingObservationIds": [
+        "T032",
+        "T089"
+      ],
+      "counterexampleObservationIds": [
+        "T019",
+        "T030",
+        "T033",
+        "T045",
+        "T057",
+        "T070",
+        "T074"
+      ],
+      "contradictionSearch": "Searched all reconciled credit-aware-authority observations for rejected evidence, source concentration, rights-risk transfer, and missing cross-context support.",
+      "originalDesignedRule": null,
+      "ownerDecision": "not-reached",
+      "decisionReason": "The rights-safe evidence does not meet every minimum support and diversity gate, so owner approval cannot substitute for missing evidence."
+    },
+    {
+      "traitFamilyId": "disciplined-agency",
+      "decision": "deferred-insufficient-evidence",
+      "eligibleSupportCount": 4,
+      "sourceEvents": 4,
+      "settingFamilies": 3,
+      "timeBands": 3,
+      "supportingObservationIds": [
+        "T023",
+        "T064",
+        "T102",
+        "T111"
+      ],
+      "counterexampleObservationIds": [
+        "T001",
+        "T002",
+        "T006",
+        "T012",
+        "T017",
+        "T028",
+        "T037",
+        "T038",
+        "T044",
+        "T051",
+        "T052",
+        "T054",
+        "T059",
+        "T060",
+        "T068",
+        "T072",
+        "T073",
+        "T075",
+        "T080",
+        "T081",
+        "T084",
+        "T085",
+        "T092",
+        "T100",
+        "T107",
+        "T112",
+        "T116",
+        "T117"
+      ],
+      "contradictionSearch": "Searched all reconciled disciplined-agency observations for rejected evidence, source concentration, rights-risk transfer, and missing cross-context support.",
+      "originalDesignedRule": null,
+      "ownerDecision": "not-reached",
+      "decisionReason": "The rights-safe evidence does not meet every minimum support and diversity gate, so owner approval cannot substitute for missing evidence."
+    },
+    {
+      "traitFamilyId": "grounded-optimism",
+      "decision": "deferred-insufficient-evidence",
+      "eligibleSupportCount": 3,
+      "sourceEvents": 2,
+      "settingFamilies": 2,
+      "timeBands": 2,
+      "supportingObservationIds": [
+        "T087",
+        "T110",
+        "T115"
+      ],
+      "counterexampleObservationIds": [
+        "T003",
+        "T004",
+        "T010",
+        "T021",
+        "T022",
+        "T027",
+        "T029",
+        "T040",
+        "T041",
+        "T046",
+        "T047",
+        "T061",
+        "T069",
+        "T090",
+        "T101",
+        "T103",
+        "T108"
+      ],
+      "contradictionSearch": "Searched all reconciled grounded-optimism observations for rejected evidence, source concentration, rights-risk transfer, and missing cross-context support.",
+      "originalDesignedRule": null,
+      "ownerDecision": "not-reached",
+      "decisionReason": "The rights-safe evidence does not meet every minimum support and diversity gate, so owner approval cannot substitute for missing evidence."
+    },
+    {
+      "traitFamilyId": "operational-care",
+      "decision": "deferred-insufficient-evidence",
+      "eligibleSupportCount": 4,
+      "sourceEvents": 3,
+      "settingFamilies": 3,
+      "timeBands": 2,
+      "supportingObservationIds": [
+        "T024",
+        "T034",
+        "T036",
+        "T113"
+      ],
+      "counterexampleObservationIds": [
+        "T011",
+        "T048",
+        "T053",
+        "T082"
+      ],
+      "contradictionSearch": "Searched all reconciled operational-care observations for rejected evidence, source concentration, rights-risk transfer, and missing cross-context support.",
+      "originalDesignedRule": null,
+      "ownerDecision": "not-reached",
+      "decisionReason": "The rights-safe evidence does not meet every minimum support and diversity gate, so owner approval cannot substitute for missing evidence."
+    },
+    {
+      "traitFamilyId": "uncertainty-humility",
+      "decision": "admitted",
+      "eligibleSupportCount": 7,
+      "sourceEvents": 4,
+      "settingFamilies": 4,
+      "timeBands": 3,
+      "supportingObservationIds": [
+        "T007",
+        "T016",
+        "T018",
+        "T071",
+        "T079",
+        "T098",
+        "T099"
+      ],
+      "counterexampleObservationIds": [
+        "T008",
+        "T035",
+        "T065",
+        "T106"
+      ],
+      "contradictionSearch": "Compared every eligible uncertainty-humility support turn with all rejected same-family observations and rights-risk exclusions before admission.",
+      "originalDesignedRule": "Jolene states what she knows, names evidence gaps plainly, and asks one useful clarifying question instead of bluffing.",
+      "ownerDecision": "approved",
+      "decisionReason": "The rights-safe evidence meets every cross-source, setting, time-band, review, contradiction, and owner-decision gate."
+    }
+  ],
+  "admittedTraits": [
+    "uncertainty-humility"
+  ],
+  "ownerApprovalBasis": "standing-owner-approval-for-user-supplied-data",
+  "traitAdmissionComplete": true,
+  "runtimeActivation": "prohibited"
+}

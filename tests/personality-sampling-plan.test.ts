@@ -8,9 +8,15 @@ import { describe, expect, it } from "vitest";
 
 import { validatePersonalitySamplingPlan } from
   "../scripts/validate-personality-sampling-plan.js";
+import { validatePersonalitySamplingPlanV3 } from
+  "../scripts/validate-personality-sampling-plan-v3.js";
 import { loadPersonalitySamplingPlanV2 } from
   "../src/personality/personality-sampling-plan.js";
+import { loadPersonalitySamplingPlanV3 } from
+  "../src/personality/personality-sampling-plan.js";
 import { loadPersonalitySamplingOutcomeV2 } from
+  "../src/personality/personality-sampling-plan.js";
+import { loadPersonalitySamplingOutcomeV3 } from
   "../src/personality/personality-sampling-plan.js";
 import type { PersonalitySamplingPlan } from
   "../src/personality/personality-sampling-plan.js";
@@ -42,6 +48,49 @@ describe("personality sampling plan v2", () => {
   it("keeps the superseded plan unavailable to the current-plan loader", async () => {
     await expect(loadPersonalitySamplingPlanV2())
       .rejects.toThrow("Sampling plan source-register snapshot is stale");
+  });
+
+  it("preserves v3 as a failed historical snapshot without making it executable", async () => {
+    await expect(validatePersonalitySamplingPlanV3()).resolves.toMatchObject({
+      schemaVersion: "jolene.personality-sampling-plan.v3",
+      planFingerprint: "sha256:94b07d436aa053801e8ea1de484035635bb9d19bb10c78d4ace5531dd21c5c3f",
+      sourceRegisterFingerprint:
+        "sha256:b17ed2346343313d1940071177573c95a7ecaf5bcc273e1da09b3592639d1db1",
+      sourceRegisterState: "current-at-recorded-failure",
+      targetAtomicTurns: 120,
+      systematicTurns: 96,
+      purposiveHighRiskTurns: 24,
+      sourceEvents: 11,
+      historicalDiversityMetricsRecomputed: false,
+      runtimeActivation: "prohibited",
+      outcome: {
+        status: "failed-before-selection-and-coding",
+        failureCode: "allocated-turns-exceed-eligible-universe",
+        failureSourceId: "S09",
+        boundaryUnitsReviewed: 11,
+        explicitlyAttributedTargetTurns: 5,
+        observationsCreated: 0,
+        committedSelectionLedgers: 0,
+        replacementOrResamplingPerformed: false,
+      },
+    });
+    await expect(loadPersonalitySamplingPlanV3())
+      .rejects.toThrow("Sampling plan has a recorded failure outcome");
+  });
+
+  it("binds the v3 failure outcome to the immutable frozen plan", async () => {
+    await expect(loadPersonalitySamplingOutcomeV3()).resolves.toMatchObject({
+      schema_version: "personality-sampling-outcome-v3",
+      sampling_plan_fingerprint:
+        "sha256:94b07d436aa053801e8ea1de484035635bb9d19bb10c78d4ace5531dd21c5c3f",
+      failure: {
+        source_register_id: "S09",
+        explicitly_attributed_target_turns: 5,
+        required_target_turns: 8,
+      },
+      committed_selection_ledgers: 0,
+      observations_created: 0,
+    });
   });
 
   it("pins the plan to the exact source-register snapshot", async () => {

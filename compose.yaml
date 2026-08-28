@@ -12,6 +12,7 @@ x-jolene-runtime: &jolene-runtime
     OPENAI_API_KEY_FILE: /run/secrets/openai_api_key
     JOLENE_DATABASE_PATH: /data/jolene.sqlite
     JOLENE_HOST: 0.0.0.0
+    JOLENE_PERSONALITY_MODE: ${JOLENE_PERSONALITY_MODE:-jolene}
     JOLENE_OBSIDIAN_VAULT_ROOT: /vault
     JOLENE_PORT: 8421
     JOLENE_WATCHED_PROJECTS: >-
@@ -19,10 +20,13 @@ x-jolene-runtime: &jolene-runtime
     JOLENE_PRIVATE_BRIEFING: >-
       {"enabled":true,"destination":"slack_owner_dm","frequency":"daily","dayOfWeek":null,"localHour":8,"localMinute":0,"timeZone":"America/Los_Angeles","maxDeliveriesPerDay":1,"stopAfterDeliveries":365,"historyLimit":90,"maxAttempts":5}
     JOLENE_CAREER_EMBEDDINGS_ENABLED: ${JOLENE_CAREER_EMBEDDINGS_ENABLED:-false}
+    JOLENE_PRIVATE_RETRIEVAL_PROVIDER_EGRESS: ${JOLENE_PRIVATE_RETRIEVAL_PROVIDER_EGRESS:-local_only}
     JOLENE_PUBLIC_LIVE_REVIEW_PACKET_PATH: /review/public-live-model-review.json
     JOLENE_PUBLIC_LIVE_REVIEW_DECISION_PATH: /data/evaluations/public-live-model-decision.json
     JOLENE_PERSONALITY_RESEARCH_DECISION_PATH: /data/personality/research-decision.json
     JOLENE_PERSONALITY_TUNING_DECISION_PATH: /data/personality/tuning-decision.json
+    JOLENE_CONVERSATION_QUALITY_PACKET_PATH: /review/conversation-quality-capture.json
+    JOLENE_CONVERSATION_QUALITY_DECISION_PATH: /data/evaluations/conversation-quality-decision.json
   volumes:
     - jolene-data:/data
     - type: bind
@@ -49,6 +53,12 @@ services:
   jolene-api:
     <<: *jolene-runtime
     command: ["node", "dist/server.js"]
+    environment:
+      <<: *jolene-environment
+      JOLENE_PRIVATE_CONTROL_TOKEN_FILE: /run/secrets/jolene_private_control_token
+    secrets:
+      - openai_api_key
+      - jolene_private_control_token
     volumes:
       - jolene-data:/data
       - type: bind
@@ -176,6 +186,8 @@ volumes:
 secrets:
   openai_api_key:
     file: ./.jolene/secrets/openai-api-key
+  jolene_private_control_token:
+    file: ./.jolene/secrets/private-control-token
   slack_app_token:
     file: ./.jolene/secrets/slack-app-token
   slack_bot_token:

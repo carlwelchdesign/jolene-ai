@@ -92,6 +92,10 @@ The first runnable slice provides:
   nonzero hard-gate failure exits;
 - a private owner-scoped Contacts screen that can review or delete staged
   requests and save inert local reply drafts without sending anything;
+- a versioned nine-scenario conversational-quality suite plus owner-only review
+  screen for scoring exact captured answers, citations, follow-ups, warmth,
+  restraint, boundaries, calibration, and originality without activating or
+  deploying the personality;
 - contract tests that make no live OpenAI requests.
 
 The Slack adapter is active for a local pilot, with live mention-and-reply behavior verified. One bounded private-owner briefing schedule and Project Watch monitoring are implemented locally. The client-AI packet lifecycle is implemented as a private review-only core, but no client transport or autonomous exchange is active. General scheduled work, specialist agents, always-on hosting, and voice remain later gates.
@@ -186,6 +190,13 @@ Prerequisite: Node.js 22 or newer.
 
    After a production build, use `npm start` instead.
 
+   The private control plane requires `JOLENE_PRIVATE_CONTROL_TOKEN` (or its
+   `_FILE` alternative) and rejects non-loopback hostnames. API clients send
+   `Authorization: Bearer $JOLENE_PRIVATE_CONTROL_TOKEN`. A browser uses its
+   native HTTP authentication prompt: enter `jolene` as the username and the
+   private control token as the password. The unauthenticated `/health` route
+   exposes only the fixed local readiness summary.
+
    Open [http://127.0.0.1:8421/memory](http://127.0.0.1:8421/memory) to review
    Jolene's pending proposals, retained memory, and durable task timeline. The
    Task timeline tab can switch between scoped tasks and record factual
@@ -223,9 +234,6 @@ Prerequisite: Node.js 22 or newer.
    ```json
    {
      "eventId": "local-001",
-     "actorId": "carl",
-     "workspaceId": "personal",
-     "channelKind": "private_chat",
      "channelId": "local",
      "threadId": "main",
      "taskId": "00000000-0000-4000-8000-000000000001",
@@ -233,6 +241,13 @@ Prerequisite: Node.js 22 or newer.
      "message": "Summarize the current Jolene project direction."
    }
    ```
+
+   Actor, workspace, private channel kind, and disclosure scope are derived
+   from the authenticated server configuration. Supplying any of those fields
+   in the JSON body is rejected.
+
+   Configuration, browser/API usage, rotation, and failure behavior are
+   documented in [Private control authentication](docs/private-control-authentication.md).
 
    Task and memory-management endpoints are documented in [Task and memory API](docs/task-memory-api.md).
    The six reviewable work types and their lifecycle are documented in
@@ -266,9 +281,12 @@ Prerequisite: Node.js 22 or newer.
 
    This is deterministic lexical indexing by default. Semantic embeddings are
    a separate private-data egress decision: set
+   `JOLENE_PRIVATE_RETRIEVAL_PROVIDER_EGRESS=approved_openai` together with
    `JOLENE_CAREER_EMBEDDINGS_ENABLED=true` only when you intend to send eligible
-   reviewed chunks and private search queries to the configured OpenAI
-   embedding model.
+   reviewed chunks, private search queries, and policy-approved retrieved
+   evidence to the configured OpenAI provider. The default `local_only` mode
+   keeps retrieved evidence out of provider tool results and returns only fixed
+   fallback metadata.
 
    Generate the local deny-by-default public handoff artifact with:
 
@@ -302,6 +320,13 @@ Prerequisite: Node.js 22 or newer.
    spend budget, alter evidence, activate the portfolio, message anyone, deploy,
    or authorize launch. A new packet hash makes an earlier decision stale.
 
+   Open [http://127.0.0.1:8421/conversation-evaluation](http://127.0.0.1:8421/conversation-evaluation)
+   to review the current owner-only conversational-quality capture. Every case
+   requires seven explicit 0–4 scores and optional hard-failure findings. The
+   saved mode-`0600` decision is bound to the exact packet hash and becomes
+   stale after recapture. This screen cannot call the model, publish, deploy,
+   contact anyone, or activate Jolene's personality.
+
    Trusted local MCP hosts can use the canonical professional-context adapter
    documented in [Private professional-context MCP](docs/private-career-mcp.md).
    It is a network-disabled tools-profile container over the canonical private
@@ -318,7 +343,9 @@ See [Slack setup](docs/slack-setup.md) for the credential and workspace activati
 npm run slack
 ```
 
-Carl's configured Slack member ID is the only DM identity permitted to use private context. All channel mentions are treated as shared and receive no Obsidian tool.
+Carl's configured Slack workspace/member pair is the only DM identity permitted
+to use private context. A matching member ID from another workspace is ignored.
+All channel mentions are treated as shared and receive no Obsidian tool.
 For that configured owner DM, private work lookup resolves to
 `JOLENE_OWNER_ACTOR_ID` and `JOLENE_OWNER_WORKSPACE_ID`; Slack conversation and
 delivery identity remain tied to the originating Slack user, workspace, channel,
@@ -343,6 +370,9 @@ and thread.
 - Obsidian access is read-only and limited to configured relative path prefixes.
 - Knowledge-search audit records retain scope, outcome, query fingerprints, and citations—but never raw queries or note excerpts.
 - Shared channels receive no Obsidian search tool.
+- Every private control/UI route except content-minimizing `/health` requires a
+  dedicated high-entropy credential; loopback and same-origin checks are
+  additional containment and do not establish identity.
 - Slack DMs from anyone except the configured owner are ignored.
 - Completed Slack deliveries survive restarts and suppress duplicate replies.
 - Pending and rejected memory proposals are never supplied to the model.
@@ -388,6 +418,16 @@ and thread.
   never widens actor, channel, source, review, freshness, or visibility scope.
 - Career retrieval audit records contain HMAC query fingerprints and stable
   citation IDs, not raw queries or evidence excerpts.
+- A single [channel-aware retrieval policy](docs/channel-retrieval-policy.md)
+  governs same-thread conversation history, durable memory, Obsidian, career
+  evidence, and public export. Shared Slack cannot retrieve private sources;
+  owner-DM access requires the verified canonical-owner scope; portfolio access
+  permits only `public_approved` artifact records.
+- The [conversational-quality evaluation](docs/conversational-quality-evaluation.md)
+  blocks canned PR language, empty evidence, privacy/fabrication failures,
+  personality-over-substance, citation drift, and unsuppressed high-stakes wit
+  across nine required public and private scenarios. Passing requires complete
+  human review; validating the fixture does not make a provider request.
 - Public career queries exclude stale, revoked, superseded, unapproved, and
   publicly uncitable evidence by construction.
 - The offline public export emits only fresh `public_approved` claim/citation
@@ -395,7 +435,7 @@ and thread.
   and fails closed on private paths, contacts, secrets, Obsidian links, and
   citation destinations that are not site-relative portfolio paths.
 
-See [the architecture plan](plans/JOLENE_SYSTEM_ARCHITECTURE_PLAN.md), [the personality plan](plans/JOLENE_PERSONALITY_RESEARCH_AND_SPECIFICATION_PLAN.md), the [personality renderer boundary](docs/personality-renderer.md), and the [non-activating tuning decision](docs/personality-tuning.md).
+See [the architecture plan](plans/JOLENE_SYSTEM_ARCHITECTURE_PLAN.md), [the personality plan](plans/JOLENE_PERSONALITY_RESEARCH_AND_SPECIFICATION_PLAN.md), the [personality renderer boundary](docs/personality-renderer.md), the [text-pilot and neutral-rollback contract](docs/personality-text-pilot.md), and the [non-activating tuning decision](docs/personality-tuning.md).
 
 Architecture visuals:
 

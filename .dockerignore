@@ -8,7 +8,8 @@ coverage
 dist
 node_modules
 plans
-scripts
+scripts/*
+!scripts/verify-node-runtime.mjs
 tests
 evals/results
 npm-debug.log*

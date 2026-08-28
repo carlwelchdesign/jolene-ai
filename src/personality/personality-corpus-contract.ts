@@ -54,7 +54,10 @@ export const personalityTurnSchema = categoricalCodingSchema.extend({
   timeBand: timeBandSchema,
   settingFamily: settingFamilySchema,
   locator: z.object({
-    kind: z.enum(["lines", "page", "section", "timestamp"]),
+    kind: z.enum([
+      "lines", "page", "section", "timestamp", "paragraph-index",
+      "speaker-block-index", "pair-index", "section-index",
+    ]),
     start: z.number().nonnegative(),
     end: z.number().nonnegative(),
     label: z.string().min(1),

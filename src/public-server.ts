@@ -66,6 +66,7 @@ const answers = config.answerMode === "openai"
       client: new OpenAI({ apiKey: requireOpenAIApiKey(config.openaiApiKey) }),
       model: config.openaiModel,
       timeoutMilliseconds: config.openaiTimeoutMilliseconds,
+      personalityMode: config.personalityMode,
     }), {
       budget: activeModelBudget,
       ...(config.retrievalMode === "hybrid"

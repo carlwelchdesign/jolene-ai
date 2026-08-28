@@ -1,0 +1,138 @@
+schema_version: personality-sampling-boundary-protocol-v1
+status: precommitted-non-activating
+created_at: 2026-08-27T10:14:00Z
+source_register_fingerprint: sha256:b17ed2346343313d1940071177573c95a7ecaf5bcc273e1da09b3592639d1db1
+capacity_audit_fingerprint: sha256:efd9226b170592a4ac8c138ba18d0fed5f37bf8dd2ece4a994b2e0de20e2ffdf
+source_content_stored: false
+selection_performed: false
+runtime_activation: prohibited
+execution_order:
+  - verify-source-and-tool-fingerprints
+  - build-complete-boundary-capacity-ledgers
+  - independently-reproduce-boundaries-and-tags
+  - freeze-capacity-ledger-manifest
+  - repair-source-register
+  - freeze-new-prospective-sampling-plan
+  - select-immutable-sample
+pdf_protocol:
+  id: pdf-boundary-protocol-v2
+  runtime:
+    python: 3.12.13
+    pdfplumber: 0.11.9
+    pdfminer_six: "20251230"
+    pypdf: 6.10.0
+    version_drift: fail-closed
+    ocr_fallback: prohibited
+  labeled_pdf_extraction:
+    sources: [S04, S08, S09]
+    method: pdfplumber-extract-text-lines
+    x_tolerance: 3
+    y_tolerance: 3
+    layout: false
+    strip: true
+    return_chars: false
+    ordering: page-top-x0-original-index
+    normalization: nfc-trim-discard-empty
+  furniture:
+    repeated_margin_band_fraction: 0.10
+    repeated_exact_line_minimum_pages: 3
+    page_number_regex: "^(?:PAGE\\s+)?\\d+$"
+    labels_exempt: true
+    source_control_regex:
+      S04: "^END$"
+      S08: "^(?:ACT\\s+\\d+[A-Z]?|END TRANSCRIPT)$"
+      S09: null
+  label_regex:
+    S04: "^(MS\\. PARTON|MS\\. LEINWAND|MODERATOR):?\\s*(.*)$"
+    S08: "^(DOLLY PARTON|PARTON|DAN RATHER \\(VOICE OVER\\)|RATHER \\(VOICE OVER\\)|DAN RATHER|RATHER)$"
+    S09: "^(DP|LOC):\\s*(.*)$"
+  cue_handling:
+    performance: [SING, SINGS, SINGING, MUSIC, PERFORMANCE]
+    nonverbal: [LAUGH, LAUGHTER, APPLAUSE, AFFIRM]
+    unreadable: [INAUDIBLE, UNINTEL, UNINTELLIGIBLE]
+    performance_result: exclude-whole-block-lyric-or-performance
+    embedded_nonverbal_result: remove-cue-retain-spoken-payload
+    cue_only_result: controlled-exclusion
+  fragment_rule:
+    token_regex: "[A-Za-z0-9]+(?:['’][A-Za-z0-9]+)?"
+    maximum_tokens: 4
+    closed_token_set: ["yes", "no", yeah, yep, right, exactly, sure, okay, ok, absolutely, certainly, well, oh, and, uh, huh, mm, thank, you, "true", correct, indeed]
+    result: exclude-too-fragmentary-only-when-all-tokens-in-closed-set
+  attributed_statement_extraction:
+    sources: [S18]
+    method: pypdf-layout
+    extraction_mode: layout
+    layout_mode_space_vertically: true
+    layout_mode_scale_weight: 1.25
+    layout_mode_strip_rotated: true
+    layout_mode_font_height_weight: 1
+    paragraph_split_regex: "\\n[ \\t]*\\n+"
+    cross_page_merge_unless_prior_ends_regex: "[.!?][\"”'\\)\\]]*$"
+    named_attribution_regex: "(?i)\\bDolly\\s+Parton\\s+(?:said|says|stated|states|added|adds|commented)\\s*,?\\s*[\"“]"
+    continuation_regex: "(?i)\\b(?:she|Parton)\\s+(?:adds?|continues?|said|says|states?|notes?)\\s*,?\\s*[\"“]"
+    continuation_scope: immediately-following-before-intervening-speaker
+  reproduced_capacity:
+    S04: { boundary_units: 101, eligible_units: 48 }
+    S08: { boundary_units: 199, eligible_units: 88 }
+    S09: { boundary_units: 11, eligible_units: 5 }
+    S18: { boundary_units: 19, eligible_units: 2 }
+av_protocols:
+  S16:
+    id: blank-on-blank-av-aligned-paragraphs-v1
+    status: map-required-before-coding-ready
+    stable_text_units: 20
+    media_identities:
+      soundcloud_track_id: "259287975"
+      youtube_video_id: 2RJPc9DXnys
+      youtube_channel_id: UC9pO2YNforRbdwKOh09djKA
+      duration_seconds: 326
+      transient_media_fingerprint: required
+    complete_map: required
+    independent_full_media_reviews: 2
+    unresolved_result: excluded
+  S17:
+    id: wired-av-verified-caption-speaker-blocks-v1
+    status: map-required-before-coding-ready
+    stable_caption_units: 210
+    wired_content_id: 5f762fadbcdfff7e12c683f1
+    duration_milliseconds: 523000
+    last_caption_end_milliseconds: 523150
+    timing_vector_fingerprint: required
+    complete_map: required
+    independent_full_media_reviews: 2
+    unresolved_result: excluded
+unrecoverable_sources:
+  S07:
+    result: downgrade
+    reason: explicit-speaker-attribution-unavailable
+high_risk_adjudication:
+  id: two-independent-reviewer-consensus-v1
+  taxonomy_fingerprint: sha256:e56f2bd612a511a18eb9c1b47fc51b51715cdf1ed0e6bd6209f700c72351ee07
+  taxonomy:
+    belief: explicit religion spirituality or moral-conviction discussion
+    biography: personal history family health relationship or career-history account
+    boundary: explicit refusal limit condition correction or protected line
+    contradiction: explicit tension change counterevidence or competing claim
+    grief-or-hurt: loss injury shame failure grief or described emotional pain
+    humor: observable joke wordplay self-deprecation comic reversal or laughter cue
+    identity-trait: explicit self-description as a type of person or stable attribute
+    politics: policy elected office civic controversy or partisan positioning
+    voice-adjacent: accent singing vocal sound or voice-performance discussion
+    workplace-sexual-boundary: workplace conduct harassment sexualized treatment or appearance boundary
+  reviewers_per_unit: 2
+  blind_to_trait_outcomes: true
+  blind_to_fame_and_quotability: true
+  disagreement_result: no-high-risk-tag
+  systematic_eligibility_unchanged_by_tag_disagreement: true
+  capacity_measure: agreed-tagged-units-remaining-after-proposed-systematic-midpoints
+  preallocation_manifest_required: true
+  future_capacity_manifest_taxonomy_fingerprint_required: true
+  future_sampling_plan_taxonomy_fingerprint_required: true
+rights:
+  repository_storage: metadata-hashes-locators-and-controlled-labels-only
+  excerpts: prohibited
+  transcripts: prohibited
+  lyrics: prohibited
+  audio_video: prohibited
+  recognizable_expression: prohibited
+next_action: complete-av-maps-and-source-register-v3

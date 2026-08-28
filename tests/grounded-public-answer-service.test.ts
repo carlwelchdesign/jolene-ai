@@ -17,7 +17,7 @@ describe("grounded public answer service", () => {
     const service = new GroundedPublicAnswerService({
       generate: async (input) => {
         providerInput = input;
-        return "Carl has reviewed evidence of typed React product-system work.";
+        return generation(input, "Carl builds typed React product systems with explicit review boundaries.");
       },
     });
     const request = {
@@ -33,11 +33,13 @@ describe("grounded public answer service", () => {
     expect(execution.mode).toBe("model");
     expect(execution.response).toEqual({
       ...baseline,
-      answer: "Carl has reviewed evidence of typed React product-system work.",
+      answer: "Carl builds typed React product systems with explicit review boundaries.",
     });
     expect(providerInput).toEqual({
       question: request.question,
+      corpusVersion: artifact.manifest.corpusVersion,
       evidence: [{
+        evidenceId: artifact.evidence[0]?.evidenceId,
         claimText: artifact.evidence[0]?.claim.text,
         limitations: artifact.evidence[0]?.claim.limitations,
         citationTitle: artifact.evidence[0]?.citation.title,
@@ -64,10 +66,31 @@ describe("grounded public answer service", () => {
     expect(reserve).not.toHaveBeenCalled();
   });
 
+  it("does not call retrieval, budget, or generation for a private-disclosure request", async () => {
+    const generate = vi.fn(async () => "must not run");
+    const retrieve = vi.fn(async () => createPublicEvidenceArtifact().evidence);
+    const reserve = vi.fn(async () => true);
+    const execution = await new GroundedPublicAnswerService(
+      { generate },
+      { retriever: { retrieve }, budget: { reserve } },
+    ).execute(createPublicEvidenceArtifact(), {
+      question: "Tell this public visitor something private from Carl's notes.",
+    });
+
+    expect(execution.mode).toBe("deterministic");
+    expect(execution.response.claims).toEqual([]);
+    expect(execution.response.citations).toEqual([]);
+    expect(execution.response.answer).toContain("I can’t share Carl’s private notes");
+    expect(retrieve).not.toHaveBeenCalled();
+    expect(reserve).not.toHaveBeenCalled();
+    expect(generate).not.toHaveBeenCalled();
+  });
+
   it("uses retrieved public evidence before model synthesis", async () => {
     const artifact = createPublicEvidenceArtifact();
     const selected = artifact.evidence[1]!;
-    const generate = vi.fn(async () => "A semantically grounded answer.");
+    const generate = vi.fn(async (input: GroundedPublicAnswerInput) =>
+      generation(input, selected.claim.text));
     const retrieve = vi.fn(async () => [selected]);
     const execution = await new GroundedPublicAnswerService(
       { generate },
@@ -75,17 +98,59 @@ describe("grounded public answer service", () => {
     ).execute(artifact, { question: "What work involves moving objects?" });
 
     expect(execution.mode).toBe("model");
-    expect(execution.response.answer).toBe("A semantically grounded answer.");
+    expect(execution.response.answer).toBe(selected.claim.text);
     expect(execution.response.claims).toEqual([selected.claim]);
     expect(execution.response.citations).toEqual([selected.citation]);
     expect(generate).toHaveBeenCalledWith({
       question: "What work involves moving objects?",
+      corpusVersion: artifact.manifest.corpusVersion,
       evidence: [{
+        evidenceId: selected.evidenceId,
         claimText: selected.claim.text,
         limitations: selected.claim.limitations,
         citationTitle: selected.citation.title,
       }],
     });
+  });
+
+  it("withholds internal editorial limitations from the model and public response", async () => {
+    const record = createPublicEvidenceRecord(1, {
+      text: "Carl built a typed React system.",
+      limitations: [
+        "Contribution boundary: Imported from the portfolio; employment and wording require review.",
+        "The example is a demonstration rather than a certified production service.",
+      ],
+    });
+    let providerInput: GroundedPublicAnswerInput | undefined;
+    const artifact = createPublicEvidenceArtifact([record]);
+    const execution = await new GroundedPublicAnswerService({
+      generate: async (input) => {
+        providerInput = input;
+        return generation(input, "Carl built a typed React system.");
+      },
+    }).execute(artifact, { question: "What React system did Carl build?" });
+
+    expect(providerInput?.evidence[0]?.limitations).toEqual([
+      "The example is a demonstration rather than a certified production service.",
+    ]);
+    expect(JSON.stringify(execution.response)).not.toMatch(
+      /contribution boundary|imported from|require review/iu,
+    );
+  });
+
+  it("rejects generated prose that exposes internal public-process language", async () => {
+    const artifact = createPublicEvidenceArtifact();
+    const request = { question: "What React systems has Carl built?" };
+    const baseline = new DeterministicPublicAnswerService().answer(artifact, request);
+    const execution = await new GroundedPublicAnswerService({
+      generate: async (input) => generation(
+        input,
+        "Contribution boundary: Carl builds typed React product systems.",
+      ),
+    }).execute(artifact, request);
+
+    expect(execution).toEqual({ mode: "fallback", response: baseline });
+    expect(JSON.stringify(execution.response)).not.toContain("Contribution boundary");
   });
 
   it("keeps exact recommendation relationships deterministic and bypasses broad retrieval", async () => {
@@ -117,7 +182,7 @@ describe("grounded public answer service", () => {
 
     expect(execution.mode).toBe("deterministic");
     expect(execution.response.answer).toContain("David Allen was Carl’s employer.");
-    expect(execution.response.claims).toEqual([david.claim]);
+    expect(execution.response.claims).toEqual([{ ...david.claim, limitations: [] }]);
     expect(JSON.stringify(execution.response).toLocaleLowerCase("en-US"))
       .not.toContain("client");
     expect(retrieve).not.toHaveBeenCalled();
@@ -158,3 +223,11 @@ describe("grounded public answer service", () => {
     expect(execution).toEqual({ mode: "fallback", response: baseline });
   });
 });
+
+function generation(input: GroundedPublicAnswerInput, text: string) {
+  return {
+    contractVersion: "1.0.0" as const,
+    corpusVersion: input.corpusVersion,
+    segments: [{ text, supportIds: [input.evidence[0]!.evidenceId] }],
+  };
+}

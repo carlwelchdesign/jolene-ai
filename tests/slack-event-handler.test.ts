@@ -19,6 +19,39 @@ const runner: JoleneAgentRunner = {
 };
 
 describe("handleSlackEvent", () => {
+  it("ignores an owner-shaped event from another Slack workspace", async () => {
+    const store = new SqliteConversationStore(":memory:");
+    let modelCalls = 0;
+    const service = new JoleneService({
+      store,
+      runner: {
+        async respond() {
+          modelCalls += 1;
+          return "This must not run.";
+        },
+      },
+      workContext,
+      maxHistoryTurns: 16,
+      maxMemoryItems: 24,
+    });
+    const input = envelope() as Record<string, unknown>;
+    input.team_id = "TOTHER";
+    try {
+      await expect(handleSlackEvent(
+        service,
+        store,
+        input,
+        "UJOLENE",
+        "UCARL",
+        "TWORK",
+        async () => { throw new Error("Must not post."); },
+      )).resolves.toEqual({ outcome: "ignored" });
+      expect(modelCalls).toBe(0);
+    } finally {
+      store.close();
+    }
+  });
+
   it("posts a generated response once and suppresses a replay", async () => {
     const store = new SqliteConversationStore(":memory:");
     const service = new JoleneService({
@@ -37,6 +70,7 @@ describe("handleSlackEvent", () => {
         envelope(),
         "UJOLENE",
         "UCARL",
+        "TWORK",
         async (post) => {
           posts.push(post);
         },
@@ -47,6 +81,7 @@ describe("handleSlackEvent", () => {
         envelope(),
         "UJOLENE",
         "UCARL",
+        "TWORK",
         async (post) => {
           posts.push(post);
         },
@@ -91,6 +126,7 @@ describe("handleSlackEvent", () => {
           envelope(),
           "UJOLENE",
           "UCARL",
+          "TWORK",
           async () => {
             throw new Error("Synthetic Slack failure");
           },
@@ -104,6 +140,7 @@ describe("handleSlackEvent", () => {
           envelope(),
           "UJOLENE",
           "UCARL",
+          "TWORK",
           async (post) => {
             posts.push(post);
           },

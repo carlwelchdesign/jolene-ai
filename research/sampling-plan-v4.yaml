@@ -1,0 +1,174 @@
+schema_version: personality-sampling-plan-v4
+status: precommitted-against-reviewed-capacity
+created_at: 2026-08-28T07:18:00Z
+source_register:
+  schema_version: jolene.personality-source-register.v3
+  fingerprint: sha256:29dcfbe68ffc7b7be13758be298739179146dab5041ff73ee9e49fc74218481f
+  reviewed_at: 2026-08-27T10:36:00Z
+capacity_manifest:
+  schema_version: jolene.personality-preallocation-capacity-manifest.v1
+  fingerprint: sha256:9cd75872581f9b6776fe39c64dd81df2330ea083828eca9b3f2d28e86d283bf7
+  frozen_at: 2026-08-28T07:15:00Z
+  source_count: 10
+  eligible_units: 588
+target_atomic_turns: 120
+selection_rules:
+  systematic:
+    rule_id: SAM-001
+    target_turns: 96
+    algorithm: eligible-target-speaker-universe-even-midpoint-v1
+    source_order: source-register-order
+    blind_to_trait_outcomes: true
+  purposive_high_risk:
+    rule_id: SAM-002
+    target_turns: 24
+    algorithm: remaining-eligible-source-order-first-match-v1
+    strata_priority:
+      - boundary
+      - contradiction
+      - grief-or-hurt
+      - humor
+      - workplace-sexual-boundary
+      - voice-adjacent
+      - identity-trait
+      - politics
+      - belief
+      - biography
+    consensus_tags_only: true
+    uncertainty_withheld_units_excluded: true
+    blind_to_fame_and_quotability: true
+  selected_ids_immutable_after_ledger_freeze: true
+  outcome_based_replacement: prohibited
+  failed_post_selection_gate: requires-new-prospective-plan-version
+balance_guards:
+  minimum_source_events: 10
+  minimum_publisher_families: 8
+  minimum_setting_families: 8
+  minimum_time_bands: 4
+  maximum_source_share: 0.15
+  maximum_publisher_share: 0.2
+  maximum_time_band_share: 0.4
+post_selection_acceptance:
+  minimum_research_contexts: 8
+  minimum_turns_per_context: 5
+  minimum_sources_per_context: 2
+  minimum_rejected_trait_evidence_turns: 24
+  minimum_rejected_adaptation_turns: 24
+source_allocations:
+  - source_register_id: S02
+    source_event_id: E002
+    eligible_capacity: 43
+    agreed_high_risk_capacity: 36
+    uncertain_high_risk_units: 0
+    target_turns: 10
+    systematic_turns: 8
+    purposive_high_risk_turns: 2
+    locator_unit: paragraph-index
+    segmentation_rule: paragraph-speaker-blocks-v1
+  - source_register_id: S03
+    source_event_id: E003
+    eligible_capacity: 270
+    agreed_high_risk_capacity: 166
+    uncertain_high_risk_units: 38
+    target_turns: 14
+    systematic_turns: 8
+    purposive_high_risk_turns: 6
+    locator_unit: speaker-block-index
+    segmentation_rule: cnn-speaker-label-blocks-v1
+  - source_register_id: S04
+    source_event_id: E004
+    eligible_capacity: 45
+    agreed_high_risk_capacity: 30
+    uncertain_high_risk_units: 1
+    target_turns: 14
+    systematic_turns: 11
+    purposive_high_risk_turns: 3
+    locator_unit: speaker-block-index
+    segmentation_rule: pdf-speaker-label-blocks-v2
+  - source_register_id: S05
+    source_event_id: E005
+    eligible_capacity: 29
+    agreed_high_risk_capacity: 18
+    uncertain_high_risk_units: 1
+    target_turns: 10
+    systematic_turns: 8
+    purposive_high_risk_turns: 2
+    locator_unit: paragraph-index
+    segmentation_rule: paragraph-speaker-blocks-v1
+  - source_register_id: S08
+    source_event_id: E007
+    eligible_capacity: 88
+    agreed_high_risk_capacity: 56
+    uncertain_high_risk_units: 8
+    target_turns: 17
+    systematic_turns: 14
+    purposive_high_risk_turns: 3
+    locator_unit: speaker-block-index
+    segmentation_rule: pdf-speaker-label-blocks-v2
+  - source_register_id: S09
+    source_event_id: E008
+    eligible_capacity: 5
+    agreed_high_risk_capacity: 5
+    uncertain_high_risk_units: 0
+    target_turns: 5
+    systematic_turns: 4
+    purposive_high_risk_turns: 1
+    locator_unit: speaker-block-index
+    segmentation_rule: pdf-speaker-label-blocks-v2
+  - source_register_id: S13
+    source_event_id: E010
+    eligible_capacity: 23
+    agreed_high_risk_capacity: 20
+    uncertain_high_risk_units: 0
+    target_turns: 18
+    systematic_turns: 15
+    purposive_high_risk_turns: 3
+    locator_unit: paragraph-index
+    segmentation_rule: paragraph-speaker-blocks-v1
+  - source_register_id: S18
+    source_event_id: E014
+    eligible_capacity: 2
+    agreed_high_risk_capacity: 1
+    uncertain_high_risk_units: 0
+    target_turns: 2
+    systematic_turns: 2
+    purposive_high_risk_turns: 0
+    locator_unit: paragraph-index
+    segmentation_rule: pdf-attributed-statement-blocks-v2
+  - source_register_id: S19
+    source_event_id: E015
+    eligible_capacity: 58
+    agreed_high_risk_capacity: 47
+    uncertain_high_risk_units: 2
+    target_turns: 18
+    systematic_turns: 14
+    purposive_high_risk_turns: 4
+    locator_unit: speaker-block-index
+    segmentation_rule: interview-speaker-label-blocks-v1
+  - source_register_id: S20
+    source_event_id: E016
+    eligible_capacity: 25
+    agreed_high_risk_capacity: 10
+    uncertain_high_risk_units: 0
+    target_turns: 12
+    systematic_turns: 12
+    purposive_high_risk_turns: 0
+    locator_unit: pair-index
+    segmentation_rule: vanity-proust-answer-pairs-v1
+rights:
+  repository_storage: metadata-and-paraphrase-only
+  excerpts: prohibited
+  lyrics: prohibited
+  transcript_audio_video_storage: prohibited
+  recognizable_expression: prohibited
+  biography_or_belief_transfer: prohibited
+  dialect_imitation: prohibited
+  default_intimacy: prohibited
+  voice_imitation: prohibited
+selection_performed: false
+observation_coding_performed: false
+trait_admission: prohibited
+runtime_activation: prohibited
+next_stage:
+  selection_ledger_generation: required-separate-subtask
+  independent_review: required-after-primary-coding

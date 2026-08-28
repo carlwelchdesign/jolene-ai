@@ -1,0 +1,47 @@
+schema_version: personality-pdf-cue-adjudication-audit-v1
+status: protocol-repair-required-before-pdf-drafts
+audited_at: 2026-08-27T14:40:49Z
+source_register_fingerprint: sha256:29dcfbe68ffc7b7be13758be298739179146dab5041ff73ee9e49fc74218481f
+boundary_protocol_fingerprint: sha256:7ef6eba7a8eee9fde9be225f4e4b3dc7045a5165974091e008e41a592330bda7
+source_register_id: S04
+source_event_id: E004
+source_content_fingerprint: sha256:7f7db3b1766d2656041cbbe6bfdf5df3c2f3342bf4904a4be94027260a018cc5
+runtime:
+  python: 3.12.13
+  pdfplumber: 0.11.9
+  pdfminer_six: "20251230"
+  pypdf: 6.10.0
+  version_drift: fail-closed
+boundary_reproduction:
+  source_boundary_units: 101
+  prelabel_excluded_units: 1
+  labeled_speaker_blocks: 100
+  target_speaker_blocks: 49
+  other_speaker_blocks: 51
+controlled_cue_audit:
+  target_blocks_with_any_controlled_cue: 23
+  target_block_category_counts:
+    performance: 4
+    nonverbal: 19
+    unreadable: 5
+  target_cue_occurrences:
+    PERFORMANCE: 1
+    SINGING: 4
+    LAUGHTER: 13
+    APPLAUSE: 10
+    INAUDIBLE: 5
+literal_policy_comparison:
+  frozen_expected_eligible_units: 48
+  exclude_any_performance_or_unreadable_block: { excluded_target_blocks: 9, eligible_units: 40 }
+  exclude_any_performance_block_only: { excluded_target_blocks: 4, eligible_units: 45 }
+  exclude_any_unreadable_block_only: { excluded_target_blocks: 5, eligible_units: 44 }
+  strip_embedded_controlled_cues_and_retain_nonempty_payload: { excluded_target_blocks: 0, eligible_units: 49 }
+  tested_literal_policy_matches_frozen_capacity: false
+conclusion: >-
+  The exact source bytes and total boundary reproduce, but protocol v1 does not determine which
+  mixed spoken-payload cue block accounts for the frozen one-unit target exclusion. Forcing 48
+  would require an unstated content-dependent exception.
+source_content_stored: false
+selection_performed: false
+runtime_activation: prohibited
+next_action: freeze-prospective-cue-adjudication-amendment-after-two-independent-full-boundary-reviews

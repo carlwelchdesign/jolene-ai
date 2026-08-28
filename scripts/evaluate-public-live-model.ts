@@ -8,7 +8,10 @@ import {
   evaluatePublicLiveModelSuite,
   publicLiveModelEvaluationSuiteSchema,
 } from "../src/evaluation/public-live-model-evaluation.js";
-import { writePublicLiveModelReviewPacket } from
+import {
+  writePublicLiveModelMachineReport,
+  writePublicLiveModelReviewPacket,
+} from
   "../src/evaluation/public-live-model-review-packet.js";
 import { parsePublicDelegateConfig } from "../src/public/public-config.js";
 import { OpenAIPublicAnswerGenerator } from
@@ -39,11 +42,19 @@ async function run(): Promise<void> {
     argumentValue("--review-packet") ??
       ".jolene/evaluations/public-live-model-review.json",
   );
+  const machineReportPath = path.resolve(
+    process.cwd(),
+    argumentValue("--report") ??
+      ".jolene/evaluations/public-live-model-report.json",
+  );
   const publicEnvironmentPath = path.resolve(process.cwd(), ".env.public.local");
   const publicEnvironment = dotenv.parse(
     await readFile(publicEnvironmentPath, "utf8"),
   );
-  const config = parsePublicDelegateConfig(publicEnvironment);
+  const config = parsePublicDelegateConfig({
+    ...publicEnvironment,
+    OPENAI_API_KEY: publicEnvironment.OPENAI_API_KEY ?? process.env.OPENAI_API_KEY,
+  });
   if (config.answerMode !== "openai" || !config.openaiApiKey) {
     throw new Error("The separate public environment must explicitly enable OpenAI.");
   }
@@ -61,6 +72,7 @@ async function run(): Promise<void> {
   });
   const result = await evaluatePublicLiveModelSuite(fixture, generator);
   await writePublicLiveModelReviewPacket(reviewPacketPath, result.reviewPacket);
+  await writePublicLiveModelMachineReport(machineReportPath, result.report);
   process.stdout.write(`${JSON.stringify(result.report, null, 2)}\n`);
   if (result.report.gate === "fail") process.exitCode = 1;
 }
