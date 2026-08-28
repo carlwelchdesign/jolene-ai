@@ -195,6 +195,12 @@ describe("public live-model evaluation", () => {
     expect(result.report.cases[0]?.failures).toContain(
       "response_disclosure_not_evaluated",
     );
+    expect(result.reviewPacket.cases[0]?.rejectedCandidateAnswer).toBe(
+      "Carl operates production Kubernetes clusters.",
+    );
+    expect(JSON.stringify(result.report)).not.toContain(
+      "Carl operates production Kubernetes clusters.",
+    );
   });
 
   it("fails closed on model and corpus drift before claiming a releasable run", async () => {

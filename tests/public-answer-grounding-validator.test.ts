@@ -46,6 +46,11 @@ describe("public answer grounding validator", () => {
     ["unsupported prose", (artifact: PublicCareerEvidenceArtifact) =>
       generation(artifact, "Carl operates Kubernetes clusters across several continents."),
     "unsupported_segment"],
+    ["unsupported colorful analogy", (artifact: PublicCareerEvidenceArtifact) =>
+      generation(
+        artifact,
+        "The interface avoids becoming a control panel with too many unlabeled switches.",
+      ), "unsupported_segment"],
     ["supported sentence plus unsupported sentence", (artifact: PublicCareerEvidenceArtifact) =>
       generation(artifact, `${artifact.evidence[0]!.claim.text} He is always available.`),
     "unsupported_segment"],

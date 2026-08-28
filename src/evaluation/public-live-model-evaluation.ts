@@ -192,6 +192,8 @@ export const publicLiveModelReviewPacketSchema = z.object({
     question: z.string().trim().min(1).max(800),
     mode: z.enum(["model", "deterministic", "fallback"]),
     answer: z.string().trim().min(1).max(4_000),
+    rejectedCandidateAnswer: z.string().trim().min(1).max(4_000).nullable()
+      .default(null),
     evidence: z.array(z.object({
       evidenceId: evidenceIdSchema,
       claimText: z.string().trim().min(1).max(4_000),
@@ -240,6 +242,7 @@ export async function evaluatePublicLiveModelSuite(
     answer: string;
     evidence: PublicLiveModelReviewPacket["cases"][number]["evidence"];
     groundingAudit: PublicAnswerGroundingResult | null;
+    rejectedCandidateAnswer: string | null;
   }> = [];
 
   for (const item of suite.cases) {
@@ -283,6 +286,7 @@ export async function evaluatePublicLiveModelSuite(
         answer: baseline.answer,
         evidence,
         groundingAudit: null,
+        rejectedCandidateAnswer: null,
       });
       continue;
     }
@@ -311,6 +315,7 @@ export async function evaluatePublicLiveModelSuite(
         answer: baseline.answer,
         evidence,
         groundingAudit: null,
+        rejectedCandidateAnswer: null,
       });
       continue;
     }
@@ -334,6 +339,7 @@ export async function evaluatePublicLiveModelSuite(
         answer: baseline.answer,
         evidence,
         groundingAudit: null,
+        rejectedCandidateAnswer: null,
       });
       continue;
     }
@@ -417,6 +423,9 @@ export async function evaluatePublicLiveModelSuite(
           : baseline.answer,
         evidence,
         groundingAudit: semanticValidation.audit,
+        rejectedCandidateAnswer: semanticValidation.status === "rejected"
+          ? generation.answer
+          : null,
       });
     } catch {
       const latencyMilliseconds = Math.max(0, nowMilliseconds() - startedAt);
@@ -438,6 +447,7 @@ export async function evaluatePublicLiveModelSuite(
         answer: baseline.answer,
         evidence,
         groundingAudit: null,
+        rejectedCandidateAnswer: null,
       });
     }
   }
@@ -542,6 +552,7 @@ export async function evaluatePublicLiveModelSuite(
         question: result.question,
         mode: result.mode,
         answer: result.answer,
+        rejectedCandidateAnswer: result.rejectedCandidateAnswer,
         evidence: result.evidence,
       })),
     },

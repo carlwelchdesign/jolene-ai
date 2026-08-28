@@ -22,6 +22,7 @@ const priorReportSchema = z.object({
     id: z.string(),
     inputTokens: z.number().int().nonnegative(),
     outputTokens: z.number().int().nonnegative(),
+    grounding: z.object({ status: z.string() }).passthrough().optional(),
   }).passthrough()),
 }).passthrough();
 
@@ -93,10 +94,12 @@ export function preflightPublicLiveModelSuite(
     // Five removed ASCII/JSON characters count as at least one avoided token in
     // this calibrated ceiling. This intentionally understates the measured
     // reduction rather than pretending to be a model tokenizer.
-    const conservativeInputTokenCeiling = Math.max(
-      0,
-      priorCase.inputTokens - Math.floor(removedCharacters / 5),
-    );
+    const conservativeInputTokenCeiling = priorCase.grounding
+      ? priorCase.inputTokens
+      : Math.max(
+        0,
+        priorCase.inputTokens - Math.floor(removedCharacters / 5),
+      );
     const estimatedCostMicrousd = Math.ceil(
       conservativeInputTokenCeiling * suite.pricing.inputUsdPerMillionTokens +
       priorCase.outputTokens * suite.pricing.outputUsdPerMillionTokens,

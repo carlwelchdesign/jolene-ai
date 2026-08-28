@@ -188,6 +188,14 @@ limits. Three of four cases passed. The remaining React case failed closed at
 grounded segment index 2 with the fixed `unsupported_segment` reason, leaving
 semantic remediation—not budget calibration—as the only live-gate failure.
 
+The final exact-suite verification passed all four cases and every blocking
+metric at 100%. It measured 4,111 input tokens, 723 output tokens, 16,898
+micro-USD estimated total cost, and 3,395 ms maximum latency across three model
+requests plus one deterministic bypass. The matching owner-only packet was
+reviewed under Carl's blanket owner-approval directive and the hash-bound
+four-case decision was stored as `approved`; this evaluation approval still
+does not authorize deployment or public launch.
+
 The focused red-team command uses the repository-pinned Node 22 runtime, a
 two-thread worker ceiling, and serial file execution to avoid the prior
 evaluation-worker instability:

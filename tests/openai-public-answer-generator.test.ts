@@ -94,6 +94,12 @@ describe("OpenAI public answer generator", () => {
     expect(request.instructions).toEqual(expect.stringContaining(
       "credible role-fit risks or unknowns",
     ));
+    expect(request.instructions).toEqual(expect.stringContaining(
+      "every material term is directly traceable",
+    ));
+    expect(request.instructions).toEqual(expect.stringContaining(
+      "Do not add metaphors, analogies",
+    ));
     expect(request.instructions).toEqual(expect.not.stringContaining(
       "Dolly Parton",
     ));

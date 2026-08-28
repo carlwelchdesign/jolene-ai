@@ -53,4 +53,17 @@ describe("public live-model request preflight", () => {
       suiteHash: "f".repeat(64),
     })).toThrow("does not match the exact suite");
   });
+
+  it("does not apply the legacy reduction twice to a minimized report", () => {
+    const report = priorReport();
+    report.cases = report.cases.map((item) => ({
+      ...item,
+      inputTokens: item.inputTokens === 0 ? 0 : 1_316,
+      grounding: { status: "accepted" },
+    }));
+    const result = preflightPublicLiveModelSuite(suite, report);
+
+    expect(result.cases.filter((item) => item.mode === "model")
+      .every((item) => item.conservativeInputTokenCeiling === 1_316)).toBe(true);
+  });
 });
