@@ -134,8 +134,10 @@ const envelopeBodySchema = z.object({
       message: "Only reviewed content may have a review timestamp.",
     });
   }
-  if ((body.revocation.status === "active") !==
-      (body.revocation.revokedAt === null && body.revocation.reasonCode === null)) {
+  const validRevocationState = body.revocation.status === "active"
+    ? body.revocation.revokedAt === null && body.revocation.reasonCode === null
+    : body.revocation.revokedAt !== null && body.revocation.reasonCode !== null;
+  if (!validRevocationState) {
     context.addIssue({
       code: "custom",
       path: ["revocation"],

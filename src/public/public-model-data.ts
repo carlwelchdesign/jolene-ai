@@ -152,14 +152,21 @@ export function requirePublicSafeEnvelope(
     envelope.classification !== "public" ||
     envelope.disclosureCeiling !== "public" ||
     Object.values(envelope.scope).some((value) => value !== null) ||
-    /(?:^|[\\/])(?:private|obsidian|users?)(?:[\\/]|$)/iu.test(
-      envelope.origin.sourceId,
+    !PUBLIC_SOURCE_ID_PATTERNS.some((pattern) =>
+      pattern.test(envelope.origin.sourceId)
     )
   ) {
     throw new Error("Public model data envelope contains non-public metadata.");
   }
   return envelope;
 }
+
+const PUBLIC_SOURCE_ID_PATTERNS = [
+  /^public-question:[a-f0-9]{32}$/u,
+  /^public-evidence:[a-f0-9]{32}$/u,
+  /^career:[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/u,
+  /^public-model:[a-z0-9._-]{1,80}$/u,
+] as const;
 
 function createPublicTextEnvelope(input: {
   readonly originKind: "user_message" | "career_evidence" | "recommendation";
@@ -203,6 +210,8 @@ function digest(value: string): string {
 }
 
 function safeModelId(model: string): string {
-  const normalized = model.trim().replace(/[^a-z0-9._-]+/giu, "-").slice(0, 80);
+  const normalized = model.trim().toLocaleLowerCase("en-US")
+    .replace(/[^a-z0-9._-]+/gu, "-")
+    .slice(0, 80);
   return normalized || "unknown";
 }

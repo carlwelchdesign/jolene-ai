@@ -57,11 +57,12 @@ describe("public model data envelopes", () => {
     const output = createPublicExternalAiTextEnvelope({
       answer: "Carl built a reviewed system.",
       parents,
-      model: "gpt-test",
+      model: "GPT-Test Preview",
       observedAt: timestamp,
     });
 
     expect(output.origin.kind).toBe("external_ai_text");
+    expect(output.origin.sourceId).toBe("public-model:gpt-test-preview");
     expect(output.authority).toBe("none");
     expect(output.lineage.derivationIds).toEqual(
       parents.map((parent) => parent.provenanceFingerprint).sort(),

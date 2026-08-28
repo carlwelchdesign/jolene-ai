@@ -63,6 +63,20 @@ describe("untrusted content envelope", () => {
       ...envelope,
       payload: { kind: "text", text: "tampered" },
     })).toThrow(/fingerprint/u);
+    expect(() => createEnvelope({
+      revocation: {
+        status: "revoked",
+        revokedAt: observedAt,
+        reasonCode: null,
+      },
+    })).toThrow(/timestamp and reason/u);
+    expect(() => createEnvelope({
+      revocation: {
+        status: "revoked",
+        revokedAt: null,
+        reasonCode: "owner_revoked",
+      },
+    })).toThrow(/timestamp and reason/u);
   });
 
   it("does not convert factual or owner approval into authority", () => {
