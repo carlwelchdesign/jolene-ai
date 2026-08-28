@@ -619,7 +619,7 @@ failures. Runtime activation, release, and deployment remain separate gates.
 | JOL-PER-005 | Code complete corpus | Research | 004 | 100–150 turns across required contexts; no raw transcript archive. |
 | JOL-PER-006 | Build character graph and contradiction map | AI architecture | 005 | All nodes trace to evidence or are labeled designed; contradictions and rejected patterns remain visible. |
 | JOL-PER-007 | Draft identity and behavior specification | Product/AI | 006 | Rules cover normal, sensitive, urgent, public, private, error, and conflict contexts. |
-| JOL-PER-008 | Produce anti-caricature and rights review | Trust/rights | 007 | Explicit review of impersonation, dialect, biography, quote, intimacy, and voice risks. |
+| JOL-PER-008 | Produce anti-caricature and rights review | Trust/rights | 007 | Complete locally. The fingerprint-bound v1 review explicitly covers ten risk areas, preserves all ten as release-blocking if weakened, and distinguishes engineering safeguards from legal clearance, runtime activation, public release, and voice authorization. |
 | JOL-PER-009 | Build evaluation fixtures and neutral baseline | Evaluation | 007 | Rubric, hard fails, red-team cases, and paired neutral responses exist. |
 | JOL-PER-010 | Run text-only pilot | Carl/Product | 008, 009 | Thresholds pass; Carl reviews sample; rollback path verified. |
 | JOL-PER-011 | Define Slack/vault disclosure policy | Product/Trust | 007 | Public/shared channel receives no private-vault content without explicit per-disclosure authorization. |

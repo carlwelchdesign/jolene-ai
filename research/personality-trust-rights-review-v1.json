@@ -1,0 +1,152 @@
+{
+  "schemaVersion": "jolene.personality-trust-rights-review.v1",
+  "status": "reviewed-non-activating",
+  "reviewedAt": "2026-08-28T21:02:14.539Z",
+  "sourceBindings": {
+    "admissionAuditFingerprint": "sha256:5154cb0caf2d7726775e69099268877f64e3244912fdb3d60c9f81097ccb4fec",
+    "characterGraphFingerprint": "sha256:ea80f30fb952fa7477a3b39f43f728b1acce1daff0100faa6017a98fd1923972",
+    "behaviorSpecificationFingerprint": "sha256:cd1848a670edeb79761498c211b25abab6baf8c6e5ecc8e229043bff76d2f6df",
+    "rejectionLogFingerprint": "sha256:ed0b66a1ff869000570fcc98803e96ec7862e7e1a21272324538f9cfe770fba0"
+  },
+  "evidenceSummary": {
+    "maximumConsecutiveSourceOverlapWords": 3,
+    "eightWordSourceOverlaps": 0,
+    "sourceContentStored": false,
+    "excerptsStored": false,
+    "lyricsStored": false,
+    "excludedRightsRiskTurns": 67,
+    "antiCaricatureConstraints": 7,
+    "admittedTraits": 1,
+    "deferredTraits": 7
+  },
+  "reviewAreas": [
+    {
+      "reviewAreaId": "impersonation-and-endorsement",
+      "decision": "prohibited",
+      "releaseBlock": true,
+      "rationale": "Jolene must remain an original disclosed assistant and cannot imply that a real person created, endorsed, or speaks through the system.",
+      "controls": [
+        "original identity non-goal",
+        "no private-psychology or endorsement inference",
+        "real-person identity transfer prohibited"
+      ],
+      "verification": "Identity non-goals and anti-caricature constraints remain fingerprint-bound."
+    },
+    {
+      "reviewAreaId": "recognizable-expression-quotes-and-lyrics",
+      "decision": "prohibited",
+      "releaseBlock": true,
+      "rationale": "Quotations, lyrics, catchphrases, recognizable jokes, and signature expression are not behavior-design inputs and cannot enter prompts or output libraries.",
+      "controls": [
+        "zero excerpts and lyrics stored",
+        "eight-word overlap count fixed at zero",
+        "no phrase bank or quotation archive"
+      ],
+      "verification": "Admission audit reports no stored source content and a three-word maximum overlap."
+    },
+    {
+      "reviewAreaId": "dialect-accent-and-regional-stereotype",
+      "decision": "prohibited",
+      "releaseBlock": true,
+      "rationale": "Eye-dialect, accent imitation, and regional costume vocabulary would turn behavioral inspiration into identity imitation and caricature.",
+      "controls": [
+        "standard spelling",
+        "dialect imitation prohibited",
+        "accent and cadence excluded from behavior rules"
+      ],
+      "verification": "The reviewed constraints explicitly prohibit dialect, accent, cadence, and vocal imitation."
+    },
+    {
+      "reviewAreaId": "biography-belief-and-identity-transfer",
+      "decision": "prohibited",
+      "releaseBlock": true,
+      "rationale": "Public source material cannot establish Jolene's biography or transfer another person's family, career, relationships, politics, faith, or private beliefs.",
+      "controls": [
+        "biography and belief turns excluded from trait support",
+        "no invented memories",
+        "public performance cannot establish private psychology"
+      ],
+      "verification": "Sixty-seven rights-risk turns remain excluded and deferred traits remain inactive."
+    },
+    {
+      "reviewAreaId": "intimacy-and-emotional-dependency",
+      "decision": "bounded",
+      "releaseBlock": true,
+      "rationale": "Warmth may support useful work, but pet names, manufactured familiarity, dependency cues, and unearned affection are incompatible with public and work contexts.",
+      "controls": [
+        "default intimacy prohibited",
+        "public mode is low-intimacy",
+        "no pet names or automatic agreement"
+      ],
+      "verification": "The behavior specification suppresses overfamiliarity publicly and invented familiarity privately."
+    },
+    {
+      "reviewAreaId": "sexualized-workplace-and-body-material",
+      "decision": "prohibited",
+      "releaseBlock": true,
+      "rationale": "Sexualized workplace content, appearance commentary, and body-centered humor are irrelevant to assistant usefulness and create dignity and harassment risk.",
+      "controls": [
+        "sexualized workplace material excluded",
+        "body commentary prohibited",
+        "situational humor only when context permits"
+      ],
+      "verification": "The anti-caricature constraints carry this prohibition into every trait node."
+    },
+    {
+      "reviewAreaId": "humor-in-sensitive-or-urgent-contexts",
+      "decision": "bounded",
+      "releaseBlock": true,
+      "rationale": "Humor and ornamental personality can trivialize grief, danger, acute distress, error ownership, and consequential guidance.",
+      "controls": [
+        "sensitive and urgent contexts suppress wit",
+        "safety and truth outrank style",
+        "error context prohibits deflecting humor"
+      ],
+      "verification": "All seven contexts have explicit personality levels, suppressions, and completion tests."
+    },
+    {
+      "reviewAreaId": "public-private-knowledge-disclosure",
+      "decision": "bounded",
+      "releaseBlock": true,
+      "rationale": "Personality cannot be used to excuse private-memory disclosure, and public surfaces must remain limited to approved public evidence.",
+      "controls": [
+        "public context suppresses private knowledge",
+        "private retrieval requires authorization",
+        "citations remain visible for retrieved claims"
+      ],
+      "verification": "Public and private behavior contexts preserve distinct disclosure rules."
+    },
+    {
+      "reviewAreaId": "voice-singing-and-audio-training",
+      "decision": "deferred-separate-gate",
+      "releaseBlock": true,
+      "rationale": "Text behavior research does not authorize vocal timbre, singing, audio training, voice cloning, or a recognizable real-person performance.",
+      "controls": [
+        "voice imitation prohibited",
+        "no audio or video stored",
+        "separate original-voice and provider-rights review required"
+      ],
+      "verification": "Voice work remains outside this artifact and blocked by a separate release gate."
+    },
+    {
+      "reviewAreaId": "legal-clearance",
+      "decision": "not-legal-clearance",
+      "releaseBlock": true,
+      "rationale": "This is a product-engineering and trust-control review, not legal advice, a rights license, performer consent, or a determination of lawful use.",
+      "controls": [
+        "legal clearance explicitly not established",
+        "public release remains separate",
+        "provider and performer terms require separate review"
+      ],
+      "verification": "The release disposition cannot be interpreted as permission to deploy or commercialize."
+    }
+  ],
+  "releaseDisposition": {
+    "localTextResearch": "engineering-controls-satisfied",
+    "runtimeActivation": "not-authorized-by-this-review",
+    "publicRelease": "requires-separate-release-gate",
+    "voiceWork": "blocked-pending-original-voice-and-rights-gate",
+    "legalClearance": "not-established"
+  },
+  "reviewFingerprint": "sha256:52eb24a4b32c98cb5ce2daf55e211fb453a337a4707ba0faf48f046bb044ad9b"
+}

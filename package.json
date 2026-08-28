@@ -77,6 +77,8 @@
     "research:personality:character-graph:v1": "tsx scripts/validate-personality-character-graph-v1.ts",
     "research:personality:behavior-spec:v1:generate": "tsx scripts/generate-personality-behavior-spec-v1.ts",
     "research:personality:behavior-spec:v1": "tsx scripts/validate-personality-behavior-spec-v1.ts",
+    "research:personality:trust-rights:v1:generate": "tsx scripts/generate-personality-trust-rights-review-v1.ts",
+    "research:personality:trust-rights:v1": "tsx scripts/validate-personality-trust-rights-review-v1.ts",
     "research:personality:runtime-admissions:v1": "tsx scripts/validate-runtime-personality-admissions-v1.ts",
     "research:personality:s03-duplicate-audit:v1": "tsx scripts/validate-personality-s03-duplicate-overlap-audit.ts",
     "research:personality:s03-duplicate-audit:v1:generate": "tsx scripts/generate-personality-s03-duplicate-overlap-audit.ts",
