@@ -139,6 +139,11 @@ Required containment: typed untrusted envelopes, per-turn intent, query/result
 budgets, pre-execution authorization, source quarantine, provider-egress policy,
 and a no-tools fallback.
 
+Implemented locally by `JOL-SEC-007`: Obsidian and career retrieval, replayed
+history, durable memory, task events, work/project observations, and provider
+payload classes cross the private model boundary only through the versioned
+policy gate. Covered risk signals enter durable content-minimizing quarantine.
+
 ### AP-03 — Delayed conversation or memory injection
 
 1. Third-party or attacker-authored text is pasted into a private thread or
@@ -149,6 +154,11 @@ and a no-tools fallback.
 
 Required containment: taint propagation, compromised-turn quarantine/reset,
 derivation-aware revocation, and delayed/split-turn regression fixtures.
+
+Implemented locally by `JOL-SEC-007`: collection-level inspection catches the
+versioned split-turn fixtures, active taints block later replay, and revocation
+or turn reset invalidates recorded descendants. Novel semantic and multilingual
+attacks remain residual risk.
 
 ### AP-04 — Public answer integrity failure
 
@@ -220,7 +230,8 @@ all child tickets:
    actor, workspace, channel, purpose, data class, scope, arguments, call/result
    budget, and expiry (`JOL-SEC-005`).
 4. Private RAG cannot broaden retrieval or provider egress because of embedded
-   content (`JOL-SEC-007`).
+   content; provider egress defaults to local-only and requires an explicit
+   approved-provider configuration (`JOL-SEC-007`).
 5. Public generated prose is evidence-entailing or exact deterministic fallback
    is returned (`JOL-SEC-006`).
 6. All blocker adversarial metrics pass at 100%; live cases have hash-bound
