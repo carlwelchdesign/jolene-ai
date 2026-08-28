@@ -7,6 +7,8 @@ import {
 } from "../domain/public-disclosure-policy.js";
 import {
   PUBLIC_CAREER_EVIDENCE_SCHEMA_VERSION,
+  careerEvidenceIdSchema,
+  publicCareerEvidenceConflictSchema,
   publicCareerEvidenceArtifactSchema,
   publicCareerEvidenceDigest,
   publicCareerEvidenceRecordSchema,
@@ -71,6 +73,8 @@ export const publicLiveModelEvaluationSuiteSchema = z.object({
   }).strict(),
   thresholds: z.record(publicLiveModelMetricSchema, thresholdSchema),
   evidence: z.array(publicCareerEvidenceRecordSchema).min(1).max(50),
+  revokedEvidenceIds: z.array(careerEvidenceIdSchema).max(1_000).default([]),
+  conflicts: z.array(publicCareerEvidenceConflictSchema).max(100).default([]),
   cases: z.array(z.object({
     id: z.string().regex(/^live:[a-z0-9][a-z0-9-]{2,80}$/),
     question: z.string().trim().min(1).max(800),
@@ -518,12 +522,10 @@ export async function evaluatePublicLiveModelSuite(
 function createArtifact(
   suite: PublicLiveModelEvaluationSuite,
 ): PublicCareerEvidenceArtifact {
-  const conflicts: never[] = [];
-  const revokedEvidenceIds: string[] = [];
   const digest = publicCareerEvidenceDigest({
     evidence: suite.evidence,
-    conflicts,
-    revokedEvidenceIds,
+    conflicts: suite.conflicts,
+    revokedEvidenceIds: suite.revokedEvidenceIds,
   });
   return publicCareerEvidenceArtifactSchema.parse({
     manifest: {
@@ -533,10 +535,10 @@ function createArtifact(
       generatedAt: suite.generatedAt,
       reviewedAt: suite.generatedAt,
       evidenceCount: suite.evidence.length,
-      revokedEvidenceIds,
+      revokedEvidenceIds: suite.revokedEvidenceIds,
     },
     evidence: suite.evidence,
-    conflicts,
+    conflicts: suite.conflicts,
   });
 }
 

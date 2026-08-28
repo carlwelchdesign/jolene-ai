@@ -48,12 +48,14 @@ describe("public live-model evaluation", () => {
       inputTokens: 1_200,
       outputTokens: 150,
       totalTokens: 1_350,
-      estimatedCostMicrousd: 2_625,
+      estimatedCostMicrousd: 4_200,
       maximumLatencyMilliseconds: 50,
     });
     expect(result.reviewPacket.cases).toHaveLength(4);
     expect(result.reviewPacket.cases[0]?.question).toContain("React");
-    expect(result.reviewPacket.cases[0]?.answer).toContain("typed React product systems");
+    expect(result.reviewPacket.cases[0]?.answer).toBe(
+      result.reviewPacket.cases[0]?.evidence[0]?.claimText,
+    );
 
     const serializedReport = JSON.stringify(result.report);
     expect(serializedReport).not.toContain("What React");

@@ -151,12 +151,24 @@ latency/token/cost ceilings. Measured provider output retains its structured
 support IDs and must pass the same fail-closed grounding validator used by the
 public answer service; unchanged claim cards alone cannot make unsupported prose
 pass. Its `gpt-5.6-terra` token rates were
-reviewed on 2026-08-26 against the [official OpenAI API pricing](https://platform.openai.com/pricing).
+reviewed on 2026-08-27 against the [official model pricing](https://developers.openai.com/api/docs/models/gpt-5.6-terra).
 Changing the model, price, scenario, expectation, or threshold changes the suite
 hash and requires review. Cost estimates conservatively charge every reported
 input token at the full short-context input rate instead of assuming a cache
 discount. The committed suite hash is
-`a71ae1e505e1305c38c1e5bef0aec37dfdbcad44dfa612b29e0f4b0676d47f2b`.
+`5e38064adec7b8d609f44f22cbccc09e53c1f02482504805fc9a767fcb66f3f8`.
+
+The authorized 2026-08-27 local run used the exact approved corpus
+`career:16c2c9c8ee7f35c8fae055c2b82ddf46b0bd2ed99ad9be45e8c151ca0e6e400f`.
+It made three provider requests while the unsupported Kubernetes case correctly
+bypassed the provider. The run failed closed: one of four cases passed, two
+generated answers were rejected to deterministic fallback, and the refreshed
+41-record input exceeded the precommitted input-token and cost ceilings. The
+content-minimized report recorded 8,394 input tokens, 838 output tokens,
+26,844 micro-USD estimated total cost, and 4,124 ms maximum latency. These
+results are measurement evidence, not permission to relax thresholds, activate
+the service, or launch. Remediation and a new explicitly authorized live run are
+required before this gate can pass.
 
 The focused red-team command uses the repository-pinned Node 22 runtime, a
 two-thread worker ceiling, and serial file execution to avoid the prior
