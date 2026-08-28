@@ -166,11 +166,23 @@ function validateEntailment(
 }
 
 function prohibitedReason(text: string): PublicAnswerGroundingReasonCode | null {
-  const normalized = normalize(text);
+  const normalized = securityNormalize(text);
+  if (hasAlternateEncoding(text)) return "prompt_or_policy_leakage";
   for (const [reason, patterns] of PROHIBITED_PATTERNS) {
     if (patterns.some((pattern) => pattern.test(normalized))) return reason;
   }
   return null;
+}
+
+function securityNormalize(value: string): string {
+  return value.toLocaleLowerCase("en-US").normalize("NFKD")
+    .replace(/\p{M}+/gu, "")
+    .replace(/[^a-z0-9%@+./:_-]+/gu, " ").trim();
+}
+
+function hasAlternateEncoding(value: string): boolean {
+  return value !== value.normalize("NFKC") ||
+    /%(?:[0-9a-f]{2})|&#(?:x[0-9a-f]+|\d+);|\\u[0-9a-f]{4}|(?:[A-Za-z0-9+/]{24,}={1,2})/iu.test(value);
 }
 
 function rejected(
@@ -236,6 +248,11 @@ const PROHIBITED_PATTERNS: ReadonlyArray<readonly [
     /\b(?:system|developer) (?:prompt|message|instruction)s?\b/u,
     /\bignore (?:all |the )?(?:previous|prior) instructions?\b/u,
     /\b(?:hidden|internal) (?:policy|instruction|prompt)\b/u,
+    /\b(?:pretend|act|roleplay) (?:that )?(?:you are|as)\b/u,
+    /\b(?:visitor|user|attacker) (?:says|asserts|instructs|requires)\b/u,
+    /\bignora (?:todas )?las instrucciones (?:anteriores|previas)\b/u,
+    /\bignorez (?:toutes )?les instructions precedentes\b/u,
+    /\bignoriere (?:alle )?(?:vorherigen|fruheren) anweisungen\b/u,
   ]],
   ["identity_impersonation", [
     /\bi am (?:carl|his employer|his manager|his recruiter)\b/u,
@@ -248,6 +265,12 @@ const PROHIBITED_PATTERNS: ReadonlyArray<readonly [
   ["private_or_contact_disclosure", [
     /\b(?:email|phone|address|salary|compensation|availability|relocation)\b/u,
     /\b(?:obsidian|private memory|sqlite|api key|token|password)\b/u,
+    /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/iu,
+    /(?:\+?1[\s.-]?)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}\b/u,
+    /\b(?:sk-[A-Za-z0-9_-]{16,}|xox[baprs]-[A-Za-z0-9-]{10,}|ghp_[A-Za-z0-9]{20,})\b/u,
+    /(?:^|\s)\/(?:users|home|private|var|volumes)\//u,
+    /\b(?:file|obsidian):\/\//u,
+    /\bhttps?:\/\/(?:localhost|127\.0\.0\.1)\b/u,
   ]],
   ["prohibited_claim", [
     /\b(?:perfect|guaranteed|best candidate|definitely qualified)\b/u,
