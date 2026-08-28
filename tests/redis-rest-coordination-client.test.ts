@@ -12,6 +12,10 @@ describe("RedisRestCoordinationClient", () => {
   it("runs a content-free protocol preflight through an exact HTTPS host", async () => {
     const fetch = vi.fn<typeof globalThis.fetch>(async (_input, init) => {
       const commands = JSON.parse(String(init?.body));
+      if (commands[0] === "EVAL") {
+        expect(commands).toContain("jolene-public:preflight:probe");
+        return jsonResponse({ result: commands.at(-1) });
+      }
       expect(commands[0]).toEqual(["PING"]);
       expect(commands[1]?.[0]).toBe("ECHO");
       expect(commands[1]).toHaveLength(2);
@@ -24,7 +28,7 @@ describe("RedisRestCoordinationClient", () => {
       protocol: "redis-rest-json-array",
       status: "ready",
     });
-    expect(fetch).toHaveBeenCalledOnce();
+    expect(fetch).toHaveBeenCalledTimes(2);
     const [url, init] = fetch.mock.calls[0] ?? [];
     expect(url).toBe(`${endpoint}/multi-exec`);
     expect(init).toMatchObject({ method: "POST", redirect: "error" });

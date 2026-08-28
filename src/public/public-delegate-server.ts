@@ -392,16 +392,17 @@ function createAuditedResponder(
     });
     if (audits) {
       try {
-        void audits.record({
+        await audits.record({
           operation,
           method,
           status: guarded.status,
           outcome: guarded.outcome,
           durationMs: Date.now() - startedAt,
           ...guarded.details,
-        }).catch(() => undefined);
+        });
       } catch {
-        // Auditing is best-effort and must never change the public response.
+        // The bounded audit attempt completes before a serverless response can
+        // freeze, but telemetry failure must never change the safe response.
       }
     }
     sendJson(response, guarded.status, guarded.body, guarded.headers);

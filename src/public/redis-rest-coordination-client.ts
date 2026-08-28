@@ -109,11 +109,19 @@ export class RedisRestCoordinationClient {
     if (ping !== "PONG" || echo !== challenge) {
       throw new SharedCoordinationUnavailableError();
     }
+    const scriptResult = await this.evaluate(
+      "redis.call('SET', KEYS[1], ARGV[1], 'PX', 5000); local value = redis.call('GET', KEYS[1]); redis.call('DEL', KEYS[1]); return value",
+      [this.key("preflight", "probe")],
+      [challenge],
+    );
+    if (scriptResult !== challenge) {
+      throw new SharedCoordinationUnavailableError();
+    }
     return {
       schemaVersion: "jolene.redis-rest-coordination-health.v1",
       protocol: "redis-rest-json-array",
       protocolFingerprint: createHash("sha256")
-        .update("redis-rest-json-array:multi-exec:eval:v1")
+        .update("redis-rest-json-array:multi-exec:eval:ephemeral-write:v1")
         .digest("hex"),
       status: "ready",
     };

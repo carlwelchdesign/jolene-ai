@@ -4,6 +4,7 @@ import { describe, expect, it, vi } from "vitest";
 
 import { RedisRestCoordinationClient } from "../src/public/redis-rest-coordination-client.js";
 import {
+  PreflightedPublicRequestAdmission,
   SharedPublicModelRequestBudget,
   SharedPublicRequestAdmission,
   sharedPublicCoordinationScriptFingerprints,
@@ -82,6 +83,52 @@ describe("SharedPublicRequestAdmission", () => {
     expect(script).toContain("ZADD");
     expect(sharedPublicCoordinationScriptFingerprints.admission)
       .toMatch(/^[a-f0-9]{64}$/);
+  });
+});
+
+describe("PreflightedPublicRequestAdmission", () => {
+  it("coalesces and caches protocol preflight before delegating", async () => {
+    let now = 1_000;
+    let fetchCalls = 0;
+    const client = createClient(vi.fn<typeof globalThis.fetch>(async (_input, init) => {
+      fetchCalls += 1;
+      const body = JSON.parse(String(init?.body));
+      if (body[0] === "EVAL") return jsonResponse({ result: body.at(-1) });
+      return jsonResponse([{ result: "PONG" }, { result: body[1][1] }]);
+    }));
+    const delegate = {
+      acquire: vi.fn(async () => ({ accepted: false as const, status: 503 as const,
+        code: "public_delegate_busy" as const, retryAfterSeconds: 1 })),
+    };
+    const admission = new PreflightedPublicRequestAdmission({
+      client,
+      delegate,
+      freshnessMilliseconds: 1_000,
+      now: () => now,
+    });
+
+    await Promise.all([admission.acquire("a"), admission.acquire("b")]);
+    expect(fetchCalls).toBe(2);
+    expect(delegate.acquire).toHaveBeenCalledTimes(2);
+    await admission.acquire("c");
+    expect(fetchCalls).toBe(2);
+    now = 2_001;
+    await admission.acquire("d");
+    expect(fetchCalls).toBe(4);
+  });
+
+  it("never delegates when preflight is unavailable", async () => {
+    const delegate = { acquire: vi.fn() };
+    const admission = new PreflightedPublicRequestAdmission({
+      client: createClient(vi.fn<typeof globalThis.fetch>(async () =>
+        new Response("unavailable", { status: 503 })
+      )),
+      delegate,
+    });
+    await expect(admission.acquire("client")).rejects.toThrow(
+      "Shared coordination is unavailable",
+    );
+    expect(delegate.acquire).not.toHaveBeenCalled();
   });
 });
 

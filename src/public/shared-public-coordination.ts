@@ -167,6 +167,47 @@ export class SharedPublicRequestAdmission implements PublicRequestAdmissionContr
   }
 }
 
+export class PreflightedPublicRequestAdmission implements PublicRequestAdmissionController {
+  readonly #client: RedisRestCoordinationClient;
+  readonly #delegate: PublicRequestAdmissionController;
+  readonly #freshnessMilliseconds: number;
+  readonly #now: () => number;
+  #readyUntil = 0;
+  #pending: Promise<void> | null = null;
+
+  constructor(options: {
+    readonly client: RedisRestCoordinationClient;
+    readonly delegate: PublicRequestAdmissionController;
+    readonly freshnessMilliseconds?: number;
+    readonly now?: () => number;
+  }) {
+    this.#client = options.client;
+    this.#delegate = options.delegate;
+    this.#freshnessMilliseconds = z.number().int().min(1_000).max(300_000)
+      .parse(options.freshnessMilliseconds ?? 60_000);
+    this.#now = options.now ?? Date.now;
+  }
+
+  async acquire(clientKey: string): Promise<PublicRequestAdmission> {
+    await this.#ensureReady();
+    return this.#delegate.acquire(clientKey);
+  }
+
+  async #ensureReady(): Promise<void> {
+    if (this.#now() < this.#readyUntil) return;
+    if (!this.#pending) {
+      this.#pending = this.#client.preflight()
+        .then(() => {
+          this.#readyUntil = this.#now() + this.#freshnessMilliseconds;
+        })
+        .finally(() => {
+          this.#pending = null;
+        });
+    }
+    await this.#pending;
+  }
+}
+
 export interface SharedPublicModelRequestBudgetOptions {
   readonly client: RedisRestCoordinationClient;
   readonly maxRequestsPerWindow: number;
