@@ -125,9 +125,20 @@ export function createPublicDelegateRequestHandler(
         );
         return;
       }
-      const admission = options.admissions.acquire(
-        (options.clientKey ?? socketClientKey)(request),
-      );
+      let admission;
+      try {
+        admission = await options.admissions.acquire(
+          (options.clientKey ?? socketClientKey)(request),
+        );
+      } catch {
+        await respond(
+          503,
+          publicError("public_delegate_busy", requestId, 60),
+          "busy",
+          { "retry-after": "60" },
+        );
+        return;
+      }
       if (!admission.accepted) {
         await respond(
           admission.status,
@@ -174,7 +185,12 @@ export function createPublicDelegateRequestHandler(
           "public_evidence_unavailable",
         );
       } finally {
-        admission.release();
+        try {
+          await admission.release();
+        } catch {
+          // The accepted lease has a bounded expiry; release failure cannot
+          // make an already-sent response disclose coordination internals.
+        }
       }
     };
 }

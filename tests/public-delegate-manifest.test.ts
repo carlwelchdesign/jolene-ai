@@ -394,6 +394,24 @@ describe("public delegate manifest boundary", () => {
     expect(JSON.stringify(events)).not.toMatch(/remote|address|client|header|url/i);
   });
 
+  it("fails closed with a sanitized response when shared admission is unavailable", async () => {
+    const fixture = await loadFixture();
+    const { baseUrl } = await start(await writeArtifact(fixture), {
+      admissions: {
+        acquire: async () => {
+          throw new Error("provider endpoint token and private client identity");
+        },
+      },
+    });
+    const response = await fetch(`${baseUrl}/health`);
+    expect(response.status).toBe(503);
+    expect(response.headers.get("retry-after")).toBe("60");
+    const body = JSON.stringify(await response.json());
+    expect(body).toContain("unavailable");
+    expect(body).not.toContain("provider endpoint");
+    expect(body).not.toContain("private client identity");
+  });
+
   it("serves a frozen-contract answer from matching public evidence", async () => {
     const artifact = createPublicEvidenceArtifact();
     const { baseUrl } = await start(await writeArtifact(artifact));
