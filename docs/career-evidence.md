@@ -367,12 +367,14 @@ Evidence strength is conservatively `limited` until the private registry gains
 an explicit human-reviewed strength field. The exporter does not infer strength
 from source type, wording, or maturity.
 
-The current canonical August 27, 2026 owner-reviewed registry exports 41 public
-claims and one revoked ID for the superseded David Allen relationship claim under
-schema `1.0.0`. Its content-derived corpus is
-`career:fd223e58149ded86f5d3083678b496239b66cdf3b458b740dd637ddb8a27549e`;
-the artifact generated at `2026-08-27T20:17:09.125Z` records evidence reviewed
-through `2026-08-27T20:16:33.853Z`. The deterministic empty-corpus fixture and
+The current canonical August 28, 2026 owner-reviewed registry exports 53 public
+claims and 15 revoked IDs for superseded portfolio evidence under schema
+`1.0.0`. Its content-derived corpus is
+`career:23ea9cba5c822f2d10827397b0bae94fbab77d56f505f18555912b9e95a85104`;
+the artifact generated at `2026-08-28T23:50:59.554Z` records evidence reviewed
+through `2026-08-28T23:50:59.221Z`. The corrected David Allen recommendation
+identifies him as Carl's employer, and both earlier relationship claim IDs remain
+revoked. The deterministic empty-corpus fixture and
 hash remain under `contracts/` for regression coverage, not as current runtime
 state. Publication, file transfer to a public runtime, public API activation,
 portfolio integration, deployment, and launch remain separate approval gates.

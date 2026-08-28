@@ -74,7 +74,7 @@ export const publicLiveModelEvaluationSuiteSchema = z.object({
     maxEstimatedCostMicrousdTotal: z.number().int().positive().max(10_000_000),
   }).strict(),
   thresholds: z.record(publicLiveModelMetricSchema, thresholdSchema),
-  evidence: z.array(publicCareerEvidenceRecordSchema).min(1).max(50),
+  evidence: z.array(publicCareerEvidenceRecordSchema).min(1).max(100),
   revokedEvidenceIds: z.array(careerEvidenceIdSchema).max(1_000).default([]),
   conflicts: z.array(publicCareerEvidenceConflictSchema).max(100).default([]),
   cases: z.array(z.object({

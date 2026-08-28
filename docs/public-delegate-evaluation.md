@@ -196,6 +196,17 @@ reviewed under Carl's blanket owner-approval directive and the hash-bound
 four-case decision was stored as `approved`; this evaluation approval still
 does not authorize deployment or public launch.
 
+The authorized JOL-REL-002 release verification refreshed the same four-case
+suite against corrected corpus
+`career:23ea9cba5c822f2d10827397b0bae94fbab77d56f505f18555912b9e95a85104`
+with 53 public evidence records and 15 revocations. Suite hash
+`73ea59619149e96535d4efc593968096e53db43fabe9367b1882d09f9ddb9366`
+passed 4/4 cases and every blocking metric at 100%. The three model requests plus
+one deterministic bypass measured 4,100 input tokens, 630 output tokens, 15,760
+micro-USD estimated total cost, and 3,747 ms maximum latency. Carl explicitly
+authorized JOL-REL-002; the locally inspected, hash-bound review packet is stored
+as `approved` for this exact corpus and suite.
+
 The focused red-team command uses the repository-pinned Node 22 runtime, a
 two-thread worker ceiling, and serial file execution to avoid the prior
 evaluation-worker instability:
