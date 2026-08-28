@@ -55,6 +55,8 @@
     "research:personality:sampling:v3": "tsx scripts/validate-personality-sampling-plan-v3.ts",
     "research:personality:sampling:v4": "tsx scripts/validate-personality-sampling-plan-v4.ts",
     "research:personality:sampling:v4:generate": "tsx scripts/generate-personality-sampling-plan-v4.ts",
+    "research:personality:sampling:v5": "tsx scripts/validate-personality-sampling-plan-v5.ts",
+    "research:personality:sampling:v5:generate": "tsx scripts/generate-personality-sampling-plan-v5.ts",
     "research:personality:selection:v4": "tsx scripts/validate-personality-sampling-plan-v4-outcome.ts",
     "research:personality:selection:v4:generate": "tsx scripts/generate-personality-selection-ledgers-v4.ts",
     "research:personality:selection:v4:outcome:generate": "tsx scripts/generate-personality-sampling-plan-v4-outcome.ts",
