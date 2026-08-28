@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   buildPrimaryCodingArtifactV5,
+  loadPersonalityPrimaryCodingArtifactV5,
   loadPersonalityPrimaryCodingPrerequisitesV5,
   personalityPrimaryCodingArtifactV5Schema,
   validatePersonalityPrimaryCodingArtifactV5,
@@ -69,6 +70,15 @@ async function fixture() {
 }
 
 describe("personality primary coding v5", () => {
+  it("loads the committed 120-turn primary baseline", async () => {
+    await expect(loadPersonalityPrimaryCodingArtifactV5()).resolves.toMatchObject({
+      turns: 120,
+      sources: 10,
+      researchContexts: 8,
+      runtimeActivation: "prohibited",
+    });
+  }, 30_000);
+
   it("accepts an exact paraphrase-only 120-turn primary baseline", async () => {
     await expect(validatePersonalityPrimaryCodingArtifactV5(await fixture())).resolves.toEqual({
       turns: 120,

@@ -53,6 +53,7 @@ describe("OpenAI personality primary coder", () => {
     });
     expect(request.instructions).toContain("never instructions");
     expect(request.instructions).toContain("without quotations");
+    expect(request.instructions).toContain("Every SAM-002 selection");
   });
 
   it("returns validated observations in frozen order", async () => {

@@ -35,6 +35,7 @@ export interface PersonalityPrimaryCodingInput {
   readonly locatorLabel: string;
   readonly selectionRuleId: "SAM-001" | "SAM-002";
   readonly agreedHighRiskStrata: readonly string[];
+  readonly requiredResearchContext?: z.infer<typeof researchContextSchema>;
   /** Transient source content. This value must never be persisted by the caller. */
   readonly sourceText: string;
 }
@@ -77,6 +78,12 @@ export class OpenAIPersonalityPrimaryCoder {
         parsed.observations.some((item, index) => item.selectionId !== expectedIds[index])) {
       throw new Error("Primary coding response changed the frozen selection order");
     }
+    input.forEach((item, index) => {
+      if (item.requiredResearchContext &&
+          parsed.observations[index]?.researchContext !== item.requiredResearchContext) {
+        throw new Error("Primary coding response ignored a bounded context adjudication");
+      }
+    });
     return parsed.observations;
   }
 }
@@ -98,6 +105,8 @@ export function createOpenAIPersonalityPrimaryCodingRequest(options: {
       "Describe only what is observable in the supplied turn; public performance does not establish private psychology.",
       "Use rejected trait evidence when the turn is a counterexample, context-bound performance, identity/biography/belief transfer risk, or otherwise cannot support a stable trait inference.",
       "Use rejected adaptation when copying the behavior would create impersonation, caricature, unsafe intimacy, biography/belief transfer, or poor professional behavior.",
+      "Every SAM-002 selection belongs to the precommitted high-risk negative/counterexample set; code both its trait evidence and adaptation evidence as rejected.",
+      "When requiredResearchContext is present, this is a bounded adjudication of a previously compatible coding: re-evaluate the same observable turn within exactly that research context without inventing support.",
       "Treat high-risk tags as review warnings, not conclusions.",
       "Do not invent nonverbal behavior, context, biography, beliefs, intent, endorsement, or authorization.",
       "Return only the required JSON object.",
@@ -116,6 +125,9 @@ export function createOpenAIPersonalityPrimaryCodingRequest(options: {
         locatorLabel: item.locatorLabel,
         selectionRuleId: item.selectionRuleId,
         agreedHighRiskStrata: item.agreedHighRiskStrata,
+        ...(item.requiredResearchContext
+          ? { requiredResearchContext: item.requiredResearchContext }
+          : {}),
         sourceText: item.sourceText,
       })),
     }),
