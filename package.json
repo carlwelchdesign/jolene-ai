@@ -71,6 +71,8 @@
     "research:personality:independent-review:v5": "tsx scripts/validate-personality-independent-review-v5.ts",
     "research:personality:recoding:v1:capture": "tsx scripts/capture-personality-recoding-v1.ts",
     "research:personality:recoding:v1": "tsx scripts/validate-personality-recoding-v1.ts",
+    "research:personality:admission-audit:v1:capture": "tsx scripts/capture-personality-admission-audit-v1.ts",
+    "research:personality:admission-audit:v1": "tsx scripts/validate-personality-admission-audit-v1.ts",
     "research:personality:s03-duplicate-audit:v1": "tsx scripts/validate-personality-s03-duplicate-overlap-audit.ts",
     "research:personality:s03-duplicate-audit:v1:generate": "tsx scripts/generate-personality-s03-duplicate-overlap-audit.ts",
     "research:personality:s03-duplicate-amendment:v1": "tsx scripts/validate-personality-s03-duplicate-overlap-amendment.ts",
