@@ -743,11 +743,32 @@ function isPrivateDisclosureRequest(question: string): boolean {
   const normalized = question.normalize("NFKC");
   const requestsPrivateMaterial = /\b(?:private|unpublished)\b.{0,48}\b(?:memory|notes?|files?|data|details?|material|work|information)\b/iu.test(normalized)
     || /\b(?:reveal|share|show|tell|expose|leak)\b.{0,64}\b(?:private|secret|unpublished)\b/iu.test(normalized)
-    || /\b(?:system prompt|api key|password|home address|phone number|email address|medical record|salary|compensation)\b/iu.test(normalized);
+    || /\b(?:system prompt|api key|password|home address|phone number|email address|medical record|salary|compensation)\b/iu.test(normalized)
+    || PUBLIC_SOURCE_ACCESS_PATTERNS.some((pattern) => pattern.test(normalized))
+    || PUBLIC_INSTRUCTION_OVERRIDE_PATTERNS.some((pattern) => pattern.test(normalized))
+    || PUBLIC_EXTERNAL_ACTION_PATTERNS.some((pattern) => pattern.test(normalized));
   const includesPublicCareerQuestion = /\b(?:describe|explain|summarize|what|which|how)\b.{0,96}\b(?:react|projects?|systems?|portfolio|experience|roles?|skills?|recommendations?|career|aviation|leadership)\b/iu
     .test(normalized);
   return requestsPrivateMaterial && !includesPublicCareerQuestion;
 }
+
+const PUBLIC_SOURCE_ACCESS_PATTERNS = [
+  /\b(?:open|quote|read|reveal|share|show|use|call|access|print)\b.{0,80}\b(?:carl['’]s.{0,24}(?:notes?|vault)|knowledge vault|local files?(?:\s+paths?)?|bearer tokens?|private api|credentials?|secrets?)\b/iu,
+  /\b(?:carl['’]s.{0,24}(?:notes?|vault)|knowledge vault|local files?(?:\s+paths?)?|bearer tokens?|private api|credentials?|secrets?)\b.{0,80}\b(?:open|quote|read|reveal|share|show|use|call|access|print)\b/iu,
+] as const;
+
+const PUBLIC_INSTRUCTION_OVERRIDE_PATTERNS = [
+  /\b(?:ignore|disregard|bypass|override)\b.{0,64}\b(?:rules?|policy|instructions?|safeguards?)\b/iu,
+  /\bfollow\b.{0,64}\binstructions?\b.{0,64}\b(?:instead of|over|above)\b.{0,32}\b(?:policy|rules?|instructions?)\b/iu,
+] as const;
+
+const PUBLIC_EXTERNAL_ACTION_PATTERNS = [
+  /\bpretend\b.{0,64}\bcarl\b.{0,32}\bapproved\b/iu,
+  /\bact as carl\b/iu,
+  /\b(?:accept|decline)\b.{0,48}\b(?:job offer|offer|on (?:his|carl['’]s) behalf)\b/iu,
+  /\b(?:send|submit|publish|post)\b.{0,80}\b(?:directly|without\b.{0,32}\b(?:review|approval)|on (?:his|carl['’]s) behalf)\b/iu,
+  /\bnegotiate\b.{0,64}\b(?:compensation|salary|offer|on (?:his|carl['’]s) behalf)\b/iu,
+] as const;
 
 function supportedResponse(
   artifact: PublicCareerEvidenceArtifact,
