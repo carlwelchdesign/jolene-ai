@@ -52,6 +52,118 @@ describe("DeterministicPublicAnswerService", () => {
     );
   });
 
+  it("keeps an oversized evidence sentence useful within the answer bound", () => {
+    const record = createPublicEvidenceRecord(1, {
+      text: `Carl built a React system with ${"detail ".repeat(560)}`.trim(),
+    });
+    const result = service.answer(createPublicEvidenceArtifact([record]), {
+      question: "What React system did Carl build?",
+    });
+
+    expect(result.answer.length).toBeLessThanOrEqual(4_000);
+    expect(result.answer).toContain("First: Carl built a React system");
+    expect(result.answer.endsWith("…")).toBe(true);
+    expect(result.claims).toEqual([record.claim]);
+  });
+
+  it.each([
+    {
+      name: "project",
+      question: "How did Carl build Jolene?",
+      record: createPublicEvidenceRecord(1, {
+        text: "Carl designed Jolene as a portable agent architecture.",
+        title: "Jolene AI",
+        href: "/work/jolene-ai#evidence",
+      }),
+      opening: "The useful way to understand that project",
+    },
+    {
+      name: "role",
+      question: "What role did Carl have at Example?",
+      record: createPublicEvidenceRecord(1, {
+        text: "Carl led frontend delivery at Example.",
+        title: "Senior Software Engineer at Example",
+      }),
+      opening: "answers that role question",
+    },
+    {
+      name: "capability",
+      question: "What React capability does Carl have?",
+      record: createPublicEvidenceRecord(1, {
+        text: "Carl builds typed React product systems.",
+        title: "Product engineering capability",
+      }),
+      opening: "show how Carl works in practice",
+    },
+    {
+      name: "recommendation",
+      question: "Which recommendation describes Carl as a mentor?",
+      record: createPublicEvidenceRecord(1, {
+        text: "A teammate described Carl as a natural mentor.",
+        title: "Recommendation from Teammate",
+        href: "/recommendations",
+      }),
+      opening: "people who worked with Carl",
+    },
+    {
+      name: "boundary",
+      question: "What are the limitations of Carl's aviation demo?",
+      record: createPublicEvidenceRecord(1, {
+        text: "Carl built an aviation demonstration.",
+        title: "Aviation demonstration",
+        limitations: [
+          "The example is a demonstration rather than a certified aviation system.",
+        ],
+      }),
+      opening: "The honest answer starts with the boundary",
+    },
+  ])("composes a coherent deterministic $name answer", ({
+    question,
+    record,
+    opening,
+  }) => {
+    const result = service.answer(createPublicEvidenceArtifact([record]), {
+      question,
+    });
+
+    expect(result.answer).toContain(opening);
+    expect(result.answer).toContain("First:");
+    expect(result.answer).not.toContain("Here’s what Carl’s published work shows:");
+    expect(result.claims[0]?.text).toBe(record.claim.text);
+    expect(result.claims[0]?.evidenceIds).toEqual([record.evidenceId]);
+    expect(result.citations).toEqual([record.citation]);
+  });
+
+  it("keeps project fallback narration in the assistant's voice", () => {
+    const evidence = [
+      createPublicEvidenceRecord(1, {
+        text: "Carl directed Jolene's architecture and release decisions.",
+        title: "Jolene AI",
+        href: "/work/jolene-ai#evidence",
+      }),
+      createPublicEvidenceRecord(2, {
+        text: "A governed AI system I designed around reviewed evidence.",
+        title: "Jolene AI",
+        href: "/work/jolene-ai#evidence",
+      }),
+      createPublicEvidenceRecord(3, {
+        text: "Uses OpenAI for grounded answer synthesis.",
+        title: "Jolene AI",
+        href: "/work/jolene-ai#evidence",
+      }),
+    ];
+
+    const result = service.answer(createPublicEvidenceArtifact(evidence), {
+      question: "How did Carl build Jolene?",
+    });
+
+    expect(result.answer).toContain("Carl directed Jolene's architecture");
+    expect(result.answer).toContain("Jolene AI uses OpenAI");
+    expect(result.answer).not.toContain("I designed");
+    expect(result.claims).toHaveLength(3);
+    expect(result.citations).toHaveLength(3);
+  });
+
   it("routes an exact project entity before misleading cross-project tokens", () => {
     const jolene = [
       createPublicEvidenceRecord(1, {

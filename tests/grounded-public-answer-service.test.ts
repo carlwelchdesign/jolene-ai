@@ -189,9 +189,9 @@ describe("grounded public answer service", () => {
     }).execute(artifact, request);
 
     expect(execution.mode).toBe("validation_fallback");
-    expect(execution.responseKind).toBe("clarification");
-    expect(execution.response.claims).toEqual([]);
-    expect(execution.response.citations).toEqual([]);
+    expect(execution.responseKind).toBe("supported");
+    expect(execution.response.claims).toEqual([artifact.evidence[0]?.claim]);
+    expect(execution.response.citations).toEqual([artifact.evidence[0]?.citation]);
     expect(JSON.stringify(execution.response)).not.toContain("Contribution boundary");
   });
 
@@ -238,6 +238,10 @@ describe("grounded public answer service", () => {
     const artifact = createPublicEvidenceArtifact();
     const request = { question: "What React systems has Carl built?" };
     const generate = vi.fn(async () => "must not run");
+    const baseline = new DeterministicPublicAnswerService().answer(
+      artifact,
+      request,
+    );
 
     const execution = await new GroundedPublicAnswerService(
       { generate },
@@ -245,9 +249,8 @@ describe("grounded public answer service", () => {
     ).execute(artifact, request);
 
     expect(execution.mode).toBe("budget_fallback");
-    expect(execution.responseKind).toBe("clarification");
-    expect(execution.response.claims).toEqual([]);
-    expect(execution.response.citations).toEqual([]);
+    expect(execution.responseKind).toBe("supported");
+    expect(execution.response).toEqual(baseline);
     expect(generate).not.toHaveBeenCalled();
   });
 
@@ -259,24 +262,28 @@ describe("grounded public answer service", () => {
     ["whitespace output", "validation_fallback", async (): Promise<string> => "   "],
     ["oversized output", "validation_fallback", async (): Promise<string> =>
       "x".repeat(2_001)],
-  ] as const)("returns a reason-coded clarification for %s", async (
+  ] as const)("returns a reason-coded evidence summary for %s", async (
     _name,
     expectedMode,
     generate,
   ) => {
     const artifact = createPublicEvidenceArtifact();
     const request = { question: "What React systems has Carl built?" };
+    const baseline = new DeterministicPublicAnswerService().answer(
+      artifact,
+      request,
+    );
 
     const execution = await new GroundedPublicAnswerService({ generate })
       .execute(artifact, request);
 
     expect(execution.mode).toBe(expectedMode);
-    expect(execution.responseKind).toBe("clarification");
+    expect(execution.responseKind).toBe("supported");
     expect(execution.response.answer).not.toContain(
       "Here’s what Carl’s published work shows:",
     );
-    expect(execution.response.claims).toEqual([]);
-    expect(execution.response.citations).toEqual([]);
+    expect(execution.response.answer).toContain("First:");
+    expect(execution.response).toEqual(baseline);
   });
 
   it("never repeats the production Jolene evidence-dump regression", async () => {
@@ -299,13 +306,20 @@ describe("grounded public answer service", () => {
 
     expect(execution).toMatchObject({
       mode: "provider_fallback",
-      responseKind: "clarification",
-      response: { claims: [], citations: [] },
+      responseKind: "supported",
+      response: { claims: evidence.map((record) => record.claim) },
     });
-    expect(execution.response.answer).not.toContain(
-      "Here’s what Carl’s published work shows:",
+    expect(execution.response.answer).toContain(
+      "The useful way to understand that project",
     );
-    for (const record of evidence) {
+    expect(execution.response.answer).toContain("First:");
+    expect(execution.response.answer).toContain("Next:");
+    expect(execution.response.answer).toContain("remaining detail");
+    expect(execution.response.answer).not.toContain("Also:");
+    expect(execution.response.answer).not.toContain(
+      evidence.map((record) => record.claim.text).join(" "),
+    );
+    for (const record of evidence.slice(2)) {
       expect(execution.response.answer).not.toContain(record.claim.text);
     }
   });

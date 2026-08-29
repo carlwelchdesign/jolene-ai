@@ -234,7 +234,7 @@ describe("public answer grounding validator", () => {
   });
 
   it("returns the exact deterministic response when integrated validation fails", async () => {
-    const { artifact } = setup();
+    const { artifact, baseline } = setup();
     const execution = await new GroundedPublicAnswerService({
       generate: async () => generation(
         artifact,
@@ -242,10 +242,10 @@ describe("public answer grounding validator", () => {
       ),
     }).execute(artifact, { question: "What React systems has Carl built?" });
 
-    expect(execution).toMatchObject({
+    expect(execution).toEqual({
       mode: "validation_fallback",
-      responseKind: "clarification",
-      response: { claims: [], citations: [] },
+      responseKind: "supported",
+      response: baseline,
     });
   });
 });

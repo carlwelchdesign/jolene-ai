@@ -705,16 +705,16 @@ describe("public delegate manifest boundary", () => {
     ]);
     expect(events.map((event) => [event.answerMode, event.responseKind])).toEqual([
       ["model", "supported"],
-      ["provider_fallback", "clarification"],
-      ["budget_fallback", "clarification"],
+      ["provider_fallback", "supported"],
+      ["budget_fallback", "supported"],
     ]);
     expect(responses.map((response) => [
       response.headers.get("x-jolene-answer-mode"),
       response.headers.get("x-jolene-response-kind"),
     ])).toEqual([
       ["model", "supported"],
-      ["provider_fallback", "clarification"],
-      ["budget_fallback", "clarification"],
+      ["provider_fallback", "supported"],
+      ["budget_fallback", "supported"],
     ]);
     expect(JSON.stringify(events)).not.toMatch(/concise grounded|provider marker/i);
   });

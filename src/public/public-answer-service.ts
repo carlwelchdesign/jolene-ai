@@ -131,6 +131,7 @@ export class DeterministicPublicAnswerService
       ? noEvidenceResponse(artifact)
       : supportedResponse(
         artifact,
+        request.question,
         selected,
         hiringValueQuestion,
         negativeHiringQuestion,
@@ -280,32 +281,7 @@ function fallbackExecution(
   baseline: PortfolioAnswerResponse,
   mode: PublicAnswerFallbackMode,
 ): PublicAnswerExecution {
-  if (!isRawClaimConcatenation(baseline.answer)) {
-    return { response: baseline, mode, responseKind: "supported" };
-  }
-  return {
-    mode,
-    responseKind: "clarification",
-    response: clarificationResponse(baseline),
-  };
-}
-
-function clarificationResponse(
-  baseline: PortfolioAnswerResponse,
-): PortfolioAnswerResponse {
-  return portfolioAnswerResponseSchema.parse({
-    ...baseline,
-    answer:
-      "I hit a snag turning those sources into a clean answer, and I’d rather ask a sharper question than hand you word salad. Try one specific project, role, skill, or recommendation.",
-    claims: [],
-    citations: [],
-    limitations: [
-      "A reliable grounded answer was not available for this request.",
-    ],
-    suggestedFollowUpQuestions: [
-      "Which published project or professional role would you like to explore?",
-    ],
-  });
+  return { response: baseline, mode, responseKind: "supported" };
 }
 
 function deterministicResponseKind(
@@ -314,10 +290,6 @@ function deterministicResponseKind(
 ): PublicAnswerExecution["responseKind"] {
   if (isPrivateDisclosureRequest(request.question)) return "policy_refusal";
   return response.claims.length === 0 ? "no_evidence" : "supported";
-}
-
-function isRawClaimConcatenation(answer: string): boolean {
-  return answer.startsWith(RAW_CLAIM_CONCATENATION_PREFIX);
 }
 
 export interface ResolvedPublicConversationTurn {
@@ -779,6 +751,7 @@ function isPrivateDisclosureRequest(question: string): boolean {
 
 function supportedResponse(
   artifact: PublicCareerEvidenceArtifact,
+  question: string,
   selected: readonly PublicCareerEvidenceRecord[],
   hiringValueQuestion = false,
   negativeHiringQuestion = false,
@@ -790,7 +763,7 @@ function supportedResponse(
       ? boundedRelationshipAnswer(relationshipFact)
       : hiringValueQuestion
       ? boundedHiringValueAnswer(selected, negativeHiringQuestion)
-      : boundedSupportedAnswer(selected),
+      : boundedSupportedAnswer(question, selected),
     claims: selected.map((record) => visitorFacingClaim(record.claim)),
     citations: selected.map((record) => record.citation),
     limitations: unique(hiringValueQuestion
@@ -894,19 +867,146 @@ function uniqueRecords(
 }
 
 function boundedSupportedAnswer(
+  question: string,
   selected: readonly PublicCareerEvidenceRecord[],
 ): string {
-  const available = PUBLIC_PORTFOLIO_ANSWER_LIMITS.answerCharacters -
-    RAW_CLAIM_CONCATENATION_PREFIX.length;
-  return `${RAW_CLAIM_CONCATENATION_PREFIX}${selected
-    .map((record) => record.claim.text)
-    .join(" ")
-    .slice(0, available)
-    .trimEnd()}`;
+  const intent = deterministicAnswerIntent(question, selected);
+  const statements = intent === "boundary"
+    ? visitorFacingLimitations(
+      selected.flatMap((record) => record.claim.limitations),
+    )
+    : deterministicEvidenceStatements(intent, selected);
+  const evidenceStatements = statements.length > 0
+    ? statements
+    : selected.map((record) => visitorFacingClaim(record.claim).text);
+  const prefix = DETERMINISTIC_ANSWER_OPENINGS[intent](selected.length);
+  return composeBoundedEvidenceSummary(prefix, evidenceStatements);
 }
 
-const RAW_CLAIM_CONCATENATION_PREFIX =
-  "Here’s what Carl’s published work shows: ";
+function deterministicEvidenceStatements(
+  intent: DeterministicAnswerIntent,
+  selected: readonly PublicCareerEvidenceRecord[],
+): string[] {
+  const statements = selected.map((record) => ({
+    record,
+    text: visitorFacingClaim(record.claim).text,
+  }));
+  if (intent !== "project") return statements.map(({ text }) => text);
+  const thirdPerson = statements.filter(({ text }) =>
+    !/\b(?:I|me|my|mine|we|us|our|ours)\b/u.test(text)
+  );
+  const source = thirdPerson.length > 0 ? thirdPerson : statements;
+  return source.map(({ record, text }) =>
+    qualifySubjectlessProjectStatement(record.citation.title, text)
+  );
+}
+
+function qualifySubjectlessProjectStatement(title: string, text: string): string {
+  if (!PROJECT_STATEMENT_LEADING_VERB.test(text)) return text;
+  return `${title} ${text[0]?.toLocaleLowerCase("en-US")}${text.slice(1)}`;
+}
+
+const PROJECT_STATEMENT_LEADING_VERB =
+  /^(?:Combines|Connects|Dockerizes|Exports|Keeps|Runs|Separates|Supports|Treats|Uses)\b/u;
+
+type DeterministicAnswerIntent =
+  | "project"
+  | "role"
+  | "capability"
+  | "recommendation"
+  | "boundary"
+  | "general";
+
+function deterministicAnswerIntent(
+  question: string,
+  selected: readonly PublicCareerEvidenceRecord[],
+): DeterministicAnswerIntent {
+  const normalized = normalizeLookup(question);
+  if (/\b(?:limits?|limitations?|boundaries|risks?|caveats?|cannot|can t|weaknesses)\b/u
+    .test(normalized)) return "boundary";
+  if (selected.some((record) =>
+    record.citation.title.startsWith("Recommendation from ")
+  ) || /\b(?:recommendation|reference|testimonial)\b/u.test(normalized)) {
+    return "recommendation";
+  }
+  if (matchPublicProjectEntityPath(selected, question)) return "project";
+  if (/\b(?:role|position|job|employer|career|worked at|work at)\b/u.test(normalized)) {
+    return "role";
+  }
+  if (/\b(?:skill|capability|experience|technology|technical|design|build|built|how)\b/u
+    .test(normalized)) return "capability";
+  return "general";
+}
+
+const DETERMINISTIC_ANSWER_OPENINGS: Readonly<Record<
+  DeterministicAnswerIntent,
+  (count: number) => string
+>> = {
+  project: (count) =>
+    `The useful way to understand that project is through ${countLabel(count)}—good systems rarely arrive by magic.`,
+  role: (count) =>
+    `The published record answers that role question with ${countLabel(count)}, no résumé confetti required.`,
+  capability: (count) =>
+    `The evidence points to ${countLabel(count)} that show how Carl works in practice.`,
+  recommendation: (count) =>
+    `The strongest answer comes from ${countLabel(count)} from people who worked with Carl.`,
+  boundary: () =>
+    "The honest answer starts with the boundary, because usefulness without limits is just sales copy.",
+  general: (count) =>
+    `The published evidence gives us ${countLabel(count)} to work with.`,
+};
+
+function countLabel(count: number): string {
+  if (count === 1) return "one concrete piece of evidence";
+  return `${count} concrete pieces of evidence`;
+}
+
+function composeBoundedEvidenceSummary(
+  prefix: string,
+  statements: readonly string[],
+): string {
+  const transitions = ["First", "Next"] as const;
+  let answer = prefix;
+  let included = 0;
+  for (const [index, statement] of statements
+    .slice(0, DETERMINISTIC_SUMMARY_STATEMENTS)
+    .entries()) {
+    const transition = transitions[Math.min(index, transitions.length - 1)];
+    const label = ` ${transition}: `;
+    const available = PUBLIC_PORTFOLIO_ANSWER_LIMITS.answerCharacters -
+      answer.length - label.length;
+    const normalized = boundedStatement(statement, available);
+    if (!normalized) break;
+    const candidate = `${answer} ${transition}: ${normalized}`;
+    if (candidate.length > PUBLIC_PORTFOLIO_ANSWER_LIMITS.answerCharacters) break;
+    answer = candidate;
+    included += 1;
+  }
+  if (included === statements.length) return answer;
+  const suffix = " The cited evidence below carries the remaining detail.";
+  if (answer.length + suffix.length <= PUBLIC_PORTFOLIO_ANSWER_LIMITS.answerCharacters) {
+    return `${answer}${suffix}`;
+  }
+  return answer;
+}
+
+const DETERMINISTIC_SUMMARY_STATEMENTS = 2;
+
+function boundedStatement(value: string, available: number): string {
+  const normalized = terminateSentence(value.replace(/\s+/gu, " ").trim());
+  if (normalized.length <= available) return normalized;
+  if (available < 2) return "";
+  const candidate = normalized.slice(0, available - 1).trimEnd();
+  const lastWordBoundary = candidate.lastIndexOf(" ");
+  const bounded = lastWordBoundary > available / 2
+    ? candidate.slice(0, lastWordBoundary)
+    : candidate;
+  return `${bounded}…`;
+}
+
+function terminateSentence(value: string): string {
+  return /[.!?]["”']?$/u.test(value) ? value : `${value}.`;
+}
 
 function boundedHiringValueAnswer(
   selected: readonly PublicCareerEvidenceRecord[],
