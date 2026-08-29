@@ -35,6 +35,7 @@ import type {
   PublicAuditMethod,
   PublicAuditOperation,
   PublicAuditOutcome,
+  PublicAuditRecordInput,
   PublicAuditRecorder,
 } from "./public-audit-ledger.js";
 import {
@@ -310,18 +311,15 @@ async function handleRequest(
     await respond(
       200,
       result,
-      result.claims.length === 0
-        ? "no_evidence"
-        : execution.mode === "model"
-          ? "model_supported"
-          : execution.mode === "budget_fallback"
-            ? "model_budget_fallback"
-            : execution.mode === "fallback"
-              ? "model_fallback"
-              : "supported",
-      undefined,
+      publicAnswerAuditOutcome(execution),
+      {
+        "x-jolene-answer-mode": execution.mode,
+        "x-jolene-response-kind": execution.responseKind,
+      },
       {
         corpusVersion: result.corpusVersion,
+        answerMode: execution.mode,
+        responseKind: execution.responseKind,
         counts: {
           claimCount: result.claims.length,
           citationCount: result.citations.length,
@@ -346,6 +344,18 @@ async function handleRequest(
   });
 }
 
+function publicAnswerAuditOutcome(
+  execution: Awaited<ReturnType<PublicPortfolioAnswerer["execute"]>>,
+): PublicAuditOutcome {
+  if (execution.mode === "model") return "model_supported";
+  if (execution.mode === "budget_fallback") return "budget_fallback";
+  if (execution.mode === "provider_fallback") return "provider_fallback";
+  if (execution.mode === "validation_fallback") return "validation_fallback";
+  if (execution.responseKind === "clarification") return "clarification";
+  if (execution.responseKind === "no_evidence") return "no_evidence";
+  return "supported";
+}
+
 async function requireArtifact(
   source: PublicArtifactSource,
 ): Promise<PublicCareerEvidenceArtifact> {
@@ -356,6 +366,8 @@ async function requireArtifact(
 
 interface PublicAuditDetails {
   readonly corpusVersion?: string;
+  readonly answerMode?: PublicAuditRecordInput["answerMode"];
+  readonly responseKind?: PublicAuditRecordInput["responseKind"];
   readonly counts?: PublicAuditCounts;
 }
 

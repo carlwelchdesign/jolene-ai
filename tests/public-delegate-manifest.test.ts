@@ -564,6 +564,7 @@ describe("public delegate manifest boundary", () => {
     const answers: PublicPortfolioAnswerer = {
       execute: (source, request) => ({
         mode: "model",
+        responseKind: "supported",
         response: {
           ...baseline.answer(source, request),
           answer: `Unsafe provider output ${unsafeValue}`,
@@ -629,18 +630,34 @@ describe("public delegate manifest boundary", () => {
       }),
     });
 
+    const responses = [];
     for (const baseUrl of [model.baseUrl, fallback.baseUrl, budgetFallback.baseUrl]) {
-      expect((await fetch(`${baseUrl}/v1/portfolio/answer`, {
+      const response = await fetch(`${baseUrl}/v1/portfolio/answer`, {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ question: "What React systems has Carl built?" }),
-      })).status).toBe(200);
+      });
+      expect(response.status).toBe(200);
+      responses.push(response);
     }
 
     expect(events.map((event) => event.outcome)).toEqual([
       "model_supported",
-      "model_fallback",
-      "model_budget_fallback",
+      "provider_fallback",
+      "budget_fallback",
+    ]);
+    expect(events.map((event) => [event.answerMode, event.responseKind])).toEqual([
+      ["model", "supported"],
+      ["provider_fallback", "clarification"],
+      ["budget_fallback", "clarification"],
+    ]);
+    expect(responses.map((response) => [
+      response.headers.get("x-jolene-answer-mode"),
+      response.headers.get("x-jolene-response-kind"),
+    ])).toEqual([
+      ["model", "supported"],
+      ["provider_fallback", "clarification"],
+      ["budget_fallback", "clarification"],
     ]);
     expect(JSON.stringify(events)).not.toMatch(/concise grounded|provider marker/i);
   });

@@ -198,7 +198,11 @@ separate, older release and is not changed by this local work.
 - `GET /v1/public-evidence/manifest` returns the exact frozen v1 manifest.
 - `POST /v1/portfolio/answer` accepts strict JSON with a question of at most
   800 characters. It returns at most five exact exported claims and their
-  site-relative citations.
+  site-relative citations. Successful responses also include content-free
+  `X-Jolene-Answer-Mode` and `X-Jolene-Response-Kind` diagnostics so the
+  server-side BFF and operations checks can distinguish a generated answer,
+  deterministic answer, degraded clarification, no-evidence response, or
+  policy refusal without inspecting or logging visitor prose.
 - `POST /v1/portfolio/job-fit` accepts strict JSON with a job description of at
   most 12,000 characters. It returns at most 24 bounded requirements,
   conservative assessments, and resolving site-relative public citations.
@@ -264,12 +268,14 @@ prohibited behavior, contribution boundaries, and conservative lexical
 entailment before joining accepted segments. The existing deterministic
 response owns every other field:
 claims, citations, limitations, follow-up questions, and corpus version cannot
-be replaced by model output. Provider failure, timeout, refusal, malformed
-JSON, empty or oversized text, unsupported prose, poisoned-evidence
-instructions, or validator failure returns the exact deterministic answer. The
-audit ledger records only fixed
-`model_supported` or `model_fallback` outcomes and never submitted or generated
-content.
+be replaced by model output. A supported specialized deterministic answer may
+still be returned when generation degrades. A generic claim-concatenation
+fallback is never presented as an answer: provider failure, timeout, refusal,
+malformed JSON, empty or oversized text, unsupported prose, poisoned-evidence
+instructions, or validator failure returns a citation-free clarification
+instead. The audit ledger records only fixed `model_supported`,
+`provider_fallback`, or `validation_fallback` outcomes plus the content-free
+answer mode and response kind; it never records submitted or generated content.
 
 `store: false` is an API request control, not a promise about every aspect of a
 provider's processing or retention. Visitor questions remain untrusted external
@@ -281,9 +287,10 @@ stores only its schema version, window start, and aggregate request count. It is
 consulted only after deterministic evidence selection finds support, so
 no-evidence requests consume no budget and never call the provider. Each
 admitted provider attempt is counted before generation, including failures.
-Exhausted, corrupt, or unavailable budget state bypasses the provider and
-returns the exact deterministic answer with the fixed
-`model_budget_fallback` audit outcome. The default cap is 100 attempts per
+Exhausted, corrupt, or unavailable budget state bypasses the provider. It
+returns a supported specialized deterministic answer when one exists, or the
+same citation-free clarification used for unsafe generic fallback. The fixed
+audit outcome is `budget_fallback`. The default cap is 100 attempts per
 fixed 24-hour window; changing it is an operational decision, not permission
 to enable model mode.
 

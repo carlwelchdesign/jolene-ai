@@ -31,6 +31,7 @@ describe("grounded public answer service", () => {
     const execution = await service.execute(artifact, request);
 
     expect(execution.mode).toBe("model");
+    expect(execution.responseKind).toBe("supported");
     expect(execution.response).toEqual({
       ...baseline,
       answer: "Carl builds typed React product systems with explicit review boundaries.",
@@ -61,6 +62,7 @@ describe("grounded public answer service", () => {
       .execute(artifact, { question: "What Kubernetes systems did Carl operate?" });
 
     expect(execution.mode).toBe("deterministic");
+    expect(execution.responseKind).toBe("no_evidence");
     expect(execution.response.claims).toEqual([]);
     expect(generate).not.toHaveBeenCalled();
     expect(reserve).not.toHaveBeenCalled();
@@ -78,6 +80,7 @@ describe("grounded public answer service", () => {
     });
 
     expect(execution.mode).toBe("deterministic");
+    expect(execution.responseKind).toBe("policy_refusal");
     expect(execution.response.claims).toEqual([]);
     expect(execution.response.citations).toEqual([]);
     expect(execution.response.answer).toContain("I can’t share Carl’s private notes");
@@ -141,7 +144,6 @@ describe("grounded public answer service", () => {
   it("rejects generated prose that exposes internal public-process language", async () => {
     const artifact = createPublicEvidenceArtifact();
     const request = { question: "What React systems has Carl built?" };
-    const baseline = new DeterministicPublicAnswerService().answer(artifact, request);
     const execution = await new GroundedPublicAnswerService({
       generate: async (input) => generation(
         input,
@@ -149,7 +151,10 @@ describe("grounded public answer service", () => {
       ),
     }).execute(artifact, request);
 
-    expect(execution).toEqual({ mode: "fallback", response: baseline });
+    expect(execution.mode).toBe("validation_fallback");
+    expect(execution.responseKind).toBe("clarification");
+    expect(execution.response.claims).toEqual([]);
+    expect(execution.response.citations).toEqual([]);
     expect(JSON.stringify(execution.response)).not.toContain("Contribution boundary");
   });
 
@@ -195,7 +200,6 @@ describe("grounded public answer service", () => {
   ])("falls back without provider use when the budget is %s", async (_name, reserve) => {
     const artifact = createPublicEvidenceArtifact();
     const request = { question: "What React systems has Carl built?" };
-    const baseline = new DeterministicPublicAnswerService().answer(artifact, request);
     const generate = vi.fn(async () => "must not run");
 
     const execution = await new GroundedPublicAnswerService(
@@ -203,24 +207,66 @@ describe("grounded public answer service", () => {
       { budget: { reserve } },
     ).execute(artifact, request);
 
-    expect(execution).toEqual({ mode: "budget_fallback", response: baseline });
+    expect(execution.mode).toBe("budget_fallback");
+    expect(execution.responseKind).toBe("clarification");
+    expect(execution.response.claims).toEqual([]);
+    expect(execution.response.citations).toEqual([]);
     expect(generate).not.toHaveBeenCalled();
   });
 
   it.each([
-    ["provider error", async () => { throw new Error("unavailable"); }],
-    ["empty output", async () => ""],
-    ["whitespace output", async () => "   "],
-    ["oversized output", async () => "x".repeat(2_001)],
-  ])("falls back exactly to deterministic output for %s", async (_name, generate) => {
+    ["provider error", "provider_fallback", async (): Promise<string> => {
+      throw new Error("unavailable");
+    }],
+    ["empty output", "validation_fallback", async (): Promise<string> => ""],
+    ["whitespace output", "validation_fallback", async (): Promise<string> => "   "],
+    ["oversized output", "validation_fallback", async (): Promise<string> =>
+      "x".repeat(2_001)],
+  ] as const)("returns a reason-coded clarification for %s", async (
+    _name,
+    expectedMode,
+    generate,
+  ) => {
     const artifact = createPublicEvidenceArtifact();
     const request = { question: "What React systems has Carl built?" };
-    const baseline = new DeterministicPublicAnswerService().answer(artifact, request);
 
     const execution = await new GroundedPublicAnswerService({ generate })
       .execute(artifact, request);
 
-    expect(execution).toEqual({ mode: "fallback", response: baseline });
+    expect(execution.mode).toBe(expectedMode);
+    expect(execution.responseKind).toBe("clarification");
+    expect(execution.response.answer).not.toContain(
+      "Here’s what Carl’s published work shows:",
+    );
+    expect(execution.response.claims).toEqual([]);
+    expect(execution.response.citations).toEqual([]);
+  });
+
+  it("never repeats the production Jolene evidence-dump regression", async () => {
+    const evidence = [
+      "Treats build output, host validation, listening tests, signing, and packaging as separate release gates.",
+      "We hired Carl for interactive production on a freelance basis.",
+      "Carl is a highly creative guy who stays on the cutting edge of new technologies.",
+      "Keeps submissions and other consequential external actions behind explicit human approval.",
+      "Carl did great work for us in web design and multimedia production.",
+    ].map((text, index) => createPublicEvidenceRecord(index + 1, { text }));
+    const execution = await new GroundedPublicAnswerService({
+      generate: async () => { throw new Error("provider unavailable"); },
+    }).execute(createPublicEvidenceArtifact(evidence), {
+      question: "How did Carl build Jolene?",
+    });
+
+    expect(execution).toMatchObject({
+      mode: "provider_fallback",
+      responseKind: "clarification",
+      response: { claims: [], citations: [] },
+    });
+    expect(execution.response.answer).not.toContain(
+      "Here’s what Carl’s published work shows:",
+    );
+    for (const record of evidence) {
+      expect(execution.response.answer).not.toContain(record.claim.text);
+    }
   });
 });
 

@@ -33,6 +33,10 @@ export const publicAuditEventSchema = z.object({
     "model_supported",
     "model_fallback",
     "model_budget_fallback",
+    "budget_fallback",
+    "provider_fallback",
+    "validation_fallback",
+    "clarification",
     "no_evidence",
     "compared",
     "accepted",
@@ -53,6 +57,19 @@ export const publicAuditEventSchema = z.object({
     "request_aborted",
   ]),
   durationMs: z.number().int().min(0).max(60_000),
+  answerMode: z.enum([
+    "deterministic",
+    "model",
+    "budget_fallback",
+    "provider_fallback",
+    "validation_fallback",
+  ]).optional(),
+  responseKind: z.enum([
+    "supported",
+    "clarification",
+    "no_evidence",
+    "policy_refusal",
+  ]).optional(),
   corpusVersion: z.string().regex(/^career:[a-f0-9]{64}$/).optional(),
   counts: publicAuditCountsSchema.optional(),
 }).strict();
@@ -74,6 +91,8 @@ export interface PublicAuditRecordInput {
   readonly status: number;
   readonly outcome: PublicAuditOutcome;
   readonly durationMs: number;
+  readonly answerMode?: PublicAuditEvent["answerMode"];
+  readonly responseKind?: PublicAuditEvent["responseKind"];
   readonly corpusVersion?: string;
   readonly counts?: PublicAuditCounts;
 }

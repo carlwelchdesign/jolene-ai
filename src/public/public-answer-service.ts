@@ -32,7 +32,17 @@ export interface PublicPortfolioAnswerer {
 
 export interface PublicAnswerExecution {
   readonly response: PortfolioAnswerResponse;
-  readonly mode: "deterministic" | "model" | "fallback" | "budget_fallback";
+  readonly mode:
+    | "deterministic"
+    | "model"
+    | "budget_fallback"
+    | "provider_fallback"
+    | "validation_fallback";
+  readonly responseKind:
+    | "supported"
+    | "clarification"
+    | "no_evidence"
+    | "policy_refusal";
 }
 
 export interface GroundedPublicAnswerInput {
@@ -64,7 +74,12 @@ export class DeterministicPublicAnswerService
     artifact: PublicCareerEvidenceArtifact,
     request: PortfolioAnswerRequest,
   ): PublicAnswerExecution {
-    return { response: this.answer(artifact, request), mode: "deterministic" };
+    const response = this.answer(artifact, request);
+    return {
+      response,
+      mode: "deterministic",
+      responseKind: deterministicResponseKind(request, response),
+    };
   }
 
   answer(
@@ -148,6 +163,7 @@ export class GroundedPublicAnswerService implements PublicPortfolioAnswerer {
       return {
         response: this.#baseline.answerFromSelected(artifact, request, []),
         mode: "deterministic",
+        responseKind: "policy_refusal",
       };
     }
     const exactRelationshipEvidence = selectRecommendationRelationshipEvidence(
@@ -173,22 +189,31 @@ export class GroundedPublicAnswerService implements PublicPortfolioAnswerer {
       }
     }
     if (baseline.claims.length === 0) {
-      return { response: baseline, mode: "deterministic" };
+      return {
+        response: baseline,
+        mode: "deterministic",
+        responseKind: "no_evidence",
+      };
     }
     if (exactRelationshipEvidence.length > 0) {
-      return { response: baseline, mode: "deterministic" };
+      return {
+        response: baseline,
+        mode: "deterministic",
+        responseKind: "supported",
+      };
     }
     if (this.#budget) {
       try {
         if (!await this.#budget.reserve()) {
-          return { response: baseline, mode: "budget_fallback" };
+          return fallbackExecution(baseline, "budget_fallback");
         }
       } catch {
-        return { response: baseline, mode: "budget_fallback" };
+        return fallbackExecution(baseline, "budget_fallback");
       }
     }
+    let generation: unknown;
     try {
-      const generation = await this.generator.generate({
+      generation = await this.generator.generate({
         question: request.question,
         corpusVersion: baseline.corpusVersion,
         evidence: baseline.claims.map((claim, index) => ({
@@ -198,25 +223,79 @@ export class GroundedPublicAnswerService implements PublicPortfolioAnswerer {
           citationTitle: baseline.citations[index]?.title ?? "Reviewed evidence",
         })),
       });
+    } catch {
+      return fallbackExecution(baseline, "provider_fallback");
+    }
+    try {
       const validation = this.#validator.validate(artifact, baseline, generation);
       if (validation.status === "rejected") {
-        return { response: baseline, mode: "fallback" };
+        return fallbackExecution(baseline, "validation_fallback");
       }
       const answer = generatedAnswerSchema.parse(validation.answer);
       if (containsInternalPublicProcessLanguage(answer)) {
-        return { response: baseline, mode: "fallback" };
+        return fallbackExecution(baseline, "validation_fallback");
       }
       return {
         mode: "model",
+        responseKind: "supported",
         response: portfolioAnswerResponseSchema.parse({
           ...baseline,
           answer,
         }),
       };
     } catch {
-      return { response: baseline, mode: "fallback" };
+      return fallbackExecution(baseline, "validation_fallback");
     }
   }
+}
+
+type PublicAnswerFallbackMode = Extract<
+  PublicAnswerExecution["mode"],
+  "budget_fallback" | "provider_fallback" | "validation_fallback"
+>;
+
+function fallbackExecution(
+  baseline: PortfolioAnswerResponse,
+  mode: PublicAnswerFallbackMode,
+): PublicAnswerExecution {
+  if (!isRawClaimConcatenation(baseline.answer)) {
+    return { response: baseline, mode, responseKind: "supported" };
+  }
+  return {
+    mode,
+    responseKind: "clarification",
+    response: clarificationResponse(baseline),
+  };
+}
+
+function clarificationResponse(
+  baseline: PortfolioAnswerResponse,
+): PortfolioAnswerResponse {
+  return portfolioAnswerResponseSchema.parse({
+    ...baseline,
+    answer:
+      "I couldn’t assemble a reliable answer to that question just now. Try asking about one specific project, role, skill, or recommendation.",
+    claims: [],
+    citations: [],
+    limitations: [
+      "A reliable grounded answer was not available for this request.",
+    ],
+    suggestedFollowUpQuestions: [
+      "Which published project or professional role would you like to explore?",
+    ],
+  });
+}
+
+function deterministicResponseKind(
+  request: PortfolioAnswerRequest,
+  response: PortfolioAnswerResponse,
+): PublicAnswerExecution["responseKind"] {
+  if (isPrivateDisclosureRequest(request.question)) return "policy_refusal";
+  return response.claims.length === 0 ? "no_evidence" : "supported";
+}
+
+function isRawClaimConcatenation(answer: string): boolean {
+  return answer.startsWith(RAW_CLAIM_CONCATENATION_PREFIX);
 }
 
 export function selectDeterministicPublicEvidence(
@@ -591,15 +670,17 @@ function uniqueRecords(
 function boundedSupportedAnswer(
   selected: readonly PublicCareerEvidenceRecord[],
 ): string {
-  const prefix = "Here’s what Carl’s published work shows: ";
   const available = PUBLIC_PORTFOLIO_ANSWER_LIMITS.answerCharacters -
-    prefix.length;
-  return `${prefix}${selected
+    RAW_CLAIM_CONCATENATION_PREFIX.length;
+  return `${RAW_CLAIM_CONCATENATION_PREFIX}${selected
     .map((record) => record.claim.text)
     .join(" ")
     .slice(0, available)
     .trimEnd()}`;
 }
+
+const RAW_CLAIM_CONCATENATION_PREFIX =
+  "Here’s what Carl’s published work shows: ";
 
 function boundedHiringValueAnswer(
   selected: readonly PublicCareerEvidenceRecord[],
