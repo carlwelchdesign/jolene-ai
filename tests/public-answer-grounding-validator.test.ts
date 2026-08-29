@@ -49,6 +49,85 @@ describe("public answer grounding validator", () => {
     )).toMatchObject({ status: "accepted", answer: record.claim.text });
   });
 
+  it("accepts a sourced negative privacy boundary without allowing positive access", () => {
+    const record = createPublicEvidenceRecord(1, {
+      text: "Public Jolene cannot read Obsidian or private memory.",
+    });
+    const artifact = createPublicEvidenceArtifact([record]);
+    const baseline = new DeterministicPublicAnswerService().answerFromSelected(
+      artifact,
+      { question: "Can public Jolene read private systems?" },
+      [record],
+    );
+    const validator = new PublicAnswerGroundingValidator();
+
+    expect(validator.validate(
+      artifact,
+      baseline,
+      generation(artifact, record.claim.text),
+    )).toMatchObject({ status: "accepted", answer: record.claim.text });
+    expect(validator.validate(
+      artifact,
+      baseline,
+      generation(artifact, "Public Jolene reads Obsidian and private memory."),
+    )).toMatchObject({
+      status: "rejected",
+      audit: { reasonCode: "private_or_contact_disclosure" },
+    });
+  });
+
+  it("accepts separated-runtime and kept-out privacy language from Jolene evidence", () => {
+    const runtime = createPublicEvidenceRecord(1, {
+      text: "Dockerizes the private runtime as separate API, Slack, and monitoring processes sharing durable SQLite state, while the public delegate uses a different image, state volume, environment, and network boundary.",
+    });
+    const artifactBoundary = createPublicEvidenceRecord(2, {
+      text: "Exports public career knowledge as a versioned, hash-verified, deny-by-default artifact; private evidence and raw Obsidian content never enter that artifact.",
+    });
+    const artifact = createPublicEvidenceArtifact([runtime, artifactBoundary]);
+    const baseline = new DeterministicPublicAnswerService().answerFromSelected(
+      artifact,
+      { question: "How did Carl separate public and private Jolene?" },
+      [runtime, artifactBoundary],
+    );
+
+    expect(new PublicAnswerGroundingValidator().validate(artifact, baseline, {
+      contractVersion: "1.0.0",
+      corpusVersion: artifact.manifest.corpusVersion,
+      segments: [
+        {
+          text: "He split the private runtime into distinct API, Slack, and monitoring processes with durable SQLite state, while the public delegate runs in a different image, state volume, environment, and network boundary.",
+          supportIds: [runtime.evidenceId],
+        },
+        {
+          text: "The public artifact is versioned, hash-verified, and deny-by-default, with private evidence and Obsidian content kept out.",
+          supportIds: [artifactBoundary.evidenceId],
+        },
+      ],
+    })).toMatchObject({ status: "accepted" });
+  });
+
+  it("accepts a conservative project-boundary paraphrase without accepting invention", () => {
+    const record = createPublicEvidenceRecord(1, {
+      text: "The public chat is deployed as a portfolio demonstration; the broader chief-of-staff runtime remains a private local system for Carl.",
+    });
+    const artifact = createPublicEvidenceArtifact([record]);
+    const baseline = new DeterministicPublicAnswerService().answerFromSelected(
+      artifact,
+      { question: "How did Carl build Jolene?" },
+      [record],
+    );
+    const validator = new PublicAnswerGroundingValidator();
+
+    expect(validator.validate(artifact, baseline, generation(
+      artifact,
+      "Carl built Jolene as a private chief-of-staff runtime and a separate public chat demo, not as one shared system.",
+    ))).toMatchObject({ status: "accepted" });
+    expect(validator.validate(artifact, baseline, generation(
+      artifact,
+      "Carl built Jolene as an autonomous recruiting system that guarantees hiring outcomes.",
+    ))).toMatchObject({ status: "rejected" });
+  });
+
   it.each([
     ["wrong corpus", (artifact: PublicCareerEvidenceArtifact) => ({
       ...generation(artifact, artifact.evidence[0]!.claim.text),

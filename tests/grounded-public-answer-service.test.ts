@@ -249,7 +249,11 @@ describe("grounded public answer service", () => {
       "Carl is a highly creative guy who stays on the cutting edge of new technologies.",
       "Keeps submissions and other consequential external actions behind explicit human approval.",
       "Carl did great work for us in web design and multimedia production.",
-    ].map((text, index) => createPublicEvidenceRecord(index + 1, { text }));
+    ].map((text, index) => createPublicEvidenceRecord(index + 1, {
+      text,
+      title: "Jolene AI",
+      href: "/work/jolene-ai#evidence",
+    }));
     const execution = await new GroundedPublicAnswerService({
       generate: async () => { throw new Error("provider unavailable"); },
     }).execute(createPublicEvidenceArtifact(evidence), {

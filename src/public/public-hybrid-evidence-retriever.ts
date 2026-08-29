@@ -9,6 +9,7 @@ import {
 } from "../domain/public-portfolio-contract.js";
 import {
   type PublicEvidenceRetriever,
+  matchPublicProjectEntityPath,
   selectDeterministicPublicEvidence,
 } from "./public-answer-service.js";
 import {
@@ -62,6 +63,10 @@ export class HybridPublicEvidenceRetriever implements PublicEvidenceRetriever {
   ): Promise<readonly PublicCareerEvidenceRecord[]> {
     const deterministic = selectDeterministicPublicEvidence(artifact, request);
     if (isPrivateOrSensitiveQuery(request.question)) return deterministic;
+    const projectPath = matchPublicProjectEntityPath(
+      artifact.evidence,
+      request.question,
+    );
 
     const [corpus, queryEmbeddings] = await Promise.all([
       this.#corpusEmbeddings(artifact),
@@ -78,7 +83,13 @@ export class HybridPublicEvidenceRetriever implements PublicEvidenceRetriever {
         record,
         score: cosineSimilarity(corpus.vectors[index] ?? [], queryVector),
       }))
-      .filter(({ score }) => score >= this.#minimumVectorScore)
+      .filter(({ record, score }) =>
+        score >= this.#minimumVectorScore && (
+          !projectPath ||
+          record.citation.href === projectPath ||
+          record.citation.href.startsWith(`${projectPath}#`)
+        )
+      )
       .sort((left, right) =>
         right.score - left.score ||
         left.record.evidenceId.localeCompare(right.record.evidenceId)

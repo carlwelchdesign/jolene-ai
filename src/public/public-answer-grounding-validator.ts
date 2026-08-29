@@ -73,9 +73,9 @@ export class PublicAnswerGroundingValidator
           return rejected("support_id_conflicted", index, startedAt);
         }
       }
-      const prohibited = prohibitedReason(segment.text);
-      if (prohibited) return rejected(prohibited, index, startedAt);
       const records = segment.supportIds.map((id) => active.get(id)!);
+      const prohibited = prohibitedReason(segment.text, records);
+      if (prohibited) return rejected(prohibited, index, startedAt);
       const entailmentFailure = validateEntailment(segment.text, records);
       if (entailmentFailure) return rejected(entailmentFailure, index, startedAt);
     }
@@ -138,8 +138,12 @@ function validateEntailment(
     if (!boundaryMatches) continue;
     const numbersMatch = numbers.every((number) => sourceNormalized.includes(number));
     const negationMatches = !hasNegation ||
-      /\b(?:no|not|never|without)\b/u.test(sourceNormalized);
-    if (overlap >= 2 && coverage >= 0.6 && numbersMatch && negationMatches) {
+      /\b(?:no|not|never|without)\b/u.test(sourceNormalized) ||
+      (
+        BOUNDARY_SEPARATION_PATTERN.test(normalizedText) &&
+        BOUNDARY_SEPARATION_PATTERN.test(sourceNormalized)
+      );
+    if (overlap >= 2 && coverage >= 0.5 && numbersMatch && negationMatches) {
       supported = true;
     }
   }
@@ -165,13 +169,43 @@ function validateEntailment(
   return null;
 }
 
-function prohibitedReason(text: string): PublicAnswerGroundingReasonCode | null {
+function prohibitedReason(
+  text: string,
+  records: readonly PublicCareerEvidenceRecord[],
+): PublicAnswerGroundingReasonCode | null {
   const normalized = securityNormalize(text);
   if (hasAlternateEncoding(text)) return "prompt_or_policy_leakage";
   for (const [reason, patterns] of PROHIBITED_PATTERNS) {
+    if (
+      reason === "private_or_contact_disclosure" &&
+      isSupportedNegativePrivacyBoundary(normalized, records)
+    ) continue;
     if (patterns.some((pattern) => pattern.test(normalized))) return reason;
   }
   return null;
+}
+
+function isSupportedNegativePrivacyBoundary(
+  normalizedText: string,
+  records: readonly PublicCareerEvidenceRecord[],
+): boolean {
+  if (ALWAYS_PRIVATE_VALUE_PATTERNS.some((pattern) => pattern.test(normalizedText))) {
+    return false;
+  }
+  const mentionedTerms = SENSITIVE_BOUNDARY_TERMS.filter((term) =>
+    containsTerm(normalizedText, term)
+  );
+  if (mentionedTerms.length === 0 || !NEGATIVE_BOUNDARY_PATTERN.test(normalizedText)) {
+    return false;
+  }
+  return mentionedTerms.every((term) => records.some((record) => {
+    const source = normalize([
+      record.claim.text,
+      ...record.claim.limitations,
+      record.citation.title,
+    ].join(" "));
+    return containsTerm(source, term) && NEGATIVE_BOUNDARY_PATTERN.test(source);
+  }));
 }
 
 function securityNormalize(value: string): string {
@@ -234,6 +268,30 @@ const GROUNDING_STOP_WORDS = new Set([
 const CONTRIBUTION_BOUNDARY_TERMS = [
   "sole", "solely", "independently", "led", "owned",
   "employer", "employed", "client", "award", "won",
+] as const;
+
+const SENSITIVE_BOUNDARY_TERMS = [
+  "obsidian",
+  "private memory",
+  "sqlite",
+  "api key",
+  "token",
+  "password",
+] as const;
+
+const NEGATIVE_BOUNDARY_PATTERN =
+  /\b(?:cannot|can't|does not|doesn't|never|no|not|without|excluded|separate|outside|different|kept out|stays private)\b/u;
+
+const BOUNDARY_SEPARATION_PATTERN =
+  /\b(?:separate|different|private|public|isolated|boundary)\b/u;
+
+const ALWAYS_PRIVATE_VALUE_PATTERNS = [
+  /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/iu,
+  /(?:\+?1[\s.-]?)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}\b/u,
+  /\b(?:sk-[A-Za-z0-9_-]{16,}|xox[baprs]-[A-Za-z0-9-]{10,}|ghp_[A-Za-z0-9]{20,})\b/u,
+  /(?:^|\s)\/(?:users|home|private|var|volumes)\//u,
+  /\b(?:file|obsidian):\/\//u,
+  /\bhttps?:\/\/(?:localhost|127\.0\.0\.1)\b/u,
 ] as const;
 
 function containsTerm(normalized: string, term: string): boolean {

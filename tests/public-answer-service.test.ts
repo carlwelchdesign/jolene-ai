@@ -4,7 +4,10 @@ import {
   portfolioAnswerRequestSchema,
   portfolioAnswerResponseSchema,
 } from "../src/domain/public-portfolio-contract.js";
-import { DeterministicPublicAnswerService } from "../src/public/public-answer-service.js";
+import {
+  DeterministicPublicAnswerService,
+  selectDeterministicPublicEvidence,
+} from "../src/public/public-answer-service.js";
 import {
   createPublicEvidenceArtifact,
   createPublicEvidenceConflict,
@@ -46,6 +49,61 @@ describe("DeterministicPublicAnswerService", () => {
         .map((citation) => citation.evidenceId)
         .sort(),
     );
+  });
+
+  it("routes an exact project entity before misleading cross-project tokens", () => {
+    const jolene = [
+      createPublicEvidenceRecord(1, {
+        text: "Carl designed Jolene as a portable agent architecture.",
+        title: "Jolene AI",
+        href: "/work/jolene-ai#evidence",
+      }),
+      createPublicEvidenceRecord(2, {
+        text: "Jolene uses OpenAI for grounded answer synthesis.",
+        title: "Jolene AI",
+        href: "/work/jolene-ai#evidence",
+      }),
+    ];
+    const unrelated = createPublicEvidenceRecord(3, {
+      text: "A different project mentions Jolene, OpenAI, architecture, and build tooling.",
+      title: "Unrelated project",
+      href: "/work/unrelated-project#evidence",
+    });
+    const artifact = createPublicEvidenceArtifact([unrelated, ...jolene]);
+
+    expect(selectDeterministicPublicEvidence(artifact, {
+      question: "How did Carl build Jolene?",
+    })).toEqual(jolene);
+  });
+
+  it("uses human project aliases such as Job Search without requiring suffixes", () => {
+    const jobSearch = createPublicEvidenceRecord(1, {
+      text: "Job Search OS combines discovery and evidence-backed application work.",
+      title: "Job Search OS",
+      href: "/work/job-search-os#evidence",
+    });
+    const other = createPublicEvidenceRecord(2, {
+      text: "A separate product supports search operations.",
+      title: "Other project",
+      href: "/work/other-project#evidence",
+    });
+
+    expect(selectDeterministicPublicEvidence(
+      createPublicEvidenceArtifact([other, jobSearch]),
+      { question: "Tell me about the Job Search project." },
+    )).toEqual([jobSearch]);
+  });
+
+  it("clarifies a weak multi-term query instead of accepting one incidental token", () => {
+    const artifact = createPublicEvidenceArtifact([
+      createPublicEvidenceRecord(1, {
+        text: "Carl built a React interface.",
+      }),
+    ]);
+
+    expect(service.answer(artifact, {
+      question: "What Kubernetes observability platform did Carl operate?",
+    })).toMatchObject({ claims: [], citations: [] });
   });
 
   it("answers an exact recommendation relationship without unrelated client evidence", () => {

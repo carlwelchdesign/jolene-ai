@@ -246,12 +246,21 @@ is explicitly set to `openai` and `.env.public.local` contains a non-empty
 `OPENAI_API_KEY`. The public process does not read `.env.local`, and setup does
 not copy the private service key into the public environment.
 
-With `JOLENE_PUBLIC_RETRIEVAL_MODE=hybrid`, the delegate embeds the 41 approved
-public records once per warm runtime, embeds each visitor question, and combines
+With `JOLENE_PUBLIC_RETRIEVAL_MODE=hybrid`, the delegate embeds the approved
+public artifact once per warm runtime, embeds each visitor question, and combines
 semantic and deterministic ranks with reciprocal-rank fusion. This is public
 RAG without a separate vector database: the corpus is small enough for a
 bounded in-memory vector index. Provider failure falls back to deterministic
 selection. Sensitive/private-information requests bypass embeddings.
+
+Explicit project names are resolved before generic lexical or semantic ranking.
+The resolver normalizes human aliases such as `Jolene`, `Flight Tracker`, and
+`Job Search`, expands the project-to-claim relationship through site-relative
+case-study citations, and keeps semantic reranking inside that project. This
+prevents an embedding or repeated keyword in another case study from displacing
+the named project's evidence. Generic queries retain deterministic tie-breaking;
+queries with no grounded lexical or semantic support clarify instead of filling
+the answer with low-confidence records.
 
 For a supported question, the answer provider receives only the visitor's
 question, current public corpus version, and each selected public evidence ID,

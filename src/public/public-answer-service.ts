@@ -302,6 +302,11 @@ export function selectDeterministicPublicEvidence(
   artifact: PublicCareerEvidenceArtifact,
   request: PortfolioAnswerRequest,
 ): PublicCareerEvidenceRecord[] {
+  const projectEvidence = selectProjectEntityEvidence(
+    artifact.evidence,
+    request.question,
+  );
+  if (projectEvidence.length > 0) return projectEvidence;
   const relationshipEvidence = selectRecommendationRelationshipEvidence(
     artifact.evidence,
     request.question,
@@ -315,6 +320,103 @@ export function selectDeterministicPublicEvidence(
   );
   return selectLexicalEvidence(artifact.evidence, queryTerms);
 }
+
+function selectProjectEntityEvidence(
+  evidence: readonly PublicCareerEvidenceRecord[],
+  question: string,
+): PublicCareerEvidenceRecord[] {
+  const projectPath = matchPublicProjectEntityPath(evidence, question);
+  if (!projectPath) return [];
+  const projectEvidence = evidence.filter((record) =>
+    record.citation.href === projectPath ||
+    record.citation.href.startsWith(`${projectPath}#`)
+  );
+  const normalizedQuestion = normalizeLookup(question);
+  const queryTerms = tokenizeLexicalTerms(question).filter(
+    (term) => !PUBLIC_QUERY_STOP_WORDS.has(term),
+  );
+  const howBuilt = /\b(?:how|build|built|designed|architecture|work|works)\b/u
+    .test(normalizedQuestion);
+  return projectEvidence
+    .map((record) => ({
+      record,
+      score: score(record, queryTerms) + projectOverviewScore(record) +
+        (howBuilt ? howBuiltScore(record) : 0),
+    }))
+    .sort(compareScoredEvidence)
+    .slice(0, PUBLIC_PORTFOLIO_ANSWER_LIMITS.responseItems)
+    .map(({ record }) => record);
+}
+
+export function matchPublicProjectEntityPath(
+  evidence: readonly PublicCareerEvidenceRecord[],
+  question: string,
+): string | null {
+  const normalizedQuestion = normalizeLookup(question);
+  const slugs = [...new Set(evidence.flatMap((record) => {
+    const slug = record.citation.href.match(/^\/work\/([a-z0-9-]+)(?:#|$)/u)?.[1];
+    return slug ? [slug] : [];
+  }))];
+  const matchedSlug = slugs
+    .map((slug) => ({ slug, aliases: projectAliases(slug) }))
+    .filter(({ aliases }) => aliases.some((alias) =>
+      (` ${normalizedQuestion} `).includes(` ${alias} `)
+    ))
+    .sort((left, right) =>
+      Math.max(...right.aliases.map((alias) => alias.length)) -
+        Math.max(...left.aliases.map((alias) => alias.length)) ||
+      left.slug.localeCompare(right.slug)
+    )[0]?.slug;
+  return matchedSlug ? `/work/${matchedSlug}` : null;
+}
+
+function projectAliases(slug: string): string[] {
+  const tokens = slug.split("-");
+  const descriptive = tokens.filter((token) => token !== "ai" && token !== "os");
+  return [...new Set([
+    tokens.join(" "),
+    descriptive.join(" "),
+  ].filter((alias) => alias.length >= 3))];
+}
+
+function projectOverviewScore(record: PublicCareerEvidenceRecord): number {
+  const text = normalizeLookup(`${record.citation.title} ${record.claim.text}`);
+  return PROJECT_OVERVIEW_TERMS.reduce(
+    (total, [term, weight]) => total + (text.includes(term) ? weight : 0),
+    0,
+  );
+}
+
+function howBuiltScore(record: PublicCareerEvidenceRecord): number {
+  const text = normalizeLookup(`${record.citation.title} ${record.claim.text}`);
+  return HOW_BUILT_TERMS.reduce(
+    (total, [term, weight]) => total + (text.includes(term) ? weight : 0),
+    0,
+  );
+}
+
+const PROJECT_OVERVIEW_TERMS = [
+  ["designed", 10],
+  ["originated", 10],
+  ["architecture", 9],
+  ["openai", 8],
+  ["retrieval", 7],
+  ["personality", 6],
+] as const;
+
+const HOW_BUILT_TERMS = [
+  ["originated", 16],
+  ["directed", 14],
+  ["designed", 12],
+  ["architecture", 12],
+  ["openai", 10],
+  ["synthesis", 9],
+  ["retrieval", 9],
+  ["hybrid", 8],
+  ["docker", 7],
+  ["runtime", 6],
+  ["backend for frontend", 5],
+] as const;
 
 interface RecommendationRelationshipFact {
   readonly subject: string;

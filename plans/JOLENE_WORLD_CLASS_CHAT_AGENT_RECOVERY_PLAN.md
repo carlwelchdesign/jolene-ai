@@ -242,11 +242,9 @@ independent subagent reviews.
 
 ## Immediate next action
 
-Start `JOL-CHAT-001.3` after reconciling `.1` and `.2` as locally complete. The
-exact screenshot question now selects only the new Jolene dossier, but a live
-local OpenAI request is still rejected by the grounding validator. Add explicit
-project/entity routing, reranking, confidence, and validation-reason evaluation
-without weakening the validator or deploying either repository.
+Start `JOL-CHAT-001.4` after reconciling `.1` through `.3` as locally complete.
+Add bounded multi-turn continuity without widening the public evidence, tool, or
+private-memory boundary and without deploying either repository.
 
 ## Local delivery checkpoint: 2026-08-28
 
@@ -254,6 +252,7 @@ without weakening the validator or deploying either repository.
 | --- | --- | --- | --- |
 | `JOL-CHAT-001.1` | Raw claim concatenation can no longer escape as a degraded answer; answer mode and response kind distinguish provider, validation, budget, clarification, no-evidence, model, and deterministic paths | Jolene `npm run check`: 161 files / 922 tests; public evaluation 61/61; security red team 78/78; build green | Commit `8c34976`; not pushed or deployed |
 | `JOL-CHAT-001.2` | Added a 12-topic public-safe Jolene dossier and a complete `/work/jolene-ai` case study with Carl's role, architecture, model, RAG, corpus, security, personality, Docker, Slack, BFF, release, and limitation evidence | Portfolio full repository gate green; isolated browser suite 94/94; local corpus now 69 evidence records; exact question selects five Jolene-only records | Portfolio commit `d913656`; Jolene dossier commit pending this checkpoint; neither repository pushed or deployed |
+| `JOL-CHAT-001.3` | Added exact project/entity routing, human alias normalization, project-to-claim expansion, project-scoped hybrid reranking, misleading-token isolation, conservative low-support behavior, and evidence-backed negative privacy-boundary validation | Jolene `npm run check`: 162 files / 931 tests; public evaluation 61/61; security red team 78/78; build green; a live local `gpt-5.4-mini` generation for `How did Carl build Jolene?` passed the grounding validator with four segments and five supports | Commit pending this checkpoint; not pushed or deployed |
 
 The local public artifact is now
 `career:340e42d282f2e3288fa60a8c34a625837fd1d2b45a59b1769d8d7cab275fa13a`
