@@ -107,6 +107,7 @@ export class DeterministicPublicAnswerService
       return privateDisclosureResponse(artifact);
     }
     const hiringValueQuestion = isHiringValueQuestion(request.question);
+    const negativeHiringQuestion = isNegativeHiringQuestion(request.question);
     const activeEvidence = new Map(
       artifact.evidence.map((record) => [record.evidenceId, record]),
     );
@@ -132,6 +133,7 @@ export class DeterministicPublicAnswerService
         artifact,
         selected,
         hiringValueQuestion,
+        negativeHiringQuestion,
         relationshipFact,
       );
     return withConversationContext(response, conversationContext);
@@ -294,7 +296,7 @@ function clarificationResponse(
   return portfolioAnswerResponseSchema.parse({
     ...baseline,
     answer:
-      "I couldn’t assemble a reliable answer to that question just now. Try asking about one specific project, role, skill, or recommendation.",
+      "I hit a snag turning those sources into a clean answer, and I’d rather ask a sharper question than hand you word salad. Try one specific project, role, skill, or recommendation.",
     claims: [],
     citations: [],
     limitations: [
@@ -748,13 +750,19 @@ function isHiringValueQuestion(question: string): boolean {
 
 const HIRING_VALUE_PATTERNS = [
   /\bwhy\s+(?:should|would)\s+(?:i|we|someone|a company)\s+hire\b/u,
-  /\bwhy\s+(?:should(?:n['’]t|\s+not)|would(?:n['’]t|\s+not))\s+(?:i|we|someone|a company)\s+hire\b/u,
+  /\bwhy\s+(?:should(?:n['’]?t|\s+not)|would(?:n['’]?t|\s+not))\s+(?:i|we|someone|a company)\s+hire\b/u,
   /\bwhy\s+(?:should|would)\s+(?:i|we|someone|a company)\s+not\s+hire\b/u,
   /\bwhy\s+hire\b/u,
   /\bwhat\s+makes\s+carl\s+(?:a\s+)?(?:strong|good|qualified|valuable)\s+(?:candidate|hire)\b/u,
   /\b(?:reasons?|case)\s+(?:to|for)\s+hire\b/u,
   /\b(?:strengths|value)\b.+\b(?:candidate|hire|team)\b/u,
 ] as const;
+
+function isNegativeHiringQuestion(question: string): boolean {
+  const normalized = question.toLocaleLowerCase("en-US").normalize("NFKC");
+  return /\b(?:should(?:n['’]?t|\s+not)|would(?:n['’]?t|\s+not)|not\s+hire)\b/u
+    .test(normalized);
+}
 
 const HIRING_VALUE_UNSAFE_PATTERN =
   /\b(?:bypass|contact|ignore|private|reveal|secret|system prompt)\b/u;
@@ -773,6 +781,7 @@ function supportedResponse(
   artifact: PublicCareerEvidenceArtifact,
   selected: readonly PublicCareerEvidenceRecord[],
   hiringValueQuestion = false,
+  negativeHiringQuestion = false,
   relationshipFact: RecommendationRelationshipFact | null = null,
 ): PortfolioAnswerResponse {
   return portfolioAnswerResponseSchema.parse({
@@ -780,7 +789,7 @@ function supportedResponse(
     answer: relationshipFact
       ? boundedRelationshipAnswer(relationshipFact)
       : hiringValueQuestion
-      ? boundedHiringValueAnswer(selected)
+      ? boundedHiringValueAnswer(selected, negativeHiringQuestion)
       : boundedSupportedAnswer(selected),
     claims: selected.map((record) => visitorFacingClaim(record.claim)),
     citations: selected.map((record) => record.citation),
@@ -821,7 +830,7 @@ function noEvidenceResponse(
   return portfolioAnswerResponseSchema.parse({
     schemaVersion: PUBLIC_CAREER_EVIDENCE_SCHEMA_VERSION,
     answer:
-      "I don’t have enough published information to answer that reliably.",
+      "I don’t have enough published information to answer that honestly—and I’d rather leave a blank than decorate a guess.",
     claims: [],
     citations: [],
     limitations: ["No relevant published information was found for this question."],
@@ -837,7 +846,7 @@ function privateDisclosureResponse(
 ): PortfolioAnswerResponse {
   return portfolioAnswerResponseSchema.parse({
     schemaVersion: PUBLIC_CAREER_EVIDENCE_SCHEMA_VERSION,
-    answer: "I can’t share Carl’s private notes or unpublished material. Ask me about his published work, professional experience, or public recommendations instead.",
+    answer: "That door stays locked: I can’t share Carl’s private notes or unpublished material. I can still help with his published work, professional experience, or public recommendations.",
     claims: [],
     citations: [],
     limitations: [
@@ -856,7 +865,7 @@ function conflictResponse(
   return portfolioAnswerResponseSchema.parse({
     schemaVersion: PUBLIC_CAREER_EVIDENCE_SCHEMA_VERSION,
     answer:
-      "The published information available to me conflicts on this point, so I can’t answer it reliably.",
+      "Those sources conflict and pull in different directions, so I’m not going to dress up a guess as an answer.",
     claims: [],
     citations: [],
     limitations: [
@@ -901,12 +910,16 @@ const RAW_CLAIM_CONCATENATION_PREFIX =
 
 function boundedHiringValueAnswer(
   selected: readonly PublicCareerEvidenceRecord[],
+  negativeQuestion = false,
 ): string {
   const categories = new Set(selected.map(hiringCategory));
   const strengths = HIRING_CATEGORY_PRIORITY
     .filter((category) => categories.has(category))
     .map((category) => HIRING_CATEGORY_SUMMARIES[category]);
-  return `Carl may be worth considering for roles that value ${formatNaturalList(strengths)}. The examples below show what he has actually done and where the evidence has limits.`;
+  if (negativeQuestion) {
+    return `Don’t hire Carl because a portfolio assistant told you to. The material here is strongest on ${formatNaturalList(strengths)}; if the role centers somewhere else, compare the job description and test that gap directly in an interview. That is more useful than putting a bow on an unknown.`;
+  }
+  return `Short answer: Carl is useful where product design and engineering need to stop waving across the hallway and build the same thing. The material below points to ${formatNaturalList(strengths)}. That is a strong shape for the right role, not a magic fit for every role; a job description will show whether it fits yours.`;
 }
 
 const HIRING_CATEGORY_SUMMARIES: Readonly<Record<

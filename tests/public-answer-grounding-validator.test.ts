@@ -31,6 +31,25 @@ describe("public answer grounding validator", () => {
     expect(JSON.stringify(result.audit)).not.toMatch(/typed|react|question|citation/iu);
   });
 
+  it("allows one bounded non-factual presentation while rejecting facts in it", () => {
+    const { artifact, baseline } = setup();
+    const validator = new PublicAnswerGroundingValidator();
+    expect(validator.validate(artifact, baseline, {
+      ...generation(artifact, "Carl builds typed React product systems with explicit review boundaries."),
+      presentation: "Now, the gears start dancing.",
+    })).toMatchObject({
+      status: "accepted",
+      answer: "Now, the gears start dancing.\n\nCarl builds typed React product systems with explicit review boundaries.",
+    });
+    expect(validator.validate(artifact, baseline, {
+      ...generation(artifact, "Carl builds typed React product systems with explicit review boundaries."),
+      presentation: "Carl built this with React.",
+    })).toMatchObject({
+      status: "rejected",
+      audit: { reasonCode: "unsupported_segment" },
+    });
+  });
+
   it("accepts a supported product claim about email operations without treating it as contact disclosure", () => {
     const record = createPublicEvidenceRecord(1, {
       text: "Job Search OS combines tracking and email operations in one product.",
@@ -126,6 +145,25 @@ describe("public answer grounding validator", () => {
       artifact,
       "Carl built Jolene as an autonomous recruiting system that guarantees hiring outcomes.",
     ))).toMatchObject({ status: "rejected" });
+  });
+
+  it("accepts led as a grounded inflection of leading or leadership", () => {
+    const record = createPublicEvidenceRecord(1, {
+      text: "Leading frontend delivery, modernizing systems, and mentoring engineers.",
+      title: "Technical leadership",
+    });
+    const artifact = createPublicEvidenceArtifact([record]);
+    const baseline = new DeterministicPublicAnswerService().answerFromSelected(
+      artifact,
+      { question: "Why hire Carl?" },
+      [record],
+    );
+
+    expect(new PublicAnswerGroundingValidator().validate(
+      artifact,
+      baseline,
+      generation(artifact, "Carl led frontend delivery and mentored engineers."),
+    )).toMatchObject({ status: "accepted" });
   });
 
   it.each([

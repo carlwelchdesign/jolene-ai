@@ -242,9 +242,9 @@ independent subagent reviews.
 
 ## Immediate next action
 
-Finish `JOL-CHAT-001.4`, reconcile its verification and Asana state, then begin
-`JOL-CHAT-001.5` personality prompting. Do not widen the public evidence, tool,
-or private-memory boundary and do not deploy either repository.
+Finish `JOL-CHAT-001.5`, reconcile its verification and Asana state, then begin
+`JOL-CHAT-001.6` deterministic answer composition. Do not widen the public
+evidence, tool, or private-memory boundary and do not deploy either repository.
 
 ## Local delivery checkpoint: 2026-08-28
 
@@ -253,7 +253,8 @@ or private-memory boundary and do not deploy either repository.
 | `JOL-CHAT-001.1` | Raw claim concatenation can no longer escape as a degraded answer; answer mode and response kind distinguish provider, validation, budget, clarification, no-evidence, model, and deterministic paths | Jolene `npm run check`: 161 files / 922 tests; public evaluation 61/61; security red team 78/78; build green | Commit `8c34976`; not pushed or deployed |
 | `JOL-CHAT-001.2` | Added a 12-topic public-safe Jolene dossier and a complete `/work/jolene-ai` case study with Carl's role, architecture, model, RAG, corpus, security, personality, Docker, Slack, BFF, release, and limitation evidence | Portfolio full repository gate green; isolated browser suite 94/94; local corpus now 69 evidence records; exact question selects five Jolene-only records | Jolene commit `c27abf5`; portfolio commit `d913656`; neither repository pushed or deployed |
 | `JOL-CHAT-001.3` | Added exact project/entity routing, human alias normalization, project-to-claim expansion, project-scoped hybrid reranking, misleading-token isolation, conservative low-support behavior, and evidence-backed negative privacy-boundary validation | Jolene `npm run check`: 162 files / 931 tests; public evaluation 61/61; security red team 78/78; build green; a live local `gpt-5.4-mini` generation for `How did Carl build Jolene?` passed the grounding validator with four segments and five supports | Commit `f883432`; not pushed or deployed |
-| `JOL-CHAT-001.4` | Added stateless bounded continuity using only public corpus version, published project path, turn count, and expiry; ambiguous project follow-ups resolve without replaying prior text; stale, exhausted, private, hiring, relationship, and injection-bearing context is ignored | Jolene `npm run check`: 162 files / 935 tests; build green; focused security/adversarial gate 79/79; public evaluation 61/61 | Commit pending this checkpoint; not pushed or deployed |
+| `JOL-CHAT-001.4` | Added stateless bounded continuity using only public corpus version, published project path, turn count, and expiry; ambiguous project follow-ups resolve without replaying prior text; stale, exhausted, private, hiring, relationship, and injection-bearing context is ignored | Jolene `npm run check`: 162 files / 935 tests; build green; focused security/adversarial gate 79/79; public evaluation 61/61 | Commit `6235c74`; not pushed or deployed |
+| `JOL-CHAT-001.5` | Reconciled the researched warmth/wit/kindness policy with factual prompting; added a separately validated non-factual presentation beat, warm degraded states, candid positive and skeptical hiring fallbacks, and enforced neutral rollback | Jolene `npm run check`: 162 files / 939 tests; build green; security/adversarial gate 79/79; public evaluation 61/61; regenerated deterministic personality baseline passed; live local `gpt-5.4-mini` accepted `A bit of clockwork, a bit of heart.` before a grounded Jolene architecture answer | Commit pending this checkpoint; not pushed or deployed |
 
 The local public artifact is now
 `career:340e42d282f2e3288fa60a8c34a625837fd1d2b45a59b1769d8d7cab275fa13a`

@@ -220,6 +220,7 @@ describe("DeterministicPublicAnswerService", () => {
   it.each([
     "Why should I hire Carl?",
     "Why shouldn't I hire Carl?",
+    "Why shouldnt I hire Carl?",
     "Why should I not hire Carl?",
   ])("answers a broad hiring-decision question with representative reviewed evidence: %s", (question) => {
     const artifact = createPublicEvidenceArtifact([
@@ -247,7 +248,13 @@ describe("DeterministicPublicAnswerService", () => {
 
     expect(result.claims.length).toBeGreaterThan(0);
     expect(result.citations).toHaveLength(result.claims.length);
-    expect(result.answer).toContain("worth considering");
+    if (/shouldn['’]?t|\bnot hire\b/u.test(question)) {
+      expect(result.answer).toContain("Don’t hire Carl because a portfolio assistant told you to");
+      expect(result.answer).toContain("putting a bow on an unknown");
+    } else {
+      expect(result.answer).toContain("stop waving across the hallway");
+      expect(result.answer).toContain("not a magic fit for every role");
+    }
     expect(result.answer).not.toContain("Why should I hire Carl?");
     expect(result.limitations[0]).toContain("hiring decision");
     expect(result.suggestedFollowUpQuestions[0]).toContain("job description");
@@ -277,7 +284,7 @@ describe("DeterministicPublicAnswerService", () => {
     const result = service.answer(artifact, { question });
 
     expect(result).toMatchObject({
-      answer: "I can’t share Carl’s private notes or unpublished material. Ask me about his published work, professional experience, or public recommendations instead.",
+      answer: "That door stays locked: I can’t share Carl’s private notes or unpublished material. I can still help with his published work, professional experience, or public recommendations.",
       claims: [],
       citations: [],
       limitations: [
@@ -322,7 +329,7 @@ describe("DeterministicPublicAnswerService", () => {
 
     expect(result.claims).toEqual([]);
     expect(result.citations).toEqual([]);
-    expect(result.answer).toContain("conflicts on this point");
+    expect(result.answer).toContain("conflict and pull in different directions");
     expect(result.answer).not.toContain("led");
     expect(result.answer).not.toContain("advised");
   });

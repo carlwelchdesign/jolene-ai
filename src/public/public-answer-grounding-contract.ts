@@ -16,6 +16,7 @@ export const PUBLIC_ANSWER_GROUNDING_CONTRACT_VERSION = "1.0.0" as const;
 export const PUBLIC_ANSWER_GROUNDING_LIMITS = {
   segments: 8,
   segmentCharacters: 600,
+  presentationCharacters: 120,
   supportIdsPerSegment: PUBLIC_PORTFOLIO_ANSWER_LIMITS.responseItems,
   validationMilliseconds: 250,
 } as const;
@@ -55,6 +56,9 @@ export const publicAnswerGroundedSegmentSchema = z.object({
 export const publicAnswerGroundedGenerationSchema = z.object({
   contractVersion: z.literal(PUBLIC_ANSWER_GROUNDING_CONTRACT_VERSION),
   corpusVersion: z.string().regex(/^career:[a-f0-9]{64}$/u),
+  presentation: z.string().trim().min(1).max(
+    PUBLIC_ANSWER_GROUNDING_LIMITS.presentationCharacters,
+  ).nullable().optional(),
   segments: z.array(publicAnswerGroundedSegmentSchema).min(1).max(
     PUBLIC_ANSWER_GROUNDING_LIMITS.segments,
   ),

@@ -52,6 +52,11 @@ export class PublicAnswerGroundingValidator
     const revoked = new Set(artifact.manifest.revokedEvidenceIds);
     const conflicted = new Set(artifact.conflicts.flatMap((item) => item.evidenceIds));
 
+    if (parsed.data.presentation) {
+      const presentationFailure = validatePresentation(parsed.data.presentation);
+      if (presentationFailure) return rejected(presentationFailure, null, startedAt);
+    }
+
     for (const [index, segment] of parsed.data.segments.entries()) {
       if (elapsed(startedAt) > PUBLIC_ANSWER_GROUNDING_LIMITS.validationMilliseconds) {
         return rejected("validation_timeout", index, startedAt);
@@ -80,7 +85,10 @@ export class PublicAnswerGroundingValidator
       if (entailmentFailure) return rejected(entailmentFailure, index, startedAt);
     }
 
-    const answer = parsed.data.segments.map((segment) => segment.text).join("\n\n");
+    const answer = [
+      parsed.data.presentation,
+      ...parsed.data.segments.map((segment) => segment.text),
+    ].filter((value): value is string => Boolean(value)).join("\n\n");
     const candidate = { ...baseline, answer };
     const baselineSnapshot = createPublicAnswerFallbackSnapshot(artifact, baseline);
     const candidateSnapshot = createPublicAnswerFallbackSnapshot(artifact, {
@@ -111,6 +119,23 @@ export class PublicAnswerGroundingValidator
   }
 }
 
+function validatePresentation(
+  text: string,
+): PublicAnswerGroundingReasonCode | null {
+  if (materialSentenceCount(text) !== 1) return "unsupported_segment";
+  const words = text.match(/[\p{L}\p{N}’'-]+/gu) ?? [];
+  if (words.length < 2 || words.length > 8) return "unsupported_segment";
+  const prohibited = prohibitedReason(text, []);
+  if (prohibited) return prohibited;
+  const normalized = normalize(text);
+  if (
+    /\d/u.test(text) ||
+    PRESENTATION_FACT_PATTERN.test(normalized) ||
+    PRESENTATION_NAMED_TERM_PATTERN.test(normalized)
+  ) return "unsupported_segment";
+  return null;
+}
+
 function validateEntailment(
   text: string,
   records: readonly PublicCareerEvidenceRecord[],
@@ -133,7 +158,8 @@ function validateEntailment(
     const coverage = overlap / terms.length;
     const sourceNormalized = normalize(sourceText);
     const boundaryMatches = CONTRIBUTION_BOUNDARY_TERMS.every((term) =>
-      !containsTerm(normalizedText, term) || containsTerm(sourceNormalized, term)
+      !containsTerm(normalizedText, term) ||
+      sourceContainsContributionTerm(sourceNormalized, term)
     );
     if (!boundaryMatches) continue;
     const numbersMatch = numbers.every((number) => sourceNormalized.includes(number));
@@ -148,11 +174,13 @@ function validateEntailment(
     }
   }
   if (!supported && CONTRIBUTION_BOUNDARY_TERMS.some((term) =>
-    containsTerm(normalizedText, term) && !records.some((record) => containsTerm(normalize([
-      record.claim.text,
-      ...record.claim.limitations,
-      record.citation.title,
-    ].join(" ")), term))
+    containsTerm(normalizedText, term) && !records.some((record) =>
+      sourceContainsContributionTerm(normalize([
+        record.claim.text,
+        ...record.claim.limitations,
+        record.citation.title,
+      ].join(" ")), term)
+    )
   )) return "contribution_boundary_violation";
   if (!supported) return "unsupported_segment";
 
@@ -167,6 +195,11 @@ function validateEntailment(
     }
   }
   return null;
+}
+
+function sourceContainsContributionTerm(source: string, term: string): boolean {
+  return containsTerm(source, term) ||
+    (term === "led" && /\b(?:lead|leading|leadership)\b/u.test(source));
 }
 
 function prohibitedReason(
@@ -264,6 +297,12 @@ const GROUNDING_STOP_WORDS = new Set([
   "reviewed", "that", "the", "their", "this", "to", "was", "were", "which",
   "with", "work",
 ]);
+
+const PRESENTATION_FACT_PATTERN =
+  /\b(?:i|you|he|she|it|we|they|this|that|these|those|him|her|them|his|hers|their|built|created|designed|directed|worked|led|managed|uses|used|knows|qualified|experienced|available|hire|employ|client|award|won|can|will|should|must|guarantee|is|was|has|did)\b/u;
+
+const PRESENTATION_NAMED_TERM_PATTERN =
+  /\b(?:carl|jolene|openai|chatgpt|slack|obsidian|sqlite|vercel|react|typescript|javascript|docker|mcp|rag)\b/u;
 
 const CONTRIBUTION_BOUNDARY_TERMS = [
   "sole", "solely", "independently", "led", "owned",

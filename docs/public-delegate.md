@@ -280,7 +280,14 @@ private memory, private relationships, or private retrieval results.
 
 The adapter uses the Responses API with `store: false`, no tools, a bounded
 output budget, a bounded timeout, and a strict versioned JSON schema containing
-single-sentence segments with exact selected evidence IDs. A deterministic
+an optional bounded non-factual presentation plus single-sentence segments with
+exact selected evidence IDs. In Jolene mode, an ordinary low-risk answer may
+open with one subject-free image fragment of at most eight words. That fragment
+cannot contain names, pronouns, factual verbs, numbers, technologies, private
+terms, promises, qualifications, or contact material. Neutral mode removes it
+in code even if a provider returns one. Warm clarification, no-evidence,
+privacy, conflict, and skeptical-hiring fallbacks remain useful without relying
+on model output. A deterministic
 validator checks corpus/revocation/conflict state, support substitution,
 prohibited behavior, contribution boundaries, and conservative lexical
 entailment before joining accepted segments. The existing deterministic
