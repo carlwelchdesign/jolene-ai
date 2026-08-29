@@ -28,7 +28,10 @@ import {
 import {
   createPublicDelegateServer,
 } from "../src/public/public-delegate-server.js";
-import { createPublicEvidenceArtifact } from "./helpers/public-evidence-fixture.js";
+import {
+  createPublicEvidenceArtifact,
+  createPublicEvidenceRecord,
+} from "./helpers/public-evidence-fixture.js";
 import {
   FilePublicAuditLedger,
   type PublicAuditRecordInput,
@@ -447,6 +450,60 @@ describe("public delegate manifest boundary", () => {
     expect(String(body.answer)).not.toContain(
       "What React systems has Carl built?",
     );
+  });
+
+  it("continues a bounded public project referent without a server-side transcript", async () => {
+    const artifact = createPublicEvidenceArtifact([
+      createPublicEvidenceRecord(1, {
+        text: "Jolene uses a least-privilege public service boundary.",
+        title: "Jolene AI security",
+        href: "/work/jolene-ai#evidence-security",
+      }),
+      createPublicEvidenceRecord(2, {
+        text: "A different product uses a separate security boundary.",
+        title: "Different product",
+        href: "/work/different-product#evidence-security",
+      }),
+    ]);
+    const auditPath = path.join(await temporaryDirectory(), "audit.json");
+    const audits = new FilePublicAuditLedger({
+      filePath: auditPath,
+      maxEntries: 100,
+      retentionMilliseconds: 24 * 60 * 60 * 1_000,
+    });
+    await audits.initialize();
+    const { baseUrl } = await start(await writeArtifact(artifact), { audits });
+    const first = await fetch(`${baseUrl}/v1/portfolio/answer`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ question: "Tell me about Jolene." }),
+    });
+    const firstBody = await first.json() as Record<string, unknown>;
+    const second = await fetch(`${baseUrl}/v1/portfolio/answer`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        question: "What about its security boundary?",
+        conversationContext: firstBody.conversationContext,
+      }),
+    });
+    const secondBody = await second.json() as {
+      readonly citations: readonly { readonly href: string }[];
+      readonly conversationContext: {
+        readonly projectPath: string;
+        readonly turnCount: number;
+      };
+    };
+
+    expect(second.status).toBe(200);
+    expect(secondBody.conversationContext).toMatchObject({
+      projectPath: "/work/jolene-ai",
+      turnCount: 2,
+    });
+    expect(secondBody.citations.every(({ href }) => href.startsWith("/work/jolene-ai")))
+      .toBe(true);
+    const stored = await readFile(auditPath, "utf8");
+    expect(stored).not.toMatch(/jolene-ai|security boundary|conversationContext/iu);
   });
 
   it("returns the contract no-evidence state for an empty public corpus", async () => {

@@ -116,6 +116,43 @@ describe("grounded public answer service", () => {
     });
   });
 
+  it("uses minimized project continuity for retrieval without replaying prior text", async () => {
+    const jolene = createPublicEvidenceRecord(1, {
+      text: "Jolene uses a least-privilege public service boundary.",
+      title: "Jolene AI security",
+      href: "/work/jolene-ai#evidence-security",
+    });
+    const artifact = createPublicEvidenceArtifact([jolene]);
+    const retrieve = vi.fn(async () => [jolene]);
+    const generate = vi.fn(async (input: GroundedPublicAnswerInput) =>
+      generation(input, jolene.claim.text));
+    const first = new DeterministicPublicAnswerService().answer(artifact, {
+      question: "Tell me about Jolene.",
+    });
+
+    const execution = await new GroundedPublicAnswerService(
+      { generate },
+      { retriever: { retrieve } },
+    ).execute(artifact, {
+      question: "What about its security?",
+      conversationContext: first.conversationContext,
+    });
+
+    expect(retrieve).toHaveBeenCalledWith(artifact, expect.objectContaining({
+      question: expect.stringContaining("Contextual project: jolene ai."),
+    }));
+    expect(generate).toHaveBeenCalledWith(expect.objectContaining({
+      question: "What about its security?",
+    }));
+    expect(JSON.stringify(generate.mock.calls[0]?.[0])).not.toContain(
+      "Tell me about Jolene.",
+    );
+    expect(execution.response.conversationContext).toMatchObject({
+      projectPath: "/work/jolene-ai",
+      turnCount: 2,
+    });
+  });
+
   it("withholds internal editorial limitations from the model and public response", async () => {
     const record = createPublicEvidenceRecord(1, {
       text: "Carl built a typed React system.",

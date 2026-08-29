@@ -7,10 +7,12 @@ import {
   type PublicCareerEvidenceRecord,
 } from "../domain/public-career-evidence.js";
 import {
+  PUBLIC_CONVERSATION_CONTEXT_LIMITS,
   PUBLIC_PORTFOLIO_ANSWER_LIMITS,
   portfolioAnswerResponseSchema,
   type PortfolioAnswerRequest,
   type PortfolioAnswerResponse,
+  type PublicConversationContext,
 } from "../domain/public-portfolio-contract.js";
 import type { PublicModelRequestBudget } from "./public-model-request-budget.js";
 import {
@@ -86,10 +88,12 @@ export class DeterministicPublicAnswerService
     artifact: PublicCareerEvidenceArtifact,
     request: PortfolioAnswerRequest,
   ): PortfolioAnswerResponse {
+    const turn = resolvePublicConversationTurn(artifact, request);
     return this.answerFromSelected(
       artifact,
-      request,
-      selectDeterministicPublicEvidence(artifact, request),
+      turn.request,
+      selectDeterministicPublicEvidence(artifact, turn.request),
+      turn.responseContext,
     );
   }
 
@@ -97,6 +101,7 @@ export class DeterministicPublicAnswerService
     artifact: PublicCareerEvidenceArtifact,
     request: PortfolioAnswerRequest,
     selectedEvidence: readonly PublicCareerEvidenceRecord[],
+    conversationContext?: PublicConversationContext,
   ): PortfolioAnswerResponse {
     if (isPrivateDisclosureRequest(request.question)) {
       return privateDisclosureResponse(artifact);
@@ -119,7 +124,7 @@ export class DeterministicPublicAnswerService
       selected,
     );
 
-    return conflict
+    const response = conflict
       ? conflictResponse(artifact)
       : selected.length === 0
       ? noEvidenceResponse(artifact)
@@ -129,6 +134,7 @@ export class DeterministicPublicAnswerService
         hiringValueQuestion,
         relationshipFact,
       );
+    return withConversationContext(response, conversationContext);
   }
 }
 
@@ -159,30 +165,44 @@ export class GroundedPublicAnswerService implements PublicPortfolioAnswerer {
     artifact: PublicCareerEvidenceArtifact,
     request: PortfolioAnswerRequest,
   ): Promise<PublicAnswerExecution> {
+    const turn = resolvePublicConversationTurn(artifact, request);
+    const selectionRequest = turn.request;
     if (isPrivateDisclosureRequest(request.question)) {
       return {
-        response: this.#baseline.answerFromSelected(artifact, request, []),
+        response: this.#baseline.answerFromSelected(
+          artifact,
+          request,
+          [],
+          undefined,
+        ),
         mode: "deterministic",
         responseKind: "policy_refusal",
       };
     }
     const exactRelationshipEvidence = selectRecommendationRelationshipEvidence(
       artifact.evidence,
-      request.question,
+      selectionRequest.question,
     );
     let baseline = exactRelationshipEvidence.length > 0
       ? this.#baseline.answerFromSelected(
         artifact,
-        request,
+        selectionRequest,
         exactRelationshipEvidence,
+        turn.responseContext,
       )
-      : this.#baseline.answer(artifact, request);
+      : this.#baseline.answerFromSelected(
+        artifact,
+        selectionRequest,
+        selectDeterministicPublicEvidence(artifact, selectionRequest),
+        turn.responseContext,
+      );
     if (this.#retriever && exactRelationshipEvidence.length === 0) {
       try {
         baseline = this.#baseline.answerFromSelected(
           artifact,
-          request,
-          await this.#retriever.retrieve(artifact, request),
+          selectionRequest,
+          await this.#retriever.retrieve(artifact, selectionRequest),
+          turn.responseContext,
         );
       } catch {
         // Retrieval failure preserves the deterministic public-safe baseline.
@@ -297,6 +317,101 @@ function deterministicResponseKind(
 function isRawClaimConcatenation(answer: string): boolean {
   return answer.startsWith(RAW_CLAIM_CONCATENATION_PREFIX);
 }
+
+export interface ResolvedPublicConversationTurn {
+  readonly request: PortfolioAnswerRequest;
+  readonly responseContext?: PublicConversationContext;
+  readonly usedPriorContext: boolean;
+}
+
+export function resolvePublicConversationTurn(
+  artifact: PublicCareerEvidenceArtifact,
+  request: PortfolioAnswerRequest,
+  now = new Date(),
+): ResolvedPublicConversationTurn {
+  const explicitProjectPath = matchPublicProjectEntityPath(
+    artifact.evidence,
+    request.question,
+  );
+  const prior = validPriorConversationContext(artifact, request, now);
+  const canUsePrior = Boolean(
+    prior &&
+    !explicitProjectPath &&
+    isContextualFollowUp(request.question) &&
+    !isPrivateDisclosureRequest(request.question) &&
+    !PROMPT_INJECTION_CARRYOVER_PATTERN.test(normalizeLookup(request.question)) &&
+    !RECOMMENDATION_RELATIONSHIP_QUESTION.test(normalizeLookup(request.question)) &&
+    !isHiringValueQuestion(request.question),
+  );
+  const projectPath = explicitProjectPath ?? (canUsePrior ? prior?.projectPath : null);
+  if (!projectPath) return { request, usedPriorContext: false };
+
+  const turnCount = prior?.projectPath === projectPath
+    ? Math.min(prior.turnCount + 1, PUBLIC_CONVERSATION_CONTEXT_LIMITS.turns)
+    : 1;
+  const responseContext = {
+    corpusVersion: artifact.manifest.corpusVersion,
+    projectPath,
+    turnCount,
+    expiresAt: new Date(
+      now.getTime() + PUBLIC_CONVERSATION_CONTEXT_LIMITS.lifetimeSeconds * 1_000,
+    ).toISOString(),
+  } satisfies PublicConversationContext;
+  if (!canUsePrior) {
+    return { request, responseContext, usedPriorContext: false };
+  }
+  return {
+    request: {
+      ...request,
+      question: `${request.question}\nContextual project: ${projectPath
+        .slice("/work/".length)
+        .replaceAll("-", " ")}.`,
+    },
+    responseContext,
+    usedPriorContext: true,
+  };
+}
+
+function validPriorConversationContext(
+  artifact: PublicCareerEvidenceArtifact,
+  request: PortfolioAnswerRequest,
+  now: Date,
+): PublicConversationContext | null {
+  const context = request.conversationContext;
+  if (
+    !context ||
+    context.corpusVersion !== artifact.manifest.corpusVersion ||
+    context.turnCount >= PUBLIC_CONVERSATION_CONTEXT_LIMITS.turns ||
+    Date.parse(context.expiresAt) <= now.getTime() ||
+    Date.parse(context.expiresAt) >
+      now.getTime() + PUBLIC_CONVERSATION_CONTEXT_LIMITS.lifetimeSeconds * 1_000
+  ) return null;
+  return artifact.evidence.some((record) =>
+      record.citation.href === context.projectPath ||
+      record.citation.href.startsWith(`${context.projectPath}#`)
+    )
+    ? context
+    : null;
+}
+
+function isContextualFollowUp(question: string): boolean {
+  return CONTEXTUAL_FOLLOW_UP_PATTERN.test(normalizeLookup(question));
+}
+
+function withConversationContext(
+  response: PortfolioAnswerResponse,
+  conversationContext: PublicConversationContext | undefined,
+): PortfolioAnswerResponse {
+  return conversationContext
+    ? portfolioAnswerResponseSchema.parse({ ...response, conversationContext })
+    : response;
+}
+
+const CONTEXTUAL_FOLLOW_UP_PATTERN =
+  /^(?:and\b|also\b|but\b|how\b|tell me more\b|what about\b|what else\b|why\b|which\b|who\b)|\b(?:it|that|this|those|them|there|the project)\b/u;
+
+const PROMPT_INJECTION_CARRYOVER_PATTERN =
+  /\b(?:ignore|override|reveal|system prompt|developer message|hidden instructions|previous instructions)\b/u;
 
 export function selectDeterministicPublicEvidence(
   artifact: PublicCareerEvidenceArtifact,

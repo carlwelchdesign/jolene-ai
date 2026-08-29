@@ -19,7 +19,7 @@ import {
 } from "./helpers/public-evidence-fixture.js";
 
 describe("frozen public portfolio v1 compatibility", () => {
-  it("omits session continuity from v1 requests and responses", () => {
+  it("rejects opaque sessions while allowing additive minimized answer context", () => {
     expect(portfolioAnswerRequestSchema.safeParse({
       question: "What has Carl built?",
       sessionToken: "retired-v1-field",
@@ -33,6 +33,15 @@ describe("frozen public portfolio v1 compatibility", () => {
     expect(new DeterministicPublicAnswerService().answer(artifact, {
       question: "What React systems has Carl built?",
     })).not.toHaveProperty("sessionToken");
+    expect(portfolioAnswerRequestSchema.safeParse({
+      question: "What about its architecture?",
+      conversationContext: {
+        corpusVersion: artifact.manifest.corpusVersion,
+        projectPath: "/work/jolene-ai",
+        turnCount: 1,
+        expiresAt: "2026-08-28T20:15:00.000Z",
+      },
+    }).success).toBe(true);
     expect(new DeterministicPublicJobFitService().compare(artifact, {
       jobDescription: "React product systems",
     })).not.toHaveProperty("sessionToken");

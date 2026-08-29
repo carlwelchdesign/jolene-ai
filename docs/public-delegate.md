@@ -235,8 +235,17 @@ Carl's name is treated as non-discriminating so it cannot pull unrelated records
 into a specific answer. Question text is never executed or copied into the
 response. When no reviewed public claim matches—including for unsupported or
 injection-like input—the service returns an explicit no-evidence response.
-Version 1 has no session field or transcript continuity; questions and job
-descriptions remain ephemeral inputs.
+Version 1 has no opaque session or transcript persistence. Answer requests may
+echo a short-lived `conversationContext` containing only the exact public corpus
+version, one published `/work/<slug>` project path, a turn count capped at four,
+and a 15-minute expiry. The service uses it only for ambiguous follow-ups such as
+“What about its security?”; it never carries prior questions, answers, job
+descriptions, visitor identifiers, or private-memory references. Stale-corpus,
+expired, exhausted, unknown-project, hiring, recommendation-relationship,
+private-disclosure, and injection-bearing turns ignore the prior referent. The
+context is returned to the caller but is not written to the public audit ledger
+or any server-side conversation store. Questions and job descriptions remain
+ephemeral inputs.
 
 ## Grounded answer synthesis and public hybrid RAG
 
