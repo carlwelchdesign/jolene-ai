@@ -1349,3 +1349,18 @@ Private-ingress authentication checkpoint:
 | Audit boundary | Authentication records only policy version, outcome, and fixed reason code; responses are sanitized and no credential, header, address, path, query, prompt, or payload is logged |
 | Residual boundary | The reusable possession credential must be rotated after plausible exposure; domain capability/approval rules remain required after authentication |
 | Release boundary | Local development and verification only. No service creation/restart, secret migration against Carl's live files, Slack message, push, deployment, promotion, or production verification is included. |
+
+## Public conversational-agent recovery
+
+The production incident in which `How did Carl build Jolene?` returned a
+deterministic concatenation of unrelated claims is now the forcing function for
+the next public-agent increment. The implementation-ready recovery plan is
+[`JOLENE_WORLD_CLASS_CHAT_AGENT_RECOVERY_PLAN.md`](JOLENE_WORLD_CLASS_CHAT_AGENT_RECOVERY_PLAN.md).
+
+The recovery keeps the existing public/private isolation and grounding controls,
+but replaces the single-turn evidence-service product boundary with intent-aware
+retrieval, bounded public conversation state, reason-coded execution modes, one
+post-factual personality layer, graceful fallback composition, realistic visitor
+evaluations, and a separately authorized release. `JOL-CHAT-001` is the delivery
+parent; only its current subtask may be active for the Jolene workstream. Voice
+remains a later `JOL-VOICE-001` project and cannot hold up the text recovery.
