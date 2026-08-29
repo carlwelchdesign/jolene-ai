@@ -109,6 +109,8 @@ export const worldClassPublicChatSuiteSchema = z.object({
 });
 
 export type WorldClassPublicChatSuite = z.infer<typeof worldClassPublicChatSuiteSchema>;
+export type WorldClassPublicChatCase = WorldClassPublicChatSuite["cases"][number];
+export type WorldClassPublicChatTurn = WorldClassPublicChatCase["turns"][number];
 
 export function summarizeWorldClassPublicChatSuite(input: unknown) {
   const suite = worldClassPublicChatSuiteSchema.parse(input);
