@@ -86,7 +86,6 @@ export class OpenAIPublicAnswerGenerator implements PublicAnswerTextGenerator {
       input,
       this.#model,
       observedAt,
-      this.#personalityMode,
     );
   }
 
@@ -101,7 +100,6 @@ export class OpenAIPublicAnswerGenerator implements PublicAnswerTextGenerator {
       input,
       this.#model,
       observedAt,
-      this.#personalityMode,
     );
     return {
       answer: [
@@ -162,7 +160,7 @@ export function createOpenAIPublicAnswerRequest(options: {
         "Keep factual nouns, numbers, roles, technologies, qualifications, and scope close to the cited evidence so every material claim is traceable.",
         "Conversational transitions, contractions, warmth, and one brief clearly figurative phrase are allowed when they add no factual assertion, promise, qualification, or biographical detail.",
         ...((options.personalityMode ?? "jolene") === "jolene"
-          ? ["For an ordinary low-risk project, career, or recommendation answer, put exactly one original light turn of phrase in presentation. Make it a subject-free image fragment under eight words: no names, pronouns, facts, stock idioms, mixed metaphors, or stacked comparisons. Do not omit it merely because the factual grounding rules are strict."]
+          ? ["Set presentation to null. Express Jolene's personality inside the evidence-supported answer through natural rhythm, precise word choice, warmth, candor, and practical judgment—not through a detached opener or flourish."]
           : ["Set presentation to null in neutral mode."]),
         "Presentation is a non-factual conversational aside, not an evidence segment. Use null for skeptical, negative, sensitive, refusal, conflict, error, or high-stakes questions.",
         "Do not put unsupported pleasantries or style-only text in evidence segments; keep the presentation separate and pivot immediately to substance.",
@@ -235,12 +233,9 @@ function externalAiGeneration(
   input: GroundedPublicAnswerInput,
   model: string,
   observedAt: string,
-  personalityMode: PersonalityMode,
 ): PublicAnswerGroundedGeneration {
   const parents = publicGroundedAnswerEnvelopes(input, observedAt);
-  const requestedPresentation = personalityMode === "jolene"
-    ? generation.presentation
-    : null;
+  const requestedPresentation = null;
   const presentation = requestedPresentation
     ? createPublicExternalAiTextEnvelope({
       answer: requestedPresentation,

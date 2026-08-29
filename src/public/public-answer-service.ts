@@ -900,7 +900,7 @@ function boundedSupportedAnswer(
   const evidenceStatements = statements.length > 0
     ? statements
     : selected.map((record) => visitorFacingClaim(record.claim).text);
-  const prefix = DETERMINISTIC_ANSWER_OPENINGS[intent](selected.length);
+  const prefix = DETERMINISTIC_ANSWER_OPENINGS[intent]();
   return composeBoundedEvidenceSummary(prefix, evidenceStatements);
 }
 
@@ -961,52 +961,33 @@ function deterministicAnswerIntent(
 
 const DETERMINISTIC_ANSWER_OPENINGS: Readonly<Record<
   DeterministicAnswerIntent,
-  (count: number) => string
+  () => string
 >> = {
-  project: (count) =>
-    `The useful way to understand that project is through ${countLabel(count)}—good systems rarely arrive by magic.`,
-  role: (count) =>
-    `The published record answers that role question with ${countLabel(count)}, no résumé confetti required.`,
-  capability: (count) =>
-    `The evidence points to ${countLabel(count)} that show how Carl works in practice.`,
-  recommendation: (count) =>
-    `The strongest answer comes from ${countLabel(count)} from people who worked with Carl.`,
+  project: () => "Here’s the practical shape of the project:",
+  role: () => "Here’s what Carl’s work in that role looked like:",
+  capability: () => "Here’s how that shows up in Carl’s work:",
+  recommendation: () => "People who worked with Carl describe it this way:",
   boundary: () =>
-    "The honest answer starts with the boundary, because usefulness without limits is just sales copy.",
-  general: (count) =>
-    `The published evidence gives us ${countLabel(count)} to work with.`,
+    "Here’s the honest boundary:",
+  general: () => "Here’s the useful part:",
 };
-
-function countLabel(count: number): string {
-  if (count === 1) return "one concrete piece of evidence";
-  return `${count} concrete pieces of evidence`;
-}
 
 function composeBoundedEvidenceSummary(
   prefix: string,
   statements: readonly string[],
 ): string {
-  const transitions = ["First", "Next"] as const;
   let answer = prefix;
-  let included = 0;
-  for (const [index, statement] of statements
+  for (const statement of statements
     .slice(0, DETERMINISTIC_SUMMARY_STATEMENTS)
-    .entries()) {
-    const transition = transitions[Math.min(index, transitions.length - 1)];
-    const label = ` ${transition}: `;
+  ) {
+    const label = " ";
     const available = PUBLIC_PORTFOLIO_ANSWER_LIMITS.answerCharacters -
       answer.length - label.length;
     const normalized = boundedStatement(statement, available);
     if (!normalized) break;
-    const candidate = `${answer} ${transition}: ${normalized}`;
+    const candidate = `${answer}${label}${normalized}`;
     if (candidate.length > PUBLIC_PORTFOLIO_ANSWER_LIMITS.answerCharacters) break;
     answer = candidate;
-    included += 1;
-  }
-  if (included === statements.length) return answer;
-  const suffix = " The cited evidence below carries the remaining detail.";
-  if (answer.length + suffix.length <= PUBLIC_PORTFOLIO_ANSWER_LIMITS.answerCharacters) {
-    return `${answer}${suffix}`;
   }
   return answer;
 }

@@ -317,7 +317,7 @@ describe("grounded public answer service", () => {
     expect(execution.response.answer).not.toContain(
       "Here’s what Carl’s published work shows:",
     );
-    expect(execution.response.answer).toContain("First:");
+    expect(execution.response.answer).toContain("Here’s how that shows up in Carl’s work:");
     expect(execution.response).toEqual(baseline);
   });
 
@@ -345,11 +345,11 @@ describe("grounded public answer service", () => {
       response: { claims: evidence.map((record) => record.claim) },
     });
     expect(execution.response.answer).toContain(
-      "The useful way to understand that project",
+      "Here’s the practical shape of the project:",
     );
-    expect(execution.response.answer).toContain("First:");
-    expect(execution.response.answer).toContain("Next:");
-    expect(execution.response.answer).toContain("remaining detail");
+    expect(execution.response.answer).not.toContain("First:");
+    expect(execution.response.answer).not.toContain("Next:");
+    expect(execution.response.answer).not.toContain("remaining detail");
     expect(execution.response.answer).not.toContain("Also:");
     expect(execution.response.answer).not.toContain(
       evidence.map((record) => record.claim.text).join(" "),

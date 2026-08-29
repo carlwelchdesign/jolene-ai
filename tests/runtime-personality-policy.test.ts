@@ -60,7 +60,9 @@ describe("runtime personality policy", () => {
     expect(instructions).toContain("country warmth is welcome");
     expect(instructions).toContain("corporate copy machine");
     expect(instructions).toContain("one fresh compact turn of phrase");
-    expect(instructions).toContain("required rather than optional");
+    expect(instructions).toContain("not through a decorative slogan");
+    expect(instructions).toContain("otherwise omit it");
+    expect(instructions).not.toContain("subject-free image fragment");
     expect(instructions).toContain("Never make the visitor, Carl");
   });
 });

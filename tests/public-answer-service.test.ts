@@ -54,14 +54,14 @@ describe("DeterministicPublicAnswerService", () => {
 
   it("keeps an oversized evidence sentence useful within the answer bound", () => {
     const record = createPublicEvidenceRecord(1, {
-      text: `Carl built a React system with ${"detail ".repeat(560)}`.trim(),
+      text: `Carl built a React system with ${"detail ".repeat(565)}`.trim(),
     });
     const result = service.answer(createPublicEvidenceArtifact([record]), {
       question: "What React system did Carl build?",
     });
 
     expect(result.answer.length).toBeLessThanOrEqual(4_000);
-    expect(result.answer).toContain("First: Carl built a React system");
+    expect(result.answer).toContain("Here’s how that shows up in Carl’s work: Carl built a React system");
     expect(result.answer.endsWith("…")).toBe(true);
     expect(result.claims).toEqual([record.claim]);
   });
@@ -75,7 +75,7 @@ describe("DeterministicPublicAnswerService", () => {
         title: "Jolene AI",
         href: "/work/jolene-ai#evidence",
       }),
-      opening: "The useful way to understand that project",
+      opening: "Here’s the practical shape of the project:",
     },
     {
       name: "role",
@@ -84,7 +84,7 @@ describe("DeterministicPublicAnswerService", () => {
         text: "Carl led frontend delivery at Example.",
         title: "Senior Software Engineer at Example",
       }),
-      opening: "answers that role question",
+      opening: "Here’s what Carl’s work in that role looked like:",
     },
     {
       name: "capability",
@@ -93,7 +93,7 @@ describe("DeterministicPublicAnswerService", () => {
         text: "Carl builds typed React product systems.",
         title: "Product engineering capability",
       }),
-      opening: "show how Carl works in practice",
+      opening: "Here’s how that shows up in Carl’s work:",
     },
     {
       name: "recommendation",
@@ -103,7 +103,7 @@ describe("DeterministicPublicAnswerService", () => {
         title: "Recommendation from Teammate",
         href: "/recommendations",
       }),
-      opening: "people who worked with Carl",
+      opening: "People who worked with Carl describe it this way:",
     },
     {
       name: "boundary",
@@ -115,7 +115,7 @@ describe("DeterministicPublicAnswerService", () => {
           "The example is a demonstration rather than a certified aviation system.",
         ],
       }),
-      opening: "The honest answer starts with the boundary",
+      opening: "Here’s the honest boundary:",
     },
   ])("composes a coherent deterministic $name answer", ({
     question,
@@ -127,7 +127,7 @@ describe("DeterministicPublicAnswerService", () => {
     });
 
     expect(result.answer).toContain(opening);
-    expect(result.answer).toContain("First:");
+    expect(result.answer).not.toContain("First:");
     expect(result.answer).not.toContain("Here’s what Carl’s published work shows:");
     expect(result.claims[0]?.text).toBe(record.claim.text);
     expect(result.claims[0]?.evidenceIds).toEqual([record.evidenceId]);

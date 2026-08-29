@@ -11,7 +11,7 @@
     "rendererSchemaVersion": "jolene.personality-renderer.v1",
     "runtimePersonalityPolicyVersion": "jolene.runtime-personality.v3",
     "runtimePersonalityAdmissionsVersion": "jolene.runtime-personality-admissions.v1",
-    "runtimePolicyFingerprint": "sha256:986a057c4be18d023159ef583ea7d4cd1f20773effc0909573edd8c340c1efaf"
+    "runtimePolicyFingerprint": "sha256:88bd895b442f506f91c092d2c0828295c69569855efe1de370f9a53b50f16910"
   },
   "coverage": {
     "behaviorContexts": [
@@ -91,5 +91,5 @@
     "runtimeActivation": "not-authorized-by-this-baseline",
     "deployment": "separate-release-gate"
   },
-  "evaluationFingerprint": "sha256:29044f50364436715a7a8cc2ca7e9806b4410160fdd3c65af856ed262ff62c2e"
+  "evaluationFingerprint": "sha256:cffbe38bc223436041de83c185dc44c34e3c1d48504b6f46fff01a9398936359"
 }
