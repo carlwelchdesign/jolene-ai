@@ -151,7 +151,7 @@ describe("grounded public answer service", () => {
     });
   });
 
-  it("uses minimized project continuity for retrieval without replaying prior text", async () => {
+  it("uses minimized public evidence continuity without replay or re-retrieval", async () => {
     const jolene = createPublicEvidenceRecord(1, {
       text: "Jolene uses a least-privilege public service boundary.",
       title: "Jolene AI security",
@@ -173,9 +173,7 @@ describe("grounded public answer service", () => {
       conversationContext: first.conversationContext,
     });
 
-    expect(retrieve).toHaveBeenCalledWith(artifact, expect.objectContaining({
-      question: expect.stringContaining("Contextual project: jolene ai."),
-    }));
+    expect(retrieve).not.toHaveBeenCalled();
     expect(generate).toHaveBeenCalledWith(expect.objectContaining({
       question: "What about its security?",
     }));
@@ -317,7 +315,9 @@ describe("grounded public answer service", () => {
     expect(execution.response.answer).not.toContain(
       "Here’s what Carl’s published work shows:",
     );
-    expect(execution.response.answer).toContain("Here’s how that shows up in Carl’s work:");
+    expect(execution.response.answer).toContain(
+      "This is where it shows up in the work:",
+    );
     expect(execution.response).toEqual(baseline);
   });
 
@@ -345,7 +345,7 @@ describe("grounded public answer service", () => {
       response: { claims: evidence.map((record) => record.claim) },
     });
     expect(execution.response.answer).toContain(
-      "Here’s the practical shape of the project:",
+      "The short version is practical:",
     );
     expect(execution.response.answer).not.toContain("First:");
     expect(execution.response.answer).not.toContain("Next:");

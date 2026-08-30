@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  PUBLIC_JOLENE_DETERMINISTIC_COPY,
   PUBLIC_JOLENE_PERSONALITY_INSTRUCTIONS,
   RUNTIME_PERSONALITY_POLICY_VERSION,
   buildPrivateJoleneInstructions,
@@ -64,5 +65,26 @@ describe("runtime personality policy", () => {
     expect(instructions).toContain("otherwise omit it");
     expect(instructions).not.toContain("subject-free image fragment");
     expect(instructions).toContain("Never make the visitor, Carl");
+    expect(instructions).toContain("every visitor-facing state");
+    expect(instructions).toContain("privacy or policy refusal");
+    expect(instructions).toContain("degraded or deterministic answer");
+    expect(instructions).toContain("suppress ornamental wit");
+  });
+
+  it("keeps deterministic state copy inside the same public voice contract", () => {
+    const copy = [
+      ...Object.values(PUBLIC_JOLENE_DETERMINISTIC_COPY.openings),
+      PUBLIC_JOLENE_DETERMINISTIC_COPY.noEvidence,
+      PUBLIC_JOLENE_DETERMINISTIC_COPY.policyRefusal,
+      PUBLIC_JOLENE_DETERMINISTIC_COPY.conflict,
+    ].join(" ");
+
+    expect(copy).toContain("The short version is practical");
+    expect(copy).toContain("honest edge");
+    expect(copy).toContain("rather leave a blank");
+    expect(copy).toContain("That door stays locked");
+    expect(copy).toContain("not going to dress up a guess");
+    expect(copy).not.toMatch(/reviewed record|contribution boundary|provider|fallback/iu);
+    expect(copy).not.toMatch(/Dolly|honey|y'all|darlin/iu);
   });
 });

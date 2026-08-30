@@ -57,12 +57,18 @@ export const publicConversationContextSchema = z.object({
   projectPath: siteRelativePublicHrefSchema.refine(
     (value) => /^\/work\/[a-z0-9-]+$/u.test(value),
     { message: "Conversation project path must identify a published work page." },
-  ),
+  ).optional(),
+  evidenceIds: z.array(careerEvidenceIdSchema).min(1).max(
+    PUBLIC_PORTFOLIO_ANSWER_LIMITS.responseItems,
+  ).optional(),
   turnCount: z.number().int().min(1).max(
     PUBLIC_CONVERSATION_CONTEXT_LIMITS.turns,
   ),
   expiresAt: z.string().datetime({ offset: true }),
-}).strict();
+}).strict().refine(
+  (context) => Boolean(context.projectPath || context.evidenceIds?.length),
+  { message: "Conversation context must contain a public project or evidence anchor." },
+);
 
 export const portfolioAnswerRequestSchema = z.object({
   question: z.string().trim().min(1).max(

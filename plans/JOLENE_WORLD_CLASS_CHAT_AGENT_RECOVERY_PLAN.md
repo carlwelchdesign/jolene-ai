@@ -1,6 +1,6 @@
 # Jolene World-Class Chat Agent Recovery Plan
 
-**Status:** Implementation-ready recovery plan; no deployment authorized by this document  
+**Status:** Implementation underway; no deployment authorized by this document
 **Owner:** Carl Welch  
 **Prepared:** 2026-08-28  
 **Primary surface:** Public recruiter and hiring-manager assistant on Carl's portfolio  
@@ -154,6 +154,7 @@ stable-origin verification; the legacy evidence-dump fallback is unreachable.
 | JOL-CHAT-001.6 | Replace concatenation with graceful deterministic composition | Supported fallback produces a coherent, templated, evidence-bound explanation; unsupported queries clarify or decline; raw claim joining and the legacy prefix are deleted; fallback is visibly useful rather than pretending to be model output | .5 |
 | JOL-CHAT-001.7 | Redesign chat UX for conversation quality | Mobile and desktop states for thinking, clarification, degraded mode, no evidence, citations, follow-ups, retry, reset, compare-role, and contact boundary; citations remain readable; keyboard and screen-reader flows pass | .6 |
 | JOL-CHAT-001.8 | Run model, retrieval, personality, and adversarial evaluation | Exact launch suite and thresholds below pass; Carl reviews representative answers; cost and latency are measured; no production deployment | .7 |
+| JOL-CHAT-001.8A | Make public Jolene's voice state-invariant | One shared voice contract governs supported, skeptical, limitation, clarification, no-evidence, conflict, refusal, and provider/budget/validation-fallback states; every path remains conversational and recognizably Jolene without impersonation, copied catchphrases, phonetic dialect, factual drift, citation drift, or weakened privacy and authorization boundaries | .7; active within .8 |
 | JOL-CHAT-001.9 | Preview release and production readiness | Preview-only deployment; exact origin/BFF/security checks; realistic recruiter browser sessions; rollback rehearsal; zero error logs; production release remains separately authorized | .8 |
 | JOL-CHAT-001.10 | Production release and post-release proof | One authorized production deployment; stable site/browser/API verification; fallback-rate and error-log review; deployment ID and rollback target recorded; Asana reconciled | .9 and Carl authorization |
 
@@ -181,10 +182,27 @@ including 30 multi-turn threads and 20 skeptical or negative questions.
 | Prompt-injection and private-data blocking | 100% of blocker cases |
 | Internal editorial/process language | 0 occurrences |
 | Personality factual/citation drift | 0 occurrences |
+| State-invariant conversational voice | 100% of supported, skeptical, limitation, clarification, no-evidence, conflict, refusal, and degraded response fixtures |
 | Carl-rated usefulness | at least 4.25/5 mean |
 | Carl-rated voice/personality fit | at least 4.25/5 mean |
 | First useful response latency | p95 at or below 6 seconds on preview |
 | Mobile overflow and critical accessibility defects | 0 |
+
+### Verified implementation checkpoint — 2026-08-30
+
+- `JOL-CHAT-001.8A` now applies one public voice contract to model and deterministic
+  response paths, including supported, skeptical, no-evidence, conflict, refusal,
+  and degraded states.
+- Evidence-ID continuity remains bounded to active public records; no transcript,
+  private path, prior answer, or model state is carried forward.
+- Relevance routing now fails closed for unsupported qualification, availability,
+  compensation, scale, certification, guarantee, sole-authorship, and confidential-
+  work claims instead of accepting incidental lexical overlap.
+- The 120-case, 180-turn machine suite passes every blocking machine metric at 100%;
+  p95 deterministic evaluation latency is 1 ms.
+- Typecheck, 164 test files / 985 tests, and the production build pass.
+- Formal human voice/usefulness review, scoped commit review, preview release, and
+  production authorization remain open. No deployment was performed.
 
 Required regression prompts include:
 
