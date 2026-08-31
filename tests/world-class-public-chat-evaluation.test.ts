@@ -51,12 +51,12 @@ describe("world-class public chat evaluation", () => {
       result.report.gate,
       JSON.stringify({ metrics: result.report.metrics, cases: result.report.cases.filter((item) => item.status === "fail") }),
     ).toBe("pass");
-    expect(result.report.counts).toEqual({ cases: 120, passed: 120, failed: 0, turns: 180 });
+    expect(result.report.counts).toEqual({ cases: 132, passed: 132, failed: 0, turns: 192 });
     expect(result.report.metrics.every((metric) => metric.passRateBps === 10_000)).toBe(true);
     expect(result.report.humanReview).toBe("required");
-    expect(result.reviewPacket.cases).toHaveLength(120);
+    expect(result.reviewPacket.cases).toHaveLength(132);
     expect(result.reviewPacket.cases.every((testCase) => testCase.scores === null)).toBe(true);
-    expect(observedFirstTurnContexts).toHaveLength(120);
+    expect(observedFirstTurnContexts).toHaveLength(132);
     expect(observedFirstTurnContexts.every((context) => context === undefined)).toBe(true);
   });
 
@@ -92,7 +92,7 @@ describe("world-class public chat evaluation", () => {
 
     expect(result.report.gate).toBe("fail");
     expect(result.report.metrics.find((metric) => metric.metric === "internal_language"))
-      .toMatchObject({ failed: 180, passRateBps: 0 });
+      .toMatchObject({ failed: 192, passRateBps: 0 });
   });
 });
 

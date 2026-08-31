@@ -17,8 +17,8 @@ describe("world-class public chat launch suite", () => {
   it("locks the launch inventory and required regressions", () => {
     const summary = summarizeWorldClassPublicChatSuite(suite);
     expect(summary).toMatchObject({
-      cases: 120,
-      turns: 180,
+      cases: 132,
+      turns: 192,
       multiTurnThreads: 30,
       skepticalOrNegativeCases: 20,
     });

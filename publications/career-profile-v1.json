@@ -1,0 +1,260 @@
+{
+  "schemaVersion": "jolene.public-career-profile.v1",
+  "reviewedAt": "2026-08-31T16:05:00.000Z",
+  "chapters": [
+    {
+      "slug": "twenty-plus-year-career",
+      "period": "More than 20 years",
+      "claim": "Carl's career spans more than 20 years owning customer-facing SaaS, enterprise workflows, internal tools, mobile experiences, analytics products, and interactive applications from product definition through release; after U.S. Army service, his 1994 to 2001 work at Marketing Resource Group, SPi, University OnLine, SAIC, OneSoft, and 9th Insight crossed art direction, code, multimedia, information architecture, team leadership, and client delivery.",
+      "maturity": "not_applicable",
+      "evidenceStrength": "strong",
+      "citation": {
+        "title": "Career chapter: More than 20 years of delivery",
+        "href": "/carl-welch-resume.pdf",
+        "sourceType": "resume"
+      }
+    },
+    {
+      "slug": "product-engineering-and-leadership",
+      "period": "2016 to 2026",
+      "claim": "From Grindr through Bridg, Bosch, Revenue.io, and Yubico, Carl shipped campaign and content-management tooling, analytics and audience-segmentation interfaces, B2B mobility systems, customer-facing SaaS, enterprise administration workflows, shared component systems, and test infrastructure while leading delivery and mentoring engineers.",
+      "maturity": "not_applicable",
+      "evidenceStrength": "strong",
+      "citation": {
+        "title": "Career chapter: Product engineering and leadership",
+        "href": "/carl-welch-resume.pdf",
+        "sourceType": "resume"
+      }
+    },
+    {
+      "slug": "studios-agencies-and-technical-teams",
+      "period": "2011 to 2016",
+      "claim": "At Petrol, BPG, Trailer Park Studios, Nezzoh Studios, and SapientNitro, Carl delivered localized movie and game sites, entertainment campaigns, social integrations, admin and moderation tools, video platforms, accessibility work, analytics, and frontend architecture while managing developers and client delivery.",
+      "maturity": "not_applicable",
+      "evidenceStrength": "strong",
+      "citation": {
+        "title": "Career chapter: Studios, agencies, and technical teams",
+        "href": "/carl-welch-resume.pdf",
+        "sourceType": "resume"
+      }
+    },
+    {
+      "slug": "operational-evidence-and-immersive-systems",
+      "period": "2001 to 2011",
+      "claim": "At General Dynamics, Carl managed a VR lab and built spatial AR and VR tools for engineering, maintenance, and training; at David Allen Company and TASER / AXON he delivered online product and brand systems plus finished Evidence.com workflows for reviewing, organizing, editing, collaborating on, and sharing digital evidence.",
+      "maturity": "not_applicable",
+      "evidenceStrength": "strong",
+      "citation": {
+        "title": "Career chapter: Operational, evidence, and immersive systems",
+        "href": "/experience#career-foundations",
+        "sourceType": "portfolio_page"
+      }
+    },
+    {
+      "slug": "current-independent-products",
+      "period": "2026",
+      "claim": "Carl's current independent work includes ProgressionLab, Job Search OS, Flight Tracker AI, Supraconscious Avatar AI, and Argent Matchmaking, with each product represented at its documented production, deployed-demo, development, or prototype scope.",
+      "maturity": "not_applicable",
+      "evidenceStrength": "strong",
+      "citation": {
+        "title": "Career chapter: Current independent products",
+        "href": "/carl-welch-resume.pdf",
+        "sourceType": "resume"
+      }
+    }
+  ],
+  "roles": [
+    {
+      "slug": "yubico-senior-software-engineer",
+      "period": "Jul 2022 to Mar 2026",
+      "claim": "At Yubico, Carl built enterprise admin-console features for YubiKey management, provisioning, inventory and shipping workflows, and device lifecycle operations; increased automated frontend test coverage by 50%; led Storybook and shared-component work; and mentored engineers while coordinating cross-functional delivery.",
+      "maturity": "not_applicable",
+      "evidenceStrength": "strong",
+      "citation": {
+        "title": "Senior Software Engineer at Yubico",
+        "href": "/carl-welch-resume.pdf",
+        "sourceType": "resume"
+      }
+    },
+    {
+      "slug": "revenue-io-senior-software-engineer",
+      "period": "Mar 2020 to Jul 2022",
+      "claim": "At Revenue.io, Carl built analytics dashboards, reporting views, sales-engagement workflows, communication tools, admin tooling, and customer-facing SaaS; migrated legacy Backbone screens to React and TypeScript; and improved performance, testing, reliability, and maintainability across CRM, telephony, reporting, and communication workflows.",
+      "maturity": "not_applicable",
+      "evidenceStrength": "strong",
+      "citation": {
+        "title": "Senior Software Engineer at Revenue.io",
+        "href": "/carl-welch-resume.pdf",
+        "sourceType": "resume"
+      }
+    },
+    {
+      "slug": "bosch-lead-frontend-developer",
+      "period": "Jul 2018 to Mar 2020",
+      "claim": "At Bosch, Carl led frontend and mobile development for a B2B ride-sharing product, building scheduling, routing and maps, payments, messaging, real-time updates, localization, and release workflows while coordinating U.S., Mexico, and Germany launches.",
+      "maturity": "not_applicable",
+      "evidenceStrength": "strong",
+      "citation": {
+        "title": "Lead Frontend Developer at Bosch",
+        "href": "/carl-welch-resume.pdf",
+        "sourceType": "resume"
+      }
+    },
+    {
+      "slug": "bridg-senior-frontend-engineer",
+      "period": "Dec 2017 to Aug 2018",
+      "claim": "At Bridg, Carl built responsive analytics dashboards, audience-segmentation workflows, reporting tools, search and filtering experiences, and data visualizations while defining frontend architecture, component patterns, API contracts, and testing standards.",
+      "maturity": "not_applicable",
+      "evidenceStrength": "strong",
+      "citation": {
+        "title": "Senior Frontend Engineer at Bridg",
+        "href": "/carl-welch-resume.pdf",
+        "sourceType": "resume"
+      }
+    },
+    {
+      "slug": "grindr-senior-web-developer-manager",
+      "period": "Apr 2016 to Aug 2017",
+      "claim": "At Grindr, Carl built an in-app campaign-package tool that automated creative generation, resizing and cropping, metadata packaging, targeting rules, QA checks, exports, mobile handoff, and analytics integration; he also built a content site and CMS and managed developers and releases.",
+      "maturity": "not_applicable",
+      "evidenceStrength": "strong",
+      "citation": {
+        "title": "Senior Web Developer / Manager at Grindr",
+        "href": "/carl-welch-resume.pdf",
+        "sourceType": "resume"
+      }
+    },
+    {
+      "slug": "sapientnitro-manager-interactive-development",
+      "period": "2015 to 2016",
+      "claim": "At SapientNitro, Carl managed developers, estimated and reviewed work, coordinated with design, product, and account teams, launched high-traffic campaigns, and led frontend architecture for major retail and entertainment brands.",
+      "maturity": "not_applicable",
+      "evidenceStrength": "strong",
+      "citation": {
+        "title": "Manager, Interactive Development at SapientNitro",
+        "href": "/carl-welch-resume.pdf",
+        "sourceType": "resume"
+      }
+    },
+    {
+      "slug": "nezzoh-studios-technical-director",
+      "period": "Dec 2013 to Dec 2014",
+      "claim": "At Nezzoh Studios, Carl led video-platform development, analytics and advertising integrations, player plugin work, accessibility support, vendor coordination, engineering mentorship, and client communication.",
+      "maturity": "not_applicable",
+      "evidenceStrength": "strong",
+      "citation": {
+        "title": "Technical Director at Nezzoh Studios",
+        "href": "/carl-welch-resume.pdf",
+        "sourceType": "resume"
+      }
+    },
+    {
+      "slug": "trailer-park-studios-lead-developer",
+      "period": "Sep 2012 to Sep 2013",
+      "claim": "At Trailer Park Studios, Carl led interactive entertainment campaigns, admin tools, short-film contest moderation tooling, Apple iBooks widgets, and recovery of a high-risk project while overseeing five junior developers.",
+      "maturity": "not_applicable",
+      "evidenceStrength": "strong",
+      "citation": {
+        "title": "Lead Developer at Trailer Park Studios",
+        "href": "/carl-welch-resume.pdf",
+        "sourceType": "resume"
+      }
+    },
+    {
+      "slug": "bpg-advertising-interactive-art-director",
+      "period": "May 2012 to Jul 2012",
+      "claim": "At BPG Advertising, Carl built entertainment marketing sites, interactive campaigns, microsites, landing pages, CMS and admin tools, and social integrations as an interactive art director and frontend developer.",
+      "maturity": "not_applicable",
+      "evidenceStrength": "strong",
+      "citation": {
+        "title": "Interactive Art Director / Front End Developer at BPG Advertising",
+        "href": "/carl-welch-resume.pdf",
+        "sourceType": "resume"
+      }
+    },
+    {
+      "slug": "petrol-interactive-art-director-full-stack-developer",
+      "period": "Sep 2011 to Feb 2012",
+      "claim": "At Petrol, Carl built localized movie and game marketing sites, interactive campaigns, social integrations, analytics, and frontend and backend systems as an interactive art director and full-stack developer.",
+      "maturity": "not_applicable",
+      "evidenceStrength": "strong",
+      "citation": {
+        "title": "Interactive Art Director / Full Stack Developer at Petrol",
+        "href": "/carl-welch-resume.pdf",
+        "sourceType": "resume"
+      }
+    },
+    {
+      "slug": "taser-axon-front-end-developer",
+      "period": "Apr 2009 to Oct 2011",
+      "claim": "At TASER / AXON, Carl built early officer-dashboard and Evidence.com workflows for body-camera video review, synchronized GPS and map playback, evidence annotation, case preparation, secure packaging, and prosecutor and court exports.",
+      "maturity": "not_applicable",
+      "evidenceStrength": "strong",
+      "citation": {
+        "title": "Front End Developer at TASER / AXON",
+        "href": "/carl-welch-resume.pdf",
+        "sourceType": "resume"
+      }
+    },
+    {
+      "slug": "general-dynamics-manager-lead-developer",
+      "period": "2001 to 2004",
+      "claim": "At General Dynamics, Carl managed a VR lab and built spatial AR and VR proof-of-concept tools for engineering analysis, maintenance support, virtual training, and LAV-25 and Stryker training systems while providing creative, technical, and project leadership.",
+      "maturity": "not_applicable",
+      "evidenceStrength": "strong",
+      "citation": {
+        "title": "Manager / Lead Developer at General Dynamics / GM Defense",
+        "href": "/experience#career-foundations",
+        "sourceType": "portfolio_page"
+      }
+    },
+    {
+      "slug": "us-army-fire-support-specialist",
+      "period": "Operation Desert Storm",
+      "claim": "In the U.S. Army, Carl served as a Fire Support Specialist supporting infantry and maneuver units through target identification, fire-support coordination, map reading, coordinate calculation, field communications, and work with Tactical Operations Centers.",
+      "maturity": "not_applicable",
+      "evidenceStrength": "strong",
+      "citation": {
+        "title": "Fire Support Specialist at U.S. Army",
+        "href": "/carl-welch-resume.pdf",
+        "sourceType": "resume"
+      }
+    },
+    {
+      "slug": "david-allen-company-online-art-direction-development",
+      "period": "2005 to 2010 career chapter",
+      "claim": "At David Allen Company, Carl handled online art direction and development across UX and UI, wireframes, brand systems, media production, Flash, PHP, and MySQL.",
+      "maturity": "not_applicable",
+      "evidenceStrength": "strong",
+      "citation": {
+        "title": "Online Art Direction and Development at David Allen Company",
+        "href": "/experience#career-foundations",
+        "sourceType": "portfolio_page"
+      }
+    },
+    {
+      "slug": "early-full-stack-web",
+      "period": "1994 to 2001",
+      "claim": "At Marketing Resource Group, SPi, University OnLine, SAIC, OneSoft, and 9th Insight, Carl worked across art direction, code, identity, video, animation, information architecture, distance-learning and corporate systems, team management, and client delivery while remaining hands-on with the work.",
+      "maturity": "not_applicable",
+      "evidenceStrength": "strong",
+      "citation": {
+        "title": "Early full-stack web at Marketing Resource Group / SPi / University OnLine / SAIC / OneSoft / 9th Insight",
+        "href": "/experience#career-foundations",
+        "sourceType": "portfolio_page"
+      }
+    },
+    {
+      "slug": "ignite-creative-learning-programming-instructor",
+      "period": "2012",
+      "claim": "At Ignite Creative Learning, Carl taught Scratch programming plus a hands-on JavaScript, HTML5 Canvas, and CSS workshop, turning technical complexity into understandable instruction for young people and carrying that explanatory skill into product-team leadership.",
+      "maturity": "not_applicable",
+      "evidenceStrength": "strong",
+      "citation": {
+        "title": "Programming Instructor at Ignite Creative Learning",
+        "href": "/experience#career-foundations",
+        "sourceType": "portfolio_page"
+      }
+    }
+  ]
+}
