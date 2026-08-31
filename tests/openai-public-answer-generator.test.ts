@@ -134,6 +134,15 @@ describe("OpenAI public answer generator", () => {
       "close, natural paraphrase",
     ));
     expect(request.instructions).toEqual(expect.stringContaining(
+      "Every segment.text must contain exactly one sentence",
+    ));
+    expect(request.instructions).toEqual(expect.stringContaining(
+      "Use a new segment for every additional sentence",
+    ));
+    expect(request.instructions).toEqual(expect.not.stringContaining(
+      "A short concluding synthesis is allowed",
+    ));
+    expect(request.instructions).toEqual(expect.stringContaining(
       "3-to-12-word reaction",
     ));
     expect(request.instructions).toEqual(expect.not.stringContaining(
