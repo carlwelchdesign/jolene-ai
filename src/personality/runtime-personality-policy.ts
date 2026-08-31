@@ -98,6 +98,8 @@ export const PUBLIC_JOLENE_DETERMINISTIC_COPY = {
     role: "In that role, Carl’s work looked like this:",
     capability: "This is where it shows up in the work:",
     recommendation: "The people who worked with Carl say it plainly:",
+    riskHandling:
+      "Short answer: Carl treats AI risk as part of the product, not a footnote:",
     boundary: "Here’s the honest edge of it:",
     general: "The useful part is this:",
   },

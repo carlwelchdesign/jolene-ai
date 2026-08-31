@@ -200,6 +200,36 @@ describe("grounded public answer service", () => {
     });
   });
 
+  it("keeps AI risk-handling evidence deterministic before model synthesis", async () => {
+    const control = createPublicEvidenceRecord(1, {
+      text: "Jolene keeps consequential AI actions behind exact human approval.",
+      title: "Jolene AI authority boundary",
+      href: "/work/jolene-ai#evidence-authority",
+    });
+    const irrelevant = createPublicEvidenceRecord(2, {
+      text: "Carl led frontend delivery and mentored engineers.",
+      title: "Technical leadership",
+    });
+    const artifact = createPublicEvidenceArtifact([irrelevant, control]);
+    const retrieve = vi.fn(async () => [irrelevant]);
+    const generate = vi.fn(async (input: GroundedPublicAnswerInput) =>
+      generation(input, control.claim.text));
+
+    const execution = await new GroundedPublicAnswerService(
+      { generate },
+      { retriever: { retrieve } },
+    ).execute(artifact, {
+      question: "How does Carl handle risk in AI-assisted systems?",
+    });
+
+    expect(retrieve).not.toHaveBeenCalled();
+    expect(generate).toHaveBeenCalledWith(expect.objectContaining({
+      evidence: [expect.objectContaining({ evidenceId: control.evidenceId })],
+    }));
+    expect(execution.response.claims).toEqual([control.claim]);
+    expect(execution.response.citations).toEqual([control.citation]);
+  });
+
   it("uses minimized public evidence continuity without replay or re-retrieval", async () => {
     const jolene = createPublicEvidenceRecord(1, {
       text: "Jolene uses a least-privilege public service boundary.",
