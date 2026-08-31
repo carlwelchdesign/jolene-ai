@@ -33,7 +33,7 @@ export function publicCharacterRegister(question: string): PublicCharacterRegist
   if (/\b(?:why (?:should|would).*hire|valuable|strong candidate|best fit|put carl forward)\b/u.test(normalized)) {
     return "advocacy";
   }
-  if (/\b(?:skeptic|weakness|risk|limitation|concern|against carl|verify directly|not hire)\b/u.test(normalized)) {
+  if (/\b(?:skeptic(?:al|ism)?|weakness|risk|limitation|concern|against carl|verify directly|not hire)\b/u.test(normalized)) {
     return "skeptical";
   }
   if (/\b(?:private|secret|cannot|can't|policy|boundary|unpublished)\b/u.test(normalized)) {
@@ -77,4 +77,94 @@ export function publicCharacterRealizationInstructions(
     "Before returning the answer, silently reject a draft that could be pasted unchanged under a different portfolio question.",
     "Vary the opening according to the visitor's wording. Avoid stock leads such as 'Here is the work,' 'The useful part is,' 'The published material,' or 'The record shows.'",
   ];
+}
+
+type CharacterFrame = {
+  readonly lead: string;
+  readonly close: string;
+};
+
+const CHARACTER_FRAMES: Readonly<Record<PublicCharacterRegister, readonly CharacterFrame[]>> = {
+  advocacy: [
+    {
+      lead: "Now that’s the right question—let’s put the strongest honest case on its feet.",
+      close: "Give me the role, and I’ll tell you where that case sings and where it still needs proving.",
+    },
+    {
+      lead: "All right, let’s get past the résumé gloss and into what the work can actually carry.",
+      close: "Put a real job description beside it and I’ll separate the strong fit from the wishful thinking.",
+    },
+    {
+      lead: "Good question. This is where the through-line has to earn its keep.",
+      close: "The next useful move is to test that through-line against the role you’re filling.",
+    },
+  ],
+  biography: [
+    {
+      lead: "This one has a little more heart behind it.",
+      close: "That’s the road that led here; the software came after the need.",
+    },
+    {
+      lead: "There’s a human story underneath the software, and it matters.",
+      close: "The useful part is that the story still shows up in how the work is built.",
+    },
+  ],
+  boundary: [
+    {
+      lead: "I can answer the public part plainly, but the private door stays shut.",
+      close: "Ask me about the published work and I’ll give you a straight answer.",
+    },
+  ],
+  explanation: [
+    {
+      lead: "Sure—let’s make the machinery plain.",
+      close: "If you want the next layer, I can take it apart without scattering bolts all over the floor.",
+    },
+    {
+      lead: "Let’s walk through it like people, not a product brochure.",
+      close: "Tell me which piece matters to you and I’ll go deeper there.",
+    },
+    {
+      lead: "Here’s the clean way to see it.",
+      close: "That’s the short version; I can open up the tradeoffs next.",
+    },
+  ],
+  skeptical: [
+    {
+      lead: "Fair question. A strong case ought to survive a hard look.",
+      close: "That’s the part I’d verify directly instead of polishing it into a promise.",
+    },
+    {
+      lead: "Let’s not tiptoe around the question; the honest edge is useful.",
+      close: "A good interview should test that edge, not pretend it isn’t there.",
+    },
+    {
+      lead: "That concern deserves a real answer, not a coat of résumé varnish.",
+      close: "Use the evidence as the starting point, then make Carl prove the rest in the room.",
+    },
+  ],
+};
+
+export function framePublicCharacterAnswer(
+  question: string,
+  groundedAnswer: string,
+  maximumCharacters = 2_000,
+): string {
+  const frames = CHARACTER_FRAMES[publicCharacterRegister(question)];
+  const frame = frames[stableQuestionIndex(question, frames.length)] ?? frames[0];
+  if (!frame) return groundedAnswer;
+  const withLead = `${frame.lead}\n\n${groundedAnswer}`;
+  const complete = `${withLead}\n\n${frame.close}`;
+  if (complete.length <= maximumCharacters) return complete;
+  if (withLead.length <= maximumCharacters) return withLead;
+  return groundedAnswer;
+}
+
+function stableQuestionIndex(question: string, length: number): number {
+  let hash = 2_166_136_261;
+  for (const character of question.normalize("NFKC").toLocaleLowerCase("en-US")) {
+    hash ^= character.codePointAt(0) ?? 0;
+    hash = Math.imul(hash, 16_777_619);
+  }
+  return (hash >>> 0) % length;
 }

@@ -51,6 +51,27 @@ describe("grounded public answer service", () => {
     );
   });
 
+  it("applies the original character frame only in Jolene mode after grounding", async () => {
+    const artifact = createPublicEvidenceArtifact();
+    const service = new GroundedPublicAnswerService({
+      generate: async (input) => generation(
+        input,
+        "Carl builds typed React product systems with explicit review boundaries.",
+      ),
+    }, { personalityMode: "jolene" });
+
+    const execution = await service.execute(artifact, {
+      question: "What React systems has Carl built?",
+    });
+
+    expect(execution.mode).toBe("model");
+    expect(execution.response.answer).toContain(
+      "Carl builds typed React product systems with explicit review boundaries.",
+    );
+    expect(execution.response.answer.split("\n\n")).toHaveLength(3);
+    expect(execution.response.answer).toMatch(/machinery|product brochure|clean way/iu);
+  });
+
   it("does not call the generator when deterministic selection has no evidence", async () => {
     const generate = vi.fn(async () => "must not run");
     const reserve = vi.fn(async () => true);
