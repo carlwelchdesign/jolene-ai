@@ -237,7 +237,8 @@ export class GroundedPublicAnswerService implements PublicPortfolioAnswerer {
       );
     if (
       this.#retriever && exactRelationshipEvidence.length === 0 &&
-      !turn.contextualEvidence
+      !turn.contextualEvidence &&
+      !isRiskHandlingQuestion(selectionRequest.question)
     ) {
       try {
         baseline = this.#baseline.answerFromSelected(
@@ -607,6 +608,9 @@ export function selectDeterministicPublicEvidence(
   if (isNonProductionQuestion(request.question)) {
     return selectNonProductionEvidence(artifact.evidence);
   }
+  if (isRiskHandlingQuestion(request.question)) {
+    return selectRiskHandlingEvidence(artifact.evidence);
+  }
   if (isHiringValueQuestion(request.question)) {
     return selectHiringValueEvidence(artifact.evidence);
   }
@@ -910,6 +914,147 @@ function isNonProductionQuestion(question: string): boolean {
     .test(normalizeLookup(question));
 }
 
+function isRiskHandlingQuestion(question: string): boolean {
+  const normalized = normalizeLookup(question);
+  return (
+    /\b(?:handle|handles|handling|manage|manages|managing|mitigate|mitigates|mitigating|reduce|reduces|reducing|control|controls|controlling|contain|contains|containing|address|addresses|addressing)\b.{0,64}\b(?:ai |artificial intelligence |model |agent |automation )?(?:risk|risks|safety)\b/u
+      .test(normalized) ||
+    /\b(?:ai |artificial intelligence |model |agent |automation )?(?:risk|risks|safety)\b.{0,64}\b(?:handle|handles|handling|manage|manages|managing|mitigate|mitigates|mitigating|reduce|reduces|reducing|control|controls|controlling|contain|contains|containing|address|addresses|addressing)\b/u
+      .test(normalized)
+  );
+}
+
+type RiskHandlingCategory =
+  | "authority"
+  | "data"
+  | "evidence"
+  | "validation"
+  | "operations";
+
+const RISK_HANDLING_CATEGORY_PRIORITY: readonly RiskHandlingCategory[] = [
+  "authority",
+  "data",
+  "evidence",
+  "validation",
+  "operations",
+];
+
+const RISK_HANDLING_CATEGORY_TERMS: Readonly<Record<
+  RiskHandlingCategory,
+  readonly string[]
+>> = {
+  authority: [
+    "human approval",
+    "human authorization",
+    "approve the exact action",
+    "consequential actions",
+    "no model tools",
+    "read only",
+    "disabled",
+  ],
+  data: [
+    "private",
+    "public",
+    "untrusted",
+    "prompt injection",
+    "disclosure",
+    "sensitive",
+    "least privilege",
+  ],
+  evidence: [
+    "source evidence",
+    "provenance",
+    "review state",
+    "uncertainty",
+    "approved",
+    "deny by default",
+    "revocation",
+  ],
+  validation: [
+    "validation",
+    "structured output",
+    "bounded",
+    "policy first",
+    "fails closed",
+    "fail closed",
+  ],
+  operations: [
+    "release gate",
+    "rollback",
+    "monitoring",
+    "evaluation",
+    "production promotion",
+    "corpus pinning",
+  ],
+};
+
+const AI_SYSTEM_LEXICAL_TERMS = [
+  "ai",
+  "agent",
+  "agentic",
+  "automation",
+  "generated",
+  "model",
+  "rag",
+  "retrieval",
+  "prompt",
+  "jolene",
+  "supraconscious",
+] as const;
+
+const AI_SYSTEM_PHRASES = [
+  "artificial intelligence",
+  "generated answer",
+] as const;
+
+function selectRiskHandlingEvidence(
+  evidence: readonly PublicCareerEvidenceRecord[],
+): PublicCareerEvidenceRecord[] {
+  const ranked = evidence
+    .map((record) => ({ record, ...riskHandlingEvidenceScore(record) }))
+    .filter(({ score }) => score > 0)
+    .sort(compareScoredEvidence);
+  const selected: PublicCareerEvidenceRecord[] = [];
+  for (const category of RISK_HANDLING_CATEGORY_PRIORITY) {
+    const candidate = ranked.find(({ record, categories }) =>
+      categories.has(category) && !selected.includes(record)
+    );
+    if (candidate) selected.push(candidate.record);
+  }
+  for (const candidate of ranked) {
+    if (selected.length >= PUBLIC_PORTFOLIO_ANSWER_LIMITS.responseItems) break;
+    if (!selected.includes(candidate.record)) selected.push(candidate.record);
+  }
+  return selected.slice(0, PUBLIC_PORTFOLIO_ANSWER_LIMITS.responseItems);
+}
+
+function riskHandlingEvidenceScore(record: PublicCareerEvidenceRecord): {
+  readonly categories: ReadonlySet<RiskHandlingCategory>;
+  readonly score: number;
+} {
+  const text = normalizeLookup([
+    record.citation.title,
+    record.claim.text,
+    record.claim.limitations.join(" "),
+  ].join(" "));
+  const lexicalTerms = new Set(tokenizeLexicalTerms(text));
+  if (
+    !AI_SYSTEM_LEXICAL_TERMS.some((term) => lexicalTerms.has(term)) &&
+    !AI_SYSTEM_PHRASES.some((phrase) => text.includes(phrase))
+  ) {
+    return { categories: new Set<RiskHandlingCategory>(), score: 0 };
+  }
+  const categories = new Set<RiskHandlingCategory>();
+  let score = 0;
+  for (const category of RISK_HANDLING_CATEGORY_PRIORITY) {
+    const matches = RISK_HANDLING_CATEGORY_TERMS[category]
+      .filter((term) => text.includes(term)).length;
+    if (matches > 0) categories.add(category);
+    score += matches * 10;
+  }
+  return { categories, score };
+}
+
 function selectNonProductionEvidence(
   evidence: readonly PublicCareerEvidenceRecord[],
 ): PublicCareerEvidenceRecord[] {
@@ -1146,6 +1291,7 @@ function supportedResponse(
     ),
   );
   const skepticalIntent = skepticalAnswerIntent(question);
+  const riskHandlingQuestion = isRiskHandlingQuestion(question);
   return portfolioAnswerResponseSchema.parse({
     schemaVersion: PUBLIC_CAREER_EVIDENCE_SCHEMA_VERSION,
     answer: relationshipFact
@@ -1174,6 +1320,11 @@ function supportedResponse(
       ? [
         "Would you like to compare Carl's evidence with a specific job description?",
         "Which leadership, product, or technical example should we examine more closely?",
+      ]
+      : riskHandlingQuestion
+      ? [
+        "Which control—data exposure, model authority, evidence, validation, or rollback—would you like to examine?",
+        "Would you like to see how those controls differ across Carl’s AI projects?",
       ]
       : [
         "Which cited project or role would you like to examine more closely?",
@@ -1601,6 +1752,7 @@ type DeterministicAnswerIntent =
   | "role"
   | "capability"
   | "recommendation"
+  | "risk_handling"
   | "boundary"
   | "source"
   | "general";
@@ -1614,6 +1766,7 @@ function deterministicAnswerIntent(
     /\b(?:which|what|open)\b.{0,32}\b(?:source|evidence)\b/u.test(normalized) ||
     /\bsource backs\b/u.test(normalized)
   ) return "source";
+  if (isRiskHandlingQuestion(question)) return "risk_handling";
   if (/\b(?:limits?|limitations?|boundaries|risks?|caveats?|cannot|can t|weaknesses)\b/u
     .test(normalized)) return "boundary";
   if (/\b(?:recommendation|reference|testimonial)\b/u.test(normalized)) {
@@ -1640,6 +1793,8 @@ const DETERMINISTIC_ANSWER_OPENINGS: Readonly<Record<
   capability: () => PUBLIC_JOLENE_DETERMINISTIC_COPY.openings.capability,
   recommendation: () =>
     PUBLIC_JOLENE_DETERMINISTIC_COPY.openings.recommendation,
+  risk_handling: () =>
+    PUBLIC_JOLENE_DETERMINISTIC_COPY.openings.riskHandling,
   boundary: () => PUBLIC_JOLENE_DETERMINISTIC_COPY.openings.boundary,
   source: () => "The strongest published sources here are:",
   general: () => PUBLIC_JOLENE_DETERMINISTIC_COPY.openings.general,

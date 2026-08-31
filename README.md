@@ -353,6 +353,10 @@ and thread.
 
 ## Security boundary
 
+The reusable [cross-project risk doctrine](docs/cross-project-risk-doctrine.md)
+defines the proportional planning, implementation, release, operations, and
+public-claims review expected for every project.
+
 - `.env.local`, `.env.runtime.local`, `.jolene/secrets`, the SQLite database,
   and generated evaluation results are ignored. Private Compose services use
   file-mounted secrets; rendered Compose configuration contains paths, not

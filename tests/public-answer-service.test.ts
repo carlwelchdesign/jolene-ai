@@ -657,6 +657,85 @@ describe("DeterministicPublicAnswerService", () => {
     expect(result.answer).not.toContain(frontend.claim.text);
   });
 
+  it("answers how Carl handles AI risk with actual controls instead of an empty limitation", () => {
+    const controls = [
+      createPublicEvidenceRecord(1, {
+        text: "Jolene keeps consequential AI actions behind exact human approval.",
+        title: "Jolene AI authority boundary",
+        href: "/work/jolene-ai#evidence-authority",
+      }),
+      createPublicEvidenceRecord(2, {
+        text: "Jolene treats prompts as untrusted and keeps private data outside the public delegate.",
+        title: "Jolene AI data boundary",
+        href: "/work/jolene-ai#evidence-data",
+      }),
+      createPublicEvidenceRecord(3, {
+        text: "AI-assisted products keep source evidence, provenance, review state, and uncertainty visible.",
+        title: "Bounded AI workflows",
+        href: "/capabilities",
+      }),
+      createPublicEvidenceRecord(4, {
+        text: "Jolene uses structured outputs, bounded model access, and deterministic validation.",
+        title: "Jolene AI validation",
+        href: "/work/jolene-ai#evidence-validation",
+      }),
+      createPublicEvidenceRecord(5, {
+        text: "Carl separates AI evaluation, production promotion, monitoring, and rollback into distinct release gates.",
+        title: "Jolene AI operations",
+        href: "/work/jolene-ai#evidence-operations",
+      }),
+    ];
+    const irrelevant = [
+      createPublicEvidenceRecord(6, {
+        text: "Carl led frontend delivery and mentored engineers.",
+        title: "Technical leadership",
+      }),
+      createPublicEvidenceRecord(7, {
+        text: "Uses a typed browser-to-service architecture with a spatial database.",
+        title: "Flight Tracker AI",
+        href: "/work/flight-tracker-ai#evidence",
+      }),
+      createPublicEvidenceRecord(8, {
+        text: "Maintaining public availability is part of the release process.",
+        title: "Web operations",
+      }),
+    ];
+    const artifact = createPublicEvidenceArtifact([...irrelevant, ...controls]);
+    const result = service.answer(artifact, {
+      question: "How does Carl handle risk in AI-assisted systems?",
+    });
+
+    expect(result.answer).toContain(
+      "Carl treats AI risk as part of the product, not a footnote",
+    );
+    expect(result.answer).not.toContain(
+      "does not state a separate limitation for this point",
+    );
+    expect(result.claims.map((claim) => claim.text)).toEqual(
+      expect.arrayContaining(controls.map((record) => record.claim.text)),
+    );
+    expect(result.citations).not.toContainEqual(irrelevant[0]?.citation);
+    expect(result.citations).not.toContainEqual(irrelevant[1]?.citation);
+    expect(result.citations).not.toContainEqual(irrelevant[2]?.citation);
+    expect(result.suggestedFollowUpQuestions[0]).toContain("Which control");
+  });
+
+  it("keeps residual-risk questions in honest limitation mode", () => {
+    const record = createPublicEvidenceRecord(1, {
+      text: "Jolene is an AI-assisted system with bounded public access.",
+      title: "Jolene AI",
+      limitations: ["Voice remains future work."],
+    });
+    const result = service.answerFromSelected(
+      createPublicEvidenceArtifact([record]),
+      { question: "What risks and limitations remain?" },
+      [record],
+    );
+
+    expect(result.answer).toContain("Here’s the honest edge of it:");
+    expect(result.answer).toContain("Voice remains future work.");
+  });
+
   it("answers source and absent-limitation follow-ups instead of repeating claims", () => {
     const record = createPublicEvidenceRecord(1, {
       text: "Carl built a typed service boundary.",
