@@ -48,6 +48,66 @@ describe("DeterministicPublicAnswerService", () => {
     expect(result.answer).not.toContain("Carl ships.");
   });
 
+  it("represents shipped work across Carl's career instead of only his recent projects", () => {
+    const careerOverviewLimitation =
+      "Career scope: This is a representative public summary of documented delivery across one career era.";
+    const careerEvidence = [
+      createPublicEvidenceRecord(10, {
+        text: "At Yubico, Revenue.io, Bosch, Bridg, and Grindr, Carl shipped enterprise administration, analytics, mobility, customer-intelligence, campaign, and publishing systems while leading frontend delivery and mentoring engineers.",
+        title: "Career chapter: Product engineering and leadership",
+        href: "/carl-welch-resume.pdf",
+        sourceType: "resume",
+        maturity: "not_applicable",
+        limitations: [careerOverviewLimitation],
+      }),
+      createPublicEvidenceRecord(11, {
+        text: "At SapientNitro, Nezzoh Studios, Trailer Park, BPG, and Petrol, Carl delivered retail and entertainment campaigns, video platforms, admin tools, moderated contest systems, mobile and social experiences, and the architecture behind them.",
+        title: "Career chapter: Studios, agencies, and technical teams",
+        href: "/carl-welch-resume.pdf",
+        sourceType: "resume",
+        maturity: "not_applicable",
+        limitations: [careerOverviewLimitation],
+      }),
+      createPublicEvidenceRecord(12, {
+        text: "At TASER and General Dynamics, Carl delivered Evidence.com interfaces plus spatial AR and VR tools for engineering, maintenance, and training; his earlier Army service grounded that work in operational coordination.",
+        title: "Career chapter: Operational, evidence, and immersive systems",
+        href: "/carl-welch-resume.pdf",
+        sourceType: "resume",
+        maturity: "not_applicable",
+        limitations: [careerOverviewLimitation],
+      }),
+      createPublicEvidenceRecord(13, {
+        text: "Carl's current independent work includes shipped production software, deployed demonstrations, development-stage products, and delivered prototype foundations, each described at its actual release scope.",
+        title: "Career chapter: Current independent products",
+        href: "/carl-welch-resume.pdf",
+        sourceType: "resume",
+        maturity: "not_applicable",
+        limitations: [careerOverviewLimitation],
+      }),
+    ];
+    const recentProjectOnly = createPublicEvidenceRecord(14, {
+      text: "Carl built and deployed ProgressionLab.",
+      title: "ProgressionLab",
+      href: "/carl-welch-resume.pdf",
+      sourceType: "resume",
+      maturity: "production",
+      limitations: [
+        "Delivery status is bounded to the project scope stated on Carl's public resume.",
+      ],
+    });
+
+    const result = service.answer(
+      createPublicEvidenceArtifact([...careerEvidence, recentProjectOnly]),
+      { question: "What has Carl shipped?" },
+    );
+
+    expect(result.claims).toEqual(careerEvidence.map((record) => record.claim));
+    expect(result.answer).toContain("Yubico");
+    expect(result.answer).toContain("General Dynamics");
+    expect(result.answer).toContain("current independent work");
+    expect(result.answer).not.toContain("every project on his résumé");
+  });
+
   it("uses stable evidence-ID ordering for equal scores and bounds output", () => {
     const evidence = Array.from({ length: 7 }, (_, index) =>
       createPublicEvidenceRecord(index + 1, {

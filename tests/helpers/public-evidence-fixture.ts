@@ -61,6 +61,7 @@ export function createPublicEvidenceRecord(
     readonly text: string;
     readonly title: string;
     readonly href: string;
+    readonly sourceType: PublicCareerEvidenceRecord["citation"]["sourceType"];
     readonly maturity: PublicCareerEvidenceRecord["claim"]["maturity"];
     readonly limitations: readonly string[];
   }> = {},
@@ -86,7 +87,7 @@ export function createPublicEvidenceRecord(
       evidenceId,
       title: overrides.title ?? `Reviewed project ${index}`,
       href: overrides.href ?? `/work/reviewed-project-${index}#evidence`,
-      sourceType: "portfolio_page",
+      sourceType: overrides.sourceType ?? "portfolio_page",
       strength: "limited",
       maturity,
       lastReviewedAt: reviewedAt,

@@ -13,6 +13,8 @@ import {
 } from "../domain/public-career-evidence.js";
 import { PUBLIC_RESUME_PROJECT_DELIVERY_LIMITATION } from
   "../domain/public-resume-project-dossier.js";
+import { PUBLIC_CAREER_CHAPTER_LIMITATION } from
+  "../domain/public-career-profile-dossier.js";
 import {
   PUBLIC_CONVERSATION_CONTEXT_LIMITS,
   PUBLIC_PORTFOLIO_ANSWER_LIMITS,
@@ -708,6 +710,9 @@ export function selectDeterministicPublicEvidence(
   if (isShippedWorkQuestion(request.question)) {
     return selectShippedWorkEvidence(artifact.evidence);
   }
+  if (isCareerArcQuestion(request.question)) {
+    return selectCareerProfileChapters(artifact.evidence);
+  }
   if (isRiskHandlingQuestion(request.question)) {
     return selectRiskHandlingEvidence(artifact.evidence);
   }
@@ -744,7 +749,9 @@ function selectProfessionalRoleEntityEvidence(
   const normalizedQuestion = normalizeLookup(question);
   const matched = evidence.filter((record) => {
     const employer = record.citation.title.match(/\bat\s+(.+)$/u)?.[1];
-    return employer && normalizedQuestion.includes(normalizeLookup(employer));
+    return employer && employerAliases(employer).some((alias) =>
+      normalizedQuestion.includes(alias)
+    );
   });
   if (matched.length === 0) return [];
   return matched
@@ -752,6 +759,26 @@ function selectProfessionalRoleEntityEvidence(
     .sort(compareScoredEvidence)
     .slice(0, PUBLIC_PORTFOLIO_ANSWER_LIMITS.responseItems)
     .map(({ record }) => record);
+}
+
+function employerAliases(employer: string): readonly string[] {
+  const aliases = new Set<string>();
+  const normalized = normalizeLookup(employer);
+  aliases.add(normalized);
+  for (const part of employer.split("/")) {
+    const alias = normalizeLookup(part);
+    if (alias.length >= 3) aliases.add(alias);
+  }
+  for (const candidate of [...aliases]) {
+    const withoutPrefix = candidate.replace(/^u s\s+/u, "");
+    const withoutSuffix = candidate.replace(
+      /\s+(?:advertising|company|international|land systems|studios)$/u,
+      "",
+    );
+    if (withoutPrefix.length >= 3) aliases.add(withoutPrefix);
+    if (withoutSuffix.length >= 3) aliases.add(withoutSuffix);
+  }
+  return [...aliases];
 }
 
 function selectProjectEntityEvidence(
@@ -1185,6 +1212,8 @@ export function isShippedWorkQuestion(question: string): boolean {
 function selectShippedWorkEvidence(
   evidence: readonly PublicCareerEvidenceRecord[],
 ): PublicCareerEvidenceRecord[] {
+  const careerChapters = selectCareerProfileChapters(evidence);
+  if (careerChapters.length > 0) return careerChapters;
   return evidence
     .filter((record) =>
       record.citation.sourceType === "resume" &&
@@ -1196,6 +1225,44 @@ function selectShippedWorkEvidence(
       left.evidenceId.localeCompare(right.evidenceId)
     )
     .slice(0, PUBLIC_PORTFOLIO_ANSWER_LIMITS.responseItems);
+}
+
+function selectCareerProfileChapters(
+  evidence: readonly PublicCareerEvidenceRecord[],
+): PublicCareerEvidenceRecord[] {
+  return evidence
+    .filter((record) =>
+      record.claim.limitations.includes(PUBLIC_CAREER_CHAPTER_LIMITATION)
+    )
+    .sort((left, right) =>
+      careerChapterPriority(left.citation.title) -
+        careerChapterPriority(right.citation.title) ||
+      left.evidenceId.localeCompare(right.evidenceId)
+    )
+    .slice(0, PUBLIC_PORTFOLIO_ANSWER_LIMITS.responseItems);
+}
+
+const CAREER_CHAPTER_ORDER = [
+  "Career chapter: More than 20 years of delivery",
+  "Career chapter: Product engineering and leadership",
+  "Career chapter: Studios, agencies, and technical teams",
+  "Career chapter: Operational, evidence, and immersive systems",
+  "Career chapter: Current independent products",
+] as const;
+
+function careerChapterPriority(title: string): number {
+  const index = CAREER_CHAPTER_ORDER.indexOf(
+    title as (typeof CAREER_CHAPTER_ORDER)[number],
+  );
+  return index === -1 ? Number.MAX_SAFE_INTEGER : index;
+}
+
+function isCareerArcQuestion(question: string): boolean {
+  const normalized = normalizeLookup(question);
+  return /\b(?:walk me through|summarize|describe|tell me about|what is|what s)\b.{0,64}\b(?:carl s )?(?:career|work experience|professional experience|career arc|background)\b/u
+      .test(normalized) ||
+    /\b(?:career|work experience|professional experience|career arc)\b.{0,64}\b(?:span|history|journey|overview|look like)\b/u
+      .test(normalized);
 }
 
 const RESUME_PROJECT_ORDER = [
@@ -1467,6 +1534,7 @@ function supportedResponse(
   const skepticalIntent = skepticalAnswerIntent(question);
   const riskHandlingQuestion = isRiskHandlingQuestion(question);
   const shippedWorkQuestion = isShippedWorkQuestion(question);
+  const careerArcQuestion = isCareerArcQuestion(question);
   return portfolioAnswerResponseSchema.parse({
     schemaVersion: PUBLIC_CAREER_EVIDENCE_SCHEMA_VERSION,
     answer: relationshipFact
@@ -1481,6 +1549,8 @@ function supportedResponse(
       ? boundedRiskHandlingAnswer(selected)
       : shippedWorkQuestion
       ? boundedShippedWorkAnswer(selected)
+      : careerArcQuestion
+      ? boundedCareerArcAnswer(selected)
       : skepticalIntent
       ? boundedSkepticalAnswer(skepticalIntent, selected)
       : shouldNameEmployerContext && employerContext
@@ -1505,6 +1575,15 @@ function supportedResponse(
 function boundedShippedWorkAnswer(
   selected: readonly PublicCareerEvidenceRecord[],
 ): string {
+  if (selected.some((record) =>
+    record.claim.limitations.includes(PUBLIC_CAREER_CHAPTER_LIMITATION)
+  )) {
+    return composeBoundedEvidenceSummary(
+      "Carl's shipped work spans more than 20 years of employer, client, agency, enterprise, and independent product delivery—not only the projects he built for himself:",
+      selected.map((record) => visitorFacingClaim(record.claim).text),
+      PUBLIC_PORTFOLIO_ANSWER_LIMITS.responseItems,
+    );
+  }
   const projects = unique(selected.map((record) => record.citation.title));
   const projectStatuses = projects.map((title) => {
     const records = selected.filter((record) => record.citation.title === title);
@@ -1520,6 +1599,16 @@ function boundedShippedWorkAnswer(
   return composeBoundedEvidenceSummary(
     "Carl shipped every project on his résumé at the scope it claims—not every one as the same kind of release:",
     projectStatuses,
+    PUBLIC_PORTFOLIO_ANSWER_LIMITS.responseItems,
+  );
+}
+
+function boundedCareerArcAnswer(
+  selected: readonly PublicCareerEvidenceRecord[],
+): string {
+  return composeBoundedEvidenceSummary(
+    "The useful way to understand Carl's career is as one continuous line from operational and interactive systems to product engineering, leadership, and current independent products:",
+    selected.map((record) => visitorFacingClaim(record.claim).text),
     PUBLIC_PORTFOLIO_ANSWER_LIMITS.responseItems,
   );
 }

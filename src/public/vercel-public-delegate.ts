@@ -51,6 +51,10 @@ import type { PublicResumeProjectDossier } from
   "../domain/public-resume-project-dossier.js";
 import { PublicResumeProjectArtifactSource } from
   "./public-resume-project-artifact-source.js";
+import type { PublicCareerProfileDossier } from
+  "../domain/public-career-profile-dossier.js";
+import { PublicCareerProfileArtifactSource } from
+  "./public-career-profile-artifact-source.js";
 
 const vercelPublicEnvironmentSchema = z.object({
   JOLENE_PUBLIC_ENABLED: z.literal("true"),
@@ -132,6 +136,7 @@ export function createVercelPublicDelegateHandler(
   coordination?: HostedPublicCoordination,
   options: {
     readonly dossier?: PublicJoleneProjectDossier;
+    readonly careerProfile?: PublicCareerProfileDossier;
     readonly resumeProjects?: PublicResumeProjectDossier;
   } = {},
 ) {
@@ -145,6 +150,12 @@ export function createVercelPublicDelegateHandler(
     expectedCorpusVersion: config.JOLENE_PUBLIC_EXPECTED_CORPUS_VERSION,
     timeoutMilliseconds: config.JOLENE_PUBLIC_ARTIFACT_TIMEOUT_MS,
   });
+  if (options.careerProfile) {
+    artifacts = new PublicCareerProfileArtifactSource(
+      artifacts,
+      options.careerProfile,
+    );
+  }
   if (options.resumeProjects) {
     artifacts = new PublicResumeProjectArtifactSource(
       artifacts,
