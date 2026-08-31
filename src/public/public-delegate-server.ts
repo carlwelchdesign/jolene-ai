@@ -308,13 +308,15 @@ async function handleRequest(
     const artifact = await requireArtifact(options.artifacts);
     const execution = await options.answers.execute(artifact, parsed.data);
     const result = execution.response;
-    console.info(JSON.stringify({
-      event: "public_answer_execution",
-      answerMode: execution.mode,
-      responseKind: execution.responseKind,
-      claimCount: result.claims.length,
-      citationCount: result.citations.length,
-    }));
+    if (process.env.VERCEL_ENV) {
+      console.info(JSON.stringify({
+        event: "public_answer_execution",
+        answerMode: execution.mode,
+        responseKind: execution.responseKind,
+        claimCount: result.claims.length,
+        citationCount: result.citations.length,
+      }));
+    }
     await respond(
       200,
       result,
