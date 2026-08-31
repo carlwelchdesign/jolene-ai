@@ -31,7 +31,7 @@ describe("public answer grounding validator", () => {
     expect(JSON.stringify(result.audit)).not.toMatch(/typed|react|question|citation/iu);
   });
 
-  it("allows one bounded non-factual presentation while rejecting facts in it", () => {
+  it("allows bounded presentation and drops an invalid optional opener without losing grounded substance", () => {
     const { artifact, baseline } = setup();
     const validator = new PublicAnswerGroundingValidator();
     expect(validator.validate(artifact, baseline, {
@@ -45,8 +45,9 @@ describe("public answer grounding validator", () => {
       ...generation(artifact, "Carl builds typed React product systems with explicit review boundaries."),
       presentation: "Carl built this with React.",
     })).toMatchObject({
-      status: "rejected",
-      audit: { reasonCode: "unsupported_segment" },
+      status: "accepted",
+      answer: "Carl builds typed React product systems with explicit review boundaries.",
+      audit: { status: "accepted", segmentCount: 1, supportCount: 1 },
     });
   });
 

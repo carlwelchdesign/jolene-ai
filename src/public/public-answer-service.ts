@@ -306,7 +306,7 @@ export class GroundedPublicAnswerService implements PublicPortfolioAnswerer {
     try {
       const validation = this.#validator.validate(artifact, baseline, generation);
       if (validation.status === "rejected") {
-        if (validation.audit.status === "rejected") {
+        if (validation.audit.status === "rejected" && process.env.VERCEL_ENV) {
           console.info(JSON.stringify({
             event: "public_answer_validation_rejected",
             reasonCode: validation.audit.reasonCode,

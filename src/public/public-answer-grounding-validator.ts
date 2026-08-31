@@ -52,9 +52,14 @@ export class PublicAnswerGroundingValidator
     const revoked = new Set(artifact.manifest.revokedEvidenceIds);
     const conflicted = new Set(artifact.conflicts.flatMap((item) => item.evidenceIds));
 
-    if (parsed.data.presentation) {
-      const presentationFailure = validatePresentation(parsed.data.presentation);
-      if (presentationFailure) return rejected(presentationFailure, null, startedAt);
+    let acceptedPresentation = parsed.data.presentation;
+    if (acceptedPresentation) {
+      const presentationFailure = validatePresentation(acceptedPresentation);
+      if (presentationFailure === "unsupported_segment") {
+        acceptedPresentation = null;
+      } else if (presentationFailure) {
+        return rejected(presentationFailure, null, startedAt);
+      }
     }
 
     for (const [index, segment] of parsed.data.segments.entries()) {
@@ -86,7 +91,7 @@ export class PublicAnswerGroundingValidator
     }
 
     const answer = [
-      parsed.data.presentation,
+      acceptedPresentation,
       ...parsed.data.segments.map((segment) => segment.text),
     ].filter((value): value is string => Boolean(value)).join("\n\n");
     const candidate = { ...baseline, answer };
