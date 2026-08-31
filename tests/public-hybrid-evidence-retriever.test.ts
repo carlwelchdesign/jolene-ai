@@ -128,6 +128,36 @@ describe("HybridPublicEvidenceRetriever", () => {
 
     expect(result[0]?.evidenceId).toBe(artifact.evidence[0]?.evidenceId);
   });
+
+  it("keeps shipped-work retrieval inside released maturity states", async () => {
+    const production = createPublicEvidenceRecord(1, {
+      title: "Production system",
+      text: "A production application.",
+      maturity: "production",
+    });
+    const deployedDemo = createPublicEvidenceRecord(2, {
+      title: "Deployed demonstration",
+      text: "A deployed working demonstration.",
+      maturity: "deployed_demo",
+    });
+    const prototype = createPublicEvidenceRecord(3, {
+      title: "Prototype",
+      text: "A product prototype.",
+      maturity: "prototype",
+    });
+    const embed = vi.fn(async () => [{ model: "test", vector: [1, 0] }]);
+
+    const result = await new HybridPublicEvidenceRetriever({ embed }).retrieve(
+      createPublicEvidenceArtifact([prototype, deployedDemo, production]),
+      { question: "What has Carl shipped?" },
+    );
+
+    expect(result.map(({ evidenceId }) => evidenceId)).toEqual([
+      production.evidenceId,
+      deployedDemo.evidenceId,
+    ]);
+    expect(embed).not.toHaveBeenCalled();
+  });
 });
 
 class StubEmbeddingProvider implements CareerEmbeddingProvider {

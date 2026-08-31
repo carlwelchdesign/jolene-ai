@@ -9,6 +9,7 @@ import {
 } from "../domain/public-portfolio-contract.js";
 import {
   type PublicEvidenceRetriever,
+  isShippedWorkQuestion,
   matchPublicProjectEntityPath,
   selectDeterministicPublicEvidence,
 } from "./public-answer-service.js";
@@ -63,6 +64,7 @@ export class HybridPublicEvidenceRetriever implements PublicEvidenceRetriever {
   ): Promise<readonly PublicCareerEvidenceRecord[]> {
     const deterministic = selectDeterministicPublicEvidence(artifact, request);
     if (isPrivateOrSensitiveQuery(request.question)) return deterministic;
+    if (isShippedWorkQuestion(request.question)) return deterministic;
     const projectPath = matchPublicProjectEntityPath(
       artifact.evidence,
       request.question,

@@ -33,6 +33,7 @@ export const PUBLIC_CONVERSATION_PROMPTS: readonly PublicConversationPrompt[] = 
   { text: "How does Carl handle risk in AI-assisted systems?", topics: ["ai", "risk"] },
   { text: "Which project best demonstrates security and privacy judgment?", topics: ["risk", "projects"] },
   { text: "What has Carl built that is genuinely production-ready?", topics: ["projects", "proof"] },
+  { text: "What has Carl actually shipped?", topics: ["projects", "proof"] },
   { text: "Which projects are demos or prototypes, and why do they still matter?", topics: ["projects", "risk"] },
   { text: "How does Carl release software instead of trusting one green check?", topics: ["risk", "systems"] },
   { text: "What do former teammates say Carl is like under pressure?", topics: ["recommendations", "leadership"] },

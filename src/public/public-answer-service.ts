@@ -703,6 +703,9 @@ export function selectDeterministicPublicEvidence(
   if (isNonProductionQuestion(request.question)) {
     return selectNonProductionEvidence(artifact.evidence);
   }
+  if (isShippedWorkQuestion(request.question)) {
+    return selectShippedWorkEvidence(artifact.evidence);
+  }
   if (isRiskHandlingQuestion(request.question)) {
     return selectRiskHandlingEvidence(artifact.evidence);
   }
@@ -1167,6 +1170,67 @@ function selectNonProductionEvidence(
     .map(({ record }) => record);
 }
 
+export function isShippedWorkQuestion(question: string): boolean {
+  const normalized = normalizeLookup(question);
+  if (/\b(?:not|never|hasn t|haven t|didn t)\b.{0,32}\b(?:ship|shipped|launch|launched|release|released|deliver|delivered)\b/u
+    .test(normalized)) return false;
+  return /\b(?:what|which|show|tell)\b.{0,64}\b(?:ship|shipped|launch|launched|release|released|deliver|delivered|put into production)\b/u
+      .test(normalized) ||
+    /\b(?:ship|shipped|launch|launched|release|released|deliver|delivered)\b.{0,64}\b(?:work|products?|projects?|software|systems?)\b/u
+      .test(normalized);
+}
+
+function selectShippedWorkEvidence(
+  evidence: readonly PublicCareerEvidenceRecord[],
+): PublicCareerEvidenceRecord[] {
+  const ranked = evidence
+    .filter((record) =>
+      SHIPPED_WORK_SOURCE_TYPES.has(record.citation.sourceType) &&
+      (record.citation.maturity === "production" ||
+        record.citation.maturity === "deployed_demo")
+    )
+    .map((record) => ({ record, score: shippedWorkEvidenceScore(record) }))
+    .filter(({ score }) => score > 0)
+    .sort(compareScoredEvidence);
+  const selected: PublicCareerEvidenceRecord[] = [];
+  const representedProjects = new Set<string>();
+
+  for (const candidate of ranked) {
+    const project = candidate.record.citation.title;
+    if (representedProjects.has(project)) continue;
+    representedProjects.add(project);
+    selected.push(candidate.record);
+  }
+  for (const candidate of ranked) {
+    if (selected.length >= PUBLIC_PORTFOLIO_ANSWER_LIMITS.responseItems) break;
+    if (!selected.includes(candidate.record)) selected.push(candidate.record);
+  }
+  return selected.slice(0, PUBLIC_PORTFOLIO_ANSWER_LIMITS.responseItems);
+}
+
+const SHIPPED_WORK_SOURCE_TYPES = new Set<
+  PublicCareerEvidenceRecord["citation"]["sourceType"]
+>(["project", "portfolio_page", "repository", "release_artifact"]);
+
+function shippedWorkEvidenceScore(record: PublicCareerEvidenceRecord): number {
+  const text = normalizeLookup([
+    record.citation.title,
+    record.claim.text,
+    record.claim.limitations.join(" "),
+  ].join(" "));
+  const maturityScore = record.citation.maturity === "production" ? 30 : 24;
+  const overviewScore = /\b(?:application|browser based|combines|connects|operating system|product|system)\b/u
+      .test(text)
+    ? 12
+    : 0;
+  const boundaryPenalty = SHIPPED_WORK_BOUNDARY_PATTERN
+      .test(text)
+    ? 40
+    : 0;
+  return maturityScore + overviewScore + projectOverviewScore(record) -
+    boundaryPenalty;
+}
+
 function nonProductionEvidenceScore(record: PublicCareerEvidenceRecord): number {
   const text = normalizeLookup([
     record.claim.text,
@@ -1420,6 +1484,7 @@ function supportedResponse(
   );
   const skepticalIntent = skepticalAnswerIntent(question);
   const riskHandlingQuestion = isRiskHandlingQuestion(question);
+  const shippedWorkQuestion = isShippedWorkQuestion(question);
   return portfolioAnswerResponseSchema.parse({
     schemaVersion: PUBLIC_CAREER_EVIDENCE_SCHEMA_VERSION,
     answer: relationshipFact
@@ -1432,6 +1497,8 @@ function supportedResponse(
       ? boundedStrongestProjectAnswer(selected)
       : riskHandlingQuestion
       ? boundedRiskHandlingAnswer(selected)
+      : shippedWorkQuestion
+      ? boundedShippedWorkAnswer(selected)
       : skepticalIntent
       ? boundedSkepticalAnswer(skepticalIntent, selected)
       : shouldNameEmployerContext && employerContext
@@ -1452,6 +1519,32 @@ function supportedResponse(
     corpusVersion: artifact.manifest.corpusVersion,
   });
 }
+
+function boundedShippedWorkAnswer(
+  selected: readonly PublicCareerEvidenceRecord[],
+): string {
+  const projects = unique(selected.map((record) => record.citation.title));
+  const projectStatuses = projects.map((title) => {
+    const records = selected.filter((record) => record.citation.title === title);
+    const maturity = records[0]?.citation.maturity;
+    const status = maturity === "production"
+      ? "a production application"
+      : "a deployed working demonstration";
+    const description = records
+      .map((record) => visitorFacingClaim(record.claim).text)
+      .find((text) => !SHIPPED_WORK_BOUNDARY_PATTERN.test(normalizeLookup(text)));
+    return description
+      ? `${title} is ${status}: ${description}`
+      : `${title} is ${status}.`;
+  });
+  return composeBoundedEvidenceSummary(
+    "Carl ships. Every résumé project represented here reached a working release:",
+    projectStatuses,
+  );
+}
+
+const SHIPPED_WORK_BOUNDARY_PATTERN =
+  /\b(?:does not|do not|not intended|not (?:a )?certified|rather than|remain separate)\b/u;
 
 function boundedStrongestProjectAnswer(
   selected: readonly PublicCareerEvidenceRecord[],
