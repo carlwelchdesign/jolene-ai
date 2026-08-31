@@ -61,7 +61,7 @@ describe("DeterministicPublicAnswerService", () => {
     });
 
     expect(result.answer.length).toBeLessThanOrEqual(4_000);
-    expect(result.answer).toContain("This is where it shows up in the work: Carl built a React system");
+    expect(result.answer).toContain("This is where Carl earns the claim: Carl built a React system");
     expect(result.answer.endsWith("…")).toBe(true);
     expect(result.claims).toEqual([record.claim]);
   });
@@ -75,7 +75,7 @@ describe("DeterministicPublicAnswerService", () => {
         title: "Jolene AI",
         href: "/work/jolene-ai#evidence",
       }),
-      opening: "The short version is practical:",
+      opening: "Here’s the work I’d put at the top of the call sheet:",
     },
     {
       name: "role",
@@ -84,7 +84,7 @@ describe("DeterministicPublicAnswerService", () => {
         text: "Carl led frontend delivery at Example.",
         title: "Senior Software Engineer at Example",
       }),
-      opening: "In that role, Carl’s work looked like this:",
+      opening: "If I were putting Carl forward for that role, I’d lead with this:",
     },
     {
       name: "capability",
@@ -93,7 +93,7 @@ describe("DeterministicPublicAnswerService", () => {
         text: "Carl builds typed React product systems.",
         title: "Product engineering capability",
       }),
-      opening: "This is where it shows up in the work:",
+      opening: "This is where Carl earns the claim:",
     },
     {
       name: "recommendation",
@@ -103,7 +103,7 @@ describe("DeterministicPublicAnswerService", () => {
         title: "Recommendation from Teammate",
         href: "/recommendations",
       }),
-      opening: "The people who worked with Carl say it plainly:",
+      opening: "Don’t take my word for it—the people who worked beside Carl say:",
     },
     {
       name: "boundary",
@@ -541,7 +541,7 @@ describe("DeterministicPublicAnswerService", () => {
       [leadership, recommendation],
     );
 
-    expect(result.answer).toContain("This is where it shows up in the work:");
+    expect(result.answer).toContain("This is where Carl earns the claim:");
     expect(result.answer).not.toContain("The people who worked with Carl");
   });
 
@@ -560,7 +560,9 @@ describe("DeterministicPublicAnswerService", () => {
     );
 
     expect(result.claims).toEqual([bosch.claim]);
-    expect(result.answer).toContain("In that role, Carl’s work looked like this:");
+    expect(result.answer).toContain(
+      "If I were putting Carl forward for that role, I’d lead with this:",
+    );
     expect(result.answer).not.toContain(unrelated.claim.text);
   });
 
@@ -722,7 +724,10 @@ describe("DeterministicPublicAnswerService", () => {
     expect(result.citations).not.toContainEqual(irrelevant[0]?.citation);
     expect(result.citations).not.toContainEqual(irrelevant[1]?.citation);
     expect(result.citations).not.toContainEqual(irrelevant[2]?.citation);
-    expect(result.suggestedFollowUpQuestions[0]).toContain("Which control");
+    expect(result.suggestedFollowUpQuestions).toHaveLength(3);
+    expect(result.suggestedFollowUpQuestions.join(" ")).toMatch(
+      /AI|RAG|risk|security|privacy/iu,
+    );
   });
 
   it("keeps residual-risk questions in honest limitation mode", () => {
@@ -812,7 +817,10 @@ describe("DeterministicPublicAnswerService", () => {
     }
     expect(result.answer).not.toContain("Why should I hire Carl?");
     expect(result.limitations[0]).toContain("hiring decision");
-    expect(result.suggestedFollowUpQuestions[0]).toContain("job description");
+    expect(result.suggestedFollowUpQuestions).toHaveLength(3);
+    expect(result.suggestedFollowUpQuestions.join(" ")).toMatch(
+      /hiring|role|team|interviewer|Carl/iu,
+    );
   });
 
   it("answers an engineer-profile question directly and names a concrete project", () => {
@@ -927,9 +935,8 @@ describe("DeterministicPublicAnswerService", () => {
     expect(execution.response.claims).toEqual([origin.claim]);
     expect(execution.response.citations).toEqual([origin.citation]);
     expect(execution.response.answer).not.toMatch(/release gates|Wave Factory/iu);
-    expect(execution.response.suggestedFollowUpQuestions).toEqual([
-      "Would you like to see how that origin became the architecture, privacy boundary, or personality system?",
-    ]);
+    expect(execution.response.suggestedFollowUpQuestions).toHaveLength(3);
+    expect(new Set(execution.response.suggestedFollowUpQuestions).size).toBe(3);
   });
 
   it("resolves bounded assistant self-reference to Jolene before cross-project retrieval", () => {

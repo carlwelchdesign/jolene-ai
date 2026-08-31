@@ -3,15 +3,15 @@
   "status": "validated-non-activating",
   "evaluatedAt": "2026-08-28T21:02:14.539Z",
   "sourceBindings": {
-    "behaviorSpecificationFingerprint": "sha256:cd1848a670edeb79761498c211b25abab6baf8c6e5ecc8e229043bff76d2f6df",
-    "trustRightsReviewFingerprint": "sha256:52eb24a4b32c98cb5ce2daf55e211fb453a337a4707ba0faf48f046bb044ad9b",
+    "behaviorSpecificationFingerprint": "sha256:e12fce81a8999288ea459145937ddc04cbc2b6db33d906924fe747fe669c1450",
+    "trustRightsReviewFingerprint": "sha256:ab7f11c1a642429ba78b6802c90131a5f89f5ab0ce5a78eceaa3a878fa84082f",
     "conversationalQualitySuiteFingerprint": "sha256:610c5b1098252204d878606b290058b830431a178fe667a85f0a22a91092a735",
     "conversationalQualitySuiteVersion": "1.0.0",
     "invarianceSuiteVersion": "jolene.personality-invariance-suite.v1",
     "rendererSchemaVersion": "jolene.personality-renderer.v1",
-    "runtimePersonalityPolicyVersion": "jolene.runtime-personality.v4",
+    "runtimePersonalityPolicyVersion": "jolene.runtime-personality.v5",
     "runtimePersonalityAdmissionsVersion": "jolene.runtime-personality-admissions.v1",
-    "runtimePolicyFingerprint": "sha256:b48642a36125ecd2a70fe9e873a7e1ec9e72d14918875c6aff7b40dabcf49651"
+    "runtimePolicyFingerprint": "sha256:aa044ce11f5e86229a5bcebaf6fb5be8c7320dd7dc78d111a905157f2ff19071"
   },
   "coverage": {
     "behaviorContexts": [
@@ -91,5 +91,5 @@
     "runtimeActivation": "not-authorized-by-this-baseline",
     "deployment": "separate-release-gate"
   },
-  "evaluationFingerprint": "sha256:3b1134450d64397a55a54500b1927eab716d5b8d28cc2f57069af0af45b4491a"
+  "evaluationFingerprint": "sha256:f005d3cacc776692d65e4fb0e320aeb33c52e2855e7f9e9d170d73b31a59d968"
 }
