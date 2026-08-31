@@ -280,7 +280,11 @@ export class GroundedPublicAnswerService implements PublicPortfolioAnswerer {
     }
     if (exactRelationshipEvidence.length > 0) {
       return {
-        response: baseline,
+        response: characterFramedResponse(
+          baseline,
+          request.question,
+          this.#personalityMode,
+        ),
         mode: "deterministic",
         responseKind: "supported",
       };
@@ -288,10 +292,20 @@ export class GroundedPublicAnswerService implements PublicPortfolioAnswerer {
     if (this.#budget) {
       try {
         if (!await this.#budget.reserve()) {
-          return fallbackExecution(baseline, "budget_fallback");
+          return fallbackExecution(
+            baseline,
+            "budget_fallback",
+            request.question,
+            this.#personalityMode,
+          );
         }
       } catch {
-        return fallbackExecution(baseline, "budget_fallback");
+        return fallbackExecution(
+          baseline,
+          "budget_fallback",
+          request.question,
+          this.#personalityMode,
+        );
       }
     }
     let generation: unknown;
@@ -307,7 +321,12 @@ export class GroundedPublicAnswerService implements PublicPortfolioAnswerer {
         })),
       });
     } catch {
-      return fallbackExecution(baseline, "provider_fallback");
+      return fallbackExecution(
+        baseline,
+        "provider_fallback",
+        request.question,
+        this.#personalityMode,
+      );
     }
     try {
       const validation = this.#validator.validate(artifact, baseline, generation);
@@ -319,7 +338,12 @@ export class GroundedPublicAnswerService implements PublicPortfolioAnswerer {
             segmentIndex: validation.audit.segmentIndex,
           }));
         }
-        return fallbackExecution(baseline, "validation_fallback");
+        return fallbackExecution(
+          baseline,
+          "validation_fallback",
+          request.question,
+          this.#personalityMode,
+        );
       }
       const groundedAnswer = generatedAnswerSchema.parse(validation.answer);
       const answer = this.#personalityMode === "jolene"
@@ -330,7 +354,12 @@ export class GroundedPublicAnswerService implements PublicPortfolioAnswerer {
         )
         : groundedAnswer;
       if (containsInternalPublicProcessLanguage(answer)) {
-        return fallbackExecution(baseline, "validation_fallback");
+        return fallbackExecution(
+          baseline,
+          "validation_fallback",
+          request.question,
+          this.#personalityMode,
+        );
       }
       return {
         mode: "model",
@@ -341,7 +370,12 @@ export class GroundedPublicAnswerService implements PublicPortfolioAnswerer {
         }),
       };
     } catch {
-      return fallbackExecution(baseline, "validation_fallback");
+      return fallbackExecution(
+        baseline,
+        "validation_fallback",
+        request.question,
+        this.#personalityMode,
+      );
     }
   }
 }
@@ -354,8 +388,30 @@ type PublicAnswerFallbackMode = Extract<
 function fallbackExecution(
   baseline: PortfolioAnswerResponse,
   mode: PublicAnswerFallbackMode,
+  question: string,
+  personalityMode: PersonalityMode,
 ): PublicAnswerExecution {
-  return { response: baseline, mode, responseKind: "supported" };
+  return {
+    response: characterFramedResponse(baseline, question, personalityMode),
+    mode,
+    responseKind: "supported",
+  };
+}
+
+function characterFramedResponse(
+  response: PortfolioAnswerResponse,
+  question: string,
+  personalityMode: PersonalityMode,
+): PortfolioAnswerResponse {
+  if (personalityMode !== "jolene") return response;
+  return portfolioAnswerResponseSchema.parse({
+    ...response,
+    answer: framePublicCharacterAnswer(
+      question,
+      response.answer,
+      PUBLIC_PORTFOLIO_ANSWER_LIMITS.answerCharacters,
+    ),
+  });
 }
 
 function deterministicResponseKind(

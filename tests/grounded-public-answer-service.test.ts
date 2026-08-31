@@ -486,6 +486,23 @@ describe("grounded public answer service", () => {
       expect(execution.response.answer).not.toContain(record.claim.text);
     }
   });
+
+  it("keeps Jolene's character frame when a supported model answer falls back", async () => {
+    const artifact = createPublicEvidenceArtifact();
+    const request = { question: "What React systems has Carl built?" };
+    const baseline = new DeterministicPublicAnswerService().answer(
+      artifact,
+      request,
+    );
+    const execution = await new GroundedPublicAnswerService({
+      generate: async () => { throw new Error("provider unavailable"); },
+    }, { personalityMode: "jolene" }).execute(artifact, request);
+
+    expect(execution.mode).toBe("provider_fallback");
+    expect(execution.response.answer).toContain(baseline.answer);
+    expect(execution.response.answer.split("\n\n")).toHaveLength(3);
+    expect(execution.response.answer).toMatch(/machinery|product brochure|clean way/iu);
+  });
 });
 
 function generation(input: GroundedPublicAnswerInput, text: string) {
