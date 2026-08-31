@@ -167,6 +167,28 @@ describe("public answer grounding validator", () => {
     )).toMatchObject({ status: "accepted" });
   });
 
+  it("accepts a conversational paraphrase with one-third material-term coverage", () => {
+    const record = createPublicEvidenceRecord(1, {
+      text: "Carl led frontend delivery and mentored engineers across complex product teams.",
+      title: "Technical leadership",
+    });
+    const artifact = createPublicEvidenceArtifact([record]);
+    const baseline = new DeterministicPublicAnswerService().answerFromSelected(
+      artifact,
+      { question: "What makes Carl valuable to a product team?" },
+      [record],
+    );
+
+    expect(new PublicAnswerGroundingValidator().validate(
+      artifact,
+      baseline,
+      generation(
+        artifact,
+        "Carl brings frontend leadership and mentoring to complex product work, helping teams make sharper decisions together.",
+      ),
+    )).toMatchObject({ status: "accepted" });
+  });
+
   it.each([
     ["wrong corpus", (artifact: PublicCareerEvidenceArtifact) => ({
       ...generation(artifact, artifact.evidence[0]!.claim.text),
