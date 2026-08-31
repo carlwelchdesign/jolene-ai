@@ -122,6 +122,7 @@ export class DeterministicPublicAnswerService
     const hiringValueQuestion = isHiringValueQuestion(request.question);
     const engineerProfileQuestion = isEngineerProfileQuestion(request.question);
     const negativeHiringQuestion = isNegativeHiringQuestion(request.question);
+    const strongestProjectQuestion = isStrongestProjectQuestion(request.question);
     const activeEvidence = new Map(
       artifact.evidence.map((record) => [record.evidenceId, record]),
     );
@@ -150,6 +151,7 @@ export class DeterministicPublicAnswerService
         hiringValueQuestion,
         engineerProfileQuestion,
         negativeHiringQuestion,
+        strongestProjectQuestion,
         relationshipFact,
         conversationContext,
       );
@@ -249,7 +251,8 @@ export class GroundedPublicAnswerService implements PublicPortfolioAnswerer {
     if (
       this.#retriever && exactRelationshipEvidence.length === 0 &&
       !turn.contextualEvidence &&
-      !isRiskHandlingQuestion(selectionRequest.question)
+      !isRiskHandlingQuestion(selectionRequest.question) &&
+      !isStrongestProjectQuestion(selectionRequest.question)
     ) {
       try {
         baseline = this.#baseline.answerFromSelected(
@@ -626,6 +629,9 @@ export function selectDeterministicPublicEvidence(
   }
   if (isRiskHandlingQuestion(request.question)) {
     return selectRiskHandlingEvidence(artifact.evidence);
+  }
+  if (isStrongestProjectQuestion(request.question)) {
+    return selectStrongestProjectEvidence(artifact.evidence);
   }
   if (isHiringValueQuestion(request.question)) {
     return selectHiringValueEvidence(artifact.evidence);
@@ -1243,7 +1249,36 @@ const HIRING_VALUE_PATTERNS = [
   /\bwhat\s+makes\s+carl\s+(?:a\s+)?(?:strong|good|qualified|valuable)\s+(?:candidate|hire)\b/u,
   /\b(?:reasons?|case)\s+(?:to|for)\s+hire\b/u,
   /\b(?:strengths|value)\b.+\b(?:candidate|hire|team)\b/u,
+  /\bwhat\s+makes\s+carl\s+(?:unusually\s+)?valuable\b.+\b(?:team|company|organization)\b/u,
 ] as const;
+
+function isStrongestProjectQuestion(question: string): boolean {
+  const normalized = normalizeLookup(question);
+  return /\b(?:strongest|best|most impressive|lead with|show first)\b.{0,48}\bprojects?\b/u
+    .test(normalized) ||
+    /\bprojects?\b.{0,48}\b(?:strongest|best|most impressive|lead with|show first)\b/u
+      .test(normalized);
+}
+
+function selectStrongestProjectEvidence(
+  evidence: readonly PublicCareerEvidenceRecord[],
+): PublicCareerEvidenceRecord[] {
+  const rankPath = (path: string) => evidence
+    .filter((record) =>
+      record.citation.href === path || record.citation.href.startsWith(`${path}#`)
+    )
+    .map((record) => ({
+      record,
+      score: projectOverviewScore(record) +
+        (record.citation.maturity === "production" ? 20 : 0),
+    }))
+    .sort(compareScoredEvidence)
+    .map(({ record }) => record);
+  return [
+    ...rankPath("/work/job-search-os").slice(0, 2),
+    ...rankPath("/work/flight-tracker-ai").slice(0, 1),
+  ];
+}
 
 function isNegativeHiringQuestion(question: string): boolean {
   const normalized = question.toLocaleLowerCase("en-US").normalize("NFKC");
@@ -1292,6 +1327,7 @@ function supportedResponse(
   hiringValueQuestion = false,
   engineerProfileQuestion = false,
   negativeHiringQuestion = false,
+  strongestProjectQuestion = false,
   relationshipFact: RecommendationRelationshipFact | null = null,
   conversationContext?: PublicConversationContext,
 ): PortfolioAnswerResponse {
@@ -1316,6 +1352,8 @@ function supportedResponse(
       ? boundedEngineerProfileAnswer(selected)
       : hiringValueQuestion
       ? boundedHiringValueAnswer(selected, negativeHiringQuestion)
+      : strongestProjectQuestion
+      ? boundedStrongestProjectAnswer(selected)
       : riskHandlingQuestion
       ? boundedRiskHandlingAnswer(selected)
       : skepticalIntent
@@ -1337,6 +1375,27 @@ function supportedResponse(
     }),
     corpusVersion: artifact.manifest.corpusVersion,
   });
+}
+
+function boundedStrongestProjectAnswer(
+  selected: readonly PublicCareerEvidenceRecord[],
+): string {
+  const jobSearch = selected.filter((record) =>
+    record.citation.href.startsWith("/work/job-search-os")
+  );
+  const flightTracker = selected.find((record) =>
+    record.citation.href.startsWith("/work/flight-tracker-ai")
+  );
+  const lead = jobSearch.length > 0
+    ? "If we’re judging by demonstrated maturity and day-to-day usefulness, I’d lead with Job Search OS."
+    : "There isn’t one honest winner without knowing what the team values, but I can make the case from the work itself.";
+  const statements = [
+    ...jobSearch.slice(0, 1).map((record) => visitorFacingClaim(record.claim).text),
+    ...(flightTracker
+      ? [`For broader technical range and visual storytelling, Flight Tracker AI is the next project I’d put on the table: ${visitorFacingClaim(flightTracker.claim).text}`]
+      : []),
+  ];
+  return composeBoundedEvidenceSummary(lead, statements);
 }
 
 function boundedRiskHandlingAnswer(

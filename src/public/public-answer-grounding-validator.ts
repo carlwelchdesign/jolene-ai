@@ -124,7 +124,7 @@ function validatePresentation(
 ): PublicAnswerGroundingReasonCode | null {
   if (materialSentenceCount(text) !== 1) return "unsupported_segment";
   const words = text.match(/[\p{L}\p{N}’'-]+/gu) ?? [];
-  if (words.length < 2 || words.length > 8) return "unsupported_segment";
+  if (words.length < 2 || words.length > 16) return "unsupported_segment";
   const prohibited = prohibitedReason(text, []);
   if (prohibited) return prohibited;
   const normalized = normalize(text);
