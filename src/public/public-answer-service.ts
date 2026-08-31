@@ -202,16 +202,20 @@ export class GroundedPublicAnswerService implements PublicPortfolioAnswerer {
         responseKind: "policy_refusal",
       };
     }
-    if (publicConversationalTurn(request.question)) {
+    const conversationalTurn = publicConversationalTurn(request.question);
+    if (conversationalTurn) {
+      const response = this.#baseline.answerFromSelected(
+        artifact,
+        request,
+        [],
+        undefined,
+      );
       return {
-        response: this.#baseline.answerFromSelected(
-          artifact,
-          request,
-          [],
-          undefined,
-        ),
+        response,
         mode: "deterministic",
-        responseKind: "clarification",
+        responseKind: conversationalTurn === "purpose" && response.claims.length > 0
+          ? "supported"
+          : "clarification",
       };
     }
     const exactRelationshipEvidence = turn.contextualEvidence
@@ -329,7 +333,12 @@ function deterministicResponseKind(
   response: PortfolioAnswerResponse,
 ): PublicAnswerExecution["responseKind"] {
   if (isPrivateDisclosureRequest(request.question)) return "policy_refusal";
-  if (publicConversationalTurn(request.question)) return "clarification";
+  const conversationalTurn = publicConversationalTurn(request.question);
+  if (conversationalTurn) {
+    return conversationalTurn === "purpose" && response.claims.length > 0
+      ? "supported"
+      : "clarification";
+  }
   return response.claims.length === 0 ? "no_evidence" : "supported";
 }
 
@@ -1653,17 +1662,26 @@ function conversationalTurnResponse(
   artifact: PublicCareerEvidenceArtifact,
   turn: PublicConversationalTurn,
 ): PortfolioAnswerResponse {
+  const purposeEvidence = turn === "purpose"
+    ? artifact.evidence.find((record) =>
+      record.citation.href.endsWith(
+        "#evidence--portfolio--claim--jolene-ai--origin",
+      )
+    )
+    : undefined;
   return portfolioAnswerResponseSchema.parse({
     schemaVersion: PUBLIC_CAREER_EVIDENCE_SCHEMA_VERSION,
     answer: PUBLIC_JOLENE_DETERMINISTIC_COPY.conversational[turn],
-    claims: [],
-    citations: [],
-    limitations: [],
+    claims: purposeEvidence ? [visitorFacingClaim(purposeEvidence.claim)] : [],
+    citations: purposeEvidence ? [purposeEvidence.citation] : [],
+    limitations: purposeEvidence
+      ? visitorFacingLimitations(purposeEvidence.claim.limitations)
+      : [],
     suggestedFollowUpQuestions: turn === "farewell"
       ? []
       : turn === "purpose"
       ? [
-        "Would you like to see the public architecture, privacy boundary, or how Carl shaped my personality?",
+        "Would you like to see how that origin became the architecture, privacy boundary, or personality system?",
       ]
       : [
         "Which project, professional role, recommendation, or job description would you like to explore?",

@@ -6,7 +6,7 @@
     "status": "Private chief-of-staff agent with an isolated public portfolio delegate",
     "summary": "A governed AI system Carl designed to combine useful model reasoning with reviewed evidence, durable memory, explicit action boundaries, and a warm, recognizable personality.",
     "publicCitationBase": "/work/jolene-ai",
-    "reviewedAt": "2026-08-29T02:54:49.000Z",
+    "reviewedAt": "2026-08-31T04:19:00.000Z",
     "maturity": "deployed_demo",
     "evidenceStrength": "moderate"
   },
@@ -80,6 +80,13 @@
       "text": "Carl separated build, evaluation, preview, production promotion, corpus pinning, and rollback proof into distinct release gates; a successful local or preview check is not represented as a production release.",
       "citation": { "title": "Jolene release system", "href": "/work/jolene-ai#evidence--portfolio--claim--jolene-ai--deployment" },
       "sourceEvidence": ["docs/public-delegate.md", "plans/JOLENE_SYSTEM_ARCHITECTURE_PLAN.md"]
+    },
+    {
+      "id": "origin",
+      "topic": "origin",
+      "text": "After a March 2026 layoff, Carl began building Job Search OS while spending two weeks that May on BLM land in Nevada with his daughter during fieldwork for her geology master’s research. When he learned he could build a chief-of-staff agent, he imagined a capable, comforting, Jarvis-like working partner for an uncertain season. Dolly Parton came to mind because Carl grew up with her music and television interviews and associated her public personality with warmth, humor, resilience, and practical encouragement. That idea became Jolene: Carl’s own agent, not Dolly, an impersonation, or an endorsed product.",
+      "citation": { "title": "Why Carl built Jolene", "href": "/work/jolene-ai#evidence--portfolio--claim--jolene-ai--origin" },
+      "sourceEvidence": ["docs/jolene-origin-story.md", "plans/JOLENE_SYSTEM_ARCHITECTURE_PLAN.md"]
     },
     {
       "id": "carl-role",

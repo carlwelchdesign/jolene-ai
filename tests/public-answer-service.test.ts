@@ -899,25 +899,36 @@ describe("DeterministicPublicAnswerService", () => {
     "What's your purpose?",
     "What are you for?",
   ])("answers Jolene purpose directly without retrieving unrelated work: %s", (question) => {
+    const origin = createPublicEvidenceRecord(98, {
+      text: "Carl shaped Jolene from a difficult layoff-era season and the capable, comforting working partner he needed.",
+      title: "Why Carl built Jolene",
+      href: "/work/jolene-ai#evidence--portfolio--claim--jolene-ai--origin",
+    });
     const unrelated = createPublicEvidenceRecord(99, {
       text: "Carl separated audio-plugin release gates and packaging checks.",
       title: "Wave Factory release governance",
       href: "/work/wave-factory#evidence-release",
     });
-    const artifact = createPublicEvidenceArtifact([unrelated]);
+    const artifact = createPublicEvidenceArtifact([unrelated, origin]);
     const execution = service.execute(artifact, { question });
 
     expect(execution).toMatchObject({
       mode: "deterministic",
-      responseKind: "clarification",
-      response: { claims: [], citations: [], limitations: [] },
+      responseKind: "supported",
     });
     expect(execution.response.answer).toContain(
-      "Carl built me to be his persistent AI chief of staff and working partner",
+      "Carl built me during a hard, uncertain stretch of his life",
     );
+    expect(execution.response.answer).toContain("BLM land in Nevada");
+    expect(execution.response.answer).toContain("Dolly Parton came naturally to mind");
+    expect(execution.response.answer).toContain(
+      "I’m not Dolly, and I’m not here to impersonate her",
+    );
+    expect(execution.response.claims).toEqual([origin.claim]);
+    expect(execution.response.citations).toEqual([origin.citation]);
     expect(execution.response.answer).not.toMatch(/release gates|Wave Factory/iu);
     expect(execution.response.suggestedFollowUpQuestions).toEqual([
-      "Would you like to see the public architecture, privacy boundary, or how Carl shaped my personality?",
+      "Would you like to see how that origin became the architecture, privacy boundary, or personality system?",
     ]);
   });
 
