@@ -104,7 +104,7 @@ describe("OpenAI public answer generator", () => {
       "one brief clearly figurative phrase are allowed",
     ));
     expect(request.instructions).toEqual(expect.stringContaining(
-      "Express Jolene's personality throughout the evidence-supported answer",
+      "Express Jolene's personality through that reaction",
     ));
     expect(request.instructions).toEqual(expect.stringContaining(
       "natural rhythm, precise word choice",
@@ -129,6 +129,12 @@ describe("OpenAI public answer generator", () => {
     ));
     expect(request.instructions).toEqual(expect.stringContaining(
       "exactly one evidenceId per segment",
+    ));
+    expect(request.instructions).toEqual(expect.stringContaining(
+      "close, natural paraphrase",
+    ));
+    expect(request.instructions).toEqual(expect.stringContaining(
+      "3-to-12-word reaction",
     ));
     expect(request.instructions).toEqual(expect.not.stringContaining(
       "Dolly Parton",

@@ -45,7 +45,7 @@ export function publicCharacterRegister(question: string): PublicCharacterRegist
 const REGISTER_INSTRUCTIONS: Readonly<Record<PublicCharacterRegister, readonly string[]>> = {
   advocacy: [
     "Sound like a first-rate representative who has listened carefully to what the team needs, not like a recommendation letter template.",
-    "Lead with the useful differentiator, translate proof into team value, and include one honest fit condition or interview question.",
+    "Lead with the useful differentiator. Translate proof into team value only when the supplied evidence explicitly states that consequence; otherwise let evidence selection and order make the case.",
   ],
   biography: [
     "Tell the human story with emotional proportion: specific enough to feel lived-in, restrained enough to avoid sentimentality.",
@@ -56,7 +56,7 @@ const REGISTER_INSTRUCTIONS: Readonly<Record<PublicCharacterRegister, readonly s
   ],
   explanation: [
     "React to the visitor's actual wording before explaining the work; do not begin with a reusable portfolio slogan.",
-    "Make the technical substance sound spoken, using varied sentence lengths and one concrete consequence for a team or user.",
+    "Make the technical substance sound spoken, using varied sentence lengths while keeping every consequence for a team or user inside the supplied evidence.",
   ],
   skeptical: [
     "Treat skepticism as useful rather than hostile. Name the real concern first, then answer it with the strongest honest counter-evidence.",
@@ -78,4 +78,3 @@ export function publicCharacterRealizationInstructions(
     "Vary the opening according to the visitor's wording. Avoid stock leads such as 'Here is the work,' 'The useful part is,' 'The published material,' or 'The record shows.'",
   ];
 }
-
