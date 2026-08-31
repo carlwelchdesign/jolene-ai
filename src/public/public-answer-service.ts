@@ -362,13 +362,13 @@ function publicConversationalTurn(
 ): PublicConversationalTurn | null {
   const normalized = normalizeLookup(question);
   if (
+    /^(?:(?:hi|hello|hey|howdy)(?: there)?(?: jolene)? )?(?:what s up|what is up|sup|what s new|what is new|what are you doing|how are you|how s it going|how is it going|how are things|how s your day|how is your day)(?: jolene)?$/u
+      .test(normalized)
+  ) return "checkIn";
+  if (
     /^(?:hi|hello|hey|howdy)(?: there| jolene)?$/u.test(normalized) ||
     /^good (?:morning|afternoon|evening)(?: jolene)?$/u.test(normalized)
   ) return "greeting";
-  if (
-    /^(?:how are you|how s it going|how is it going|how are things)(?: jolene)?$/u
-      .test(normalized)
-  ) return "checkIn";
   if (
     /^(?:thanks|thank you)(?: jolene| very much)?$/u.test(normalized) ||
     /^(?:appreciate it|that helps|that was helpful)$/u.test(normalized)
