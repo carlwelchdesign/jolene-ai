@@ -139,6 +139,9 @@ describe("OpenAI public answer generator", () => {
     expect(request.instructions).toEqual(expect.stringContaining(
       "Use a new segment for every additional sentence",
     ));
+    expect(request.instructions).toEqual(expect.stringContaining(
+      "exactly one segment for each supplied evidence record",
+    ));
     expect(request.instructions).toEqual(expect.not.stringContaining(
       "A short concluding synthesis is allowed",
     ));

@@ -189,6 +189,68 @@ describe("public answer grounding validator", () => {
     )).toMatchObject({ status: "accepted" });
   });
 
+  it("accepts the grounded Army-to-early-web career fragment returned in production", () => {
+    const record = createPublicEvidenceRecord(1, {
+      text: "Carl's career spans more than 20 years owning customer-facing SaaS, enterprise workflows, internal tools, mobile experiences, analytics products, and interactive applications from product definition through release; after U.S. Army service, his 1994 to 2001 work at Marketing Resource Group, SPi, University OnLine, SAIC, OneSoft, and 9th Insight crossed art direction, code, multimedia, information architecture, team leadership, and client delivery.",
+      title: "More than 20 years: Army service and early full-stack delivery",
+      href: "/experience#career-foundations",
+      maturity: "production",
+    });
+    const artifact = createPublicEvidenceArtifact([record]);
+    const baseline = new DeterministicPublicAnswerService().answerFromSelected(
+      artifact,
+      { question: "Walk me through Carl's career and work experience." },
+      [record],
+    );
+    const text = "Army service, his 1994 to 2001 work at Marketing Resource Group, SPi, University OnLine, SAIC, OneSoft, and 9th Insight spanned art direction, code, multimedia, information architecture, team leadership, and client delivery.";
+
+    expect(new PublicAnswerGroundingValidator().validate(
+      artifact,
+      baseline,
+      generation(artifact, text),
+    )).toMatchObject({ status: "accepted", answer: text });
+  });
+
+  it("drops one unsupported model sentence while keeping the grounded sentence", () => {
+    const { artifact, baseline } = setup();
+    const claim = artifact.evidence[0]!.claim.text;
+
+    expect(new PublicAnswerGroundingValidator().validate(
+      artifact,
+      baseline,
+      generation(artifact, `${claim} He is always available.`),
+    )).toMatchObject({
+      status: "accepted",
+      answer: claim,
+      audit: { status: "accepted", segmentCount: 1, supportCount: 1 },
+    });
+  });
+
+  it("backfills selected evidence the model omitted with the source claim", () => {
+    const first = createPublicEvidenceRecord(1, {
+      text: "Carl shipped customer-facing SaaS products.",
+    });
+    const second = createPublicEvidenceRecord(2, {
+      text: "Carl managed a VR lab and built spatial training tools.",
+    });
+    const artifact = createPublicEvidenceArtifact([first, second]);
+    const baseline = new DeterministicPublicAnswerService().answerFromSelected(
+      artifact,
+      { question: "Walk me through Carl's career." },
+      [first, second],
+    );
+
+    expect(new PublicAnswerGroundingValidator().validate(
+      artifact,
+      baseline,
+      generation(artifact, first.claim.text),
+    )).toMatchObject({
+      status: "accepted",
+      answer: `${first.claim.text}\n\n${second.claim.text}`,
+      audit: { status: "accepted", segmentCount: 1, supportCount: 1 },
+    });
+  });
+
   it("normalizes several supported sentences into separately validated segments", () => {
     const { artifact, baseline } = setup();
     const claim = artifact.evidence[0]!.claim.text;
@@ -203,7 +265,7 @@ describe("public answer grounding validator", () => {
 
     expect(result).toMatchObject({
       status: "accepted",
-      answer: `${claim}\n\nCarl's typed React product systems keep review boundaries explicit.`,
+      answer: `${claim} Carl's typed React product systems keep review boundaries explicit.`,
       audit: { status: "accepted", segmentCount: 2, supportCount: 2 },
     });
   });
@@ -274,9 +336,6 @@ describe("public answer grounding validator", () => {
         artifact,
         "The interface avoids becoming a control panel with too many unlabeled switches.",
       ), "unsupported_segment"],
-    ["supported sentence plus unsupported sentence", (artifact: PublicCareerEvidenceArtifact) =>
-      generation(artifact, `${artifact.evidence[0]!.claim.text} He is always available.`),
-    "unsupported_segment"],
     ["contribution inflation", (artifact: PublicCareerEvidenceArtifact) =>
       generation(artifact, "Carl solely built typed React product systems."),
     "contribution_boundary_violation"],

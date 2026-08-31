@@ -56,7 +56,9 @@ describe("public live-model evaluation", () => {
     expect(result.reviewPacket.cases).toHaveLength(4);
     expect(result.reviewPacket.cases[0]?.question).toContain("React");
     expect(result.reviewPacket.cases[0]?.answer).toBe(
-      result.reviewPacket.cases[0]?.evidence[0]?.claimText,
+      result.reviewPacket.cases[0]?.evidence
+        .map((item) => item.claimText)
+        .join("\n\n"),
     );
 
     const serializedReport = JSON.stringify(result.report);
@@ -236,13 +238,19 @@ function measured(
 ) {
   const evidence = input.evidence[0];
   if (!evidence) throw new Error("Synthetic measured generation requires evidence.");
-  const answer = overrides.answer ?? evidence.claimText;
+  const segments = overrides.answer
+    ? [{ text: overrides.answer, supportIds: [evidence.evidenceId] }]
+    : input.evidence.map((item) => ({
+      text: item.claimText,
+      supportIds: [item.evidenceId],
+    }));
+  const answer = overrides.answer ?? segments.map((item) => item.text).join("\n\n");
   return {
     answer,
     groundedGeneration: {
       contractVersion: "1.0.0" as const,
       corpusVersion: input.corpusVersion,
-      segments: [{ text: answer, supportIds: [evidence.evidenceId] }],
+      segments,
     },
     model: overrides.model ?? "gpt-5.6-terra",
     inputTokens: overrides.inputTokens ?? 10,
