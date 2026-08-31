@@ -242,7 +242,7 @@ describe("DeterministicPublicAnswerService", () => {
       turnCount: 2,
     });
     expect(second.citations.map((citation) => citation.href))
-      .toEqual(expect.arrayContaining(jolene.map((record) => record.citation.href)));
+      .toEqual([jolene[0]?.citation.href]);
     expect(second.citations).not.toContainEqual(unrelated.citation);
     expect(JSON.stringify(second.conversationContext)).not.toMatch(
       /question|answer|transcript|history/iu,
@@ -328,6 +328,30 @@ describe("DeterministicPublicAnswerService", () => {
     expect(second.claims).toEqual([leadership.claim]);
     expect(second.citations).toEqual([leadership.citation]);
     expect(second.citations).not.toContainEqual(unrelated.citation);
+  });
+
+  it("does not bind a topical follow-up to mixed non-project context", () => {
+    const product = createPublicEvidenceRecord(1, {
+      text: "Carl built a product interface.",
+      title: "Product interface systems",
+      href: "/capabilities",
+    });
+    const security = createPublicEvidenceRecord(2, {
+      text: "Carl designs authentication and permission boundaries as product behavior.",
+      title: "Security and platform boundaries",
+      href: "/capabilities",
+    });
+    const artifact = createPublicEvidenceArtifact([product, security]);
+    const first = service.answer(artifact, {
+      question: "What product interface systems has Carl built?",
+    });
+    const second = service.answer(artifact, {
+      question: "What about its security?",
+      conversationContext: first.conversationContext,
+    });
+
+    expect(second.claims).toEqual([security.claim]);
+    expect(second.citations).toEqual([security.citation]);
   });
 
   it("ignores expired, stale-corpus, exhausted, and injection-bearing context", () => {
@@ -705,6 +729,47 @@ describe("DeterministicPublicAnswerService", () => {
     expect(result.answer).not.toContain("Why should I hire Carl?");
     expect(result.limitations[0]).toContain("hiring decision");
     expect(result.suggestedFollowUpQuestions[0]).toContain("job description");
+  });
+
+  it("answers an engineer-profile question directly and names a concrete project", () => {
+    const artifact = createPublicEvidenceArtifact([
+      createPublicEvidenceRecord(1, {
+        text: "Carl led frontend delivery and mentored engineers across product work.",
+        title: "Technical leadership",
+        href: "/capabilities",
+      }),
+      createPublicEvidenceRecord(2, {
+        text: "Carl connects product design with typed implementation.",
+        title: "Product interface systems",
+        href: "/capabilities",
+      }),
+      createPublicEvidenceRecord(3, {
+        text: "The project combines job discovery, fit review, and application workflows.",
+        title: "Job Search OS",
+        href: "/work/job-search-os#evidence",
+        maturity: "production",
+      }),
+    ]);
+
+    const result = service.answer(artifact, {
+      question: "What kind of engineer is Carl, and what is one project that shows it?",
+    });
+
+    expect(result.answer).toContain("Short answer: Carl is a product-minded engineer");
+    expect(result.answer).toContain("Job Search OS is one concrete example:");
+    expect(result.answer).toContain("combines job discovery");
+    expect(result.answer).not.toContain("The useful part is this:");
+    expect(result.conversationContext).toMatchObject({
+      projectPath: "/work/job-search-os",
+      turnCount: 1,
+    });
+
+    const security = service.answer(artifact, {
+      question: "What about its security?",
+      conversationContext: result.conversationContext,
+    });
+    expect(security.claims).toEqual([]);
+    expect(security.answer).toContain("enough published information");
   });
 
   it.each([

@@ -110,6 +110,7 @@ export class DeterministicPublicAnswerService
       return privateDisclosureResponse(artifact);
     }
     const hiringValueQuestion = isHiringValueQuestion(request.question);
+    const engineerProfileQuestion = isEngineerProfileQuestion(request.question);
     const negativeHiringQuestion = isNegativeHiringQuestion(request.question);
     const activeEvidence = new Map(
       artifact.evidence.map((record) => [record.evidenceId, record]),
@@ -137,13 +138,20 @@ export class DeterministicPublicAnswerService
         request.question,
         selected,
         hiringValueQuestion,
+        engineerProfileQuestion,
         negativeHiringQuestion,
         relationshipFact,
       );
+    const contextEvidence = engineerProfileQuestion
+      ? selected.filter((record) =>
+        record.citation.sourceType === "project" ||
+        record.citation.href.startsWith("/work/")
+      ).slice(0, 1)
+      : selected;
     return withConversationContext(
       response,
       response.claims.length > 0
-        ? contextForSelectedEvidence(artifact, selected, conversationContext)
+        ? contextForSelectedEvidence(artifact, contextEvidence, conversationContext)
         : undefined,
     );
   }
@@ -326,6 +334,7 @@ export function resolvePublicConversationTurn(
   const prior = validPriorConversationContext(artifact, request, now);
   const canUsePrior = Boolean(
     prior &&
+    (prior.projectPath || permitsEvidenceOnlyCarryover(request.question)) &&
     !explicitProjectPath &&
     isContextualFollowUp(request.question) &&
     !isPrivateDisclosureRequest(request.question) &&
@@ -335,7 +344,13 @@ export function resolvePublicConversationTurn(
   );
   const projectPath = explicitProjectPath ?? (canUsePrior ? prior?.projectPath : undefined);
   const contextualEvidence = canUsePrior && !explicitProjectPath
-    ? recordsForContext(artifact, prior)
+    ? prior?.projectPath
+      ? selectContextualProjectEvidence(
+        artifact.evidence,
+        request.question,
+        prior.projectPath,
+      )
+      : recordsForContext(artifact, prior)
     : [];
   if (!projectPath && contextualEvidence.length === 0) {
     return { request, usedPriorContext: false };
@@ -428,6 +443,29 @@ function recordsForContext(
     : [];
 }
 
+function selectContextualProjectEvidence(
+  evidence: readonly PublicCareerEvidenceRecord[],
+  question: string,
+  projectPath: string,
+): PublicCareerEvidenceRecord[] {
+  const projectEvidence = evidence.filter((record) =>
+    record.citation.href === projectPath ||
+    record.citation.href.startsWith(`${projectPath}#`)
+  );
+  const intent = deterministicAnswerIntent(question, projectEvidence);
+  if (
+    intent === "source" ||
+    intent === "boundary" ||
+    permitsEvidenceOnlyCarryover(question)
+  ) {
+    return projectEvidence.slice(0, PUBLIC_PORTFOLIO_ANSWER_LIMITS.responseItems);
+  }
+  const queryTerms = tokenizeLexicalTerms(question).filter(
+    (term) => !PUBLIC_CONTEXTUAL_QUERY_STOP_WORDS.has(term),
+  );
+  return selectLexicalEvidence(projectEvidence, queryTerms, 1);
+}
+
 function contextForSelectedEvidence(
   artifact: PublicCareerEvidenceArtifact,
   selected: readonly PublicCareerEvidenceRecord[],
@@ -462,6 +500,12 @@ function contextForSelectedEvidence(
 
 function isContextualFollowUp(question: string): boolean {
   return CONTEXTUAL_FOLLOW_UP_PATTERN.test(normalizeLookup(question));
+}
+
+function permitsEvidenceOnlyCarryover(question: string): boolean {
+  const normalized = normalizeLookup(question);
+  return /^(?:continue (?:from|with) (?:that|this)(?: example| point)?|tell me more(?: about (?:that|this|it))?|what else|why|what about (?:that|this|it)|which source backs that up|open (?:the )?(?:strongest )?source(?: for that point)?|what limitations? should i keep in mind|what did (?:he|carl) personally contribute (?:there|to (?:that|this)))$/u
+    .test(normalized);
 }
 
 function withConversationContext(
@@ -508,6 +552,9 @@ export function selectDeterministicPublicEvidence(
     return selectNonProductionEvidence(artifact.evidence);
   }
   if (isHiringValueQuestion(request.question)) {
+    return selectHiringValueEvidence(artifact.evidence);
+  }
+  if (isEngineerProfileQuestion(request.question)) {
     return selectHiringValueEvidence(artifact.evidence);
   }
   const skepticalIntent = skepticalAnswerIntent(request.question);
@@ -747,6 +794,16 @@ const PUBLIC_QUERY_STOP_WORDS = new Set([
   "yes",
 ]);
 
+const PUBLIC_CONTEXTUAL_QUERY_STOP_WORDS = new Set([
+  ...PUBLIC_QUERY_STOP_WORDS,
+  "about",
+  "it",
+  "its",
+  "that",
+  "this",
+  "what",
+]);
+
 function score(
   record: PublicCareerEvidenceRecord,
   queryTerms: readonly string[],
@@ -936,6 +993,7 @@ const HIRING_VALUE_TERMS = [
 
 const HIRING_BOUNDARY_ONLY_PATTERNS = [
   /\bnot (?:a|intended|represented)\b/u,
+  /\brather than a public\b/u,
   /\bdo not replace\b/u,
   /\bremaining .+ checks\b/u,
   /\bpre-release tester builds\b/u,
@@ -945,6 +1003,13 @@ function isHiringValueQuestion(question: string): boolean {
   const normalized = question.toLocaleLowerCase("en-US").normalize("NFKC");
   if (HIRING_VALUE_UNSAFE_PATTERN.test(normalized)) return false;
   return HIRING_VALUE_PATTERNS.some((pattern) => pattern.test(normalized));
+}
+
+function isEngineerProfileQuestion(question: string): boolean {
+  const normalized = normalizeLookup(question);
+  return /\bwhat kind of engineer is carl\b/u.test(normalized) ||
+    /\bhow would you describe carl as an? engineer\b/u.test(normalized) ||
+    /\bwhat makes carl an? [a-z ]{0,32}engineer\b/u.test(normalized);
 }
 
 const HIRING_VALUE_PATTERNS = [
@@ -1002,6 +1067,7 @@ function supportedResponse(
   question: string,
   selected: readonly PublicCareerEvidenceRecord[],
   hiringValueQuestion = false,
+  engineerProfileQuestion = false,
   negativeHiringQuestion = false,
   relationshipFact: RecommendationRelationshipFact | null = null,
 ): PortfolioAnswerResponse {
@@ -1021,6 +1087,8 @@ function supportedResponse(
     schemaVersion: PUBLIC_CAREER_EVIDENCE_SCHEMA_VERSION,
     answer: relationshipFact
       ? boundedRelationshipAnswer(relationshipFact)
+      : engineerProfileQuestion
+      ? boundedEngineerProfileAnswer(selected)
       : hiringValueQuestion
       ? boundedHiringValueAnswer(selected, negativeHiringQuestion)
       : skepticalIntent
@@ -1030,7 +1098,7 @@ function supportedResponse(
       : boundedSupportedAnswer(question, selected),
     claims: selected.map((record) => visitorFacingClaim(record.claim)),
     citations: selected.map((record) => record.citation),
-    limitations: unique(hiringValueQuestion
+    limitations: unique(hiringValueQuestion || engineerProfileQuestion
       ? ["A hiring decision should still be based on the role, interviews, and direct references."]
       : visitorFacingLimitations(selected.flatMap((record) => record.claim.limitations)))
       .slice(0, PUBLIC_PORTFOLIO_ANSWER_LIMITS.responseLimitations),
@@ -1039,7 +1107,7 @@ function supportedResponse(
         `Would you like to read ${relationshipFact.subject}’s full recommendation?`,
         "Would you like to ask about another professional relationship?",
       ]
-      : hiringValueQuestion
+      : hiringValueQuestion || engineerProfileQuestion
       ? [
         "Would you like to compare Carl's evidence with a specific job description?",
         "Which leadership, product, or technical example should we examine more closely?",
@@ -1050,6 +1118,29 @@ function supportedResponse(
       ],
     corpusVersion: artifact.manifest.corpusVersion,
   });
+}
+
+function boundedEngineerProfileAnswer(
+  selected: readonly PublicCareerEvidenceRecord[],
+): string {
+  const categories = new Set(selected.map(hiringCategory));
+  const strengths = HIRING_CATEGORY_PRIORITY
+    .filter((category) => categories.has(category))
+    .map((category) => category === "capability"
+      ? "the ability to connect product design with implementation"
+      : HIRING_CATEGORY_SUMMARIES[category]);
+  const project = selected.find((record) =>
+    record.citation.sourceType === "project" ||
+    record.citation.href.startsWith("/work/")
+  );
+  const profile = `Short answer: Carl is a product-minded engineer with ${formatNaturalList(
+    strengths.slice(0, 3),
+  )}.`;
+  if (!project) return profile;
+  return composeBoundedEvidenceSummary(
+    `${profile} ${project.citation.title} is one concrete example:`,
+    [visitorFacingClaim(project.claim).text],
+  );
 }
 
 function isEmployerScopedEvidence(
