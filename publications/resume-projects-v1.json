@@ -1,0 +1,42 @@
+{
+  "schemaVersion": "jolene.public-resume-projects.v1",
+  "reviewedAt": "2026-08-31T15:25:00.000Z",
+  "citationHref": "/carl-welch-resume.pdf",
+  "projects": [
+    {
+      "slug": "progression-lab",
+      "name": "ProgressionLab",
+      "claim": "Carl built and deployed ProgressionLab, a product that turns harmonic intent into playable chord progressions with structured AI output, practical voicings, playback, diagrams, sharing, MIDI and PDF export, a saved library, and public share links.",
+      "maturity": "production",
+      "evidenceStrength": "strong"
+    },
+    {
+      "slug": "job-search-os",
+      "name": "Job Search OS",
+      "claim": "Carl built a protected single-user job-search operating system for discovery and scoring, evidence-backed materials, application tracking, email outcome monitoring, Slack operations, agent evaluation, and approval-gated browser assistance.",
+      "maturity": "production",
+      "evidenceStrength": "strong"
+    },
+    {
+      "slug": "flight-tracker-ai",
+      "name": "Flight Tracker AI",
+      "claim": "Carl built and deployed a read-only aviation-intelligence portfolio application combining regional ADS-B traffic, deterministic replay, aircraft trajectories, NOAA weather and hazards, layered atmospheric data, explainable attention signals, telemetry, and constrained human-reviewed AI drafting.",
+      "maturity": "deployed_demo",
+      "evidenceStrength": "strong"
+    },
+    {
+      "slug": "supraconscious-avatar-ai",
+      "name": "Supraconscious Avatar AI",
+      "claim": "Carl built a multi-app AI reflection platform with separate web and admin applications, an MCP server, PostgreSQL persistence, policy-first RAG, source provenance, prompt governance, observability, access controls, and audit-aware review workflows; the web product is deployed while the Flutter mobile client remains a scaffold.",
+      "maturity": "development",
+      "evidenceStrength": "strong"
+    },
+    {
+      "slug": "argent-matchmaking",
+      "name": "Argent Matchmaking",
+      "claim": "Carl architected and delivered a synthetic, human-led matchmaking prototype foundation spanning public and admin web surfaces, Flutter mobile, a Fastify API, worker, contracts, database, and design-system boundaries; it intentionally has no accounts, real profiles, persistence, AI, or matching workflow.",
+      "maturity": "prototype",
+      "evidenceStrength": "strong"
+    }
+  ]
+}

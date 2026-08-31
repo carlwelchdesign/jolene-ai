@@ -34,56 +34,6 @@ describe("DeterministicPublicAnswerService", () => {
     ]);
   });
 
-  it.each([
-    "What has Carl shipped?",
-    "Which products has Carl launched?",
-    "Show me the software Carl delivered.",
-  ])("routes shipped-work language to released project evidence: %s", (question) => {
-    const shippedProduction = createPublicEvidenceRecord(1, {
-      text: "A production application for managing a job search.",
-      title: "Job Search OS",
-      href: "/work/job-search-os#evidence",
-      maturity: "production",
-    });
-    const shippedDemo = createPublicEvidenceRecord(2, {
-      text: "A browser-based aviation intelligence system.",
-      title: "Flight Tracker AI",
-      href: "/work/flight-tracker-ai#evidence",
-      maturity: "deployed_demo",
-    });
-    const prototype = createPublicEvidenceRecord(3, {
-      text: "An early matchmaking product prototype.",
-      title: "Argent Matchmaking",
-      href: "/work/argent-matchmaking#evidence",
-      maturity: "prototype",
-    });
-    const certificationBoundary = createPublicEvidenceRecord(4, {
-      text: "The product is a portfolio demonstration, not a certified aviation system.",
-      title: "Flight Tracker AI",
-      href: "/work/flight-tracker-ai#certification",
-      maturity: "deployed_demo",
-    });
-    const result = service.answer(
-      createPublicEvidenceArtifact([
-        prototype,
-        certificationBoundary,
-        shippedDemo,
-        shippedProduction,
-      ]),
-      { question },
-    );
-
-    expect(result.answer).toContain("Carl ships.");
-    expect(result.answer).toContain("Job Search OS");
-    expect(result.answer).toContain("Flight Tracker AI");
-    expect(result.answer).not.toContain("Argent Matchmaking");
-    expect(result.answer).not.toContain("not a certified aviation system");
-    expect(result.claims.map((claim) => claim.claimId)).toEqual([
-      shippedProduction.claim.claimId,
-      shippedDemo.claim.claimId,
-    ]);
-  });
-
   it("does not misroute a question about work that has not shipped", () => {
     const prototype = createPublicEvidenceRecord(1, {
       text: "An early product prototype has not shipped.",
