@@ -88,6 +88,35 @@ describe("grounded public answer service", () => {
     expect(generate).not.toHaveBeenCalled();
   });
 
+  it("answers the exact public purpose question before retrieval, budget, or generation", async () => {
+    const generate = vi.fn(async () => "must not run");
+    const retrieve = vi.fn(async () => [createPublicEvidenceRecord(99, {
+      text: "Unrelated release-gate evidence.",
+      title: "Wave Factory release governance",
+      href: "/work/wave-factory#evidence-release",
+    })]);
+    const reserve = vi.fn(async () => true);
+    const execution = await new GroundedPublicAnswerService(
+      { generate },
+      { retriever: { retrieve }, budget: { reserve } },
+    ).execute(createPublicEvidenceArtifact(), {
+      question: "Why did Carl build you?",
+    });
+
+    expect(execution).toMatchObject({
+      mode: "deterministic",
+      responseKind: "clarification",
+      response: { claims: [], citations: [], limitations: [] },
+    });
+    expect(execution.response.answer).toContain(
+      "Carl built me to be his persistent AI chief of staff and working partner",
+    );
+    expect(execution.response.answer).not.toMatch(/release gates|Wave Factory/iu);
+    expect(retrieve).not.toHaveBeenCalled();
+    expect(reserve).not.toHaveBeenCalled();
+    expect(generate).not.toHaveBeenCalled();
+  });
+
   it("does not call retrieval, budget, or generation for a private-disclosure request", async () => {
     const generate = vi.fn(async () => "must not run");
     const retrieve = vi.fn(async () => createPublicEvidenceArtifact().evidence);
