@@ -61,6 +61,34 @@ describe("HybridPublicEvidenceRetriever", () => {
     );
   });
 
+  it("keeps semantic reranking inside an explicitly named project", async () => {
+    const artifact = createPublicEvidenceArtifact([
+      createPublicEvidenceRecord(1, {
+        title: "Jolene AI",
+        text: "Carl designed Jolene as a portable agent architecture.",
+        href: "/work/jolene-ai#evidence",
+      }),
+      createPublicEvidenceRecord(2, {
+        title: "Other project",
+        text: "A different product uses related agent architecture terms.",
+        href: "/work/other-project#evidence",
+      }),
+    ]);
+    const provider = new StubEmbeddingProvider(
+      [[0, 1], [1, 0]],
+      [1, 0],
+    );
+
+    const result = await new HybridPublicEvidenceRetriever(provider).retrieve(
+      artifact,
+      { question: "How did Carl build Jolene?" },
+    );
+
+    expect(result.map((record) => record.citation.href)).toEqual([
+      "/work/jolene-ai#evidence",
+    ]);
+  });
+
   it("caches corpus embeddings per version while embedding each query", async () => {
     const artifact = createPublicEvidenceArtifact([
       createPublicEvidenceRecord(1),

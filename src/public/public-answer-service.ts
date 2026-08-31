@@ -1,16 +1,20 @@
 import { z } from "zod";
 
 import { tokenizeLexicalTerms } from "../domain/lexical-terms.js";
+import { PUBLIC_JOLENE_DETERMINISTIC_COPY } from
+  "../personality/runtime-personality-policy.js";
 import {
   PUBLIC_CAREER_EVIDENCE_SCHEMA_VERSION,
   type PublicCareerEvidenceArtifact,
   type PublicCareerEvidenceRecord,
 } from "../domain/public-career-evidence.js";
 import {
+  PUBLIC_CONVERSATION_CONTEXT_LIMITS,
   PUBLIC_PORTFOLIO_ANSWER_LIMITS,
   portfolioAnswerResponseSchema,
   type PortfolioAnswerRequest,
   type PortfolioAnswerResponse,
+  type PublicConversationContext,
 } from "../domain/public-portfolio-contract.js";
 import type { PublicModelRequestBudget } from "./public-model-request-budget.js";
 import {
@@ -32,7 +36,17 @@ export interface PublicPortfolioAnswerer {
 
 export interface PublicAnswerExecution {
   readonly response: PortfolioAnswerResponse;
-  readonly mode: "deterministic" | "model" | "fallback" | "budget_fallback";
+  readonly mode:
+    | "deterministic"
+    | "model"
+    | "budget_fallback"
+    | "provider_fallback"
+    | "validation_fallback";
+  readonly responseKind:
+    | "supported"
+    | "clarification"
+    | "no_evidence"
+    | "policy_refusal";
 }
 
 export interface GroundedPublicAnswerInput {
@@ -64,17 +78,25 @@ export class DeterministicPublicAnswerService
     artifact: PublicCareerEvidenceArtifact,
     request: PortfolioAnswerRequest,
   ): PublicAnswerExecution {
-    return { response: this.answer(artifact, request), mode: "deterministic" };
+    const response = this.answer(artifact, request);
+    return {
+      response,
+      mode: "deterministic",
+      responseKind: deterministicResponseKind(request, response),
+    };
   }
 
   answer(
     artifact: PublicCareerEvidenceArtifact,
     request: PortfolioAnswerRequest,
   ): PortfolioAnswerResponse {
+    const turn = resolvePublicConversationTurn(artifact, request);
     return this.answerFromSelected(
       artifact,
-      request,
-      selectDeterministicPublicEvidence(artifact, request),
+      turn.request,
+      turn.contextualEvidence ??
+        selectDeterministicPublicEvidence(artifact, turn.request),
+      turn.responseContext,
     );
   }
 
@@ -82,11 +104,14 @@ export class DeterministicPublicAnswerService
     artifact: PublicCareerEvidenceArtifact,
     request: PortfolioAnswerRequest,
     selectedEvidence: readonly PublicCareerEvidenceRecord[],
+    conversationContext?: PublicConversationContext,
   ): PortfolioAnswerResponse {
     if (isPrivateDisclosureRequest(request.question)) {
       return privateDisclosureResponse(artifact);
     }
     const hiringValueQuestion = isHiringValueQuestion(request.question);
+    const engineerProfileQuestion = isEngineerProfileQuestion(request.question);
+    const negativeHiringQuestion = isNegativeHiringQuestion(request.question);
     const activeEvidence = new Map(
       artifact.evidence.map((record) => [record.evidenceId, record]),
     );
@@ -104,16 +129,31 @@ export class DeterministicPublicAnswerService
       selected,
     );
 
-    return conflict
+    const response = conflict
       ? conflictResponse(artifact)
       : selected.length === 0
       ? noEvidenceResponse(artifact)
       : supportedResponse(
         artifact,
+        request.question,
         selected,
         hiringValueQuestion,
+        engineerProfileQuestion,
+        negativeHiringQuestion,
         relationshipFact,
       );
+    const contextEvidence = engineerProfileQuestion
+      ? selected.filter((record) =>
+        record.citation.sourceType === "project" ||
+        record.citation.href.startsWith("/work/")
+      ).slice(0, 1)
+      : selected;
+    return withConversationContext(
+      response,
+      response.claims.length > 0
+        ? contextForSelectedEvidence(artifact, contextEvidence, conversationContext)
+        : undefined,
+    );
   }
 }
 
@@ -144,51 +184,82 @@ export class GroundedPublicAnswerService implements PublicPortfolioAnswerer {
     artifact: PublicCareerEvidenceArtifact,
     request: PortfolioAnswerRequest,
   ): Promise<PublicAnswerExecution> {
+    const turn = resolvePublicConversationTurn(artifact, request);
+    const selectionRequest = turn.request;
     if (isPrivateDisclosureRequest(request.question)) {
       return {
-        response: this.#baseline.answerFromSelected(artifact, request, []),
+        response: this.#baseline.answerFromSelected(
+          artifact,
+          request,
+          [],
+          undefined,
+        ),
         mode: "deterministic",
+        responseKind: "policy_refusal",
       };
     }
-    const exactRelationshipEvidence = selectRecommendationRelationshipEvidence(
-      artifact.evidence,
-      request.question,
-    );
+    const exactRelationshipEvidence = turn.contextualEvidence
+      ? []
+      : selectRecommendationRelationshipEvidence(
+        artifact.evidence,
+        selectionRequest.question,
+      );
+    const deterministicEvidence = turn.contextualEvidence ??
+      selectDeterministicPublicEvidence(artifact, selectionRequest);
     let baseline = exactRelationshipEvidence.length > 0
       ? this.#baseline.answerFromSelected(
         artifact,
-        request,
+        selectionRequest,
         exactRelationshipEvidence,
+        turn.responseContext,
       )
-      : this.#baseline.answer(artifact, request);
-    if (this.#retriever && exactRelationshipEvidence.length === 0) {
+      : this.#baseline.answerFromSelected(
+        artifact,
+        selectionRequest,
+        deterministicEvidence,
+        turn.responseContext,
+      );
+    if (
+      this.#retriever && exactRelationshipEvidence.length === 0 &&
+      !turn.contextualEvidence
+    ) {
       try {
         baseline = this.#baseline.answerFromSelected(
           artifact,
-          request,
-          await this.#retriever.retrieve(artifact, request),
+          selectionRequest,
+          await this.#retriever.retrieve(artifact, selectionRequest),
+          turn.responseContext,
         );
       } catch {
         // Retrieval failure preserves the deterministic public-safe baseline.
       }
     }
     if (baseline.claims.length === 0) {
-      return { response: baseline, mode: "deterministic" };
+      return {
+        response: baseline,
+        mode: "deterministic",
+        responseKind: "no_evidence",
+      };
     }
     if (exactRelationshipEvidence.length > 0) {
-      return { response: baseline, mode: "deterministic" };
+      return {
+        response: baseline,
+        mode: "deterministic",
+        responseKind: "supported",
+      };
     }
     if (this.#budget) {
       try {
         if (!await this.#budget.reserve()) {
-          return { response: baseline, mode: "budget_fallback" };
+          return fallbackExecution(baseline, "budget_fallback");
         }
       } catch {
-        return { response: baseline, mode: "budget_fallback" };
+        return fallbackExecution(baseline, "budget_fallback");
       }
     }
+    let generation: unknown;
     try {
-      const generation = await this.generator.generate({
+      generation = await this.generator.generate({
         question: request.question,
         corpusVersion: baseline.corpusVersion,
         evidence: baseline.claims.map((claim, index) => ({
@@ -198,44 +269,424 @@ export class GroundedPublicAnswerService implements PublicPortfolioAnswerer {
           citationTitle: baseline.citations[index]?.title ?? "Reviewed evidence",
         })),
       });
+    } catch {
+      return fallbackExecution(baseline, "provider_fallback");
+    }
+    try {
       const validation = this.#validator.validate(artifact, baseline, generation);
       if (validation.status === "rejected") {
-        return { response: baseline, mode: "fallback" };
+        return fallbackExecution(baseline, "validation_fallback");
       }
       const answer = generatedAnswerSchema.parse(validation.answer);
       if (containsInternalPublicProcessLanguage(answer)) {
-        return { response: baseline, mode: "fallback" };
+        return fallbackExecution(baseline, "validation_fallback");
       }
       return {
         mode: "model",
+        responseKind: "supported",
         response: portfolioAnswerResponseSchema.parse({
           ...baseline,
           answer,
         }),
       };
     } catch {
-      return { response: baseline, mode: "fallback" };
+      return fallbackExecution(baseline, "validation_fallback");
     }
   }
 }
+
+type PublicAnswerFallbackMode = Extract<
+  PublicAnswerExecution["mode"],
+  "budget_fallback" | "provider_fallback" | "validation_fallback"
+>;
+
+function fallbackExecution(
+  baseline: PortfolioAnswerResponse,
+  mode: PublicAnswerFallbackMode,
+): PublicAnswerExecution {
+  return { response: baseline, mode, responseKind: "supported" };
+}
+
+function deterministicResponseKind(
+  request: PortfolioAnswerRequest,
+  response: PortfolioAnswerResponse,
+): PublicAnswerExecution["responseKind"] {
+  if (isPrivateDisclosureRequest(request.question)) return "policy_refusal";
+  return response.claims.length === 0 ? "no_evidence" : "supported";
+}
+
+export interface ResolvedPublicConversationTurn {
+  readonly request: PortfolioAnswerRequest;
+  readonly responseContext?: PublicConversationContext;
+  readonly contextualEvidence?: readonly PublicCareerEvidenceRecord[];
+  readonly usedPriorContext: boolean;
+}
+
+export function resolvePublicConversationTurn(
+  artifact: PublicCareerEvidenceArtifact,
+  request: PortfolioAnswerRequest,
+  now = new Date(),
+): ResolvedPublicConversationTurn {
+  const explicitProjectPath = matchPublicProjectEntityPath(
+    artifact.evidence,
+    request.question,
+  );
+  const prior = validPriorConversationContext(artifact, request, now);
+  const canUsePrior = Boolean(
+    prior &&
+    (prior.projectPath || permitsEvidenceOnlyCarryover(request.question)) &&
+    !explicitProjectPath &&
+    isContextualFollowUp(request.question) &&
+    !isPrivateDisclosureRequest(request.question) &&
+    !PROMPT_INJECTION_CARRYOVER_PATTERN.test(normalizeLookup(request.question)) &&
+    !RECOMMENDATION_RELATIONSHIP_QUESTION.test(normalizeLookup(request.question)) &&
+    !isHiringValueQuestion(request.question),
+  );
+  const projectPath = explicitProjectPath ?? (canUsePrior ? prior?.projectPath : undefined);
+  const contextualEvidence = canUsePrior && !explicitProjectPath
+    ? prior?.projectPath
+      ? selectContextualProjectEvidence(
+        artifact.evidence,
+        request.question,
+        prior.projectPath,
+      )
+      : recordsForContext(artifact, prior)
+    : [];
+  if (!projectPath && contextualEvidence.length === 0) {
+    return { request, usedPriorContext: false };
+  }
+
+  const continuingPrior = canUsePrior ? prior : null;
+  const turnCount = continuingPrior
+    ? Math.min(
+      continuingPrior.turnCount + 1,
+      PUBLIC_CONVERSATION_CONTEXT_LIMITS.turns,
+    )
+    : 1;
+  const responseContext = {
+    corpusVersion: artifact.manifest.corpusVersion,
+    ...(projectPath ? { projectPath } : {}),
+    ...(contextualEvidence.length > 0
+      ? { evidenceIds: contextualEvidence.map((record) => record.evidenceId) }
+      : {}),
+    turnCount,
+    expiresAt: new Date(
+      now.getTime() + PUBLIC_CONVERSATION_CONTEXT_LIMITS.lifetimeSeconds * 1_000,
+    ).toISOString(),
+  } satisfies PublicConversationContext;
+  if (!continuingPrior) {
+    return { request, responseContext, usedPriorContext: false };
+  }
+  if (!projectPath) {
+    return {
+      request,
+      responseContext,
+      contextualEvidence,
+      usedPriorContext: true,
+    };
+  }
+  return {
+    request: {
+      ...request,
+      question: `${request.question}\nContextual project: ${projectPath
+        .slice("/work/".length)
+        .replaceAll("-", " ")}.`,
+    },
+    responseContext,
+    contextualEvidence,
+    usedPriorContext: true,
+  };
+}
+
+function validPriorConversationContext(
+  artifact: PublicCareerEvidenceArtifact,
+  request: PortfolioAnswerRequest,
+  now: Date,
+): PublicConversationContext | null {
+  const context = request.conversationContext;
+  if (
+    !context ||
+    context.corpusVersion !== artifact.manifest.corpusVersion ||
+    context.turnCount >= PUBLIC_CONVERSATION_CONTEXT_LIMITS.turns ||
+    Date.parse(context.expiresAt) <= now.getTime() ||
+    Date.parse(context.expiresAt) >
+      now.getTime() + PUBLIC_CONVERSATION_CONTEXT_LIMITS.lifetimeSeconds * 1_000
+  ) return null;
+  const projectExists = context.projectPath
+    ? artifact.evidence.some((record) =>
+      record.citation.href === context.projectPath ||
+      record.citation.href.startsWith(`${context.projectPath}#`)
+    )
+    : false;
+  const evidenceExists = context.evidenceIds?.length
+    ? context.evidenceIds.every((evidenceId) =>
+      artifact.evidence.some((record) => record.evidenceId === evidenceId)
+    )
+    : false;
+  return projectExists || evidenceExists ? context : null;
+}
+
+function recordsForContext(
+  artifact: PublicCareerEvidenceArtifact,
+  context: PublicConversationContext | null,
+): PublicCareerEvidenceRecord[] {
+  if (!context) return [];
+  const evidenceIds = new Set(context.evidenceIds ?? []);
+  if (evidenceIds.size > 0) {
+    return artifact.evidence.filter((record) => evidenceIds.has(record.evidenceId));
+  }
+  return context.projectPath
+    ? artifact.evidence.filter((record) =>
+      record.citation.href === context.projectPath ||
+      record.citation.href.startsWith(`${context.projectPath}#`)
+    ).slice(0, PUBLIC_PORTFOLIO_ANSWER_LIMITS.responseItems)
+    : [];
+}
+
+function selectContextualProjectEvidence(
+  evidence: readonly PublicCareerEvidenceRecord[],
+  question: string,
+  projectPath: string,
+): PublicCareerEvidenceRecord[] {
+  const projectEvidence = evidence.filter((record) =>
+    record.citation.href === projectPath ||
+    record.citation.href.startsWith(`${projectPath}#`)
+  );
+  const intent = deterministicAnswerIntent(question, projectEvidence);
+  if (
+    intent === "source" ||
+    intent === "boundary" ||
+    permitsEvidenceOnlyCarryover(question)
+  ) {
+    return projectEvidence.slice(0, PUBLIC_PORTFOLIO_ANSWER_LIMITS.responseItems);
+  }
+  const queryTerms = tokenizeLexicalTerms(question).filter(
+    (term) => !PUBLIC_CONTEXTUAL_QUERY_STOP_WORDS.has(term),
+  );
+  return selectLexicalEvidence(projectEvidence, queryTerms, 1);
+}
+
+function contextForSelectedEvidence(
+  artifact: PublicCareerEvidenceArtifact,
+  selected: readonly PublicCareerEvidenceRecord[],
+  current: PublicConversationContext | undefined,
+  now = new Date(),
+): PublicConversationContext | undefined {
+  if (selected.length === 0) return undefined;
+  const selectedProjectPaths = new Set(selected.flatMap((record) => {
+    const path = record.citation.href.match(/^(\/work\/[a-z0-9-]+)(?:#|$)/u)?.[1];
+    return path ? [path] : [];
+  }));
+  const sharedProjectPath = selectedProjectPaths.size === 1 &&
+      selected.every((record) =>
+        record.citation.href === [...selectedProjectPaths][0] ||
+        record.citation.href.startsWith(`${[...selectedProjectPaths][0]}#`)
+      )
+    ? [...selectedProjectPaths][0]
+    : undefined;
+  return {
+    corpusVersion: artifact.manifest.corpusVersion,
+    ...(current?.projectPath || sharedProjectPath
+      ? { projectPath: current?.projectPath ?? sharedProjectPath }
+      : {}),
+    evidenceIds: selected.map((record) => record.evidenceId),
+    turnCount: current?.turnCount ?? 1,
+    expiresAt: current?.expiresAt ?? new Date(
+      Math.floor(now.getTime() / 1_000) * 1_000 +
+        PUBLIC_CONVERSATION_CONTEXT_LIMITS.lifetimeSeconds * 1_000,
+    ).toISOString(),
+  };
+}
+
+function isContextualFollowUp(question: string): boolean {
+  return CONTEXTUAL_FOLLOW_UP_PATTERN.test(normalizeLookup(question));
+}
+
+function permitsEvidenceOnlyCarryover(question: string): boolean {
+  const normalized = normalizeLookup(question);
+  return /^(?:continue (?:from|with) (?:that|this)(?: example| point)?|tell me more(?: about (?:that|this|it))?|what else|why|what about (?:that|this|it)|which source backs that up|open (?:the )?(?:strongest )?source(?: for that point)?|what limitations? should i keep in mind|what did (?:he|carl) personally contribute (?:there|to (?:that|this)))$/u
+    .test(normalized);
+}
+
+function withConversationContext(
+  response: PortfolioAnswerResponse,
+  conversationContext: PublicConversationContext | undefined,
+): PortfolioAnswerResponse {
+  return conversationContext
+    ? portfolioAnswerResponseSchema.parse({ ...response, conversationContext })
+    : response;
+}
+
+const CONTEXTUAL_FOLLOW_UP_PATTERN =
+  /^(?:and\b|also\b|but\b|how\b|tell me more\b|what about\b|what else\b|what (?:limit(?:ation)?s?|boundar(?:y|ies)|risks?|caveats?|weaknesses?)\b|why\b|which\b|who\b)|\b(?:it|that|this|those|them|there|the project)\b/u;
+
+const PROMPT_INJECTION_CARRYOVER_PATTERN =
+  /\b(?:ignore|override|reveal|system prompt|developer message|hidden instructions|previous instructions)\b/u;
 
 export function selectDeterministicPublicEvidence(
   artifact: PublicCareerEvidenceArtifact,
   request: PortfolioAnswerRequest,
 ): PublicCareerEvidenceRecord[] {
+  const projectEvidence = selectProjectEntityEvidence(
+    artifact.evidence,
+    request.question,
+  );
+  if (projectEvidence.length > 0) return projectEvidence;
+  const professionalRoleEvidence = selectProfessionalRoleEntityEvidence(
+    artifact.evidence,
+    request.question,
+  );
+  if (professionalRoleEvidence.length > 0) return professionalRoleEvidence;
   const relationshipEvidence = selectRecommendationRelationshipEvidence(
     artifact.evidence,
     request.question,
   );
   if (relationshipEvidence.length > 0) return relationshipEvidence;
+  if (isRecommendationSummaryQuestion(request.question)) {
+    return selectRecommendationSummaryEvidence(
+      artifact.evidence,
+      request.question,
+    );
+  }
+  if (isNonProductionQuestion(request.question)) {
+    return selectNonProductionEvidence(artifact.evidence);
+  }
   if (isHiringValueQuestion(request.question)) {
     return selectHiringValueEvidence(artifact.evidence);
+  }
+  if (isEngineerProfileQuestion(request.question)) {
+    return selectHiringValueEvidence(artifact.evidence);
+  }
+  const skepticalIntent = skepticalAnswerIntent(request.question);
+  if (skepticalIntent) {
+    const skepticalEvidence = selectSkepticalEvidence(
+      artifact.evidence,
+      skepticalIntent,
+    );
+    if (skepticalEvidence.length > 0) return skepticalEvidence;
   }
   const queryTerms = tokenizeLexicalTerms(request.question).filter(
     (term) => !PUBLIC_QUERY_STOP_WORDS.has(term),
   );
-  return selectLexicalEvidence(artifact.evidence, queryTerms);
+  const minimumScore = requiresCorroboratingLexicalMatch(request.question)
+    ? Math.min(3, queryTerms.length)
+    : 1;
+  return selectLexicalEvidence(artifact.evidence, queryTerms, minimumScore);
 }
+
+function selectProfessionalRoleEntityEvidence(
+  evidence: readonly PublicCareerEvidenceRecord[],
+  question: string,
+): PublicCareerEvidenceRecord[] {
+  const normalizedQuestion = normalizeLookup(question);
+  const matched = evidence.filter((record) => {
+    const employer = record.citation.title.match(/\bat\s+(.+)$/u)?.[1];
+    return employer && normalizedQuestion.includes(normalizeLookup(employer));
+  });
+  if (matched.length === 0) return [];
+  return matched
+    .map((record) => ({ record, score: projectOverviewScore(record) }))
+    .sort(compareScoredEvidence)
+    .slice(0, PUBLIC_PORTFOLIO_ANSWER_LIMITS.responseItems)
+    .map(({ record }) => record);
+}
+
+function selectProjectEntityEvidence(
+  evidence: readonly PublicCareerEvidenceRecord[],
+  question: string,
+): PublicCareerEvidenceRecord[] {
+  const projectPath = matchPublicProjectEntityPath(evidence, question);
+  if (!projectPath) return [];
+  const projectEvidence = evidence.filter((record) =>
+    record.citation.href === projectPath ||
+    record.citation.href.startsWith(`${projectPath}#`)
+  );
+  const normalizedQuestion = normalizeLookup(question);
+  const queryTerms = tokenizeLexicalTerms(question).filter(
+    (term) => !PUBLIC_QUERY_STOP_WORDS.has(term),
+  );
+  const howBuilt = /\b(?:how|build|built|designed|architecture|work|works)\b/u
+    .test(normalizedQuestion);
+  return projectEvidence
+    .map((record) => ({
+      record,
+      score: score(record, queryTerms) + projectOverviewScore(record) +
+        (howBuilt ? howBuiltScore(record) : 0),
+    }))
+    .sort(compareScoredEvidence)
+    .slice(0, PUBLIC_PORTFOLIO_ANSWER_LIMITS.responseItems)
+    .map(({ record }) => record);
+}
+
+export function matchPublicProjectEntityPath(
+  evidence: readonly PublicCareerEvidenceRecord[],
+  question: string,
+): string | null {
+  const normalizedQuestion = normalizeLookup(question);
+  const slugs = [...new Set(evidence.flatMap((record) => {
+    const slug = record.citation.href.match(/^\/work\/([a-z0-9-]+)(?:#|$)/u)?.[1];
+    return slug ? [slug] : [];
+  }))];
+  const matchedSlug = slugs
+    .map((slug) => ({ slug, aliases: projectAliases(slug) }))
+    .filter(({ aliases }) => aliases.some((alias) =>
+      (` ${normalizedQuestion} `).includes(` ${alias} `)
+    ))
+    .sort((left, right) =>
+      Math.max(...right.aliases.map((alias) => alias.length)) -
+        Math.max(...left.aliases.map((alias) => alias.length)) ||
+      left.slug.localeCompare(right.slug)
+    )[0]?.slug;
+  return matchedSlug ? `/work/${matchedSlug}` : null;
+}
+
+function projectAliases(slug: string): string[] {
+  const tokens = slug.split("-");
+  const descriptive = tokens.filter((token) => token !== "ai" && token !== "os");
+  return [...new Set([
+    tokens.join(" "),
+    descriptive.join(" "),
+  ].filter((alias) => alias.length >= 3))];
+}
+
+function projectOverviewScore(record: PublicCareerEvidenceRecord): number {
+  const text = normalizeLookup(`${record.citation.title} ${record.claim.text}`);
+  return PROJECT_OVERVIEW_TERMS.reduce(
+    (total, [term, weight]) => total + (text.includes(term) ? weight : 0),
+    0,
+  );
+}
+
+function howBuiltScore(record: PublicCareerEvidenceRecord): number {
+  const text = normalizeLookup(`${record.citation.title} ${record.claim.text}`);
+  return HOW_BUILT_TERMS.reduce(
+    (total, [term, weight]) => total + (text.includes(term) ? weight : 0),
+    0,
+  );
+}
+
+const PROJECT_OVERVIEW_TERMS = [
+  ["designed", 10],
+  ["originated", 10],
+  ["architecture", 9],
+  ["openai", 8],
+  ["retrieval", 7],
+  ["personality", 6],
+] as const;
+
+const HOW_BUILT_TERMS = [
+  ["originated", 16],
+  ["directed", 14],
+  ["designed", 12],
+  ["architecture", 12],
+  ["openai", 10],
+  ["synthesis", 9],
+  ["retrieval", 9],
+  ["hybrid", 8],
+  ["docker", 7],
+  ["runtime", 6],
+  ["backend for frontend", 5],
+] as const;
 
 interface RecommendationRelationshipFact {
   readonly subject: string;
@@ -256,6 +707,29 @@ function selectRecommendationRelationshipEvidence(
     return fact !== null && normalizedQuestion.includes(normalizeLookup(fact.subject));
   });
   return match ? [match] : [];
+}
+
+function isRecommendationSummaryQuestion(question: string): boolean {
+  return /\b(?:recommendations?|references?|testimonials?)\b/u
+    .test(normalizeLookup(question));
+}
+
+function selectRecommendationSummaryEvidence(
+  evidence: readonly PublicCareerEvidenceRecord[],
+  question: string,
+): PublicCareerEvidenceRecord[] {
+  const queryTerms = tokenizeLexicalTerms(question).filter(
+    (term) => !PUBLIC_QUERY_STOP_WORDS.has(term),
+  );
+  return evidence
+    .filter((record) =>
+      record.citation.sourceType === "recommendation" ||
+      record.citation.title.startsWith("Recommendation from ")
+    )
+    .map((record) => ({ record, score: score(record, queryTerms) }))
+    .sort(compareScoredEvidence)
+    .slice(0, 2)
+    .map(({ record }) => record);
 }
 
 function exactRecommendationRelationship(
@@ -295,12 +769,39 @@ const RECOMMENDATION_RELATIONSHIP_QUESTION =
   /\b(?:relationship|employer|client|boss|supervisor|manager|worked for|worked with)\b/u;
 
 const PUBLIC_QUERY_STOP_WORDS = new Set([
+  "about",
+  "answer",
+  "been",
+  "can",
   "carl",
+  "definite",
   "evidence",
+  "even",
+  "give",
+  "if",
+  "need",
+  "no",
+  "portfolio",
   "public",
   "review",
   "reviewed",
+  "show",
+  "shown",
+  "unclear",
+  "tell",
+  "will",
   "welch",
+  "yes",
+]);
+
+const PUBLIC_CONTEXTUAL_QUERY_STOP_WORDS = new Set([
+  ...PUBLIC_QUERY_STOP_WORDS,
+  "about",
+  "it",
+  "its",
+  "that",
+  "this",
+  "what",
 ]);
 
 function score(
@@ -323,13 +824,66 @@ function score(
 function selectLexicalEvidence(
   evidence: readonly PublicCareerEvidenceRecord[],
   queryTerms: readonly string[],
+  minimumScore = 1,
 ): PublicCareerEvidenceRecord[] {
   return evidence
     .map((record) => ({ record, score: score(record, queryTerms) }))
-    .filter((candidate) => candidate.score > 0)
+    .filter((candidate) => candidate.score >= minimumScore)
     .sort(compareScoredEvidence)
     .slice(0, PUBLIC_PORTFOLIO_ANSWER_LIMITS.responseItems)
     .map((candidate) => candidate.record);
+}
+
+function requiresCorroboratingLexicalMatch(question: string): boolean {
+  const normalized = normalizeLookup(question);
+  return /\b(?:availability|certified|confidential|guarantee|operated|qualified|salary|compensation)\b/u
+    .test(normalized) ||
+    /\bmanaged\b.{0,48}\bteam\b/u.test(normalized) ||
+    /\bsole\b.{0,48}\bauthor\b/u.test(normalized);
+}
+
+function isNonProductionQuestion(question: string): boolean {
+  return /\b(?:not|isn t|isn['’]t|wasn t|wasn['’]t)\b.{0,32}\bproduction\b/u
+    .test(normalizeLookup(question));
+}
+
+function selectNonProductionEvidence(
+  evidence: readonly PublicCareerEvidenceRecord[],
+): PublicCareerEvidenceRecord[] {
+  return evidence
+    .filter((record) => record.citation.maturity !== "production")
+    .map((record) => ({
+      record,
+      score: nonProductionEvidenceScore(record),
+    }))
+    .filter(({ score }) => score > 0)
+    .sort(compareScoredEvidence)
+    .slice(0, PUBLIC_PORTFOLIO_ANSWER_LIMITS.responseItems)
+    .map(({ record }) => record);
+}
+
+function nonProductionEvidenceScore(record: PublicCareerEvidenceRecord): number {
+  const text = normalizeLookup([
+    record.claim.text,
+    record.claim.limitations.join(" "),
+    record.citation.title,
+  ].join(" "));
+  const maturityScore = record.citation.maturity === "deployed_demo"
+    ? 16
+    : record.citation.maturity === "prototype"
+    ? 14
+    : record.citation.maturity === "development"
+    ? 12
+    : 0;
+  const boundaryScore = /\b(?:demo|demonstration|development|not publicly released|pre release|prototype|tester build)\b/u
+      .test(text)
+    ? 10
+    : 0;
+  const publicProjectScore = /^(?:project|repository|release_artifact|portfolio_page)$/u
+      .test(record.citation.sourceType)
+    ? 4
+    : 0;
+  return maturityScore + boundaryScore + publicProjectScore;
 }
 
 type HiringEvidenceCategory =
@@ -439,6 +993,7 @@ const HIRING_VALUE_TERMS = [
 
 const HIRING_BOUNDARY_ONLY_PATTERNS = [
   /\bnot (?:a|intended|represented)\b/u,
+  /\brather than a public\b/u,
   /\bdo not replace\b/u,
   /\bremaining .+ checks\b/u,
   /\bpre-release tester builds\b/u,
@@ -450,15 +1005,28 @@ function isHiringValueQuestion(question: string): boolean {
   return HIRING_VALUE_PATTERNS.some((pattern) => pattern.test(normalized));
 }
 
+function isEngineerProfileQuestion(question: string): boolean {
+  const normalized = normalizeLookup(question);
+  return /\bwhat kind of engineer is carl\b/u.test(normalized) ||
+    /\bhow would you describe carl as an? engineer\b/u.test(normalized) ||
+    /\bwhat makes carl an? [a-z ]{0,32}engineer\b/u.test(normalized);
+}
+
 const HIRING_VALUE_PATTERNS = [
   /\bwhy\s+(?:should|would)\s+(?:i|we|someone|a company)\s+hire\b/u,
-  /\bwhy\s+(?:should(?:n['’]t|\s+not)|would(?:n['’]t|\s+not))\s+(?:i|we|someone|a company)\s+hire\b/u,
+  /\bwhy\s+(?:should(?:n['’]?t|\s+not)|would(?:n['’]?t|\s+not))\s+(?:i|we|someone|a company)\s+hire\b/u,
   /\bwhy\s+(?:should|would)\s+(?:i|we|someone|a company)\s+not\s+hire\b/u,
   /\bwhy\s+hire\b/u,
   /\bwhat\s+makes\s+carl\s+(?:a\s+)?(?:strong|good|qualified|valuable)\s+(?:candidate|hire)\b/u,
   /\b(?:reasons?|case)\s+(?:to|for)\s+hire\b/u,
   /\b(?:strengths|value)\b.+\b(?:candidate|hire|team)\b/u,
 ] as const;
+
+function isNegativeHiringQuestion(question: string): boolean {
+  const normalized = question.toLocaleLowerCase("en-US").normalize("NFKC");
+  return /\b(?:should(?:n['’]?t|\s+not)|would(?:n['’]?t|\s+not)|not\s+hire)\b/u
+    .test(normalized);
+}
 
 const HIRING_VALUE_UNSAFE_PATTERN =
   /\b(?:bypass|contact|ignore|private|reveal|secret|system prompt)\b/u;
@@ -467,28 +1035,70 @@ function isPrivateDisclosureRequest(question: string): boolean {
   const normalized = question.normalize("NFKC");
   const requestsPrivateMaterial = /\b(?:private|unpublished)\b.{0,48}\b(?:memory|notes?|files?|data|details?|material|work|information)\b/iu.test(normalized)
     || /\b(?:reveal|share|show|tell|expose|leak)\b.{0,64}\b(?:private|secret|unpublished)\b/iu.test(normalized)
-    || /\b(?:system prompt|api key|password|home address|phone number|email address|medical record|salary|compensation)\b/iu.test(normalized);
+    || /\b(?:system prompt|api key|password|home address|phone number|email address|medical record)\b/iu.test(normalized)
+    || PUBLIC_SOURCE_ACCESS_PATTERNS.some((pattern) => pattern.test(normalized))
+    || PUBLIC_INSTRUCTION_OVERRIDE_PATTERNS.some((pattern) => pattern.test(normalized))
+    || PUBLIC_EXTERNAL_ACTION_PATTERNS.some((pattern) => pattern.test(normalized));
   const includesPublicCareerQuestion = /\b(?:describe|explain|summarize|what|which|how)\b.{0,96}\b(?:react|projects?|systems?|portfolio|experience|roles?|skills?|recommendations?|career|aviation|leadership)\b/iu
     .test(normalized);
   return requestsPrivateMaterial && !includesPublicCareerQuestion;
 }
 
+const PUBLIC_SOURCE_ACCESS_PATTERNS = [
+  /\b(?:open|quote|read|reveal|share|show|use|call|access|print)\b.{0,80}\b(?:carl['’]s.{0,24}(?:notes?|vault)|knowledge vault|local files?(?:\s+paths?)?|bearer tokens?|private api|credentials?|secrets?)\b/iu,
+  /\b(?:carl['’]s.{0,24}(?:notes?|vault)|knowledge vault|local files?(?:\s+paths?)?|bearer tokens?|private api|credentials?|secrets?)\b.{0,80}\b(?:open|quote|read|reveal|share|show|use|call|access|print)\b/iu,
+] as const;
+
+const PUBLIC_INSTRUCTION_OVERRIDE_PATTERNS = [
+  /\b(?:ignore|disregard|bypass|override)\b.{0,64}\b(?:rules?|policy|instructions?|safeguards?)\b/iu,
+  /\bfollow\b.{0,64}\binstructions?\b.{0,64}\b(?:instead of|over|above)\b.{0,32}\b(?:policy|rules?|instructions?)\b/iu,
+] as const;
+
+const PUBLIC_EXTERNAL_ACTION_PATTERNS = [
+  /\bpretend\b.{0,64}\bcarl\b.{0,32}\bapproved\b/iu,
+  /\bact as carl\b/iu,
+  /\b(?:accept|decline)\b.{0,48}\b(?:job offer|offer|on (?:his|carl['’]s) behalf)\b/iu,
+  /\b(?:send|submit|publish|post)\b.{0,80}\b(?:directly|without\b.{0,32}\b(?:review|approval)|on (?:his|carl['’]s) behalf)\b/iu,
+  /\bnegotiate\b.{0,64}\b(?:compensation|salary|offer|on (?:his|carl['’]s) behalf)\b/iu,
+] as const;
+
 function supportedResponse(
   artifact: PublicCareerEvidenceArtifact,
+  question: string,
   selected: readonly PublicCareerEvidenceRecord[],
   hiringValueQuestion = false,
+  engineerProfileQuestion = false,
+  negativeHiringQuestion = false,
   relationshipFact: RecommendationRelationshipFact | null = null,
 ): PortfolioAnswerResponse {
+  const employerContext = selected
+    .map(recommendationRelationshipFact)
+    .find((fact) => fact?.relationship.toLocaleLowerCase("en-US").includes("employer")) ?? null;
+  const shouldNameEmployerContext = Boolean(
+    employerContext && (
+      normalizeLookup(question).includes(normalizeLookup(employerContext.subject)) ||
+      isContextualFollowUp(question)
+    ) && selected.every((record) =>
+      isEmployerScopedEvidence(record, employerContext)
+    ),
+  );
+  const skepticalIntent = skepticalAnswerIntent(question);
   return portfolioAnswerResponseSchema.parse({
     schemaVersion: PUBLIC_CAREER_EVIDENCE_SCHEMA_VERSION,
     answer: relationshipFact
       ? boundedRelationshipAnswer(relationshipFact)
+      : engineerProfileQuestion
+      ? boundedEngineerProfileAnswer(selected)
       : hiringValueQuestion
-      ? boundedHiringValueAnswer(selected)
-      : boundedSupportedAnswer(selected),
+      ? boundedHiringValueAnswer(selected, negativeHiringQuestion)
+      : skepticalIntent
+      ? boundedSkepticalAnswer(skepticalIntent, selected)
+      : shouldNameEmployerContext && employerContext
+      ? boundedEmployerContextAnswer(employerContext, question, selected)
+      : boundedSupportedAnswer(question, selected),
     claims: selected.map((record) => visitorFacingClaim(record.claim)),
     citations: selected.map((record) => record.citation),
-    limitations: unique(hiringValueQuestion
+    limitations: unique(hiringValueQuestion || engineerProfileQuestion
       ? ["A hiring decision should still be based on the role, interviews, and direct references."]
       : visitorFacingLimitations(selected.flatMap((record) => record.claim.limitations)))
       .slice(0, PUBLIC_PORTFOLIO_ANSWER_LIMITS.responseLimitations),
@@ -497,7 +1107,7 @@ function supportedResponse(
         `Would you like to read ${relationshipFact.subject}’s full recommendation?`,
         "Would you like to ask about another professional relationship?",
       ]
-      : hiringValueQuestion
+      : hiringValueQuestion || engineerProfileQuestion
       ? [
         "Would you like to compare Carl's evidence with a specific job description?",
         "Which leadership, product, or technical example should we examine more closely?",
@@ -508,6 +1118,267 @@ function supportedResponse(
       ],
     corpusVersion: artifact.manifest.corpusVersion,
   });
+}
+
+function boundedEngineerProfileAnswer(
+  selected: readonly PublicCareerEvidenceRecord[],
+): string {
+  const categories = new Set(selected.map(hiringCategory));
+  const strengths = HIRING_CATEGORY_PRIORITY
+    .filter((category) => categories.has(category))
+    .map((category) => category === "capability"
+      ? "the ability to connect product design with implementation"
+      : HIRING_CATEGORY_SUMMARIES[category]);
+  const project = selected.find((record) =>
+    record.citation.sourceType === "project" ||
+    record.citation.href.startsWith("/work/")
+  );
+  const profile = `Short answer: Carl is a product-minded engineer with ${formatNaturalList(
+    strengths.slice(0, 3),
+  )}.`;
+  if (!project) return profile;
+  return composeBoundedEvidenceSummary(
+    `${profile} ${project.citation.title} is one concrete example:`,
+    [visitorFacingClaim(project.claim).text],
+  );
+}
+
+function isEmployerScopedEvidence(
+  record: PublicCareerEvidenceRecord,
+  fact: RecommendationRelationshipFact,
+): boolean {
+  if (!record.citation.title.startsWith("Recommendation from ")) return false;
+  const subject = normalizeLookup(fact.subject);
+  return record.evidenceId === fact.record.evidenceId || normalizeLookup([
+    record.citation.title,
+    record.claim.text,
+    record.claim.limitations.join(" "),
+  ].join(" ")).includes(subject);
+}
+
+type SkepticalAnswerIntent =
+  | "backend_depth"
+  | "designer_engineer"
+  | "indirect_support"
+  | "non_production"
+  | "overread"
+  | "platform_fit"
+  | "staff_scope"
+  | "strongest_case_against"
+  | "verify_directly";
+
+function skepticalAnswerIntent(question: string): SkepticalAnswerIntent | null {
+  const normalized = normalizeLookup(question);
+  if (/\bbackend\b.{0,32}\bdepth\b/u.test(normalized)) return "backend_depth";
+  if (/\bmore designer than engineer\b/u.test(normalized)) return "designer_engineer";
+  if (/\bsupported only indirectly\b/u.test(normalized)) return "indirect_support";
+  if (isNonProductionQuestion(question)) return "non_production";
+  if (/\boverread\b/u.test(normalized)) return "overread";
+  if (/\bworry\b.{0,64}\bplatform team\b/u.test(normalized)) return "platform_fit";
+  if (/\bweakest\b.{0,64}\bstaff engineering role\b/u.test(normalized)) {
+    return "staff_scope";
+  }
+  if (/\bstrongest honest case against\b/u.test(normalized)) {
+    return "strongest_case_against";
+  }
+  if (/\bverify directly\b/u.test(normalized)) return "verify_directly";
+  return null;
+}
+
+function boundedSkepticalAnswer(
+  intent: SkepticalAnswerIntent,
+  selected: readonly PublicCareerEvidenceRecord[],
+): string {
+  const prefix = SKEPTICAL_ANSWER_OPENINGS[intent];
+  const limitations = visitorFacingLimitations(
+    selected.flatMap((record) => record.claim.limitations),
+  );
+  const statements = intent === "non_production" && limitations.length > 0
+    ? limitations
+    : selected.map(attributedEvidenceStatement);
+  return composeBoundedEvidenceSummary(prefix, statements);
+}
+
+function attributedEvidenceStatement(
+  record: PublicCareerEvidenceRecord,
+): string {
+  const claim = visitorFacingClaim(record.claim).text;
+  if (!record.citation.title.startsWith("Recommendation from ")) return claim;
+  const source = record.citation.title.replace(/^Recommendation from /u, "");
+  return `${source} wrote: “${claim}”`;
+}
+
+const SKEPTICAL_ANSWER_OPENINGS: Readonly<Record<
+  SkepticalAnswerIntent,
+  string
+>> = {
+  backend_depth:
+    "There is backend-facing system evidence here, but the public record does not prove deep backend ownership at every level a role might require. I’d test that directly rather than turn adjacent work into certainty. What it does establish is:",
+  designer_engineer:
+    "That binary is too neat for the record. The published material shows design judgment and hands-on engineering; it does not suggest that one cancels out the other. The concrete evidence is:",
+  indirect_support:
+    "If a qualification is not stated directly in a cited role or project, treat it as indirect. I won’t stretch adjacent experience into a checked box. The relevant published evidence is:",
+  non_production:
+    "These are explicitly presented as demonstrations, development work, or pre-release—not finished production proof:",
+  overread:
+    "Don’t turn a cited project into proof of scale, sole ownership, or production maturity beyond the claim. The published evidence is narrower:",
+  platform_fit:
+    "The honest question mark is platform depth at your scale. The portfolio shows relevant system-boundary work, but it cannot answer for your exact operating context. The evidence is:",
+  staff_scope:
+    "The public record does not prove every dimension of every staff role. It is strongest where product, frontend, and technical leadership meet; broader organizational scope should be tested directly. The evidence is:",
+  strongest_case_against:
+    "The strongest honest case against Carl is role mismatch: if the job centers on depth the public record does not show, don’t infer it from nearby strengths. What the portfolio actually establishes is:",
+  verify_directly:
+    "I would verify the scope Carl personally owned, the depth this role requires, and any current gaps directly with him. A portfolio can establish this much, but it cannot replace that conversation:",
+};
+
+const SKEPTICAL_EVIDENCE_TERMS: Readonly<Record<
+  Exclude<
+    SkepticalAnswerIntent,
+    "non_production" | "strongest_case_against" | "verify_directly"
+  >,
+  readonly string[]
+>> = {
+  backend_depth: [
+    "backend for frontend",
+    "server side",
+    "api",
+    "database",
+    "rust",
+    "service architecture",
+  ],
+  designer_engineer: [
+    "design",
+    "frontend",
+    "implementation",
+    "architecture",
+    "code",
+  ],
+  indirect_support: [
+    "limited",
+    "planned",
+    "pre release",
+    "not publicly released",
+    "demonstration",
+  ],
+  overread: [
+    "limitation",
+    "not publicly released",
+    "pre release",
+    "demonstration",
+    "does not",
+  ],
+  platform_fit: [
+    "platform",
+    "architecture",
+    "authorization",
+    "permission",
+    "system state",
+    "database",
+    "worker",
+    "monorepo",
+  ],
+  staff_scope: [
+    "leadership",
+    "led",
+    "mentoring",
+    "cross functional",
+    "architecture",
+  ],
+};
+
+function selectSkepticalEvidence(
+  evidence: readonly PublicCareerEvidenceRecord[],
+  intent: SkepticalAnswerIntent,
+): PublicCareerEvidenceRecord[] {
+  if (intent === "non_production") return selectNonProductionEvidence(evidence);
+  if (intent === "strongest_case_against" || intent === "verify_directly") {
+    return selectHiringValueEvidence(evidence);
+  }
+  const terms = SKEPTICAL_EVIDENCE_TERMS[intent];
+  return evidence
+    .map((record) => {
+      const text = normalizeLookup([
+        record.claim.text,
+        record.claim.limitations.join(" "),
+        record.citation.title,
+        record.citation.sourceType,
+        record.citation.strength,
+        record.citation.maturity,
+      ].join(" "));
+      return {
+        record,
+        score: terms.reduce(
+          (total, term) => total + (text.includes(term) ? 1 : 0),
+          0,
+        ),
+      };
+    })
+    .filter(({ score }) => score > 0)
+    .sort(compareScoredEvidence)
+    .slice(0, PUBLIC_PORTFOLIO_ANSWER_LIMITS.responseItems)
+    .map(({ record }) => record);
+}
+
+function boundedEmployerContextAnswer(
+  fact: RecommendationRelationshipFact,
+  question: string,
+  selected: readonly PublicCareerEvidenceRecord[],
+): string {
+  const normalizedQuestion = normalizeLookup(question);
+  const recommendationRecords = selected.filter((record) =>
+    record.citation.title.startsWith("Recommendation from ")
+  );
+  const attributedStatements = recommendationRecords.map(
+    attributedEvidenceStatement,
+  );
+  if (/\b(?:source|evidence)\b/u.test(normalizedQuestion)) {
+    const recommendationNames = recommendationRecords.map((record) =>
+      record.citation.title.replace(/^Recommendation from /u, "")
+    );
+    return composeBoundedEvidenceSummary(
+      `For ${fact.subject}’s company, the strongest published sources are ${formatNaturalList(
+        recommendationNames.map((name) => `${name}’s recommendation`),
+      )}. They support the work described without turning it into a broader ownership claim:`,
+      attributedStatements,
+    );
+  }
+  if (/\b(?:limit|limitation|boundary|caveat|risk)\b/u.test(normalizedQuestion)) {
+    return composeBoundedEvidenceSummary(
+      `For ${fact.subject}’s company, the honest limitation is that these are third-party recommendations, not a complete project record. They support the work described, but not every detail of scope or sole ownership:`,
+      attributedStatements,
+    );
+  }
+  if (/\bpersonally contribute\b/u.test(normalizedQuestion)) {
+    const evidenceText = normalizeLookup(
+      recommendationRecords.map((record) => record.claim.text).join(" "),
+    );
+    const contributionTerms = [
+      evidenceText.includes("web design") ? "web design" : null,
+      evidenceText.includes("multimedia production")
+        ? "multimedia production"
+        : null,
+      evidenceText.includes("graphic") ? "graphic design" : null,
+      evidenceText.includes("flash") ? "Flash programming" : null,
+    ].filter((term): term is string => term !== null);
+    const contributionSummary = contributionTerms.length > 0
+      ? formatNaturalList(contributionTerms)
+      : "the work described in the published recommendations";
+    return composeBoundedEvidenceSummary(
+      `At ${fact.subject}’s company, the recommendations specifically support ${contributionSummary}. They do not establish a finer-grained ownership breakdown. In their words:`,
+      attributedStatements,
+    );
+  }
+  const recommendationCount = recommendationRecords.length;
+  const recommendationLabel = recommendationCount === 1
+    ? "the published recommendation says"
+    : recommendationCount === 2
+    ? "two published recommendations say"
+    : `${recommendationCount} published recommendations say`;
+  return composeBoundedEvidenceSummary(
+    `At ${fact.subject}’s company, ${recommendationLabel}:`,
+    attributedStatements,
+  );
 }
 
 function boundedRelationshipAnswer(fact: RecommendationRelationshipFact): string {
@@ -524,8 +1395,7 @@ function noEvidenceResponse(
 ): PortfolioAnswerResponse {
   return portfolioAnswerResponseSchema.parse({
     schemaVersion: PUBLIC_CAREER_EVIDENCE_SCHEMA_VERSION,
-    answer:
-      "I don’t have enough published information to answer that reliably.",
+    answer: PUBLIC_JOLENE_DETERMINISTIC_COPY.noEvidence,
     claims: [],
     citations: [],
     limitations: ["No relevant published information was found for this question."],
@@ -541,7 +1411,7 @@ function privateDisclosureResponse(
 ): PortfolioAnswerResponse {
   return portfolioAnswerResponseSchema.parse({
     schemaVersion: PUBLIC_CAREER_EVIDENCE_SCHEMA_VERSION,
-    answer: "I can’t share Carl’s private notes or unpublished material. Ask me about his published work, professional experience, or public recommendations instead.",
+    answer: PUBLIC_JOLENE_DETERMINISTIC_COPY.policyRefusal,
     claims: [],
     citations: [],
     limitations: [
@@ -559,8 +1429,7 @@ function conflictResponse(
 ): PortfolioAnswerResponse {
   return portfolioAnswerResponseSchema.parse({
     schemaVersion: PUBLIC_CAREER_EVIDENCE_SCHEMA_VERSION,
-    answer:
-      "The published information available to me conflicts on this point, so I can’t answer it reliably.",
+    answer: PUBLIC_JOLENE_DETERMINISTIC_COPY.conflict,
     claims: [],
     citations: [],
     limitations: [
@@ -589,26 +1458,157 @@ function uniqueRecords(
 }
 
 function boundedSupportedAnswer(
+  question: string,
   selected: readonly PublicCareerEvidenceRecord[],
 ): string {
-  const prefix = "Here’s what Carl’s published work shows: ";
-  const available = PUBLIC_PORTFOLIO_ANSWER_LIMITS.answerCharacters -
-    prefix.length;
-  return `${prefix}${selected
-    .map((record) => record.claim.text)
-    .join(" ")
-    .slice(0, available)
-    .trimEnd()}`;
+  const intent = deterministicAnswerIntent(question, selected);
+  const statements = intent === "boundary"
+    ? visitorFacingLimitations(
+      selected.flatMap((record) => record.claim.limitations),
+    )
+    : deterministicEvidenceStatements(intent, selected);
+  const evidenceStatements = statements.length > 0
+    ? statements
+    : intent === "boundary"
+    ? [
+      "The published material does not state a separate limitation for this point, so the exact scope should be verified directly rather than inferred.",
+    ]
+    : selected.map((record) => visitorFacingClaim(record.claim).text);
+  const prefix = DETERMINISTIC_ANSWER_OPENINGS[intent]();
+  return composeBoundedEvidenceSummary(prefix, evidenceStatements);
+}
+
+function deterministicEvidenceStatements(
+  intent: DeterministicAnswerIntent,
+  selected: readonly PublicCareerEvidenceRecord[],
+): string[] {
+  if (intent === "source") {
+    return unique(selected.map((record) => record.citation.title));
+  }
+  if (intent === "recommendation") {
+    return selected.map(attributedEvidenceStatement);
+  }
+  const statements = selected.map((record) => ({
+    record,
+    text: visitorFacingClaim(record.claim).text,
+  }));
+  if (intent !== "project") return statements.map(({ text }) => text);
+  const thirdPerson = statements.filter(({ text }) =>
+    !/\b(?:I|me|my|mine|we|us|our|ours)\b/u.test(text)
+  );
+  const source = thirdPerson.length > 0 ? thirdPerson : statements;
+  return source.map(({ record, text }) =>
+    qualifySubjectlessProjectStatement(record.citation.title, text)
+  );
+}
+
+function qualifySubjectlessProjectStatement(title: string, text: string): string {
+  if (!PROJECT_STATEMENT_LEADING_VERB.test(text)) return text;
+  return `${title} ${text[0]?.toLocaleLowerCase("en-US")}${text.slice(1)}`;
+}
+
+const PROJECT_STATEMENT_LEADING_VERB =
+  /^(?:Combines|Connects|Dockerizes|Exports|Keeps|Runs|Separates|Supports|Treats|Uses)\b/u;
+
+type DeterministicAnswerIntent =
+  | "project"
+  | "role"
+  | "capability"
+  | "recommendation"
+  | "boundary"
+  | "source"
+  | "general";
+
+function deterministicAnswerIntent(
+  question: string,
+  selected: readonly PublicCareerEvidenceRecord[],
+): DeterministicAnswerIntent {
+  const normalized = normalizeLookup(question);
+  if (
+    /\b(?:which|what|open)\b.{0,32}\b(?:source|evidence)\b/u.test(normalized) ||
+    /\bsource backs\b/u.test(normalized)
+  ) return "source";
+  if (/\b(?:limits?|limitations?|boundaries|risks?|caveats?|cannot|can t|weaknesses)\b/u
+    .test(normalized)) return "boundary";
+  if (/\b(?:recommendation|reference|testimonial)\b/u.test(normalized)) {
+    return "recommendation";
+  }
+  if (matchPublicProjectEntityPath(selected, question)) return "project";
+  if (/\b(?:role|position|job|employer|career|worked at|work at)\b/u.test(normalized)) {
+    return "role";
+  }
+  if (/\b(?:skill|capability|experience|technology|technical|design|build|built|how)\b/u
+    .test(normalized)) return "capability";
+  if (selected.some((record) =>
+    record.citation.title.startsWith("Recommendation from ")
+  )) return "recommendation";
+  return "general";
+}
+
+const DETERMINISTIC_ANSWER_OPENINGS: Readonly<Record<
+  DeterministicAnswerIntent,
+  () => string
+>> = {
+  project: () => PUBLIC_JOLENE_DETERMINISTIC_COPY.openings.project,
+  role: () => PUBLIC_JOLENE_DETERMINISTIC_COPY.openings.role,
+  capability: () => PUBLIC_JOLENE_DETERMINISTIC_COPY.openings.capability,
+  recommendation: () =>
+    PUBLIC_JOLENE_DETERMINISTIC_COPY.openings.recommendation,
+  boundary: () => PUBLIC_JOLENE_DETERMINISTIC_COPY.openings.boundary,
+  source: () => "The strongest published sources here are:",
+  general: () => PUBLIC_JOLENE_DETERMINISTIC_COPY.openings.general,
+};
+
+function composeBoundedEvidenceSummary(
+  prefix: string,
+  statements: readonly string[],
+): string {
+  let answer = prefix;
+  for (const statement of statements
+    .slice(0, DETERMINISTIC_SUMMARY_STATEMENTS)
+  ) {
+    const label = " ";
+    const available = PUBLIC_PORTFOLIO_ANSWER_LIMITS.answerCharacters -
+      answer.length - label.length;
+    const normalized = boundedStatement(statement, available);
+    if (!normalized) break;
+    const candidate = `${answer}${label}${normalized}`;
+    if (candidate.length > PUBLIC_PORTFOLIO_ANSWER_LIMITS.answerCharacters) break;
+    answer = candidate;
+  }
+  return answer;
+}
+
+const DETERMINISTIC_SUMMARY_STATEMENTS = 2;
+
+function boundedStatement(value: string, available: number): string {
+  const normalized = terminateSentence(value.replace(/\s+/gu, " ").trim());
+  if (normalized.length <= available) return normalized;
+  if (available < 2) return "";
+  const candidate = normalized.slice(0, available - 1).trimEnd();
+  const lastWordBoundary = candidate.lastIndexOf(" ");
+  const bounded = lastWordBoundary > available / 2
+    ? candidate.slice(0, lastWordBoundary)
+    : candidate;
+  return `${bounded}…`;
+}
+
+function terminateSentence(value: string): string {
+  return /[.!?]["”']?$/u.test(value) ? value : `${value}.`;
 }
 
 function boundedHiringValueAnswer(
   selected: readonly PublicCareerEvidenceRecord[],
+  negativeQuestion = false,
 ): string {
   const categories = new Set(selected.map(hiringCategory));
   const strengths = HIRING_CATEGORY_PRIORITY
     .filter((category) => categories.has(category))
     .map((category) => HIRING_CATEGORY_SUMMARIES[category]);
-  return `Carl may be worth considering for roles that value ${formatNaturalList(strengths)}. The examples below show what he has actually done and where the evidence has limits.`;
+  if (negativeQuestion) {
+    return `Don’t hire Carl because a portfolio assistant told you to. The material here is strongest on ${formatNaturalList(strengths)}; if the role centers somewhere else, compare the job description and test that gap directly in an interview. That is more useful than putting a bow on an unknown.`;
+  }
+  return `Short answer: Carl is useful where product design and engineering need to stop waving across the hallway and build the same thing. The material below points to ${formatNaturalList(strengths)}. That is a strong shape for the right role, not a magic fit for every role; a job description will show whether it fits yours.`;
 }
 
 const HIRING_CATEGORY_SUMMARIES: Readonly<Record<

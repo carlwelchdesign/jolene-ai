@@ -17,6 +17,11 @@ export const PUBLIC_PORTFOLIO_ANSWER_LIMITS = {
   claimLimitations: 8,
 } as const;
 
+export const PUBLIC_CONVERSATION_CONTEXT_LIMITS = {
+  turns: 4,
+  lifetimeSeconds: 15 * 60,
+} as const;
+
 export const PUBLIC_PORTFOLIO_JOB_FIT_LIMITS = {
   jobDescriptionCharacters: 12_000,
   requirements: 24,
@@ -47,10 +52,29 @@ export const PUBLIC_JOLENE_ERROR_LIMITS = {
   supportedSchemaVersions: 4,
 } as const;
 
+export const publicConversationContextSchema = z.object({
+  corpusVersion: z.string().regex(/^career:[a-f0-9]{64}$/),
+  projectPath: siteRelativePublicHrefSchema.refine(
+    (value) => /^\/work\/[a-z0-9-]+$/u.test(value),
+    { message: "Conversation project path must identify a published work page." },
+  ).optional(),
+  evidenceIds: z.array(careerEvidenceIdSchema).min(1).max(
+    PUBLIC_PORTFOLIO_ANSWER_LIMITS.responseItems,
+  ).optional(),
+  turnCount: z.number().int().min(1).max(
+    PUBLIC_CONVERSATION_CONTEXT_LIMITS.turns,
+  ),
+  expiresAt: z.string().datetime({ offset: true }),
+}).strict().refine(
+  (context) => Boolean(context.projectPath || context.evidenceIds?.length),
+  { message: "Conversation context must contain a public project or evidence anchor." },
+);
+
 export const portfolioAnswerRequestSchema = z.object({
   question: z.string().trim().min(1).max(
     PUBLIC_PORTFOLIO_ANSWER_LIMITS.questionCharacters,
   ),
+  conversationContext: publicConversationContextSchema.optional(),
 }).strict();
 
 const publicAnswerClaimSchema = z.object({
@@ -92,6 +116,7 @@ export const portfolioAnswerResponseSchema = z.object({
   ),
   suggestedFollowUpQuestions: z.array(z.string().trim().min(1).max(240)).max(4),
   corpusVersion: z.string().regex(/^career:[a-f0-9]{64}$/),
+  conversationContext: publicConversationContextSchema.optional(),
 }).strict().superRefine((response, context) => {
   const citationIds = new Set(
     response.citations.map((citation) => citation.evidenceId),
@@ -110,6 +135,16 @@ export const portfolioAnswerResponseSchema = z.object({
         message: "Every claim evidence ID must resolve to a returned citation.",
       });
     }
+  }
+  if (
+    response.conversationContext &&
+    response.conversationContext.corpusVersion !== response.corpusVersion
+  ) {
+    context.addIssue({
+      code: "custom",
+      path: ["conversationContext", "corpusVersion"],
+      message: "Conversation context must use the response corpus version.",
+    });
   }
 });
 
@@ -253,6 +288,9 @@ export const publicJoleneErrorResponseSchema = z.object({
 
 export type PortfolioAnswerRequest = z.infer<
   typeof portfolioAnswerRequestSchema
+>;
+export type PublicConversationContext = z.infer<
+  typeof publicConversationContextSchema
 >;
 export type PortfolioAnswerResponse = z.infer<
   typeof portfolioAnswerResponseSchema

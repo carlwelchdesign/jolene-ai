@@ -149,7 +149,9 @@ class LocalJoleneEvaluationResponder implements ConversationalQualityResponder {
           label: citation.title,
         })),
         followUps: execution.response.suggestedFollowUpQuestions,
-        mode: execution.mode === "budget_fallback" ? "fallback" : execution.mode,
+        mode: execution.mode === "model" || execution.mode === "deterministic"
+          ? execution.mode
+          : "fallback",
       };
     }
 

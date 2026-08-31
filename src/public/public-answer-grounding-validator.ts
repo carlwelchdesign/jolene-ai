@@ -52,6 +52,11 @@ export class PublicAnswerGroundingValidator
     const revoked = new Set(artifact.manifest.revokedEvidenceIds);
     const conflicted = new Set(artifact.conflicts.flatMap((item) => item.evidenceIds));
 
+    if (parsed.data.presentation) {
+      const presentationFailure = validatePresentation(parsed.data.presentation);
+      if (presentationFailure) return rejected(presentationFailure, null, startedAt);
+    }
+
     for (const [index, segment] of parsed.data.segments.entries()) {
       if (elapsed(startedAt) > PUBLIC_ANSWER_GROUNDING_LIMITS.validationMilliseconds) {
         return rejected("validation_timeout", index, startedAt);
@@ -73,14 +78,17 @@ export class PublicAnswerGroundingValidator
           return rejected("support_id_conflicted", index, startedAt);
         }
       }
-      const prohibited = prohibitedReason(segment.text);
-      if (prohibited) return rejected(prohibited, index, startedAt);
       const records = segment.supportIds.map((id) => active.get(id)!);
+      const prohibited = prohibitedReason(segment.text, records);
+      if (prohibited) return rejected(prohibited, index, startedAt);
       const entailmentFailure = validateEntailment(segment.text, records);
       if (entailmentFailure) return rejected(entailmentFailure, index, startedAt);
     }
 
-    const answer = parsed.data.segments.map((segment) => segment.text).join("\n\n");
+    const answer = [
+      parsed.data.presentation,
+      ...parsed.data.segments.map((segment) => segment.text),
+    ].filter((value): value is string => Boolean(value)).join("\n\n");
     const candidate = { ...baseline, answer };
     const baselineSnapshot = createPublicAnswerFallbackSnapshot(artifact, baseline);
     const candidateSnapshot = createPublicAnswerFallbackSnapshot(artifact, {
@@ -111,6 +119,23 @@ export class PublicAnswerGroundingValidator
   }
 }
 
+function validatePresentation(
+  text: string,
+): PublicAnswerGroundingReasonCode | null {
+  if (materialSentenceCount(text) !== 1) return "unsupported_segment";
+  const words = text.match(/[\p{L}\p{N}’'-]+/gu) ?? [];
+  if (words.length < 2 || words.length > 8) return "unsupported_segment";
+  const prohibited = prohibitedReason(text, []);
+  if (prohibited) return prohibited;
+  const normalized = normalize(text);
+  if (
+    /\d/u.test(text) ||
+    PRESENTATION_FACT_PATTERN.test(normalized) ||
+    PRESENTATION_NAMED_TERM_PATTERN.test(normalized)
+  ) return "unsupported_segment";
+  return null;
+}
+
 function validateEntailment(
   text: string,
   records: readonly PublicCareerEvidenceRecord[],
@@ -133,22 +158,29 @@ function validateEntailment(
     const coverage = overlap / terms.length;
     const sourceNormalized = normalize(sourceText);
     const boundaryMatches = CONTRIBUTION_BOUNDARY_TERMS.every((term) =>
-      !containsTerm(normalizedText, term) || containsTerm(sourceNormalized, term)
+      !containsTerm(normalizedText, term) ||
+      sourceContainsContributionTerm(sourceNormalized, term)
     );
     if (!boundaryMatches) continue;
     const numbersMatch = numbers.every((number) => sourceNormalized.includes(number));
     const negationMatches = !hasNegation ||
-      /\b(?:no|not|never|without)\b/u.test(sourceNormalized);
-    if (overlap >= 2 && coverage >= 0.6 && numbersMatch && negationMatches) {
+      /\b(?:no|not|never|without)\b/u.test(sourceNormalized) ||
+      (
+        BOUNDARY_SEPARATION_PATTERN.test(normalizedText) &&
+        BOUNDARY_SEPARATION_PATTERN.test(sourceNormalized)
+      );
+    if (overlap >= 2 && coverage >= 0.5 && numbersMatch && negationMatches) {
       supported = true;
     }
   }
   if (!supported && CONTRIBUTION_BOUNDARY_TERMS.some((term) =>
-    containsTerm(normalizedText, term) && !records.some((record) => containsTerm(normalize([
-      record.claim.text,
-      ...record.claim.limitations,
-      record.citation.title,
-    ].join(" ")), term))
+    containsTerm(normalizedText, term) && !records.some((record) =>
+      sourceContainsContributionTerm(normalize([
+        record.claim.text,
+        ...record.claim.limitations,
+        record.citation.title,
+      ].join(" ")), term)
+    )
   )) return "contribution_boundary_violation";
   if (!supported) return "unsupported_segment";
 
@@ -165,13 +197,48 @@ function validateEntailment(
   return null;
 }
 
-function prohibitedReason(text: string): PublicAnswerGroundingReasonCode | null {
+function sourceContainsContributionTerm(source: string, term: string): boolean {
+  return containsTerm(source, term) ||
+    (term === "led" && /\b(?:lead|leading|leadership)\b/u.test(source));
+}
+
+function prohibitedReason(
+  text: string,
+  records: readonly PublicCareerEvidenceRecord[],
+): PublicAnswerGroundingReasonCode | null {
   const normalized = securityNormalize(text);
   if (hasAlternateEncoding(text)) return "prompt_or_policy_leakage";
   for (const [reason, patterns] of PROHIBITED_PATTERNS) {
+    if (
+      reason === "private_or_contact_disclosure" &&
+      isSupportedNegativePrivacyBoundary(normalized, records)
+    ) continue;
     if (patterns.some((pattern) => pattern.test(normalized))) return reason;
   }
   return null;
+}
+
+function isSupportedNegativePrivacyBoundary(
+  normalizedText: string,
+  records: readonly PublicCareerEvidenceRecord[],
+): boolean {
+  if (ALWAYS_PRIVATE_VALUE_PATTERNS.some((pattern) => pattern.test(normalizedText))) {
+    return false;
+  }
+  const mentionedTerms = SENSITIVE_BOUNDARY_TERMS.filter((term) =>
+    containsTerm(normalizedText, term)
+  );
+  if (mentionedTerms.length === 0 || !NEGATIVE_BOUNDARY_PATTERN.test(normalizedText)) {
+    return false;
+  }
+  return mentionedTerms.every((term) => records.some((record) => {
+    const source = normalize([
+      record.claim.text,
+      ...record.claim.limitations,
+      record.citation.title,
+    ].join(" "));
+    return containsTerm(source, term) && NEGATIVE_BOUNDARY_PATTERN.test(source);
+  }));
 }
 
 function securityNormalize(value: string): string {
@@ -231,9 +298,39 @@ const GROUNDING_STOP_WORDS = new Set([
   "with", "work",
 ]);
 
+const PRESENTATION_FACT_PATTERN =
+  /\b(?:i|you|he|she|it|we|they|this|that|these|those|him|her|them|his|hers|their|built|created|designed|directed|worked|led|managed|uses|used|knows|qualified|experienced|available|hire|employ|client|award|won|can|will|should|must|guarantee|is|was|has|did)\b/u;
+
+const PRESENTATION_NAMED_TERM_PATTERN =
+  /\b(?:carl|jolene|openai|chatgpt|slack|obsidian|sqlite|vercel|react|typescript|javascript|docker|mcp|rag)\b/u;
+
 const CONTRIBUTION_BOUNDARY_TERMS = [
   "sole", "solely", "independently", "led", "owned",
   "employer", "employed", "client", "award", "won",
+] as const;
+
+const SENSITIVE_BOUNDARY_TERMS = [
+  "obsidian",
+  "private memory",
+  "sqlite",
+  "api key",
+  "token",
+  "password",
+] as const;
+
+const NEGATIVE_BOUNDARY_PATTERN =
+  /\b(?:cannot|can't|does not|doesn't|never|no|not|without|excluded|separate|outside|different|kept out|stays private)\b/u;
+
+const BOUNDARY_SEPARATION_PATTERN =
+  /\b(?:separate|different|private|public|isolated|boundary)\b/u;
+
+const ALWAYS_PRIVATE_VALUE_PATTERNS = [
+  /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/iu,
+  /(?:\+?1[\s.-]?)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}\b/u,
+  /\b(?:sk-[A-Za-z0-9_-]{16,}|xox[baprs]-[A-Za-z0-9-]{10,}|ghp_[A-Za-z0-9]{20,})\b/u,
+  /(?:^|\s)\/(?:users|home|private|var|volumes)\//u,
+  /\b(?:file|obsidian):\/\//u,
+  /\bhttps?:\/\/(?:localhost|127\.0\.0\.1)\b/u,
 ] as const;
 
 function containsTerm(normalized: string, term: string): boolean {

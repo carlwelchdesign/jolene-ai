@@ -1,0 +1,96 @@
+{
+  "schemaVersion": "jolene.public-project-dossier.v1",
+  "project": {
+    "slug": "jolene-ai",
+    "name": "Jolene AI",
+    "status": "Private chief-of-staff agent with an isolated public portfolio delegate",
+    "summary": "A governed AI system Carl designed to combine useful model reasoning with reviewed evidence, durable memory, explicit action boundaries, and a warm, recognizable personality.",
+    "publicCitationBase": "/work/jolene-ai"
+  },
+  "claims": [
+    {
+      "id": "architecture",
+      "topic": "architecture",
+      "text": "Carl designed Jolene as one portable agent core behind private local, Slack, scheduled-work, and public portfolio adapters, while keeping the public delegate physically separated from private memory and tools.",
+      "citation": { "title": "Jolene architecture", "href": "/work/jolene-ai#evidence--portfolio--claim--jolene-ai--architecture" },
+      "sourceEvidence": ["plans/JOLENE_SYSTEM_ARCHITECTURE_PLAN.md", "docs/build-brief.md"]
+    },
+    {
+      "id": "model",
+      "topic": "model",
+      "text": "Jolene uses OpenAI for grounded answer synthesis through the Responses API, with structured outputs, bounded time and token budgets, no model tools on the public path, and deterministic validation before an answer can be shown.",
+      "citation": { "title": "Jolene model boundary", "href": "/work/jolene-ai#evidence--portfolio--claim--jolene-ai--model" },
+      "sourceEvidence": ["docs/public-delegate.md", "src/public/openai-public-answer-generator.ts"]
+    },
+    {
+      "id": "rag",
+      "topic": "rag",
+      "text": "The public assistant uses hybrid retrieval over only the approved public artifact, combining lexical and semantic ranks in a bounded in-memory index instead of adding a separate vector database for a small corpus.",
+      "citation": { "title": "Jolene public RAG", "href": "/work/jolene-ai#evidence--portfolio--claim--jolene-ai--rag" },
+      "sourceEvidence": ["docs/public-delegate.md", "src/public/hybrid-public-evidence-retriever.ts"]
+    },
+    {
+      "id": "corpus",
+      "topic": "corpus",
+      "text": "Public career knowledge is exported as a versioned, hash-verified, deny-by-default artifact with review timestamps and revocation continuity; private career evidence and raw Obsidian content never enter that artifact.",
+      "citation": { "title": "Jolene evidence corpus", "href": "/work/jolene-ai#evidence--portfolio--claim--jolene-ai--corpus" },
+      "sourceEvidence": ["docs/career-evidence.md", "src/domain/public-career-evidence.ts"]
+    },
+    {
+      "id": "security",
+      "topic": "security",
+      "text": "Jolene treats visitor prompts, retrieved notes, imported text, and tool results as untrusted data, applies prompt-injection and disclosure checks, and either keeps public actions read-only or requires Carl to approve the exact action.",
+      "citation": { "title": "Jolene security boundaries", "href": "/work/jolene-ai#evidence--portfolio--claim--jolene-ai--security" },
+      "sourceEvidence": ["docs/untrusted-content-envelopes.md", "docs/tool-call-authorization.md", "docs/public-delegate-evaluation.md"]
+    },
+    {
+      "id": "personality",
+      "topic": "personality",
+      "text": "Carl directed a transcript-backed personality research program that produced a character graph, behavior specification, evaluated runtime bundle, and neutral rollback so warmth, wit, kindness, and candor remain separate from factual grounding.",
+      "citation": { "title": "Jolene personality system", "href": "/work/jolene-ai#evidence--portfolio--claim--jolene-ai--personality" },
+      "sourceEvidence": ["docs/personality-character-graph.md", "docs/personality-renderer.md", "docs/personality-text-pilot.md"]
+    },
+    {
+      "id": "docker",
+      "topic": "docker",
+      "text": "The private runtime is Dockerized as separate API, Slack, and monitoring processes sharing durable SQLite state, while the public delegate uses a different image, state volume, environment, and network boundary.",
+      "citation": { "title": "Jolene Docker runtime", "href": "/work/jolene-ai#evidence--portfolio--claim--jolene-ai--docker" },
+      "sourceEvidence": ["docs/docker.md", "compose.yaml", "compose.public.yaml"]
+    },
+    {
+      "id": "slack",
+      "topic": "slack",
+      "text": "Jolene connects to Slack through Socket Mode for Carl's verified owner direct messages and explicit mentions, with channel-aware disclosure policy and a durable delivery ledger that avoids duplicate model calls during retries.",
+      "citation": { "title": "Jolene Slack adapter", "href": "/work/jolene-ai#evidence--portfolio--claim--jolene-ai--slack" },
+      "sourceEvidence": ["docs/slack-setup.md", "docs/slack-vault-disclosure-policy.md"]
+    },
+    {
+      "id": "portfolio-bff",
+      "topic": "portfolio_bff",
+      "text": "The portfolio talks to Jolene through a same-origin backend-for-frontend that holds the shared bearer token server-side and forwards only bounded public answer, evidence-manifest, and job-fit contracts to an isolated hosted delegate.",
+      "citation": { "title": "Jolene portfolio integration", "href": "/work/jolene-ai#evidence--portfolio--claim--jolene-ai--portfolio-bff" },
+      "sourceEvidence": ["docs/public-delegate.md", "src/domain/public-portfolio-contract.ts"]
+    },
+    {
+      "id": "deployment",
+      "topic": "deployment",
+      "text": "Carl separated build, evaluation, preview, production promotion, corpus pinning, and rollback proof into distinct release gates; a successful local or preview check is not represented as a production release.",
+      "citation": { "title": "Jolene release system", "href": "/work/jolene-ai#evidence--portfolio--claim--jolene-ai--deployment" },
+      "sourceEvidence": ["docs/public-delegate.md", "plans/JOLENE_SYSTEM_ARCHITECTURE_PLAN.md"]
+    },
+    {
+      "id": "carl-role",
+      "topic": "carl_role",
+      "text": "Carl originated Jolene's product direction and directed its architecture, evidence policy, personality goals, safety boundaries, implementation priorities, evaluation standards, and release decisions across a multi-agent development process.",
+      "citation": { "title": "Carl's role building Jolene", "href": "/work/jolene-ai#evidence--portfolio--claim--jolene-ai--carl-role" },
+      "sourceEvidence": ["plans/JOLENE_SYSTEM_ARCHITECTURE_PLAN.md", "plans/JOLENE_PERSONALITY_RESEARCH_AND_SPECIFICATION_PLAN.md", "plans/JOLENE_WORLD_CLASS_CHAT_AGENT_RECOVERY_PLAN.md"]
+    },
+    {
+      "id": "limitations",
+      "topic": "limitations",
+      "text": "Public Jolene cannot read Carl's private Obsidian vault, private memory, Slack, SQLite, or MCP tools; voice remains future work, and consequential external actions remain disabled or subject to separate human authorization.",
+      "citation": { "title": "What public Jolene can and cannot do", "href": "/work/jolene-ai#evidence--portfolio--claim--jolene-ai--limitations" },
+      "sourceEvidence": ["docs/public-delegate.md", "docs/action-approvals.md", "plans/JOLENE_WORLD_CLASS_CHAT_AGENT_RECOVERY_PLAN.md"]
+    }
+  ]
+}

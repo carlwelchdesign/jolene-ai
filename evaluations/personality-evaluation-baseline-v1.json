@@ -9,9 +9,9 @@
     "conversationalQualitySuiteVersion": "1.0.0",
     "invarianceSuiteVersion": "jolene.personality-invariance-suite.v1",
     "rendererSchemaVersion": "jolene.personality-renderer.v1",
-    "runtimePersonalityPolicyVersion": "jolene.runtime-personality.v2",
+    "runtimePersonalityPolicyVersion": "jolene.runtime-personality.v4",
     "runtimePersonalityAdmissionsVersion": "jolene.runtime-personality-admissions.v1",
-    "runtimePolicyFingerprint": "sha256:afbbac5bb31cfa59e135e2f10654daf844d6b2b16b9a50843276d305e8e544fc"
+    "runtimePolicyFingerprint": "sha256:b48642a36125ecd2a70fe9e873a7e1ec9e72d14918875c6aff7b40dabcf49651"
   },
   "coverage": {
     "behaviorContexts": [
@@ -91,5 +91,5 @@
     "runtimeActivation": "not-authorized-by-this-baseline",
     "deployment": "separate-release-gate"
   },
-  "evaluationFingerprint": "sha256:18968c77c449a4d62bfa8dfe25644de505652bf91b8fe795c604e646468a91fc"
+  "evaluationFingerprint": "sha256:3b1134450d64397a55a54500b1927eab716d5b8d28cc2f57069af0af45b4491a"
 }

@@ -33,6 +33,13 @@ hosted activation, deployed corpus, or voice implementation.
 
 The canonical whole-agent architecture is defined in [JOLENE_SYSTEM_ARCHITECTURE_PLAN.md](./JOLENE_SYSTEM_ARCHITECTURE_PLAN.md).
 
+The production public-chat recovery and hosted personality activation gates are
+now defined in
+[`JOLENE_WORLD_CLASS_CHAT_AGENT_RECOVERY_PLAN.md`](./JOLENE_WORLD_CLASS_CHAT_AGENT_RECOVERY_PLAN.md).
+That plan treats the live raw-claim concatenation response as a blocking incident,
+requires one personality layer after factual validation on every supported path,
+and separates text recovery from the later voice project.
+
 ## Outcome and success criteria
 
 The work is successful when Jolene:

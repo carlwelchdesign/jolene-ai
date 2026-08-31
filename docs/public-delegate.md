@@ -198,7 +198,11 @@ separate, older release and is not changed by this local work.
 - `GET /v1/public-evidence/manifest` returns the exact frozen v1 manifest.
 - `POST /v1/portfolio/answer` accepts strict JSON with a question of at most
   800 characters. It returns at most five exact exported claims and their
-  site-relative citations.
+  site-relative citations. Successful responses also include content-free
+  `X-Jolene-Answer-Mode` and `X-Jolene-Response-Kind` diagnostics so the
+  server-side BFF and operations checks can distinguish a generated answer,
+  deterministic answer, degraded clarification, no-evidence response, or
+  policy refusal without inspecting or logging visitor prose.
 - `POST /v1/portfolio/job-fit` accepts strict JSON with a job description of at
   most 12,000 characters. It returns at most 24 bounded requirements,
   conservative assessments, and resolving site-relative public citations.
@@ -231,8 +235,17 @@ Carl's name is treated as non-discriminating so it cannot pull unrelated records
 into a specific answer. Question text is never executed or copied into the
 response. When no reviewed public claim matches—including for unsupported or
 injection-like input—the service returns an explicit no-evidence response.
-Version 1 has no session field or transcript continuity; questions and job
-descriptions remain ephemeral inputs.
+Version 1 has no opaque session or transcript persistence. Answer requests may
+echo a short-lived `conversationContext` containing only the exact public corpus
+version, one published `/work/<slug>` project path, a turn count capped at four,
+and a 15-minute expiry. The service uses it only for ambiguous follow-ups such as
+“What about its security?”; it never carries prior questions, answers, job
+descriptions, visitor identifiers, or private-memory references. Stale-corpus,
+expired, exhausted, unknown-project, hiring, recommendation-relationship,
+private-disclosure, and injection-bearing turns ignore the prior referent. The
+context is returned to the caller but is not written to the public audit ledger
+or any server-side conversation store. Questions and job descriptions remain
+ephemeral inputs.
 
 ## Grounded answer synthesis and public hybrid RAG
 
@@ -242,12 +255,21 @@ is explicitly set to `openai` and `.env.public.local` contains a non-empty
 `OPENAI_API_KEY`. The public process does not read `.env.local`, and setup does
 not copy the private service key into the public environment.
 
-With `JOLENE_PUBLIC_RETRIEVAL_MODE=hybrid`, the delegate embeds the 41 approved
-public records once per warm runtime, embeds each visitor question, and combines
+With `JOLENE_PUBLIC_RETRIEVAL_MODE=hybrid`, the delegate embeds the approved
+public artifact once per warm runtime, embeds each visitor question, and combines
 semantic and deterministic ranks with reciprocal-rank fusion. This is public
 RAG without a separate vector database: the corpus is small enough for a
 bounded in-memory vector index. Provider failure falls back to deterministic
 selection. Sensitive/private-information requests bypass embeddings.
+
+Explicit project names are resolved before generic lexical or semantic ranking.
+The resolver normalizes human aliases such as `Jolene`, `Flight Tracker`, and
+`Job Search`, expands the project-to-claim relationship through site-relative
+case-study citations, and keeps semantic reranking inside that project. This
+prevents an embedding or repeated keyword in another case study from displacing
+the named project's evidence. Generic queries retain deterministic tie-breaking;
+queries with no grounded lexical or semantic support clarify instead of filling
+the answer with low-confidence records.
 
 For a supported question, the answer provider receives only the visitor's
 question, current public corpus version, and each selected public evidence ID,
@@ -258,18 +280,27 @@ private memory, private relationships, or private retrieval results.
 
 The adapter uses the Responses API with `store: false`, no tools, a bounded
 output budget, a bounded timeout, and a strict versioned JSON schema containing
-single-sentence segments with exact selected evidence IDs. A deterministic
+an optional bounded non-factual presentation plus single-sentence segments with
+exact selected evidence IDs. In Jolene mode, an ordinary low-risk answer may
+open with one subject-free image fragment of at most eight words. That fragment
+cannot contain names, pronouns, factual verbs, numbers, technologies, private
+terms, promises, qualifications, or contact material. Neutral mode removes it
+in code even if a provider returns one. Warm clarification, no-evidence,
+privacy, conflict, and skeptical-hiring fallbacks remain useful without relying
+on model output. A deterministic
 validator checks corpus/revocation/conflict state, support substitution,
 prohibited behavior, contribution boundaries, and conservative lexical
 entailment before joining accepted segments. The existing deterministic
 response owns every other field:
 claims, citations, limitations, follow-up questions, and corpus version cannot
-be replaced by model output. Provider failure, timeout, refusal, malformed
-JSON, empty or oversized text, unsupported prose, poisoned-evidence
-instructions, or validator failure returns the exact deterministic answer. The
-audit ledger records only fixed
-`model_supported` or `model_fallback` outcomes and never submitted or generated
-content.
+be replaced by model output. A supported specialized deterministic answer may
+still be returned when generation degrades. A generic claim-concatenation
+fallback is never presented as an answer: provider failure, timeout, refusal,
+malformed JSON, empty or oversized text, unsupported prose, poisoned-evidence
+instructions, or validator failure returns a citation-free clarification
+instead. The audit ledger records only fixed `model_supported`,
+`provider_fallback`, or `validation_fallback` outcomes plus the content-free
+answer mode and response kind; it never records submitted or generated content.
 
 `store: false` is an API request control, not a promise about every aspect of a
 provider's processing or retention. Visitor questions remain untrusted external
@@ -281,9 +312,10 @@ stores only its schema version, window start, and aggregate request count. It is
 consulted only after deterministic evidence selection finds support, so
 no-evidence requests consume no budget and never call the provider. Each
 admitted provider attempt is counted before generation, including failures.
-Exhausted, corrupt, or unavailable budget state bypasses the provider and
-returns the exact deterministic answer with the fixed
-`model_budget_fallback` audit outcome. The default cap is 100 attempts per
+Exhausted, corrupt, or unavailable budget state bypasses the provider. It
+returns a supported specialized deterministic answer when one exists, or the
+same citation-free clarification used for unsafe generic fallback. The fixed
+audit outcome is `budget_fallback`. The default cap is 100 attempts per
 fixed 24-hour window; changing it is an operational decision, not permission
 to enable model mode.
 
