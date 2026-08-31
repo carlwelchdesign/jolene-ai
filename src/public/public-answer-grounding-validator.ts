@@ -181,7 +181,7 @@ function validateEntailment(
         BOUNDARY_SEPARATION_PATTERN.test(normalizedText) &&
         BOUNDARY_SEPARATION_PATTERN.test(sourceNormalized)
       );
-    if (overlap >= 2 && coverage >= 0.5 && numbersMatch && negationMatches) {
+    if (overlap >= 2 && coverage >= 0.3 && numbersMatch && negationMatches) {
       supported = true;
     }
   }
