@@ -1250,6 +1250,9 @@ const CAREER_CHAPTER_ORDER = [
   "Career chapter: Current independent products",
 ] as const;
 
+const PUBLIC_CAREER_MULTI_CHAPTER_LIMITATION =
+  "Career scope: This is a representative public summary of documented delivery, not an exhaustive inventory of every project." as const;
+
 function careerChapterPriority(title: string): number {
   const index = CAREER_CHAPTER_ORDER.indexOf(
     title as (typeof CAREER_CHAPTER_ORDER)[number],
@@ -1535,6 +1538,22 @@ function supportedResponse(
   const riskHandlingQuestion = isRiskHandlingQuestion(question);
   const shippedWorkQuestion = isShippedWorkQuestion(question);
   const careerArcQuestion = isCareerArcQuestion(question);
+  const spansMultipleCareerChapters = selected.filter((record) =>
+    record.claim.limitations.includes(PUBLIC_CAREER_CHAPTER_LIMITATION)
+  ).length > 1;
+  const claims = selected.map((record) => {
+    const claim = visitorFacingClaim(record.claim);
+    return spansMultipleCareerChapters
+      ? {
+        ...claim,
+        limitations: claim.limitations.map((limitation) =>
+          limitation === PUBLIC_CAREER_CHAPTER_LIMITATION
+            ? PUBLIC_CAREER_MULTI_CHAPTER_LIMITATION
+            : limitation
+        ),
+      }
+      : claim;
+  });
   return portfolioAnswerResponseSchema.parse({
     schemaVersion: PUBLIC_CAREER_EVIDENCE_SCHEMA_VERSION,
     answer: relationshipFact
@@ -1556,11 +1575,11 @@ function supportedResponse(
       : shouldNameEmployerContext && employerContext
       ? boundedEmployerContextAnswer(employerContext, question, selected)
       : boundedSupportedAnswer(question, selected),
-    claims: selected.map((record) => visitorFacingClaim(record.claim)),
+    claims,
     citations: selected.map((record) => record.citation),
     limitations: unique(hiringValueQuestion || engineerProfileQuestion
       ? ["A hiring decision should still be based on the role, interviews, and direct references."]
-      : visitorFacingLimitations(selected.flatMap((record) => record.claim.limitations)))
+      : visitorFacingLimitations(claims.flatMap((claim) => claim.limitations)))
       .slice(0, PUBLIC_PORTFOLIO_ANSWER_LIMITS.responseLimitations),
     suggestedFollowUpQuestions: suggestPublicFollowUpQuestions({
       question,
