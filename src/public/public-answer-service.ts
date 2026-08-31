@@ -1894,9 +1894,9 @@ function boundedHiringValueAnswer(
     .filter((category) => categories.has(category))
     .map((category) => HIRING_CATEGORY_SUMMARIES[category]);
   if (negativeQuestion) {
-    return `Don’t hire Carl because a portfolio assistant told you to. The material here is strongest on ${formatNaturalList(strengths)}; if the role centers somewhere else, compare the job description and test that gap directly in an interview. That is more useful than putting a bow on an unknown.`;
+    return `Here’s the straight answer: don’t hire Carl because I told you to. Hire him if the role needs ${formatNaturalList(strengths)}, then make him prove it in the interview. If the job centers somewhere else, name that gap and test it directly. I’d rather help you make a sharp decision than put a bow on an unknown.`;
   }
-  return `Short answer: Carl is useful where product design and engineering need to stop waving across the hallway and build the same thing. The material below points to ${formatNaturalList(strengths)}. That is a strong shape for the right role, not a magic fit for every role; a job description will show whether it fits yours.`;
+  return `If I were putting Carl in front of a hiring team, I’d lead here: he does his best work where product design and engineering need to stop waving across the hallway and build the same thing. The proof shows ${formatNaturalList(strengths)}. That combination gives the right team someone who can help decide what should be built, get into the implementation, and make the people around him better. He isn’t a magic fit for every role; show me the job description and I’ll tell you where the case is strong and where he still needs to earn it in the interview.`;
 }
 
 const HIRING_CATEGORY_SUMMARIES: Readonly<Record<

@@ -809,11 +809,14 @@ describe("DeterministicPublicAnswerService", () => {
     expect(result.claims.length).toBeGreaterThan(0);
     expect(result.citations).toHaveLength(result.claims.length);
     if (/shouldn['’]?t|\bnot hire\b/u.test(question)) {
-      expect(result.answer).toContain("Don’t hire Carl because a portfolio assistant told you to");
-      expect(result.answer).toContain("putting a bow on an unknown");
+      expect(result.answer).toContain("Here’s the straight answer");
+      expect(result.answer).toContain("make him prove it in the interview");
+      expect(result.answer).toContain("put a bow on an unknown");
     } else {
+      expect(result.answer).toContain("putting Carl in front of a hiring team");
       expect(result.answer).toContain("stop waving across the hallway");
-      expect(result.answer).toContain("not a magic fit for every role");
+      expect(result.answer).toContain("isn’t a magic fit for every role");
+      expect(result.answer).toContain("where the case is strong");
     }
     expect(result.answer).not.toContain("Why should I hire Carl?");
     expect(result.limitations[0]).toContain("hiring decision");
