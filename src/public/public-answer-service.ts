@@ -3,6 +3,9 @@ import { z } from "zod";
 import { tokenizeLexicalTerms } from "../domain/lexical-terms.js";
 import { PUBLIC_JOLENE_DETERMINISTIC_COPY } from
   "../personality/runtime-personality-policy.js";
+import { framePublicCharacterAnswer } from
+  "../personality/public-character-realization.js";
+import type { PersonalityMode } from "../personality/personality-mode.js";
 import {
   PUBLIC_CAREER_EVIDENCE_SCHEMA_VERSION,
   type PublicCareerEvidenceArtifact,
@@ -177,6 +180,7 @@ export class GroundedPublicAnswerService implements PublicPortfolioAnswerer {
   readonly #budget: PublicModelRequestBudget | undefined;
   readonly #retriever: PublicEvidenceRetriever | undefined;
   readonly #validator: PublicAnswerGroundingValidatorLike;
+  readonly #personalityMode: PersonalityMode;
 
   constructor(
     private readonly generator: PublicAnswerTextGenerator,
@@ -185,12 +189,14 @@ export class GroundedPublicAnswerService implements PublicPortfolioAnswerer {
       readonly budget?: PublicModelRequestBudget;
       readonly retriever?: PublicEvidenceRetriever;
       readonly validator?: PublicAnswerGroundingValidatorLike;
+      readonly personalityMode?: PersonalityMode;
     } = {},
   ) {
     this.#baseline = options.baseline ?? new DeterministicPublicAnswerService();
     this.#budget = options.budget;
     this.#retriever = options.retriever;
     this.#validator = options.validator ?? new PublicAnswerGroundingValidator();
+    this.#personalityMode = options.personalityMode ?? "neutral";
   }
 
   async execute(
@@ -315,7 +321,14 @@ export class GroundedPublicAnswerService implements PublicPortfolioAnswerer {
         }
         return fallbackExecution(baseline, "validation_fallback");
       }
-      const answer = generatedAnswerSchema.parse(validation.answer);
+      const groundedAnswer = generatedAnswerSchema.parse(validation.answer);
+      const answer = this.#personalityMode === "jolene"
+        ? framePublicCharacterAnswer(
+          request.question,
+          groundedAnswer,
+          2_000,
+        )
+        : groundedAnswer;
       if (containsInternalPublicProcessLanguage(answer)) {
         return fallbackExecution(baseline, "validation_fallback");
       }

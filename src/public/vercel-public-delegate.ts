@@ -181,6 +181,7 @@ function createAnswerService(
     personalityMode: config.JOLENE_PERSONALITY_MODE,
   }), {
     budget: modelBudget,
+    personalityMode: config.JOLENE_PERSONALITY_MODE,
     ...(config.JOLENE_PUBLIC_RETRIEVAL_MODE === "hybrid"
       ? {
         retriever: new HybridPublicEvidenceRetriever(
