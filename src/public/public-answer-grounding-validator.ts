@@ -51,7 +51,7 @@ export class PublicAnswerGroundingValidator
     );
     if (
       segments.length === 0 ||
-      segments.length > PUBLIC_ANSWER_GROUNDING_LIMITS.segments
+      segments.length > PUBLIC_ANSWER_GROUNDING_LIMITS.normalizedSegments
     ) {
       return rejected("output_schema_invalid", null, startedAt);
     }

@@ -15,6 +15,7 @@ export const PUBLIC_ANSWER_GROUNDING_CONTRACT_VERSION = "1.0.0" as const;
 
 export const PUBLIC_ANSWER_GROUNDING_LIMITS = {
   segments: 8,
+  normalizedSegments: 12,
   segmentCharacters: 600,
   presentationCharacters: 120,
   supportIdsPerSegment: PUBLIC_PORTFOLIO_ANSWER_LIMITS.responseItems,
@@ -68,10 +69,10 @@ const publicAnswerGroundingAcceptedSchema = z.object({
   status: z.literal("accepted"),
   contractVersion: z.literal(PUBLIC_ANSWER_GROUNDING_CONTRACT_VERSION),
   segmentCount: z.number().int().positive().max(
-    PUBLIC_ANSWER_GROUNDING_LIMITS.segments,
+    PUBLIC_ANSWER_GROUNDING_LIMITS.normalizedSegments,
   ),
   supportCount: z.number().int().positive().max(
-    PUBLIC_ANSWER_GROUNDING_LIMITS.segments *
+    PUBLIC_ANSWER_GROUNDING_LIMITS.normalizedSegments *
       PUBLIC_ANSWER_GROUNDING_LIMITS.supportIdsPerSegment,
   ),
   elapsedMilliseconds: z.number().int().nonnegative(),
@@ -82,7 +83,7 @@ const publicAnswerGroundingRejectedSchema = z.object({
   contractVersion: z.literal(PUBLIC_ANSWER_GROUNDING_CONTRACT_VERSION),
   reasonCode: publicAnswerGroundingReasonCodeSchema,
   segmentIndex: z.number().int().nonnegative().max(
-    PUBLIC_ANSWER_GROUNDING_LIMITS.segments - 1,
+    PUBLIC_ANSWER_GROUNDING_LIMITS.normalizedSegments - 1,
   ).nullable(),
   elapsedMilliseconds: z.number().int().nonnegative(),
 }).strict();

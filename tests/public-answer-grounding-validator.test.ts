@@ -230,6 +230,30 @@ describe("public answer grounding validator", () => {
     });
   });
 
+  it("validates nine material sentences normalized from eight provider segments", () => {
+    const { artifact, baseline } = setup();
+    const claim = artifact.evidence[0]!.claim.text;
+    const supportIds = [artifact.evidence[0]!.evidenceId];
+    const result = new PublicAnswerGroundingValidator().validate(
+      artifact,
+      baseline,
+      {
+        ...generation(artifact, claim),
+        segments: Array.from({ length: 8 }, (_, index) => ({
+          text: index === 0
+            ? `${claim} Carl's typed React product systems keep review boundaries explicit.`
+            : claim,
+          supportIds,
+        })),
+      },
+    );
+
+    expect(result).toMatchObject({
+      status: "accepted",
+      audit: { status: "accepted", segmentCount: 9, supportCount: 9 },
+    });
+  });
+
   it.each([
     ["wrong corpus", (artifact: PublicCareerEvidenceArtifact) => ({
       ...generation(artifact, artifact.evidence[0]!.claim.text),
