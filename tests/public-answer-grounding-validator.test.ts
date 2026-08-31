@@ -189,6 +189,25 @@ describe("public answer grounding validator", () => {
     )).toMatchObject({ status: "accepted" });
   });
 
+  it("normalizes several supported sentences into separately validated segments", () => {
+    const { artifact, baseline } = setup();
+    const claim = artifact.evidence[0]!.claim.text;
+    const result = new PublicAnswerGroundingValidator().validate(
+      artifact,
+      baseline,
+      generation(
+        artifact,
+        `${claim} Carl's typed React product systems keep review boundaries explicit.`,
+      ),
+    );
+
+    expect(result).toMatchObject({
+      status: "accepted",
+      answer: `${claim}\n\nCarl's typed React product systems keep review boundaries explicit.`,
+      audit: { status: "accepted", segmentCount: 2, supportCount: 2 },
+    });
+  });
+
   it.each([
     ["wrong corpus", (artifact: PublicCareerEvidenceArtifact) => ({
       ...generation(artifact, artifact.evidence[0]!.claim.text),
