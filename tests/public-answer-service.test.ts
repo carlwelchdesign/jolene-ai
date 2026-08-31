@@ -782,6 +782,7 @@ describe("DeterministicPublicAnswerService", () => {
     "Why shouldn't I hire Carl?",
     "Why shouldnt I hire Carl?",
     "Why should I not hire Carl?",
+    "What makes Carl unusually valuable on a product engineering team?",
   ])("answers a broad hiring-decision question with representative reviewed evidence: %s", (question) => {
     const artifact = createPublicEvidenceArtifact([
       createPublicEvidenceRecord(1, {
@@ -824,6 +825,47 @@ describe("DeterministicPublicAnswerService", () => {
     expect(result.suggestedFollowUpQuestions.join(" ")).toMatch(
       /hiring|role|team|interviewer|Carl/iu,
     );
+  });
+
+  it("leads with shipped work when asked for Carl's strongest project", () => {
+    const artifact = createPublicEvidenceArtifact([
+      createPublicEvidenceRecord(1, {
+        text: "Job Search OS combines discovery, fit review, application materials, and tracking in one product.",
+        title: "Job Search OS",
+        href: "/work/job-search-os#evidence",
+        maturity: "production",
+      }),
+      createPublicEvidenceRecord(2, {
+        text: "Job Search OS is a production application built for one person.",
+        title: "Job Search OS",
+        href: "/work/job-search-os#evidence",
+        maturity: "production",
+      }),
+      createPublicEvidenceRecord(3, {
+        text: "Flight Tracker AI brings traffic, weather, hazards, and trajectories into one map-led interface.",
+        title: "Flight Tracker AI",
+        href: "/work/flight-tracker-ai#evidence",
+        maturity: "deployed_demo",
+      }),
+      createPublicEvidenceRecord(4, {
+        text: "Argent is a synthetic concept prototype.",
+        title: "Argent Matchmaking",
+        href: "/work/argent-matchmaking#evidence",
+        maturity: "prototype",
+      }),
+    ]);
+
+    const result = service.answer(artifact, {
+      question: "Tell me about Carl's strongest project.",
+    });
+
+    expect(result.answer).toContain("I’d lead with Job Search OS");
+    expect(result.answer).toContain("Flight Tracker AI");
+    expect(result.answer).not.toContain("Argent");
+    expect(result.citations.every((citation) =>
+      citation.href.startsWith("/work/job-search-os") ||
+      citation.href.startsWith("/work/flight-tracker-ai")
+    )).toBe(true);
   });
 
   it("answers an engineer-profile question directly and names a concrete project", () => {

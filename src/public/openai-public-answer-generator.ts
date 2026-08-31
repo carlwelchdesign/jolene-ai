@@ -7,6 +7,8 @@ import type {
 } from "./public-answer-service.js";
 import { publicJolenePersonalityInstructions } from
   "../personality/runtime-personality-policy.js";
+import { publicCharacterRealizationInstructions } from
+  "../personality/public-character-realization.js";
 import type { PersonalityMode } from "../personality/personality-mode.js";
 import {
   PUBLIC_ANSWER_GROUNDING_CONTRACT_VERSION,
@@ -86,6 +88,7 @@ export class OpenAIPublicAnswerGenerator implements PublicAnswerTextGenerator {
       input,
       this.#model,
       observedAt,
+      this.#personalityMode,
     );
   }
 
@@ -100,6 +103,7 @@ export class OpenAIPublicAnswerGenerator implements PublicAnswerTextGenerator {
       input,
       this.#model,
       observedAt,
+      this.#personalityMode,
     );
     return {
       answer: [
@@ -143,6 +147,9 @@ export function createOpenAIPublicAnswerRequest(options: {
       instructions: [
         "You are Jolene, Carl Welch's public portfolio assistant.",
         ...publicJolenePersonalityInstructions(options.personalityMode),
+        ...((options.personalityMode ?? "jolene") === "jolene"
+          ? publicCharacterRealizationInstructions(input.question)
+          : []),
         "Write two to four short paragraphs using only the supplied reviewed public evidence for factual claims.",
         "Synthesize the evidence into a useful answer instead of reciting, concatenating, or labeling the claims.",
         "Make the strongest honest case for Carl that the evidence permits. Prefer concrete examples, translate the work into visitor or employer value, and explain what it would let a team trust him to tackle.",
@@ -161,7 +168,7 @@ export function createOpenAIPublicAnswerRequest(options: {
         "Keep factual nouns, numbers, roles, technologies, qualifications, and scope close to the cited evidence so every material claim is traceable.",
         "Conversational transitions, contractions, warmth, and one brief clearly figurative phrase are allowed when they add no factual assertion, promise, qualification, or biographical detail.",
         ...((options.personalityMode ?? "jolene") === "jolene"
-          ? ["Set presentation to null. Express Jolene's personality inside the evidence-supported answer through natural rhythm, precise word choice, warmth, candor, and practical judgment—not through a detached opener or flourish."]
+          ? ["Write one coherent spoken answer, not a stack of evidence sentences. Presentation may contain one brief, original, non-factual reaction to the visitor's actual question when the subject is low-risk; otherwise set it to null. Express Jolene's personality throughout the evidence-supported answer through natural rhythm, precise word choice, warmth, candor, and practical judgment—not through a detached flourish."]
           : ["Set presentation to null in neutral mode."]),
         "Presentation is a non-factual conversational aside, not an evidence segment. Use null for skeptical, negative, sensitive, refusal, conflict, error, or high-stakes questions.",
         "Do not put unsupported pleasantries or style-only text in evidence segments; keep the presentation separate and pivot immediately to substance.",
@@ -234,9 +241,12 @@ function externalAiGeneration(
   input: GroundedPublicAnswerInput,
   model: string,
   observedAt: string,
+  personalityMode: PersonalityMode,
 ): PublicAnswerGroundedGeneration {
   const parents = publicGroundedAnswerEnvelopes(input, observedAt);
-  const requestedPresentation = null;
+  const requestedPresentation = personalityMode === "jolene"
+    ? generation.presentation ?? null
+    : null;
   const presentation = requestedPresentation
     ? createPublicExternalAiTextEnvelope({
       answer: requestedPresentation,
