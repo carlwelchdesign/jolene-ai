@@ -208,6 +208,28 @@ describe("public answer grounding validator", () => {
     });
   });
 
+  it("discards a punctuation-only model segment without weakening factual validation", () => {
+    const { artifact, baseline } = setup();
+    const supported = generation(artifact, artifact.evidence[0]!.claim.text);
+    const result = new PublicAnswerGroundingValidator().validate(
+      artifact,
+      baseline,
+      {
+        ...supported,
+        segments: [
+          ...supported.segments,
+          { text: "—", supportIds: supported.segments[0]!.supportIds },
+        ],
+      },
+    );
+
+    expect(result).toMatchObject({
+      status: "accepted",
+      answer: artifact.evidence[0]!.claim.text,
+      audit: { status: "accepted", segmentCount: 1, supportCount: 1 },
+    });
+  });
+
   it.each([
     ["wrong corpus", (artifact: PublicCareerEvidenceArtifact) => ({
       ...generation(artifact, artifact.evidence[0]!.claim.text),

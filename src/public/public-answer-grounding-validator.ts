@@ -50,7 +50,7 @@ export class PublicAnswerGroundingValidator
       materialSentences(segment.text).map((text) => ({ ...segment, text }))
     );
     if (
-      segments.length < parsed.data.segments.length ||
+      segments.length === 0 ||
       segments.length > PUBLIC_ANSWER_GROUNDING_LIMITS.segments
     ) {
       return rejected("output_schema_invalid", null, startedAt);
