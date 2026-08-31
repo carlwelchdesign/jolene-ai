@@ -17,6 +17,8 @@ import {
   type PublicConversationContext,
 } from "../domain/public-portfolio-contract.js";
 import type { PublicModelRequestBudget } from "./public-model-request-budget.js";
+import { suggestPublicFollowUpQuestions } from
+  "./public-conversation-prompts.js";
 import {
   PublicAnswerGroundingValidator,
   type PublicAnswerGroundingValidatorLike,
@@ -107,11 +109,15 @@ export class DeterministicPublicAnswerService
     conversationContext?: PublicConversationContext,
   ): PortfolioAnswerResponse {
     if (isPrivateDisclosureRequest(request.question)) {
-      return privateDisclosureResponse(artifact);
+      return privateDisclosureResponse(artifact, request.question);
     }
     const conversationalTurn = publicConversationalTurn(request.question);
     if (conversationalTurn) {
-      return conversationalTurnResponse(artifact, conversationalTurn);
+      return conversationalTurnResponse(
+        artifact,
+        conversationalTurn,
+        request.question,
+      );
     }
     const hiringValueQuestion = isHiringValueQuestion(request.question);
     const engineerProfileQuestion = isEngineerProfileQuestion(request.question);
@@ -134,9 +140,9 @@ export class DeterministicPublicAnswerService
     );
 
     const response = conflict
-      ? conflictResponse(artifact)
+      ? conflictResponse(artifact, request.question, conversationContext)
       : selected.length === 0
-      ? noEvidenceResponse(artifact)
+      ? noEvidenceResponse(artifact, request.question, conversationContext)
       : supportedResponse(
         artifact,
         request.question,
@@ -145,6 +151,7 @@ export class DeterministicPublicAnswerService
         engineerProfileQuestion,
         negativeHiringQuestion,
         relationshipFact,
+        conversationContext,
       );
     const contextEvidence = engineerProfileQuestion
       ? selected.filter((record) =>
@@ -1286,6 +1293,7 @@ function supportedResponse(
   engineerProfileQuestion = false,
   negativeHiringQuestion = false,
   relationshipFact: RecommendationRelationshipFact | null = null,
+  conversationContext?: PublicConversationContext,
 ): PortfolioAnswerResponse {
   const employerContext = selected
     .map(recommendationRelationshipFact)
@@ -1321,25 +1329,12 @@ function supportedResponse(
       ? ["A hiring decision should still be based on the role, interviews, and direct references."]
       : visitorFacingLimitations(selected.flatMap((record) => record.claim.limitations)))
       .slice(0, PUBLIC_PORTFOLIO_ANSWER_LIMITS.responseLimitations),
-    suggestedFollowUpQuestions: relationshipFact
-      ? [
-        `Would you like to read ${relationshipFact.subject}’s full recommendation?`,
-        "Would you like to ask about another professional relationship?",
-      ]
-      : hiringValueQuestion || engineerProfileQuestion
-      ? [
-        "Would you like to compare Carl's evidence with a specific job description?",
-        "Which leadership, product, or technical example should we examine more closely?",
-      ]
-      : riskHandlingQuestion
-      ? [
-        "Which control—data exposure, model authority, evidence, validation, or rollback—would you like to examine?",
-        "Would you like to see how those controls differ across Carl’s AI projects?",
-      ]
-      : [
-        "Which cited project or role would you like to examine more closely?",
-        "What limitations should we clarify with Carl directly?",
-      ],
+    suggestedFollowUpQuestions: suggestPublicFollowUpQuestions({
+      question,
+      selectedEvidence: selected,
+      turnCount: conversationContext?.turnCount,
+      limit: 3,
+    }),
     corpusVersion: artifact.manifest.corpusVersion,
   });
 }
@@ -1644,6 +1639,8 @@ function boundedRelationshipAnswer(fact: RecommendationRelationshipFact): string
 
 function noEvidenceResponse(
   artifact: PublicCareerEvidenceArtifact,
+  question: string,
+  conversationContext?: PublicConversationContext,
 ): PortfolioAnswerResponse {
   return portfolioAnswerResponseSchema.parse({
     schemaVersion: PUBLIC_CAREER_EVIDENCE_SCHEMA_VERSION,
@@ -1651,9 +1648,11 @@ function noEvidenceResponse(
     claims: [],
     citations: [],
     limitations: ["No relevant published information was found for this question."],
-    suggestedFollowUpQuestions: [
-      "Would you like to ask about a published project, professional role, skill, or contribution?",
-    ],
+    suggestedFollowUpQuestions: suggestPublicFollowUpQuestions({
+      question,
+      turnCount: conversationContext?.turnCount,
+      limit: 3,
+    }),
     corpusVersion: artifact.manifest.corpusVersion,
   });
 }
@@ -1661,6 +1660,7 @@ function noEvidenceResponse(
 function conversationalTurnResponse(
   artifact: PublicCareerEvidenceArtifact,
   turn: PublicConversationalTurn,
+  question: string,
 ): PortfolioAnswerResponse {
   const purposeEvidence = turn === "purpose"
     ? artifact.evidence.find((record) =>
@@ -1677,21 +1677,19 @@ function conversationalTurnResponse(
     limitations: purposeEvidence
       ? visitorFacingLimitations(purposeEvidence.claim.limitations)
       : [],
-    suggestedFollowUpQuestions: turn === "farewell"
-      ? []
-      : turn === "purpose"
-      ? [
-        "Would you like to see how that origin became the architecture, privacy boundary, or personality system?",
-      ]
-      : [
-        "Which project, professional role, recommendation, or job description would you like to explore?",
-      ],
+    suggestedFollowUpQuestions: turn === "farewell" ? []
+      : suggestPublicFollowUpQuestions({
+        question,
+        selectedEvidence: purposeEvidence ? [purposeEvidence] : [],
+        limit: 3,
+      }),
     corpusVersion: artifact.manifest.corpusVersion,
   });
 }
 
 function privateDisclosureResponse(
   artifact: PublicCareerEvidenceArtifact,
+  question: string,
 ): PortfolioAnswerResponse {
   return portfolioAnswerResponseSchema.parse({
     schemaVersion: PUBLIC_CAREER_EVIDENCE_SCHEMA_VERSION,
@@ -1701,15 +1699,15 @@ function privateDisclosureResponse(
     limitations: [
       "Private and unpublished material is outside this public assistant’s scope.",
     ],
-    suggestedFollowUpQuestions: [
-      "Which published project or professional role would you like to explore?",
-    ],
+    suggestedFollowUpQuestions: suggestPublicFollowUpQuestions({ question, limit: 3 }),
     corpusVersion: artifact.manifest.corpusVersion,
   });
 }
 
 function conflictResponse(
   artifact: PublicCareerEvidenceArtifact,
+  question: string,
+  conversationContext?: PublicConversationContext,
 ): PortfolioAnswerResponse {
   return portfolioAnswerResponseSchema.parse({
     schemaVersion: PUBLIC_CAREER_EVIDENCE_SCHEMA_VERSION,
@@ -1719,9 +1717,11 @@ function conflictResponse(
     limitations: [
       "The conflicting accounts need clarification before I can use them here.",
     ],
-    suggestedFollowUpQuestions: [
-      "Would you like to ask about a different published project, role, skill, or contribution?",
-    ],
+    suggestedFollowUpQuestions: suggestPublicFollowUpQuestions({
+      question,
+      turnCount: conversationContext?.turnCount,
+      limit: 3,
+    }),
     corpusVersion: artifact.manifest.corpusVersion,
   });
 }

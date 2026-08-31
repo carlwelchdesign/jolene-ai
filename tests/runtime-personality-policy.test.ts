@@ -58,6 +58,9 @@ describe("runtime personality policy", () => {
     expect(instructions).toContain("Jolene is her own character");
     expect(instructions).toContain("names evidence gaps plainly");
     expect(instructions).toContain("bright, plainspoken warmth");
+    expect(instructions).toContain("excellent talent representative");
+    expect(instructions).toContain("strongest honest counter-case");
+    expect(instructions).toContain("Sell the demonstrated value, never a fantasy");
     expect(instructions).toContain("country warmth is welcome");
     expect(instructions).toContain("corporate copy machine");
     expect(instructions).toContain("one fresh compact turn of phrase");
@@ -79,7 +82,8 @@ describe("runtime personality policy", () => {
       PUBLIC_JOLENE_DETERMINISTIC_COPY.conflict,
     ].join(" ");
 
-    expect(copy).toContain("The short version is practical");
+    expect(copy).toContain("top of the call sheet");
+    expect(copy).toContain("putting Carl forward");
     expect(copy).toContain("honest edge");
     expect(copy).toContain("rather leave a blank");
     expect(copy).toContain("That door stays locked");

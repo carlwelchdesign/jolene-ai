@@ -83,7 +83,10 @@ describe("OpenAI public answer generator", () => {
       "Synthesize the evidence",
     ));
     expect(request.instructions).toEqual(expect.stringContaining(
-      "do not reflexively turn them into praise",
+      "Make the strongest honest case for Carl",
+    ));
+    expect(request.instructions).toEqual(expect.stringContaining(
+      "first-rate talent representative",
     ));
     expect(request.instructions).toEqual(expect.stringContaining(
       "not evidence that weaknesses do not exist",
@@ -238,7 +241,7 @@ describe("OpenAI public answer generator", () => {
       "using only the supplied reviewed public evidence",
     ));
     expect(request.instructions).toEqual(expect.stringContaining(
-      "do not reflexively turn them into praise",
+      "Make the strongest honest case for Carl",
     ));
   });
 
