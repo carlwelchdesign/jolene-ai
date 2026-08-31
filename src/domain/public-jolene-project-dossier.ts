@@ -21,6 +21,7 @@ export const publicJoleneDossierTopicSchema = z.enum([
   "slack",
   "portfolio_bff",
   "deployment",
+  "origin",
   "carl_role",
   "limitations",
 ]);

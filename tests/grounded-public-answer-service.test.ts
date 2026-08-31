@@ -89,6 +89,11 @@ describe("grounded public answer service", () => {
   });
 
   it("answers the exact public purpose question before retrieval, budget, or generation", async () => {
+    const origin = createPublicEvidenceRecord(98, {
+      text: "Carl shaped Jolene from a difficult layoff-era season and the capable, comforting working partner he needed.",
+      title: "Why Carl built Jolene",
+      href: "/work/jolene-ai#evidence--portfolio--claim--jolene-ai--origin",
+    });
     const generate = vi.fn(async () => "must not run");
     const retrieve = vi.fn(async () => [createPublicEvidenceRecord(99, {
       text: "Unrelated release-gate evidence.",
@@ -99,18 +104,19 @@ describe("grounded public answer service", () => {
     const execution = await new GroundedPublicAnswerService(
       { generate },
       { retriever: { retrieve }, budget: { reserve } },
-    ).execute(createPublicEvidenceArtifact(), {
+    ).execute(createPublicEvidenceArtifact([origin]), {
       question: "Why did Carl build you?",
     });
 
     expect(execution).toMatchObject({
       mode: "deterministic",
-      responseKind: "clarification",
-      response: { claims: [], citations: [], limitations: [] },
+      responseKind: "supported",
     });
     expect(execution.response.answer).toContain(
-      "Carl built me to be his persistent AI chief of staff and working partner",
+      "Carl built me during a hard, uncertain stretch of his life",
     );
+    expect(execution.response.claims).toEqual([origin.claim]);
+    expect(execution.response.citations).toEqual([origin.citation]);
     expect(execution.response.answer).not.toMatch(/release gates|Wave Factory/iu);
     expect(retrieve).not.toHaveBeenCalled();
     expect(reserve).not.toHaveBeenCalled();

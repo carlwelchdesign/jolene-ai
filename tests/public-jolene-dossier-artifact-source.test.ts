@@ -90,4 +90,29 @@ describe("public Jolene dossier artifact source", () => {
       turnCount: 2,
     });
   });
+
+  it("publishes the approved personal origin story for the exact purpose question", async () => {
+    const dossier = publicJoleneProjectDossierSchema.parse(
+      JSON.parse(await readFile(dossierPath, "utf8")),
+    );
+    const artifact = mergePublicJoleneDossier(
+      createPublicEvidenceArtifact(),
+      dossier,
+    );
+    const execution = new DeterministicPublicAnswerService().execute(artifact, {
+      question: "Why did Carl build you?",
+    });
+
+    expect(execution.responseKind).toBe("supported");
+    expect(execution.response.answer).toContain("BLM land in Nevada");
+    expect(execution.response.answer).toContain("Dolly Parton came naturally to mind");
+    expect(execution.response.answer).toContain(
+      "I’m not Dolly, and I’m not here to impersonate her",
+    );
+    expect(execution.response.citations).toHaveLength(1);
+    expect(execution.response.citations[0]).toMatchObject({
+      title: "Why Carl built Jolene",
+      href: "/work/jolene-ai#evidence--portfolio--claim--jolene-ai--origin",
+    });
+  });
 });
