@@ -88,6 +88,28 @@ describe("grounded public answer service", () => {
     expect(generate).not.toHaveBeenCalled();
   });
 
+  it("handles a compound Jolene check-in before retrieval, budget, or generation", async () => {
+    const generate = vi.fn(async () => "must not run");
+    const retrieve = vi.fn(async () => createPublicEvidenceArtifact().evidence);
+    const reserve = vi.fn(async () => true);
+    const execution = await new GroundedPublicAnswerService(
+      { generate },
+      { retriever: { retrieve }, budget: { reserve } },
+    ).execute(createPublicEvidenceArtifact(), {
+      question: "Hey what’s up Jolene?",
+    });
+
+    expect(execution).toMatchObject({
+      mode: "deterministic",
+      responseKind: "clarification",
+      response: { claims: [], citations: [], limitations: [] },
+    });
+    expect(execution.response.answer).toContain("underselling itself");
+    expect(retrieve).not.toHaveBeenCalled();
+    expect(reserve).not.toHaveBeenCalled();
+    expect(generate).not.toHaveBeenCalled();
+  });
+
   it("answers the exact public purpose question before retrieval, budget, or generation", async () => {
     const origin = createPublicEvidenceRecord(98, {
       text: "Carl shaped Jolene from a difficult layoff-era season and the capable, comforting working partner he needed.",

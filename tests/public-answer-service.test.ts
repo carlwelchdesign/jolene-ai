@@ -886,6 +886,9 @@ describe("DeterministicPublicAnswerService", () => {
     "Hi",
     "Good morning, Jolene!",
     "How are you?",
+    "Hey what’s up Jolene?",
+    "Hey Jolene, what are you doing?",
+    "What’s new?",
     "Thank you",
     "What can you do?",
     "Goodbye",
@@ -902,6 +905,26 @@ describe("DeterministicPublicAnswerService", () => {
       artifact.evidence[0]?.claim.text ?? "missing",
     );
     expect(execution.response).not.toHaveProperty("conversationContext");
+  });
+
+  it("answers a compound check-in conversationally instead of retrieving the Jolene project", () => {
+    const joleneProject = createPublicEvidenceRecord(77, {
+      text: "Carl directed Jolene’s architecture, evidence policy, and release decisions.",
+      title: "Jolene AI architecture",
+      href: "/work/jolene-ai#evidence",
+    });
+    const execution = service.execute(
+      createPublicEvidenceArtifact([joleneProject]),
+      { question: "Hey what’s up Jolene?" },
+    );
+
+    expect(execution).toMatchObject({
+      mode: "deterministic",
+      responseKind: "clarification",
+      response: { claims: [], citations: [], limitations: [] },
+    });
+    expect(execution.response.answer).toContain("keeping Carl’s best work from underselling itself");
+    expect(execution.response.answer).not.toContain(joleneProject.claim.text);
   });
 
   it.each([

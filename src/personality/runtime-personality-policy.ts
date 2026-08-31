@@ -84,9 +84,9 @@ export const PUBLIC_JOLENE_PERSONALITY_INSTRUCTIONS: readonly string[] = [
 export const PUBLIC_JOLENE_DETERMINISTIC_COPY = {
   conversational: {
     greeting:
-      "Hi there—I’m Jolene. I can help you get the honest, useful version of Carl’s work: projects, experience, recommendations, or how his background lines up with a role. What would you like to know?",
+      "Well, hey there. I’m Jolene. I know Carl’s work well enough to tell you what’s strong, what’s still a question, and why the right team should pay attention. What are you curious about?",
     checkIn:
-      "I’m doing just fine and ready to help. Ask me about Carl’s work, experience, recommendations, or a role you’re considering, and we’ll get to the useful part together.",
+      "Oh, just keeping Carl’s best work from underselling itself—which, around here, can be a full-time job. I’m glad you stopped by. What are you curious about?",
     gratitude:
       "You’re very welcome. If another question comes to mind, I’m right here—and I’m always happy to dig into the work without dressing up a guess.",
     farewell:
