@@ -10,7 +10,11 @@ import {
 } from "./public-answer-service.js";
 import {
   HttpsPublicArtifactSource,
+  type PublicArtifactSource,
 } from "./public-artifact-source.js";
+import {
+  PublicJoleneDossierArtifactSource,
+} from "./public-jolene-dossier-artifact-source.js";
 import {
   createPublicDelegateRequestHandler,
 } from "./public-delegate-server.js";
@@ -41,6 +45,8 @@ import {
 } from "./shared-public-observability.js";
 import type { SecurityTelemetryRecorder } from "../security/security-telemetry.js";
 import { personalityModeSchema } from "../personality/personality-mode.js";
+import type { PublicJoleneProjectDossier } from
+  "../domain/public-jolene-project-dossier.js";
 
 const vercelPublicEnvironmentSchema = z.object({
   JOLENE_PUBLIC_ENABLED: z.literal("true"),
@@ -120,17 +126,21 @@ const hostedCoordinationEnvironmentSchema = z.object({
 export function createVercelPublicDelegateHandler(
   environment: Record<string, string | undefined> = process.env,
   coordination?: HostedPublicCoordination,
+  options: { readonly dossier?: PublicJoleneProjectDossier } = {},
 ) {
   const config = vercelPublicEnvironmentSchema.parse(environment);
   const hostedCoordination = coordination ?? createRedisHostedCoordination(
     environment,
     config,
   );
-  const artifacts = new HttpsPublicArtifactSource({
+  let artifacts: PublicArtifactSource = new HttpsPublicArtifactSource({
     url: config.JOLENE_PUBLIC_ARTIFACT_URL,
     expectedCorpusVersion: config.JOLENE_PUBLIC_EXPECTED_CORPUS_VERSION,
     timeoutMilliseconds: config.JOLENE_PUBLIC_ARTIFACT_TIMEOUT_MS,
   });
+  if (options.dossier) {
+    artifacts = new PublicJoleneDossierArtifactSource(artifacts, options.dossier);
+  }
 
   return createPublicDelegateRequestHandler({
     enabled: hostedCoordination?.scope === "shared",

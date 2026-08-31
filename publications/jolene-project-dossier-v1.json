@@ -5,7 +5,10 @@
     "name": "Jolene AI",
     "status": "Private chief-of-staff agent with an isolated public portfolio delegate",
     "summary": "A governed AI system Carl designed to combine useful model reasoning with reviewed evidence, durable memory, explicit action boundaries, and a warm, recognizable personality.",
-    "publicCitationBase": "/work/jolene-ai"
+    "publicCitationBase": "/work/jolene-ai",
+    "reviewedAt": "2026-08-29T02:54:49.000Z",
+    "maturity": "deployed_demo",
+    "evidenceStrength": "moderate"
   },
   "claims": [
     {

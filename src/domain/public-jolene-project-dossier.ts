@@ -1,6 +1,10 @@
 import { z } from "zod";
 
-import { siteRelativePublicHrefSchema } from "./public-career-evidence.js";
+import { careerMaturitySchema } from "./career-evidence.js";
+import {
+  evidenceStrengthSchema,
+  siteRelativePublicHrefSchema,
+} from "./public-career-evidence.js";
 import { containsForbiddenPublicDisclosure } from "./public-disclosure-policy.js";
 
 export const PUBLIC_JOLENE_DOSSIER_SCHEMA_VERSION =
@@ -34,6 +38,9 @@ export const publicJoleneProjectDossierSchema = z.object({
     status: z.string().trim().min(1).max(240),
     summary: z.string().trim().min(1).max(800),
     publicCitationBase: siteRelativePublicHrefSchema,
+    reviewedAt: z.string().datetime({ offset: true }),
+    maturity: careerMaturitySchema,
+    evidenceStrength: evidenceStrengthSchema,
   }).strict(),
   claims: z.array(z.object({
     id: z.string().regex(/^[a-z][a-z0-9-]{2,40}$/),
