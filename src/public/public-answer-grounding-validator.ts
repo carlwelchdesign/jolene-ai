@@ -71,6 +71,8 @@ export class PublicAnswerGroundingValidator
       }
     }
 
+    const acceptedSegments: typeof segments = [];
+    let firstUnsupportedIndex: number | null = null;
     for (const [index, segment] of segments.entries()) {
       if (elapsed(startedAt) > PUBLIC_ANSWER_GROUNDING_LIMITS.validationMilliseconds) {
         return rejected("validation_timeout", index, startedAt);
@@ -80,7 +82,8 @@ export class PublicAnswerGroundingValidator
         logGroundingDiagnostic("sentence_count", index, {
           sentenceCount,
         });
-        return rejected("unsupported_segment", index, startedAt);
+        firstUnsupportedIndex ??= index;
+        continue;
       }
       for (const supportId of segment.supportIds) {
         if (!selectedIds.has(supportId)) {
@@ -100,12 +103,28 @@ export class PublicAnswerGroundingValidator
       const prohibited = prohibitedReason(segment.text, records);
       if (prohibited) return rejected(prohibited, index, startedAt);
       const entailmentFailure = validateEntailment(segment.text, records, index);
+      if (entailmentFailure === "unsupported_segment") {
+        firstUnsupportedIndex ??= index;
+        continue;
+      }
       if (entailmentFailure) return rejected(entailmentFailure, index, startedAt);
+      acceptedSegments.push(segment);
     }
+    if (acceptedSegments.length === 0) {
+      return rejected("unsupported_segment", firstUnsupportedIndex, startedAt);
+    }
+
+    const coveredEvidenceIds = new Set(
+      acceptedSegments.flatMap((segment) => segment.supportIds),
+    );
+    const sourceCompletions = baseline.citations
+      .filter((citation) => !coveredEvidenceIds.has(citation.evidenceId))
+      .map((citation) => active.get(citation.evidenceId)!.claim.text);
 
     const answer = [
       acceptedPresentation,
-      ...segments.map((segment) => segment.text),
+      ...groupContiguousGroundedSegments(acceptedSegments),
+      ...sourceCompletions,
     ].filter((value): value is string => Boolean(value)).join("\n\n");
     const candidate = { ...baseline, answer };
     const baselineSnapshot = createPublicAnswerFallbackSnapshot(artifact, baseline);
@@ -126,8 +145,8 @@ export class PublicAnswerGroundingValidator
       audit: {
         status: "accepted",
         contractVersion: PUBLIC_ANSWER_GROUNDING_CONTRACT_VERSION,
-        segmentCount: segments.length,
-        supportCount: segments.reduce(
+        segmentCount: acceptedSegments.length,
+        supportCount: acceptedSegments.reduce(
           (total, segment) => total + segment.supportIds.length,
           0,
         ),
@@ -135,6 +154,25 @@ export class PublicAnswerGroundingValidator
       },
     };
   }
+}
+
+function groupContiguousGroundedSegments(
+  segments: readonly {
+    readonly text: string;
+    readonly supportIds: readonly string[];
+  }[],
+): string[] {
+  const paragraphs: { text: string; supportKey: string }[] = [];
+  for (const segment of segments) {
+    const supportKey = segment.supportIds.join("\u0000");
+    const previous = paragraphs.at(-1);
+    if (previous?.supportKey === supportKey) {
+      previous.text = `${previous.text} ${segment.text}`;
+    } else {
+      paragraphs.push({ text: segment.text, supportKey });
+    }
+  }
+  return paragraphs.map((paragraph) => paragraph.text);
 }
 
 function validatePresentation(

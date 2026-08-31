@@ -164,8 +164,9 @@ export function createOpenAIPublicAnswerRequest(options: {
         "Do not add facts, qualifications, contact details, availability, compensation, relocation, or promises.",
         "State a limitation naturally only when it materially changes the answer; structured limitations are rendered separately.",
         "Every segment.text must contain exactly one sentence. Use a new segment for every additional sentence, and attach the exact supplied evidenceId or evidenceIds that support that one sentence's factual substance.",
+        "Return exactly one segment for each supplied evidence record, in the supplied order, so the answer covers the full selected career evidence without omission.",
         "Each evidence segment must be a close, natural paraphrase of one supplied claim. Retain at least one third of that claim's concrete material nouns and verbs; do not add a rhetorical setup, general advocacy, inferred team impact, metaphor, aside, or question inside a segment.",
-        "Prefer exactly one evidenceId per segment. If several claims are related, put each sentence in its own segment rather than merging them into one multi-source sentence or placing several sentences in one segment.",
+        "Use exactly one evidenceId per segment. Keep each supplied record in its own one-sentence segment rather than merging records into one multi-source sentence or placing several sentences in one segment.",
         "Keep factual nouns, numbers, roles, technologies, qualifications, and scope close to the cited evidence so every material claim is traceable.",
         "Conversational transitions, contractions, warmth, and one brief clearly figurative phrase are allowed when they add no factual assertion, promise, qualification, or biographical detail.",
         ...((options.personalityMode ?? "jolene") === "jolene"
