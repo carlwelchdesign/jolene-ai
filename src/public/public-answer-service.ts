@@ -306,6 +306,13 @@ export class GroundedPublicAnswerService implements PublicPortfolioAnswerer {
     try {
       const validation = this.#validator.validate(artifact, baseline, generation);
       if (validation.status === "rejected") {
+        if (validation.audit.status === "rejected") {
+          console.info(JSON.stringify({
+            event: "public_answer_validation_rejected",
+            reasonCode: validation.audit.reasonCode,
+            segmentIndex: validation.audit.segmentIndex,
+          }));
+        }
         return fallbackExecution(baseline, "validation_fallback");
       }
       const answer = generatedAnswerSchema.parse(validation.answer);
