@@ -337,7 +337,8 @@ type PublicConversationalTurn =
   | "checkIn"
   | "gratitude"
   | "farewell"
-  | "introduction";
+  | "introduction"
+  | "purpose";
 
 function publicConversationalTurn(
   question: string,
@@ -363,6 +364,10 @@ function publicConversationalTurn(
     /^(?:who are you|what are you|what can you do|how can you help)(?: jolene)?$/u
       .test(normalized)
   ) return "introduction";
+  if (
+    /^(?:why did carl (?:build|create|design) (?:you|jolene)|why were you (?:built|created|designed)|what made carl (?:build|create|design) (?:you|jolene)|what (?:is|s) your purpose|what are you for|why do you exist|why does jolene exist)$/u
+      .test(normalized)
+  ) return "purpose";
   return null;
 }
 
@@ -678,6 +683,10 @@ export function matchPublicProjectEntityPath(
     const slug = record.citation.href.match(/^\/work\/([a-z0-9-]+)(?:#|$)/u)?.[1];
     return slug ? [slug] : [];
   }))];
+  if (
+    slugs.includes("jolene-ai") &&
+    JOLENE_SELF_REFERENCE_PROJECT_PATTERN.test(normalizedQuestion)
+  ) return "/work/jolene-ai";
   const matchedSlug = slugs
     .map((slug) => ({ slug, aliases: projectAliases(slug) }))
     .filter(({ aliases }) => aliases.some((alias) =>
@@ -690,6 +699,9 @@ export function matchPublicProjectEntityPath(
     )[0]?.slug;
   return matchedSlug ? `/work/${matchedSlug}` : null;
 }
+
+const JOLENE_SELF_REFERENCE_PROJECT_PATTERN =
+  /\b(?:(?:how|why) (?:did carl )?(?:build|create|design) you|(?:how|why) were you (?:built|created|designed)|how do you work|what (?:model|architecture|retrieval|rag|security|privacy) (?:do you use|are you using|do you have)|what powers you|your (?:model|architecture|retrieval|rag|security|privacy))\b/u;
 
 function projectAliases(slug: string): string[] {
   const tokens = slug.split("-");
@@ -1469,6 +1481,10 @@ function conversationalTurnResponse(
     limitations: [],
     suggestedFollowUpQuestions: turn === "farewell"
       ? []
+      : turn === "purpose"
+      ? [
+        "Would you like to see the public architecture, privacy boundary, or how Carl shaped my personality?",
+      ]
       : [
         "Which project, professional role, recommendation, or job description would you like to explore?",
       ],
