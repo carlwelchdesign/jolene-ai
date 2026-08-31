@@ -708,6 +708,11 @@ describe("DeterministicPublicAnswerService", () => {
     expect(result.answer).toContain(
       "Carl treats AI risk as part of the product, not a footnote",
     );
+    expect(result.answer).toContain("keeps consequential actions under explicit human approval");
+    expect(result.answer).toContain("separates public paths from private memory and tools");
+    expect(result.answer).toContain("source evidence, provenance, review state, and uncertainty");
+    expect(result.answer).toContain("structured outputs, and deterministic validation");
+    expect(result.answer).toContain("production promotion, monitoring, corpus pinning, and rollback");
     expect(result.answer).not.toContain(
       "does not state a separate limitation for this point",
     );

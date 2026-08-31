@@ -1035,7 +1035,6 @@ function riskHandlingEvidenceScore(record: PublicCareerEvidenceRecord): {
   const text = normalizeLookup([
     record.citation.title,
     record.claim.text,
-    record.claim.limitations.join(" "),
   ].join(" "));
   const lexicalTerms = new Set(tokenizeLexicalTerms(text));
   if (
@@ -1300,6 +1299,8 @@ function supportedResponse(
       ? boundedEngineerProfileAnswer(selected)
       : hiringValueQuestion
       ? boundedHiringValueAnswer(selected, negativeHiringQuestion)
+      : riskHandlingQuestion
+      ? boundedRiskHandlingAnswer(selected)
       : skepticalIntent
       ? boundedSkepticalAnswer(skepticalIntent, selected)
       : shouldNameEmployerContext && employerContext
@@ -1332,6 +1333,34 @@ function supportedResponse(
       ],
     corpusVersion: artifact.manifest.corpusVersion,
   });
+}
+
+function boundedRiskHandlingAnswer(
+  selected: readonly PublicCareerEvidenceRecord[],
+): string {
+  const categories = new Set(selected.flatMap((record) =>
+    [...riskHandlingEvidenceScore(record).categories]
+  ));
+  const statements: Readonly<Record<RiskHandlingCategory, string>> = {
+    authority:
+      "He limits what models and agents may do and keeps consequential actions under explicit human approval.",
+    data:
+      "He treats prompts and retrieved content as untrusted, minimizes data exposure, and separates public paths from private memory and tools.",
+    evidence:
+      "He keeps source evidence, provenance, review state, and uncertainty visible instead of hiding them behind one generated answer.",
+    validation:
+      "He uses bounded model access, structured outputs, and deterministic validation before results can be shown or acted upon.",
+    operations:
+      "He separates build, evaluation, preview, production promotion, monitoring, corpus pinning, and rollback instead of calling one green check a release.",
+  };
+  const summary = RISK_HANDLING_CATEGORY_PRIORITY
+    .filter((category) => categories.has(category))
+    .map((category) => statements[category])
+    .join(" ");
+  return composeBoundedEvidenceSummary(
+    "Short answer: Carl treats AI risk as part of the product, not a footnote.",
+    [summary],
+  );
 }
 
 function boundedEngineerProfileAnswer(
