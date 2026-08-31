@@ -47,6 +47,10 @@ import type { SecurityTelemetryRecorder } from "../security/security-telemetry.j
 import { personalityModeSchema } from "../personality/personality-mode.js";
 import type { PublicJoleneProjectDossier } from
   "../domain/public-jolene-project-dossier.js";
+import type { PublicResumeProjectDossier } from
+  "../domain/public-resume-project-dossier.js";
+import { PublicResumeProjectArtifactSource } from
+  "./public-resume-project-artifact-source.js";
 
 const vercelPublicEnvironmentSchema = z.object({
   JOLENE_PUBLIC_ENABLED: z.literal("true"),
@@ -126,7 +130,10 @@ const hostedCoordinationEnvironmentSchema = z.object({
 export function createVercelPublicDelegateHandler(
   environment: Record<string, string | undefined> = process.env,
   coordination?: HostedPublicCoordination,
-  options: { readonly dossier?: PublicJoleneProjectDossier } = {},
+  options: {
+    readonly dossier?: PublicJoleneProjectDossier;
+    readonly resumeProjects?: PublicResumeProjectDossier;
+  } = {},
 ) {
   const config = vercelPublicEnvironmentSchema.parse(environment);
   const hostedCoordination = coordination ?? createRedisHostedCoordination(
@@ -138,6 +145,12 @@ export function createVercelPublicDelegateHandler(
     expectedCorpusVersion: config.JOLENE_PUBLIC_EXPECTED_CORPUS_VERSION,
     timeoutMilliseconds: config.JOLENE_PUBLIC_ARTIFACT_TIMEOUT_MS,
   });
+  if (options.resumeProjects) {
+    artifacts = new PublicResumeProjectArtifactSource(
+      artifacts,
+      options.resumeProjects,
+    );
+  }
   if (options.dossier) {
     artifacts = new PublicJoleneDossierArtifactSource(artifacts, options.dossier);
   }

@@ -11,6 +11,8 @@ import {
   type PublicCareerEvidenceArtifact,
   type PublicCareerEvidenceRecord,
 } from "../domain/public-career-evidence.js";
+import { PUBLIC_RESUME_PROJECT_DELIVERY_LIMITATION } from
+  "../domain/public-resume-project-dossier.js";
 import {
   PUBLIC_CONVERSATION_CONTEXT_LIMITS,
   PUBLIC_PORTFOLIO_ANSWER_LIMITS,
@@ -1183,52 +1185,32 @@ export function isShippedWorkQuestion(question: string): boolean {
 function selectShippedWorkEvidence(
   evidence: readonly PublicCareerEvidenceRecord[],
 ): PublicCareerEvidenceRecord[] {
-  const ranked = evidence
+  return evidence
     .filter((record) =>
-      SHIPPED_WORK_SOURCE_TYPES.has(record.citation.sourceType) &&
-      (record.citation.maturity === "production" ||
-        record.citation.maturity === "deployed_demo")
+      record.citation.sourceType === "resume" &&
+      record.claim.limitations.includes(PUBLIC_RESUME_PROJECT_DELIVERY_LIMITATION)
     )
-    .map((record) => ({ record, score: shippedWorkEvidenceScore(record) }))
-    .filter(({ score }) => score > 0)
-    .sort(compareScoredEvidence);
-  const selected: PublicCareerEvidenceRecord[] = [];
-  const representedProjects = new Set<string>();
-
-  for (const candidate of ranked) {
-    const project = candidate.record.citation.title;
-    if (representedProjects.has(project)) continue;
-    representedProjects.add(project);
-    selected.push(candidate.record);
-  }
-  for (const candidate of ranked) {
-    if (selected.length >= PUBLIC_PORTFOLIO_ANSWER_LIMITS.responseItems) break;
-    if (!selected.includes(candidate.record)) selected.push(candidate.record);
-  }
-  return selected.slice(0, PUBLIC_PORTFOLIO_ANSWER_LIMITS.responseItems);
+    .sort((left, right) =>
+      resumeProjectPriority(left.citation.title) -
+        resumeProjectPriority(right.citation.title) ||
+      left.evidenceId.localeCompare(right.evidenceId)
+    )
+    .slice(0, PUBLIC_PORTFOLIO_ANSWER_LIMITS.responseItems);
 }
 
-const SHIPPED_WORK_SOURCE_TYPES = new Set<
-  PublicCareerEvidenceRecord["citation"]["sourceType"]
->(["project", "portfolio_page", "repository", "release_artifact"]);
+const RESUME_PROJECT_ORDER = [
+  "ProgressionLab",
+  "Job Search OS",
+  "Flight Tracker AI",
+  "Supraconscious Avatar AI",
+  "Argent Matchmaking",
+] as const;
 
-function shippedWorkEvidenceScore(record: PublicCareerEvidenceRecord): number {
-  const text = normalizeLookup([
-    record.citation.title,
-    record.claim.text,
-    record.claim.limitations.join(" "),
-  ].join(" "));
-  const maturityScore = record.citation.maturity === "production" ? 30 : 24;
-  const overviewScore = /\b(?:application|browser based|combines|connects|operating system|product|system)\b/u
-      .test(text)
-    ? 12
-    : 0;
-  const boundaryPenalty = SHIPPED_WORK_BOUNDARY_PATTERN
-      .test(text)
-    ? 40
-    : 0;
-  return maturityScore + overviewScore + projectOverviewScore(record) -
-    boundaryPenalty;
+function resumeProjectPriority(title: string): number {
+  const index = RESUME_PROJECT_ORDER.indexOf(
+    title as (typeof RESUME_PROJECT_ORDER)[number],
+  );
+  return index === -1 ? Number.MAX_SAFE_INTEGER : index;
 }
 
 function nonProductionEvidenceScore(record: PublicCareerEvidenceRecord): number {
@@ -1527,24 +1509,31 @@ function boundedShippedWorkAnswer(
   const projectStatuses = projects.map((title) => {
     const records = selected.filter((record) => record.citation.title === title);
     const maturity = records[0]?.citation.maturity;
-    const status = maturity === "production"
-      ? "a production application"
-      : "a deployed working demonstration";
-    const description = records
-      .map((record) => visitorFacingClaim(record.claim).text)
-      .find((text) => !SHIPPED_WORK_BOUNDARY_PATTERN.test(normalizeLookup(text)));
+    const status = shippedDeliveryStatus(maturity);
+    const description = records[0]
+      ? visitorFacingClaim(records[0].claim).text
+      : undefined;
     return description
       ? `${title} is ${status}: ${description}`
       : `${title} is ${status}.`;
   });
   return composeBoundedEvidenceSummary(
-    "Carl ships. Every résumé project represented here reached a working release:",
+    "Carl shipped every project on his résumé at the scope it claims—not every one as the same kind of release:",
     projectStatuses,
+    PUBLIC_PORTFOLIO_ANSWER_LIMITS.responseItems,
   );
 }
 
-const SHIPPED_WORK_BOUNDARY_PATTERN =
-  /\b(?:does not|do not|not intended|not (?:a )?certified|rather than|remain separate)\b/u;
+function shippedDeliveryStatus(
+  maturity: PublicCareerEvidenceRecord["citation"]["maturity"] | undefined,
+): string {
+  if (maturity === "production") return "shipped production software";
+  if (maturity === "deployed_demo") return "a deployed working demonstration";
+  if (maturity === "pre_release") return "a pre-release tester build";
+  if (maturity === "development") return "delivered at its stated development scope";
+  if (maturity === "prototype") return "a delivered prototype foundation";
+  return "delivered at the scope stated on the résumé";
+}
 
 function boundedStrongestProjectAnswer(
   selected: readonly PublicCareerEvidenceRecord[],
@@ -2078,10 +2067,11 @@ const DETERMINISTIC_ANSWER_OPENINGS: Readonly<Record<
 function composeBoundedEvidenceSummary(
   prefix: string,
   statements: readonly string[],
+  statementLimit = DETERMINISTIC_SUMMARY_STATEMENTS,
 ): string {
   let answer = prefix;
   for (const statement of statements
-    .slice(0, DETERMINISTIC_SUMMARY_STATEMENTS)
+    .slice(0, statementLimit)
   ) {
     const label = " ";
     const available = PUBLIC_PORTFOLIO_ANSWER_LIMITS.answerCharacters -
