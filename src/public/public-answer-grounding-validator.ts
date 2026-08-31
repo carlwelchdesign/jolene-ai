@@ -46,6 +46,15 @@ export class PublicAnswerGroundingValidator
     ) {
       return rejected("corpus_version_mismatch", null, startedAt);
     }
+    const segments = parsed.data.segments.flatMap((segment) =>
+      materialSentences(segment.text).map((text) => ({ ...segment, text }))
+    );
+    if (
+      segments.length < parsed.data.segments.length ||
+      segments.length > PUBLIC_ANSWER_GROUNDING_LIMITS.segments
+    ) {
+      return rejected("output_schema_invalid", null, startedAt);
+    }
 
     const selectedIds = new Set(baseline.citations.map((item) => item.evidenceId));
     const active = new Map(artifact.evidence.map((item) => [item.evidenceId, item]));
@@ -62,7 +71,7 @@ export class PublicAnswerGroundingValidator
       }
     }
 
-    for (const [index, segment] of parsed.data.segments.entries()) {
+    for (const [index, segment] of segments.entries()) {
       if (elapsed(startedAt) > PUBLIC_ANSWER_GROUNDING_LIMITS.validationMilliseconds) {
         return rejected("validation_timeout", index, startedAt);
       }
@@ -96,7 +105,7 @@ export class PublicAnswerGroundingValidator
 
     const answer = [
       acceptedPresentation,
-      ...parsed.data.segments.map((segment) => segment.text),
+      ...segments.map((segment) => segment.text),
     ].filter((value): value is string => Boolean(value)).join("\n\n");
     const candidate = { ...baseline, answer };
     const baselineSnapshot = createPublicAnswerFallbackSnapshot(artifact, baseline);
@@ -117,8 +126,8 @@ export class PublicAnswerGroundingValidator
       audit: {
         status: "accepted",
         contractVersion: PUBLIC_ANSWER_GROUNDING_CONTRACT_VERSION,
-        segmentCount: parsed.data.segments.length,
-        supportCount: parsed.data.segments.reduce(
+        segmentCount: segments.length,
+        supportCount: segments.reduce(
           (total, segment) => total + segment.supportIds.length,
           0,
         ),
@@ -317,9 +326,14 @@ function normalize(value: string): string {
 }
 
 function materialSentenceCount(value: string): number {
+  return materialSentences(value).length;
+}
+
+function materialSentences(value: string): string[] {
   const segmenter = new Intl.Segmenter("en", { granularity: "sentence" });
   return [...segmenter.segment(value)]
-    .filter((item) => /[\p{L}\p{N}]/u.test(item.segment)).length;
+    .map((item) => item.segment.trim())
+    .filter((sentence) => /[\p{L}\p{N}]/u.test(sentence));
 }
 
 const GROUNDING_STOP_WORDS = new Set([
