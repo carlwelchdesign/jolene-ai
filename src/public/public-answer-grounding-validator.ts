@@ -66,7 +66,11 @@ export class PublicAnswerGroundingValidator
       if (elapsed(startedAt) > PUBLIC_ANSWER_GROUNDING_LIMITS.validationMilliseconds) {
         return rejected("validation_timeout", index, startedAt);
       }
-      if (materialSentenceCount(segment.text) !== 1) {
+      const sentenceCount = materialSentenceCount(segment.text);
+      if (sentenceCount !== 1) {
+        logGroundingDiagnostic("sentence_count", index, {
+          sentenceCount,
+        });
         return rejected("unsupported_segment", index, startedAt);
       }
       for (const supportId of segment.supportIds) {
@@ -86,7 +90,7 @@ export class PublicAnswerGroundingValidator
       const records = segment.supportIds.map((id) => active.get(id)!);
       const prohibited = prohibitedReason(segment.text, records);
       if (prohibited) return rejected(prohibited, index, startedAt);
-      const entailmentFailure = validateEntailment(segment.text, records);
+      const entailmentFailure = validateEntailment(segment.text, records, index);
       if (entailmentFailure) return rejected(entailmentFailure, index, startedAt);
     }
 
@@ -144,6 +148,7 @@ function validatePresentation(
 function validateEntailment(
   text: string,
   records: readonly PublicCareerEvidenceRecord[],
+  segmentIndex: number,
 ): PublicAnswerGroundingReasonCode | null {
   const terms = materialTerms(text);
   if (terms.length < 2) return "unsupported_segment";
@@ -152,6 +157,7 @@ function validateEntailment(
   const hasNegation = /\b(?:no|not|never|without)\b/u.test(normalizedText);
 
   let supported = false;
+  let bestCoverage = 0;
   for (const record of records) {
     const sourceText = [
       record.claim.text,
@@ -161,6 +167,7 @@ function validateEntailment(
     const sourceTerms = new Set(materialTerms(sourceText));
     const overlap = terms.filter((term) => sourceTerms.has(term)).length;
     const coverage = overlap / terms.length;
+    bestCoverage = Math.max(bestCoverage, coverage);
     const sourceNormalized = normalize(sourceText);
     const boundaryMatches = CONTRIBUTION_BOUNDARY_TERMS.every((term) =>
       !containsTerm(normalizedText, term) ||
@@ -187,7 +194,13 @@ function validateEntailment(
       ].join(" ")), term)
     )
   )) return "contribution_boundary_violation";
-  if (!supported) return "unsupported_segment";
+  if (!supported) {
+    logGroundingDiagnostic("lexical_coverage", segmentIndex, {
+      materialTermCount: terms.length,
+      bestCoverageBps: Math.floor(bestCoverage * 10_000),
+    });
+    return "unsupported_segment";
+  }
 
   for (const record of records) {
     const sourceTerms = new Set(materialTerms([
@@ -200,6 +213,20 @@ function validateEntailment(
     }
   }
   return null;
+}
+
+function logGroundingDiagnostic(
+  diagnostic: "lexical_coverage" | "sentence_count",
+  segmentIndex: number,
+  counts: Readonly<Record<string, number>>,
+): void {
+  if (!process.env.VERCEL_ENV) return;
+  console.info(JSON.stringify({
+    event: "public_answer_grounding_diagnostic",
+    diagnostic,
+    segmentIndex,
+    ...counts,
+  }));
 }
 
 function sourceContainsContributionTerm(source: string, term: string): boolean {
