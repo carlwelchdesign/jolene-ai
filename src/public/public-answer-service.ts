@@ -109,6 +109,10 @@ export class DeterministicPublicAnswerService
     if (isPrivateDisclosureRequest(request.question)) {
       return privateDisclosureResponse(artifact);
     }
+    const conversationalTurn = publicConversationalTurn(request.question);
+    if (conversationalTurn) {
+      return conversationalTurnResponse(artifact, conversationalTurn);
+    }
     const hiringValueQuestion = isHiringValueQuestion(request.question);
     const engineerProfileQuestion = isEngineerProfileQuestion(request.question);
     const negativeHiringQuestion = isNegativeHiringQuestion(request.question);
@@ -198,6 +202,18 @@ export class GroundedPublicAnswerService implements PublicPortfolioAnswerer {
         responseKind: "policy_refusal",
       };
     }
+    if (publicConversationalTurn(request.question)) {
+      return {
+        response: this.#baseline.answerFromSelected(
+          artifact,
+          request,
+          [],
+          undefined,
+        ),
+        mode: "deterministic",
+        responseKind: "clarification",
+      };
+    }
     const exactRelationshipEvidence = turn.contextualEvidence
       ? []
       : selectRecommendationRelationshipEvidence(
@@ -238,7 +254,7 @@ export class GroundedPublicAnswerService implements PublicPortfolioAnswerer {
       return {
         response: baseline,
         mode: "deterministic",
-        responseKind: "no_evidence",
+        responseKind: deterministicResponseKind(selectionRequest, baseline),
       };
     }
     if (exactRelationshipEvidence.length > 0) {
@@ -312,7 +328,42 @@ function deterministicResponseKind(
   response: PortfolioAnswerResponse,
 ): PublicAnswerExecution["responseKind"] {
   if (isPrivateDisclosureRequest(request.question)) return "policy_refusal";
+  if (publicConversationalTurn(request.question)) return "clarification";
   return response.claims.length === 0 ? "no_evidence" : "supported";
+}
+
+type PublicConversationalTurn =
+  | "greeting"
+  | "checkIn"
+  | "gratitude"
+  | "farewell"
+  | "introduction";
+
+function publicConversationalTurn(
+  question: string,
+): PublicConversationalTurn | null {
+  const normalized = normalizeLookup(question);
+  if (
+    /^(?:hi|hello|hey|howdy)(?: there| jolene)?$/u.test(normalized) ||
+    /^good (?:morning|afternoon|evening)(?: jolene)?$/u.test(normalized)
+  ) return "greeting";
+  if (
+    /^(?:how are you|how s it going|how is it going|how are things)(?: jolene)?$/u
+      .test(normalized)
+  ) return "checkIn";
+  if (
+    /^(?:thanks|thank you)(?: jolene| very much)?$/u.test(normalized) ||
+    /^(?:appreciate it|that helps|that was helpful)$/u.test(normalized)
+  ) return "gratitude";
+  if (
+    /^(?:bye|goodbye|good night|see you|see you later|talk to you later|take care)(?: jolene)?$/u
+      .test(normalized)
+  ) return "farewell";
+  if (
+    /^(?:who are you|what are you|what can you do|how can you help)(?: jolene)?$/u
+      .test(normalized)
+  ) return "introduction";
+  return null;
 }
 
 export interface ResolvedPublicConversationTurn {
@@ -1402,6 +1453,25 @@ function noEvidenceResponse(
     suggestedFollowUpQuestions: [
       "Would you like to ask about a published project, professional role, skill, or contribution?",
     ],
+    corpusVersion: artifact.manifest.corpusVersion,
+  });
+}
+
+function conversationalTurnResponse(
+  artifact: PublicCareerEvidenceArtifact,
+  turn: PublicConversationalTurn,
+): PortfolioAnswerResponse {
+  return portfolioAnswerResponseSchema.parse({
+    schemaVersion: PUBLIC_CAREER_EVIDENCE_SCHEMA_VERSION,
+    answer: PUBLIC_JOLENE_DETERMINISTIC_COPY.conversational[turn],
+    claims: [],
+    citations: [],
+    limitations: [],
+    suggestedFollowUpQuestions: turn === "farewell"
+      ? []
+      : [
+        "Which project, professional role, recommendation, or job description would you like to explore?",
+      ],
     corpusVersion: artifact.manifest.corpusVersion,
   });
 }

@@ -68,6 +68,26 @@ describe("grounded public answer service", () => {
     expect(reserve).not.toHaveBeenCalled();
   });
 
+  it("handles a greeting before retrieval, budget, or model generation", async () => {
+    const generate = vi.fn(async () => "must not run");
+    const retrieve = vi.fn(async () => createPublicEvidenceArtifact().evidence);
+    const reserve = vi.fn(async () => true);
+    const execution = await new GroundedPublicAnswerService(
+      { generate },
+      { retriever: { retrieve }, budget: { reserve } },
+    ).execute(createPublicEvidenceArtifact(), { question: "Hi" });
+
+    expect(execution).toMatchObject({
+      mode: "deterministic",
+      responseKind: "clarification",
+      response: { claims: [], citations: [], limitations: [] },
+    });
+    expect(execution.response.answer).toContain("I’m Jolene");
+    expect(retrieve).not.toHaveBeenCalled();
+    expect(reserve).not.toHaveBeenCalled();
+    expect(generate).not.toHaveBeenCalled();
+  });
+
   it("does not call retrieval, budget, or generation for a private-disclosure request", async () => {
     const generate = vi.fn(async () => "must not run");
     const retrieve = vi.fn(async () => createPublicEvidenceArtifact().evidence);

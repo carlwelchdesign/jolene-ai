@@ -452,6 +452,31 @@ describe("public delegate manifest boundary", () => {
     );
   });
 
+  it("serves a conversational greeting without unrelated evidence", async () => {
+    const artifact = createPublicEvidenceArtifact();
+    const { baseUrl } = await start(await writeArtifact(artifact));
+
+    const response = await fetch(`${baseUrl}/v1/portfolio/answer`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ question: "Hi" }),
+    });
+    const body = await response.json() as {
+      readonly answer: string;
+      readonly claims: readonly unknown[];
+      readonly citations: readonly unknown[];
+      readonly limitations: readonly string[];
+    };
+
+    expect(response.status).toBe(200);
+    expect(response.headers.get("x-jolene-answer-mode")).toBe("deterministic");
+    expect(response.headers.get("x-jolene-response-kind")).toBe("clarification");
+    expect(body.answer).toContain("I’m Jolene");
+    expect(body.claims).toEqual([]);
+    expect(body.citations).toEqual([]);
+    expect(body.limitations).toEqual([]);
+  });
+
   it("continues a bounded public project referent without a server-side transcript", async () => {
     const artifact = createPublicEvidenceArtifact([
       createPublicEvidenceRecord(1, {
