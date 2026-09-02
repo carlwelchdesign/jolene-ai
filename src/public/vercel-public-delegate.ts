@@ -72,7 +72,7 @@ const vercelPublicEnvironmentSchema = z.object({
   JOLENE_PUBLIC_ANSWER_MODE: z.enum(["deterministic", "openai"])
     .default("deterministic"),
   JOLENE_PERSONALITY_MODE: personalityModeSchema.default("jolene"),
-  JOLENE_PUBLIC_OPENAI_MODEL: z.string().trim().min(1).default("gpt-5.4-mini"),
+  JOLENE_PUBLIC_OPENAI_MODEL: z.string().trim().min(1).default("gpt-5.6-terra"),
   JOLENE_PUBLIC_OPENAI_TIMEOUT_MS: z.coerce.number().int().min(1_000)
     .max(30_000).default(12_000),
   JOLENE_PUBLIC_OPENAI_REQUESTS_PER_DAY: z.coerce.number().int().min(1)

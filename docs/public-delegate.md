@@ -40,7 +40,7 @@ JOLENE_PUBLIC_MAX_CONCURRENT_REQUESTS=8
 JOLENE_PUBLIC_AUTH_MODE=disabled
 JOLENE_PUBLIC_API_TOKEN=
 JOLENE_PUBLIC_ANSWER_MODE=deterministic
-JOLENE_PUBLIC_OPENAI_MODEL=gpt-5.4-mini
+JOLENE_PUBLIC_OPENAI_MODEL=gpt-5.6-terra
 JOLENE_PUBLIC_OPENAI_TIMEOUT_MS=8000
 JOLENE_PUBLIC_OPENAI_BUDGET_PATH=.jolene/public/model-budget.json
 JOLENE_PUBLIC_OPENAI_REQUESTS_PER_DAY=100
@@ -279,26 +279,37 @@ descriptions, audit data, private paths, Obsidian content, Slack content,
 private memory, private relationships, or private retrieval results.
 
 The adapter uses the Responses API with `store: false`, no tools, a bounded
-output budget, a bounded timeout, and a strict versioned JSON schema containing
-an optional bounded non-factual presentation plus single-sentence segments with
-exact selected evidence IDs. In Jolene mode, an ordinary low-risk answer may
-open with one subject-free image fragment of at most eight words. That fragment
-cannot contain names, pronouns, factual verbs, numbers, technologies, private
-terms, promises, qualifications, or contact material. Neutral mode removes it
-in code even if a provider returns one. Warm clarification, no-evidence,
-privacy, conflict, and skeptical-hiring fallbacks remain useful without relying
-on model output. A deterministic
-validator checks corpus/revocation/conflict state, support substitution,
-prohibited behavior, contribution boundaries, and conservative lexical
-entailment before joining accepted segments. The existing deterministic
-response owns every other field:
+output budget, a bounded timeout, and strict versioned JSON schemas. Supported
+answers contain optional one-sentence non-factual presentation and closing beats
+around single-sentence segments with exact selected evidence IDs. Those beats
+are written for the visitor's actual wording; the application no longer bolts a
+rotating bank of leads and closes onto accepted model prose. Neutral mode removes
+both beats in code even if a provider returns them. A deterministic validator
+checks corpus/revocation/conflict state, support substitution, prohibited
+behavior, contribution boundaries, non-factual presentation bounds, and
+conservative lexical entailment before joining accepted segments. The existing
+deterministic response owns every other field:
 claims, citations, limitations, follow-up questions, and corpus version cannot
 be replaced by model output. A supported specialized deterministic answer may
 still be returned when generation degrades. A generic claim-concatenation
-fallback is never presented as an answer: provider failure, timeout, refusal,
-malformed JSON, empty or oversized text, unsupported prose, poisoned-evidence
-instructions, or validator failure returns a citation-free clarification
-instead. The audit ledger records only fixed `model_supported`,
+fallback is never presented as an answer.
+
+OpenAI mode also has a separate conversation-only path for greetings,
+clarification, no-evidence, conflict, and resolved public-policy boundaries.
+That request receives the untrusted public question, corpus version, response
+kind, public-safe limitations, and optional bounded turn count—no career
+evidence, citations, private content, tools, authority, or transcript. Its schema
+requires an empty factual-claims array. A separate validator enforces the
+response kind, length, sentence count, privacy and secret patterns, policy or
+no-evidence boundary, internal-language ban, and the rule that an evidence gap
+cannot become a new positive or negative qualification claim about Carl. This is
+the normal model path for an unsupported question; fixed no-evidence copy is only
+the degraded fallback.
+
+Provider failure, timeout, refusal, malformed JSON, empty or oversized text,
+unsupported prose, poisoned-evidence instructions, or validator failure returns
+the corresponding safe deterministic response. The audit ledger records only
+fixed `model_supported`,
 `provider_fallback`, or `validation_fallback` outcomes plus the content-free
 answer mode and response kind; it never records submitted or generated content.
 
@@ -309,9 +320,10 @@ release criteria for every model or retrieval change.
 
 Model mode also requires a content-free persistent request budget. The budget
 stores only its schema version, window start, and aggregate request count. It is
-consulted only after deterministic evidence selection finds support, so
-no-evidence requests consume no budget and never call the provider. Each
-admitted provider attempt is counted before generation, including failures.
+consulted after the deterministic evidence, privacy, and authority boundary is
+resolved and before either grounded generation or conversation-only rendering.
+No-evidence model turns therefore consume one request but send no career
+evidence. Each admitted provider attempt is counted before generation, including failures.
 Exhausted, corrupt, or unavailable budget state bypasses the provider. It
 returns a supported specialized deterministic answer when one exists, or the
 same citation-free clarification used for unsafe generic fallback. The fixed

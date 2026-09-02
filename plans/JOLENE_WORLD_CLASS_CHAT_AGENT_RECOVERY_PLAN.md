@@ -35,6 +35,40 @@ This was not a cosmetic defect. It exposed five product failures:
 4. deterministic fallback bypasses the personality layer; and
 5. the v1 public contract originally rejected conversation continuity.
 
+### Canned-response incident — 2026-09-01
+
+The production prompt `I need Carl to perform brain surgery` exposed a second,
+more fundamental failure. The OpenAI service was not invoked for unsupported
+questions, greetings, public-boundary replies, conflicts, or the medical test.
+Those paths returned fixed copy. Supported model answers were then wrapped in a
+small deterministic bank of leads and closes. The result could pass machine
+grounding tests while still behaving like a scripted FAQ.
+
+The earlier patch that added one brain-surgery sentence was rejected. It treated
+the screenshot as a wording bug instead of proving whether the model owned the
+conversation.
+
+The corrected conversational MVP is:
+
+1. resolve retrieval, evidence, privacy, and authority boundaries before prose;
+2. send unsupported and social turns through a separate conversation-only OpenAI
+   contract that permits no factual claims and receives no career evidence;
+3. let supported model answers produce their own question-specific presentation
+   and closing around evidence-bound factual segments;
+4. keep deterministic copy only as an explicitly degraded provider, budget, or
+   validation fallback—never as the normal OpenAI path;
+5. derive the original Jolene behavior from the existing interview research as
+   compact situational wit, playful reversal, self-aware understatement, warmth,
+   candor, and a quick return to practical substance, without copied wording,
+   catchphrases, dialect, biography, or real-person impersonation; and
+6. select a current non-mini OpenAI model only after a representative bakeoff of
+   personality fit, grounding, latency, and token cost.
+
+MVP acceptance requires the exact screenshot prompt plus unrelated unsupported
+prompts to reach the model, produce question-specific answers, preserve zero
+claims and zero citations, avoid duplicate canned copy, and fall back safely when
+the provider or validator fails.
+
 ## What is actually holding us back
 
 | Gap | Current state | Required state |
@@ -203,6 +237,25 @@ including 30 multi-turn threads and 20 skeptical or negative questions.
 - Typecheck, 164 test files / 985 tests, and the production build pass.
 - Formal human voice/usefulness review, scoped commit review, preview release, and
   production authorization remain open. No deployment was performed.
+
+### Conversational MVP correction checkpoint — 2026-09-01
+
+- The no-evidence, greeting, check-in, public-policy-boundary, and conflict paths
+  now use a separate model-driven conversation-only contract after deterministic
+  privacy, authority, and response-kind resolution.
+- The conversation-only provider receives no career evidence, citations, private
+  data, tools, authority, or transcript, and its strict schema permits no factual
+  claims.
+- Supported model answers now own their question-specific presentation and close;
+  the deterministic rotating wrapper and hardcoded brain-surgery response were
+  removed from runtime.
+- Live eight-case bakeoff: Terra and Sol each passed 8/8 with zero canned-copy
+  matches. Terra measured 2,071 ms mean / 2,498 ms p95 versus Sol at 2,625 ms /
+  4,425 ms, and current token pricing makes the sampled Terra turns roughly half
+  the cost.
+- `gpt-5.6-terra` is selected for the MVP. The exact brain-surgery regression was
+  rerun after final style calibration and passed the conversation validator with
+  a newly generated, premise-specific response.
 
 Required regression prompts include:
 

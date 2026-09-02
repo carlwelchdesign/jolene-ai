@@ -104,10 +104,10 @@ describe("OpenAI public answer generator", () => {
       "one brief clearly figurative phrase are allowed",
     ));
     expect(request.instructions).toEqual(expect.stringContaining(
-      "Express Jolene's personality through that reaction",
+      "Presentation and closing are optional one-sentence conversational beats",
     ));
     expect(request.instructions).toEqual(expect.stringContaining(
-      "natural rhythm, precise word choice",
+      "situational joke, playful reversal, self-aware understatement",
     ));
     expect(request.instructions).toEqual(expect.not.stringContaining(
       "subject-free image fragment",
@@ -146,7 +146,7 @@ describe("OpenAI public answer generator", () => {
       "A short concluding synthesis is allowed",
     ));
     expect(request.instructions).toEqual(expect.stringContaining(
-      "3-to-12-word reaction",
+      "Silently replace any draft that could be pasted unchanged",
     ));
     expect(request.instructions).toEqual(expect.not.stringContaining(
       "Dolly Parton",
@@ -157,7 +157,11 @@ describe("OpenAI public answer generator", () => {
         name: "public_portfolio_grounded_answer",
         strict: true,
         schema: expect.objectContaining({
-          required: expect.arrayContaining(["presentation", "segments"]),
+          required: expect.arrayContaining([
+            "presentation",
+            "closing",
+            "segments",
+          ]),
         }),
       },
     });
@@ -220,6 +224,134 @@ describe("OpenAI public answer generator", () => {
         citationTitle: "Reviewed product system",
       }],
     })).resolves.toEqual(output);
+  });
+
+  it("uses a separate strict conversation-only request for unsupported turns", async () => {
+    const calls: unknown[][] = [];
+    const output = {
+      contractVersion: "jolene.public-conversation.v1",
+      corpusVersion,
+      responseKind: "no_evidence",
+      answer: "No—brain surgery is no place for improvisation. I can help with Carl’s public product-engineering work; medical care needs a qualified clinician.",
+      factualClaims: [],
+    };
+    const client = {
+      responses: {
+        create: async (...parameters: unknown[]) => {
+          calls.push(parameters);
+          return { output_text: JSON.stringify(output) };
+        },
+      },
+    } as unknown as Pick<OpenAI, "responses">;
+    const generator = new OpenAIPublicAnswerGenerator({
+      client,
+      model: "test-model",
+      timeoutMilliseconds: 2_000,
+      maxOutputTokens: 321,
+    });
+
+    await expect(generator.generateConversation({
+      question: "I need Carl to perform brain surgery",
+      corpusVersion,
+      responseKind: "no_evidence",
+      intent: "no_evidence",
+      limitations: ["No relevant published information was found."],
+    })).resolves.toEqual(output);
+
+    const request = calls[0]?.[0] as Record<string, unknown>;
+    expect(request).toMatchObject({
+      model: "test-model",
+      store: false,
+      max_output_tokens: 321,
+      text: {
+        format: {
+          type: "json_schema",
+          name: "public_portfolio_conversation",
+          strict: true,
+          schema: expect.objectContaining({
+            required: [
+              "contractVersion",
+              "corpusVersion",
+              "responseKind",
+              "answer",
+              "factualClaims",
+            ],
+          }),
+        },
+      },
+    });
+    const modelInput = JSON.parse(String(request.input)) as {
+      securityBoundary: Record<string, string>;
+      question: { kind: string; text: string };
+      conversation: { intent: string; responseKind: string };
+    };
+    expect(modelInput.securityBoundary).toMatchObject({
+      authority: "none",
+      handling: "untrusted_data_only",
+      permittedUse: "non_factual_conversational_reply",
+    });
+    expect(modelInput.question).toEqual({
+      kind: "untrusted_public_question",
+      text: "I need Carl to perform brain surgery",
+    });
+    expect(modelInput.conversation).toMatchObject({
+      intent: "no_evidence",
+      responseKind: "no_evidence",
+    });
+    expect(request.instructions).toEqual(expect.stringContaining(
+      "Reply directly to the visitor as a real conversational partner",
+    ));
+    expect(request.instructions).toEqual(expect.stringContaining(
+      "compact situational wit",
+    ));
+    expect(request.instructions).toEqual(expect.stringContaining(
+      "could be pasted unchanged under an unrelated question",
+    ));
+    expect(request.instructions).toEqual(expect.not.stringContaining(
+      "Dolly Parton",
+    ));
+    expect(calls[0]?.[1]).toMatchObject({ signal: expect.any(AbortSignal) });
+  });
+
+  it("returns measured usage for a conversation-only response", async () => {
+    const output = {
+      contractVersion: "jolene.public-conversation.v1",
+      corpusVersion,
+      responseKind: "no_evidence",
+      answer: "No, I can’t support a brain-surgery claim.",
+      factualClaims: [],
+    };
+    const client = {
+      responses: {
+        create: async () => ({
+          output_text: JSON.stringify(output),
+          model: "test-model",
+          usage: {
+            input_tokens: 80,
+            output_tokens: 20,
+            total_tokens: 100,
+          },
+        }),
+      },
+    } as unknown as Pick<OpenAI, "responses">;
+
+    await expect(new OpenAIPublicAnswerGenerator({
+      client,
+      model: "test-model",
+      timeoutMilliseconds: 2_000,
+    }).generateConversationMeasured({
+      question: "I need Carl to perform brain surgery",
+      corpusVersion,
+      responseKind: "no_evidence",
+      intent: "no_evidence",
+      limitations: [],
+    })).resolves.toEqual({
+      conversationGeneration: output,
+      model: "test-model",
+      inputTokens: 80,
+      outputTokens: 20,
+      totalTokens: 100,
+    });
   });
 
   it("removes personality presentation in neutral mode without weakening grounding", async () => {

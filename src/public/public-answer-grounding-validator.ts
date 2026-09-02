@@ -70,6 +70,15 @@ export class PublicAnswerGroundingValidator
         return rejected(presentationFailure, null, startedAt);
       }
     }
+    let acceptedClosing = parsed.data.closing;
+    if (acceptedClosing) {
+      const closingFailure = validatePresentation(acceptedClosing);
+      if (closingFailure === "unsupported_segment") {
+        acceptedClosing = null;
+      } else if (closingFailure) {
+        return rejected(closingFailure, null, startedAt);
+      }
+    }
 
     const acceptedSegments: typeof segments = [];
     let firstUnsupportedIndex: number | null = null;
@@ -125,6 +134,7 @@ export class PublicAnswerGroundingValidator
       acceptedPresentation,
       ...groupContiguousGroundedSegments(acceptedSegments),
       ...sourceCompletions,
+      acceptedClosing,
     ].filter((value): value is string => Boolean(value)).join("\n\n");
     const candidate = { ...baseline, answer };
     const baselineSnapshot = createPublicAnswerFallbackSnapshot(artifact, baseline);
@@ -180,7 +190,7 @@ function validatePresentation(
 ): PublicAnswerGroundingReasonCode | null {
   if (materialSentenceCount(text) !== 1) return "unsupported_segment";
   const words = text.match(/[\p{L}\p{N}’'-]+/gu) ?? [];
-  if (words.length < 2 || words.length > 16) return "unsupported_segment";
+  if (words.length < 2 || words.length > 32) return "unsupported_segment";
   const prohibited = prohibitedReason(text, []);
   if (prohibited) return prohibited;
   const normalized = normalize(text);
@@ -383,7 +393,7 @@ const GROUNDING_STOP_WORDS = new Set([
 ]);
 
 const PRESENTATION_FACT_PATTERN =
-  /\b(?:i|you|he|she|it|we|they|this|that|these|those|him|her|them|his|hers|their|built|created|designed|directed|worked|led|managed|uses|used|knows|qualified|experienced|available|hire|employ|client|award|won|can|will|should|must|guarantee|is|was|has|did)\b/u;
+  /\b(?:built|created|designed|directed|worked|led|managed|uses|used|knows|qualified|experienced|available|hire|employ|client|award|won|guarantee)\b/u;
 
 const PRESENTATION_NAMED_TERM_PATTERN =
   /\b(?:carl|jolene|openai|chatgpt|slack|obsidian|sqlite|vercel|react|typescript|javascript|docker|mcp|rag)\b/u;
