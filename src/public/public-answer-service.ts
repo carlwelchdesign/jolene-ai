@@ -118,6 +118,9 @@ export class DeterministicPublicAnswerService
     if (isPrivateDisclosureRequest(request.question)) {
       return privateDisclosureResponse(artifact, request.question);
     }
+    if (isOutOfScopeMedicalRequest(request.question)) {
+      return outOfScopeMedicalResponse(artifact, request.question);
+    }
     const conversationalTurn = publicConversationalTurn(request.question);
     if (conversationalTurn) {
       return conversationalTurnResponse(
@@ -219,6 +222,13 @@ export class GroundedPublicAnswerService implements PublicPortfolioAnswerer {
         ),
         mode: "deterministic",
         responseKind: "policy_refusal",
+      };
+    }
+    if (isOutOfScopeMedicalRequest(request.question)) {
+      return {
+        response: outOfScopeMedicalResponse(artifact, request.question),
+        mode: "deterministic",
+        responseKind: "no_evidence",
       };
     }
     const conversationalTurn = publicConversationalTurn(request.question);
@@ -1980,6 +1990,33 @@ function noEvidenceResponse(
     }),
     corpusVersion: artifact.manifest.corpusVersion,
   });
+}
+
+function outOfScopeMedicalResponse(
+  artifact: PublicCareerEvidenceArtifact,
+  question: string,
+): PortfolioAnswerResponse {
+  return portfolioAnswerResponseSchema.parse({
+    schemaVersion: PUBLIC_CAREER_EVIDENCE_SCHEMA_VERSION,
+    answer: PUBLIC_JOLENE_DETERMINISTIC_COPY.outOfScopeMedical,
+    claims: [],
+    citations: [],
+    limitations: [
+      "No relevant published information supports this medical capability.",
+    ],
+    suggestedFollowUpQuestions: suggestPublicFollowUpQuestions({
+      question,
+      limit: 3,
+    }),
+    corpusVersion: artifact.manifest.corpusVersion,
+  });
+}
+
+function isOutOfScopeMedicalRequest(question: string): boolean {
+  const normalized = normalizeLookup(question);
+  return /\b(?:brain surgeon|neurosurgeon|neurosurgery)\b/u.test(normalized) ||
+    /\b(?:perform|do|conduct|need|hire)\b.{0,48}\bbrain surgery\b/u
+      .test(normalized);
 }
 
 function conversationalTurnResponse(

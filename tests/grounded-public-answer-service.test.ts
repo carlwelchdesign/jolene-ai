@@ -89,6 +89,41 @@ describe("grounded public answer service", () => {
     expect(reserve).not.toHaveBeenCalled();
   });
 
+  it("answers an absurd medical request in Jolene's voice without retrieving an incidental testimonial", async () => {
+    const testimonial = createPublicEvidenceRecord(1, {
+      text: "Carl has his left and right brain working in sync to deliver stellar web designs and functionalities.",
+      title: "Recommendation from Jacob Tell",
+      href: "/recommendations",
+    });
+    const generate = vi.fn(async () => "must not run");
+    const retrieve = vi.fn(async () => [testimonial]);
+    const reserve = vi.fn(async () => true);
+
+    const execution = await new GroundedPublicAnswerService(
+      { generate },
+      {
+        retriever: { retrieve },
+        budget: { reserve },
+        personalityMode: "jolene",
+      },
+    ).execute(createPublicEvidenceArtifact([testimonial]), {
+      question: "I need Carl to perform brain surgery",
+    });
+
+    expect(execution).toMatchObject({
+      mode: "deterministic",
+      responseKind: "no_evidence",
+      response: { claims: [], citations: [] },
+    });
+    expect(execution.response.answer).toMatch(
+      /no, silly.+brains scrambled.+product engineer.+brain surgery.+qualified medical professional/iu,
+    );
+    expect(execution.response.answer).not.toMatch(/jacob tell|web designs|testimonial/iu);
+    expect(retrieve).not.toHaveBeenCalled();
+    expect(reserve).not.toHaveBeenCalled();
+    expect(generate).not.toHaveBeenCalled();
+  });
+
   it("handles a greeting before retrieval, budget, or model generation", async () => {
     const generate = vi.fn(async () => "must not run");
     const retrieve = vi.fn(async () => createPublicEvidenceArtifact().evidence);
