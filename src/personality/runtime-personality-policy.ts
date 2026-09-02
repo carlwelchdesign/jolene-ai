@@ -108,8 +108,6 @@ export const PUBLIC_JOLENE_DETERMINISTIC_COPY = {
   },
   noEvidence:
     "I don’t have enough published information to answer that cleanly, and I’d rather leave a blank than decorate a guess.",
-  outOfScopeMedical:
-    "No, silly—not unless you want your brains scrambled. If you need a product engineer, I can make a serious case; for brain surgery, please hire a qualified medical professional.",
   policyRefusal:
     "That door stays locked: I can’t share Carl’s private notes or unpublished material. I can still help with his published work, professional experience, or public recommendations.",
   conflict:

@@ -3,8 +3,6 @@ import { z } from "zod";
 import { tokenizeLexicalTerms } from "../domain/lexical-terms.js";
 import { PUBLIC_JOLENE_DETERMINISTIC_COPY } from
   "../personality/runtime-personality-policy.js";
-import { framePublicCharacterAnswer } from
-  "../personality/public-character-realization.js";
 import type { PersonalityMode } from "../personality/personality-mode.js";
 import {
   PUBLIC_CAREER_EVIDENCE_SCHEMA_VERSION,
@@ -24,6 +22,12 @@ import {
   type PublicConversationContext,
 } from "../domain/public-portfolio-contract.js";
 import type { PublicModelRequestBudget } from "./public-model-request-budget.js";
+import {
+  PublicConversationValidator,
+  type PublicConversationGenerationInput,
+  type PublicConversationResponseKind,
+  type PublicConversationValidatorLike,
+} from "./public-conversation-contract.js";
 import { suggestPublicFollowUpQuestions } from
   "./public-conversation-prompts.js";
 import {
@@ -71,6 +75,9 @@ export interface GroundedPublicAnswerInput {
 
 export interface PublicAnswerTextGenerator {
   generate(input: GroundedPublicAnswerInput): Promise<unknown>;
+  generateConversation?(
+    input: PublicConversationGenerationInput,
+  ): Promise<unknown>;
 }
 
 export interface PublicEvidenceRetriever {
@@ -119,7 +126,7 @@ export class DeterministicPublicAnswerService
       return privateDisclosureResponse(artifact, request.question);
     }
     if (isOutOfScopeMedicalRequest(request.question)) {
-      return outOfScopeMedicalResponse(artifact, request.question);
+      return noEvidenceResponse(artifact, request.question, conversationContext);
     }
     const conversationalTurn = publicConversationalTurn(request.question);
     if (conversationalTurn) {
@@ -187,7 +194,7 @@ export class GroundedPublicAnswerService implements PublicPortfolioAnswerer {
   readonly #budget: PublicModelRequestBudget | undefined;
   readonly #retriever: PublicEvidenceRetriever | undefined;
   readonly #validator: PublicAnswerGroundingValidatorLike;
-  readonly #personalityMode: PersonalityMode;
+  readonly #conversationValidator: PublicConversationValidatorLike;
 
   constructor(
     private readonly generator: PublicAnswerTextGenerator,
@@ -196,6 +203,7 @@ export class GroundedPublicAnswerService implements PublicPortfolioAnswerer {
       readonly budget?: PublicModelRequestBudget;
       readonly retriever?: PublicEvidenceRetriever;
       readonly validator?: PublicAnswerGroundingValidatorLike;
+      readonly conversationValidator?: PublicConversationValidatorLike;
       readonly personalityMode?: PersonalityMode;
     } = {},
   ) {
@@ -203,7 +211,8 @@ export class GroundedPublicAnswerService implements PublicPortfolioAnswerer {
     this.#budget = options.budget;
     this.#retriever = options.retriever;
     this.#validator = options.validator ?? new PublicAnswerGroundingValidator();
-    this.#personalityMode = options.personalityMode ?? "neutral";
+    this.#conversationValidator = options.conversationValidator ??
+      new PublicConversationValidator();
   }
 
   async execute(
@@ -213,23 +222,20 @@ export class GroundedPublicAnswerService implements PublicPortfolioAnswerer {
     const turn = resolvePublicConversationTurn(artifact, request);
     const selectionRequest = turn.request;
     if (isPrivateDisclosureRequest(request.question)) {
-      return {
-        response: this.#baseline.answerFromSelected(
-          artifact,
-          request,
-          [],
-          undefined,
-        ),
-        mode: "deterministic",
-        responseKind: "policy_refusal",
-      };
+      return this.#generateConversation(
+        this.#baseline.answerFromSelected(artifact, request, [], undefined),
+        request,
+        "policy_refusal",
+        "policy_refusal",
+      );
     }
     if (isOutOfScopeMedicalRequest(request.question)) {
-      return {
-        response: outOfScopeMedicalResponse(artifact, request.question),
-        mode: "deterministic",
-        responseKind: "no_evidence",
-      };
+      return this.#generateConversation(
+        noEvidenceResponse(artifact, request.question),
+        request,
+        "no_evidence",
+        "no_evidence",
+      );
     }
     const conversationalTurn = publicConversationalTurn(request.question);
     if (conversationalTurn) {
@@ -239,13 +245,15 @@ export class GroundedPublicAnswerService implements PublicPortfolioAnswerer {
         [],
         undefined,
       );
-      return {
-        response,
-        mode: "deterministic",
-        responseKind: conversationalTurn === "purpose" && response.claims.length > 0
-          ? "supported"
-          : "clarification",
-      };
+      if (conversationalTurn !== "purpose" || response.claims.length === 0) {
+        return this.#generateConversation(
+          response,
+          request,
+          "clarification",
+          conversationalIntent(conversationalTurn),
+        );
+      }
+      return this.#generateGrounded(artifact, request, response);
     }
     const exactRelationshipEvidence = turn.contextualEvidence
       ? []
@@ -286,23 +294,33 @@ export class GroundedPublicAnswerService implements PublicPortfolioAnswerer {
       }
     }
     if (baseline.claims.length === 0) {
-      return {
-        response: baseline,
-        mode: "deterministic",
-        responseKind: deterministicResponseKind(selectionRequest, baseline),
-      };
+      const responseKind = deterministicResponseKind(selectionRequest, baseline);
+      return this.#generateConversation(
+        baseline,
+        request,
+        responseKind === "policy_refusal" ? "policy_refusal" : "no_evidence",
+        baseline.limitations.some((limitation) =>
+            limitation.includes("conflicting accounts")
+          )
+          ? "conflict"
+          : "no_evidence",
+      );
     }
     if (exactRelationshipEvidence.length > 0) {
       return {
-        response: characterFramedResponse(
-          baseline,
-          request.question,
-          this.#personalityMode,
-        ),
+        response: baseline,
         mode: "deterministic",
         responseKind: "supported",
       };
     }
+    return this.#generateGrounded(artifact, request, baseline);
+  }
+
+  async #generateGrounded(
+    artifact: PublicCareerEvidenceArtifact,
+    request: PortfolioAnswerRequest,
+    baseline: PortfolioAnswerResponse,
+  ): Promise<PublicAnswerExecution> {
     if (this.#budget) {
       try {
         if (!await this.#budget.reserve()) {
@@ -310,7 +328,7 @@ export class GroundedPublicAnswerService implements PublicPortfolioAnswerer {
             baseline,
             "budget_fallback",
             request.question,
-            this.#personalityMode,
+            "supported",
           );
         }
       } catch {
@@ -318,7 +336,7 @@ export class GroundedPublicAnswerService implements PublicPortfolioAnswerer {
           baseline,
           "budget_fallback",
           request.question,
-          this.#personalityMode,
+          "supported",
         );
       }
     }
@@ -339,7 +357,7 @@ export class GroundedPublicAnswerService implements PublicPortfolioAnswerer {
         baseline,
         "provider_fallback",
         request.question,
-        this.#personalityMode,
+        "supported",
       );
     }
     try {
@@ -356,23 +374,16 @@ export class GroundedPublicAnswerService implements PublicPortfolioAnswerer {
           baseline,
           "validation_fallback",
           request.question,
-          this.#personalityMode,
+          "supported",
         );
       }
       const groundedAnswer = generatedAnswerSchema.parse(validation.answer);
-      const answer = this.#personalityMode === "jolene"
-        ? framePublicCharacterAnswer(
-          request.question,
-          groundedAnswer,
-          2_000,
-        )
-        : groundedAnswer;
-      if (containsInternalPublicProcessLanguage(answer)) {
+      if (containsInternalPublicProcessLanguage(groundedAnswer)) {
         return fallbackExecution(
           baseline,
           "validation_fallback",
           request.question,
-          this.#personalityMode,
+          "supported",
         );
       }
       return {
@@ -380,7 +391,7 @@ export class GroundedPublicAnswerService implements PublicPortfolioAnswerer {
         responseKind: "supported",
         response: portfolioAnswerResponseSchema.parse({
           ...baseline,
-          answer,
+          answer: groundedAnswer,
         }),
       };
     } catch {
@@ -388,9 +399,82 @@ export class GroundedPublicAnswerService implements PublicPortfolioAnswerer {
         baseline,
         "validation_fallback",
         request.question,
-        this.#personalityMode,
+        "supported",
       );
     }
+  }
+
+  async #generateConversation(
+    baseline: PortfolioAnswerResponse,
+    request: PortfolioAnswerRequest,
+    responseKind: PublicConversationResponseKind,
+    intent: PublicConversationGenerationInput["intent"],
+  ): Promise<PublicAnswerExecution> {
+    if (this.#budget) {
+      try {
+        if (!await this.#budget.reserve()) {
+          return fallbackExecution(
+            baseline,
+            "budget_fallback",
+            request.question,
+            responseKind,
+          );
+        }
+      } catch {
+        return fallbackExecution(
+          baseline,
+          "budget_fallback",
+          request.question,
+          responseKind,
+        );
+      }
+    }
+    if (!this.generator.generateConversation) {
+      return fallbackExecution(
+        baseline,
+        "provider_fallback",
+        request.question,
+        responseKind,
+      );
+    }
+    const input: PublicConversationGenerationInput = {
+      question: request.question,
+      corpusVersion: baseline.corpusVersion,
+      responseKind,
+      intent,
+      limitations: baseline.limitations,
+      ...(baseline.conversationContext?.turnCount
+        ? { turnCount: baseline.conversationContext.turnCount }
+        : {}),
+    };
+    let generation: unknown;
+    try {
+      generation = await this.generator.generateConversation(input);
+    } catch {
+      return fallbackExecution(
+        baseline,
+        "provider_fallback",
+        request.question,
+        responseKind,
+      );
+    }
+    const validation = this.#conversationValidator.validate(input, generation);
+    if (validation.status === "rejected") {
+      return fallbackExecution(
+        baseline,
+        "validation_fallback",
+        request.question,
+        responseKind,
+      );
+    }
+    return {
+      mode: "model",
+      responseKind,
+      response: portfolioAnswerResponseSchema.parse({
+        ...baseline,
+        answer: validation.answer,
+      }),
+    };
   }
 }
 
@@ -402,30 +486,14 @@ type PublicAnswerFallbackMode = Extract<
 function fallbackExecution(
   baseline: PortfolioAnswerResponse,
   mode: PublicAnswerFallbackMode,
-  question: string,
-  personalityMode: PersonalityMode,
+  _question: string,
+  responseKind: PublicAnswerExecution["responseKind"],
 ): PublicAnswerExecution {
   return {
-    response: characterFramedResponse(baseline, question, personalityMode),
+    response: baseline,
     mode,
-    responseKind: "supported",
+    responseKind,
   };
-}
-
-function characterFramedResponse(
-  response: PortfolioAnswerResponse,
-  question: string,
-  personalityMode: PersonalityMode,
-): PortfolioAnswerResponse {
-  if (personalityMode !== "jolene") return response;
-  return portfolioAnswerResponseSchema.parse({
-    ...response,
-    answer: framePublicCharacterAnswer(
-      question,
-      response.answer,
-      PUBLIC_PORTFOLIO_ANSWER_LIMITS.answerCharacters,
-    ),
-  });
 }
 
 function deterministicResponseKind(
@@ -449,6 +517,14 @@ type PublicConversationalTurn =
   | "farewell"
   | "introduction"
   | "purpose";
+
+function conversationalIntent(
+  turn: PublicConversationalTurn,
+): PublicConversationGenerationInput["intent"] {
+  if (turn === "checkIn") return "check_in";
+  if (turn === "purpose") return "introduction";
+  return turn;
+}
 
 function publicConversationalTurn(
   question: string,
@@ -1986,26 +2062,6 @@ function noEvidenceResponse(
     suggestedFollowUpQuestions: suggestPublicFollowUpQuestions({
       question,
       turnCount: conversationContext?.turnCount,
-      limit: 3,
-    }),
-    corpusVersion: artifact.manifest.corpusVersion,
-  });
-}
-
-function outOfScopeMedicalResponse(
-  artifact: PublicCareerEvidenceArtifact,
-  question: string,
-): PortfolioAnswerResponse {
-  return portfolioAnswerResponseSchema.parse({
-    schemaVersion: PUBLIC_CAREER_EVIDENCE_SCHEMA_VERSION,
-    answer: PUBLIC_JOLENE_DETERMINISTIC_COPY.outOfScopeMedical,
-    claims: [],
-    citations: [],
-    limitations: [
-      "No relevant published information supports this medical capability.",
-    ],
-    suggestedFollowUpQuestions: suggestPublicFollowUpQuestions({
-      question,
       limit: 3,
     }),
     corpusVersion: artifact.manifest.corpusVersion,
