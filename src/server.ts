@@ -21,6 +21,11 @@ import {
   ConversationalQualityReviewUnavailableError,
 } from "./application/conversational-quality-review-service.js";
 import {
+  PublicVoiceLabReviewConflictError,
+  PublicVoiceLabReviewIncompleteError,
+  PublicVoiceLabReviewScopeError,
+} from "./application/public-voice-lab-review-service.js";
+import {
   PersonalityResearchReviewConflictError,
   PersonalityResearchReviewScopeError,
 } from "./application/personality-research-review-service.js";
@@ -202,6 +207,11 @@ async function handleRequest(
     return;
   }
 
+  if (request.method === "GET" && url.pathname === "/voice-lab") {
+    sendAsset(response, memoryReviewAssets.voiceLabHtml);
+    return;
+  }
+
   if (request.method === "GET" && url.pathname === "/client-ai") {
     sendAsset(response, memoryReviewAssets.clientAiHtml);
     return;
@@ -249,6 +259,16 @@ async function handleRequest(
 
   if (request.method === "GET" && url.pathname === "/conversation-evaluation-review.js") {
     sendAsset(response, memoryReviewAssets.conversationEvaluationJavascript);
+    return;
+  }
+
+  if (request.method === "GET" && url.pathname === "/voice-lab.css") {
+    sendAsset(response, memoryReviewAssets.voiceLabCss);
+    return;
+  }
+
+  if (request.method === "GET" && url.pathname === "/voice-lab.js") {
+    sendAsset(response, memoryReviewAssets.voiceLabJavascript);
     return;
   }
 
@@ -744,6 +764,22 @@ async function handleRequest(
     return;
   }
 
+  if (request.method === "GET" && url.pathname === "/v1/public-voice-lab-review/scope") {
+    sendJson(response, 200, application.publicVoiceLabReview.scope());
+    return;
+  }
+
+  if (request.method === "GET" && url.pathname === "/v1/public-voice-lab-review") {
+    sendJson(response, 200, await application.publicVoiceLabReview.get(scopeFrom(url)));
+    return;
+  }
+
+  if (request.method === "POST" && url.pathname === "/v1/public-voice-lab-review/decision") {
+    assertSameOrigin(request.headers);
+    sendJson(response, 200, await application.publicVoiceLabReview.submit(await readJson(request)));
+    return;
+  }
+
   if (request.method === "GET" && url.pathname === "/v1/personality-research-review/scope") {
     sendJson(response, 200, application.personalityResearchReview.scope());
     return;
@@ -1085,6 +1121,11 @@ function handleError(error: unknown, response: ServerResponse): void {
     return;
   }
 
+  if (error instanceof PublicVoiceLabReviewScopeError) {
+    sendJson(response, 403, { error: "public_voice_lab_review_scope_not_permitted" });
+    return;
+  }
+
   if (
     error instanceof PersonalityResearchReviewScopeError ||
     error instanceof PersonalityTuningReviewScopeError
@@ -1116,6 +1157,14 @@ function handleError(error: unknown, response: ServerResponse): void {
     error instanceof ConversationalQualityReviewIncompleteError
   ) {
     sendJson(response, 409, { error: "conversation_quality_review_conflict" });
+    return;
+  }
+
+  if (
+    error instanceof PublicVoiceLabReviewConflictError ||
+    error instanceof PublicVoiceLabReviewIncompleteError
+  ) {
+    sendJson(response, 409, { error: "public_voice_lab_review_conflict" });
     return;
   }
 

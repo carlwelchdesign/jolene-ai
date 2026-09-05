@@ -5,7 +5,7 @@
   "sourceBindings": {
     "admissionAuditFingerprint": "sha256:5154cb0caf2d7726775e69099268877f64e3244912fdb3d60c9f81097ccb4fec",
     "characterGraphFingerprint": "sha256:ea80f30fb952fa7477a3b39f43f728b1acce1daff0100faa6017a98fd1923972",
-    "behaviorSpecificationFingerprint": "sha256:e12fce81a8999288ea459145937ddc04cbc2b6db33d906924fe747fe669c1450",
+    "behaviorSpecificationFingerprint": "sha256:4700a948ad1056cd549ba6908cac7b0c3d8bb68ab36eb66500443c65384d7e87",
     "rejectionLogFingerprint": "sha256:ed0b66a1ff869000570fcc98803e96ec7862e7e1a21272324538f9cfe770fba0"
   },
   "evidenceSummary": {
@@ -148,5 +148,5 @@
     "voiceWork": "blocked-pending-original-voice-and-rights-gate",
     "legalClearance": "not-established"
   },
-  "reviewFingerprint": "sha256:ab7f11c1a642429ba78b6802c90131a5f89f5ab0ce5a78eceaa3a878fa84082f"
+  "reviewFingerprint": "sha256:918d2fd490702ad855e56daf46a5a8946e3e27a454098ee2645b91fa452a77ab"
 }

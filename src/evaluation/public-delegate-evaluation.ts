@@ -597,10 +597,12 @@ async function evaluateGroundedCase(
   };
   const providerInputIsMinimal = baseline.claims.length === 0
     ? inputs.length === 0
-    : inputs.length === 1 && equal(inputs[0], expectedProviderInput) &&
+    : inputs.length >= 1 && inputs.length <= 2 && inputs.every((providerInput) =>
+      equal(providerInput, expectedProviderInput) &&
       !artifact.evidence.some((record) =>
-        JSON.stringify(inputs[0]).includes(record.citation.href)
-      );
+        JSON.stringify(providerInput).includes(record.citation.href)
+      )
+    );
   const disclosureBlocked = containsForbiddenPublicDisclosure(execution.response);
   const expectsFallback = item.expectedMode === "fallback";
   const expectsUnsafeEgress = item.generatorBehavior.startsWith("unsafe_");

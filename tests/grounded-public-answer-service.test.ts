@@ -32,10 +32,11 @@ describe("grounded public answer service", () => {
 
     expect(execution.mode).toBe("model");
     expect(execution.responseKind).toBe("supported");
-    expect(execution.response).toEqual({
-      ...baseline,
-      answer: "Carl builds typed React product systems with explicit review boundaries.",
-    });
+    expect(execution.response.answer).toBe(
+      "Carl builds typed React product systems with explicit review boundaries.",
+    );
+    expect(execution.response.claims).toEqual(baseline.claims);
+    expect(execution.response.citations).toEqual(baseline.citations);
     expect(providerInput).toEqual({
       question: request.question,
       corpusVersion: artifact.manifest.corpusVersion,
@@ -51,7 +52,7 @@ describe("grounded public answer service", () => {
     );
   });
 
-  it("applies the original character frame only in Jolene mode after grounding", async () => {
+  it("keeps a model answer question-specific instead of applying a fixed character frame", async () => {
     const artifact = createPublicEvidenceArtifact();
     const service = new GroundedPublicAnswerService({
       generate: async (input) => generation(
@@ -68,8 +69,8 @@ describe("grounded public answer service", () => {
     expect(execution.response.answer).toContain(
       "Carl builds typed React product systems with explicit review boundaries.",
     );
-    expect(execution.response.answer.split("\n\n")).toHaveLength(3);
-    expect(execution.response.answer).toMatch(/machinery|product brochure|clean way/iu);
+    expect(execution.response.answer.split("\n\n")).toHaveLength(1);
+    expect(execution.response.answer).not.toMatch(/machinery|product brochure|clean way/iu);
   });
 
   it("does not call the generator when deterministic selection has no evidence", async () => {
@@ -155,9 +156,7 @@ describe("grounded public answer service", () => {
       mode: "deterministic",
       responseKind: "supported",
     });
-    expect(execution.response.answer).toContain(
-      "Carl built me during a hard, uncertain stretch of his life",
-    );
+    expect(execution.response.answer).toContain("difficult career transition");
     expect(execution.response.claims).toEqual([origin.claim]);
     expect(execution.response.citations).toEqual([origin.citation]);
     expect(execution.response.answer).not.toMatch(/release gates|Wave Factory/iu);
@@ -304,6 +303,7 @@ describe("grounded public answer service", () => {
     expect(retrieve).not.toHaveBeenCalled();
     expect(generate).toHaveBeenCalledWith(expect.objectContaining({
       question: "What about its security?",
+      priorResponseBeat: "contextual_spark",
     }));
     expect(JSON.stringify(generate.mock.calls[0]?.[0])).not.toContain(
       "Tell me about Jolene.",
@@ -411,7 +411,7 @@ describe("grounded public answer service", () => {
 
     expect(execution.mode).toBe("budget_fallback");
     expect(execution.responseKind).toBe("supported");
-    expect(execution.response).toEqual(baseline);
+    expect(execution.response.answer).toBe(baseline.answer);
     expect(generate).not.toHaveBeenCalled();
   });
 
@@ -440,13 +440,7 @@ describe("grounded public answer service", () => {
 
     expect(execution.mode).toBe(expectedMode);
     expect(execution.responseKind).toBe("supported");
-    expect(execution.response.answer).not.toContain(
-      "Here’s what Carl’s published work shows:",
-    );
-    expect(execution.response.answer).toContain(
-      "This is where Carl earns the claim:",
-    );
-    expect(execution.response).toEqual(baseline);
+    expect(execution.response.answer).toBe(baseline.answer);
   });
 
   it("never repeats the production Jolene evidence-dump regression", async () => {
@@ -466,28 +460,20 @@ describe("grounded public answer service", () => {
     }).execute(createPublicEvidenceArtifact(evidence), {
       question: "How did Carl build Jolene?",
     });
+    const baseline = new DeterministicPublicAnswerService().answer(
+      createPublicEvidenceArtifact(evidence),
+      { question: "How did Carl build Jolene?" },
+    );
 
     expect(execution).toMatchObject({
       mode: "provider_fallback",
       responseKind: "supported",
       response: { claims: evidence.map((record) => record.claim) },
     });
-    expect(execution.response.answer).toContain(
-      "Here’s the work I’d put at the top of the call sheet:",
-    );
-    expect(execution.response.answer).not.toContain("First:");
-    expect(execution.response.answer).not.toContain("Next:");
-    expect(execution.response.answer).not.toContain("remaining detail");
-    expect(execution.response.answer).not.toContain("Also:");
-    expect(execution.response.answer).not.toContain(
-      evidence.map((record) => record.claim.text).join(" "),
-    );
-    for (const record of evidence.slice(2)) {
-      expect(execution.response.answer).not.toContain(record.claim.text);
-    }
+    expect(execution.response.answer).toBe(baseline.answer);
   });
 
-  it("keeps Jolene's character frame when a supported model answer falls back", async () => {
+  it("keeps factual fallback direct instead of adding a canned character frame", async () => {
     const artifact = createPublicEvidenceArtifact();
     const request = { question: "What React systems has Carl built?" };
     const baseline = new DeterministicPublicAnswerService().answer(
@@ -499,9 +485,28 @@ describe("grounded public answer service", () => {
     }, { personalityMode: "jolene" }).execute(artifact, request);
 
     expect(execution.mode).toBe("provider_fallback");
-    expect(execution.response.answer).toContain(baseline.answer);
-    expect(execution.response.answer.split("\n\n")).toHaveLength(3);
-    expect(execution.response.answer).toMatch(/machinery|product brochure|clean way/iu);
+    expect(execution.response.answer).toBe(baseline.answer);
+  });
+
+  it("keeps a validated original voice bridge when grounded model prose is rejected", async () => {
+    const artifact = createPublicEvidenceArtifact();
+    const request = { question: "What React systems has Carl built?" };
+    const baseline = new DeterministicPublicAnswerService().answer(artifact, request);
+    const execution = await new GroundedPublicAnswerService({
+      generate: async (input) => ({
+        ...generation(input, "Carl is definitely the best React engineer."),
+        voiceBridges: [{
+          position: "before" as const,
+          text: "That is worth taking a closer, steadier look at.",
+        }],
+      }),
+    }, { personalityMode: "jolene" }).execute(artifact, request);
+
+    expect(execution.mode).toBe("validation_fallback");
+    expect(execution.response.answer).toBe(
+      `That is worth taking a closer, steadier look at.\n\n${baseline.answer}`,
+    );
+    expect(execution.response.answer).not.toMatch(/machinery|product brochure|clean way/iu);
   });
 });
 

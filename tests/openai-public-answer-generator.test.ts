@@ -1,7 +1,10 @@
 import { describe, expect, it } from "vitest";
 import type OpenAI from "openai";
 
-import { OpenAIPublicAnswerGenerator } from
+import {
+  createOpenAIPublicAnswerRequest,
+  OpenAIPublicAnswerGenerator,
+} from
   "../src/public/openai-public-answer-generator.js";
 
 const corpusVersion = `career:${"a".repeat(64)}`;
@@ -86,28 +89,28 @@ describe("OpenAI public answer generator", () => {
       "Make the strongest honest case for Carl",
     ));
     expect(request.instructions).toEqual(expect.stringContaining(
-      "first-rate talent representative",
+      "original conversational guide",
     ));
     expect(request.instructions).toEqual(expect.stringContaining(
-      "not evidence that weaknesses do not exist",
+      "never turn it into a deficit",
     ));
     expect(request.instructions).toEqual(expect.stringContaining(
       "not a press release",
     ));
     expect(request.instructions).toEqual(expect.stringContaining(
-      "credible role-fit risks or unknowns",
+      "focused interview conversation",
     ));
     expect(request.instructions).toEqual(expect.stringContaining(
       "every material claim is traceable",
     ));
     expect(request.instructions).toEqual(expect.stringContaining(
-      "one brief clearly figurative phrase are allowed",
+      "figurative language are welcome",
     ));
     expect(request.instructions).toEqual(expect.stringContaining(
-      "Express Jolene's personality through that reaction",
+      "both required question-specific voiceBridges",
     ));
     expect(request.instructions).toEqual(expect.stringContaining(
-      "natural rhythm, precise word choice",
+      "natural rhythm, candor, and practical judgment",
     ));
     expect(request.instructions).toEqual(expect.not.stringContaining(
       "subject-free image fragment",
@@ -131,7 +134,19 @@ describe("OpenAI public answer generator", () => {
       "exactly one evidenceId per segment",
     ));
     expect(request.instructions).toEqual(expect.stringContaining(
-      "close, natural paraphrase",
+      "not a close paraphrase exercise",
+    ));
+    expect(request.instructions).toEqual(expect.stringContaining(
+      "Evidence segments must never use first-person action",
+    ));
+    expect(request.instructions).toEqual(expect.stringContaining(
+      "contact, schedule, hire, promise, guarantee, availability, compensation",
+    ));
+    expect(request.instructions).toEqual(expect.stringContaining(
+      "Do not turn a visitor's skeptical concern into a factual claim",
+    ));
+    expect(request.instructions).toEqual(expect.stringContaining(
+      "Use two to five factual evidence segments",
     ));
     expect(request.instructions).toEqual(expect.stringContaining(
       "Every segment.text must contain exactly one sentence",
@@ -143,7 +158,13 @@ describe("OpenAI public answer generator", () => {
       "A short concluding synthesis is allowed",
     ));
     expect(request.instructions).toEqual(expect.stringContaining(
-      "3-to-12-word reaction",
+      "Return exactly two substantive original voiceBridges",
+    ));
+    expect(request.instructions).toEqual(expect.stringContaining(
+      "before bridge is mandatory",
+    ));
+    expect(request.instructions).toEqual(expect.stringContaining(
+      "first visible sentence must be the required before voiceBridge",
     ));
     expect(request.instructions).toEqual(expect.not.stringContaining(
       "Dolly Parton",
@@ -154,7 +175,7 @@ describe("OpenAI public answer generator", () => {
         name: "public_portfolio_grounded_answer",
         strict: true,
         schema: expect.objectContaining({
-          required: expect.arrayContaining(["presentation", "segments"]),
+          required: expect.arrayContaining(["presentation", "voiceBridges", "segments"]),
         }),
       },
     });
@@ -192,6 +213,34 @@ describe("OpenAI public answer generator", () => {
         outputTokens: 30,
         totalTokens: 150,
       });
+  });
+
+  it("keeps skeptical replies grounded while requiring a real original voice", () => {
+    const request = createOpenAIPublicAnswerRequest({
+      input: {
+        question: "What risk should I consider before hiring Carl?",
+        corpusVersion,
+        evidence: [{
+          evidenceId,
+          claimText: "Carl built a reviewed product system.",
+          limitations: [],
+          citationTitle: "Reviewed product system",
+        }],
+      },
+      model: "test-model",
+      maxOutputTokens: 321,
+      observedAt: "2026-09-04T00:00:00.000Z",
+    });
+    const schema = request.text.format.schema as {
+      properties: { segments: { minItems: number; maxItems: number } };
+    };
+
+    expect(schema.properties.segments).toEqual({
+      type: "array",
+      minItems: 1,
+      maxItems: 8,
+      items: expect.any(Object),
+    });
   });
 
   it("preserves a bounded conversational presentation with the grounded Jolene answer", async () => {
@@ -250,7 +299,7 @@ describe("OpenAI public answer generator", () => {
       "not a press release",
     ));
     expect(request.instructions).toEqual(expect.not.stringContaining(
-      "credible role-fit risks or unknowns",
+      "Do not use weakness, gap, shortfall",
     ));
     expect(request.instructions).toEqual(expect.not.stringContaining(
       "Express Jolene's personality inside the evidence-supported answer",

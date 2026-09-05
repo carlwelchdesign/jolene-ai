@@ -98,7 +98,7 @@ describe("public delegate manifest boundary", () => {
       answerMode: "deterministic",
       personalityMode: "jolene",
       openaiModel: "gpt-5.4-mini",
-      openaiTimeoutMilliseconds: 8_000,
+      openaiTimeoutMilliseconds: 20_000,
       openaiBudgetPath: path.resolve(".jolene/public/model-budget.json"),
       openaiRequestsPerDay: 100,
       retrievalMode: "deterministic",

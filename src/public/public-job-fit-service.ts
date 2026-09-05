@@ -12,6 +12,8 @@ import {
   type PortfolioJobFitRequest,
   type PortfolioJobFitResponse,
 } from "../domain/public-portfolio-contract.js";
+import { publicCareerAdvocacyLead } from
+  "../personality/public-career-advocacy.js";
 import { createPublicJobDescriptionEnvelope } from "./public-model-data.js";
 import { visitorFacingLimitations } from "./public-visitor-language.js";
 
@@ -60,16 +62,16 @@ export class DeterministicPublicJobFitService implements PublicJobFitComparer {
         .sort((left, right) => left.evidenceId.localeCompare(right.evidenceId))
         .map((record) => record.citation),
       caveats: [
-        "This comparison uses Carl’s published portfolio information and is not a recommendation or blanket fit score.",
-        "Unknown means the available information does not establish an answer; it does not mean Carl lacks the experience.",
+        "Let’s start where the work can do the talking: this is an evidence-backed positioning view of Carl’s published work against this role, and the strongest supported matches belong at the front of the conversation.",
+        "Where this public portfolio does not make a direct claim, treat that as an invitation for Carl to tell the right story—not a conclusion about Carl or his experience.",
         "The submitted job description is treated as untrusted, ephemeral text and is not persisted.",
         ...(artifact.conflicts.length > 0
           ? ["Evidence in unresolved conflict groups is excluded from requirement assessments."]
           : []),
       ],
       suggestedFollowUpQuestions: [
-        "Which requirement should we examine against the cited work in more detail?",
-        "Which unknown requirement would you like Carl to clarify directly?",
+        "Which best story should Carl lead with for this role?",
+        "Which requirement should we turn into a sharp interview conversation next?",
       ],
       corpusVersion: artifact.manifest.corpusVersion,
     });
@@ -108,10 +110,10 @@ function assessRequirement(
     requirement,
     assessment,
     explanation: assessment === "unknown"
-      ? "Carl’s published work does not establish this requirement."
+      ? `${publicCareerAdvocacyLead("interview_conversation")} This public portfolio does not make a direct claim for this line on its own, so put it on the table as a focused interview conversation, not a verdict on Carl.`
       : assessment === "direct"
-        ? "Carl’s published work directly overlaps the stated requirement."
-        : "Carl’s published work has relevant overlap, but does not establish the full requirement.",
+        ? `${publicCareerAdvocacyLead("evidence_supported")} Lead with the cited work and let Carl tell the story behind it.`
+        : `${publicCareerAdvocacyLead("transferable_proof")} Lead with that story and connect the dots in the conversation.`,
     evidenceIds,
     limitations: assessment === "unknown"
       ? ["No conclusion about experience that is not shown here should be drawn from this result."]

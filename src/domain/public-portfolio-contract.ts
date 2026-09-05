@@ -22,6 +22,14 @@ export const PUBLIC_CONVERSATION_CONTEXT_LIMITS = {
   lifetimeSeconds: 15 * 60,
 } as const;
 
+export const publicConversationResponseBeatSchema = z.enum([
+  "contextual_spark",
+  "story_turn",
+  "candid_directness",
+  "quiet_care",
+  "none",
+]);
+
 export const PUBLIC_PORTFOLIO_JOB_FIT_LIMITS = {
   jobDescriptionCharacters: 12_000,
   requirements: 24,
@@ -61,6 +69,9 @@ export const publicConversationContextSchema = z.object({
   evidenceIds: z.array(careerEvidenceIdSchema).min(1).max(
     PUBLIC_PORTFOLIO_ANSWER_LIMITS.responseItems,
   ).optional(),
+  // This contains only a bounded, approved response-movement handle. It is
+  // never a transcript, visitor profile, or generated sentence.
+  responseBeat: publicConversationResponseBeatSchema.optional(),
   turnCount: z.number().int().min(1).max(
     PUBLIC_CONVERSATION_CONTEXT_LIMITS.turns,
   ),

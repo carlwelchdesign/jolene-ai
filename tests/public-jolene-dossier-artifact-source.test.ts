@@ -104,11 +104,9 @@ describe("public Jolene dossier artifact source", () => {
     });
 
     expect(execution.responseKind).toBe("supported");
-    expect(execution.response.answer).toContain("BLM land in Nevada");
-    expect(execution.response.answer).toContain("Dolly Parton came naturally to mind");
-    expect(execution.response.answer).toContain(
-      "I’m not Dolly, and I’m not here to impersonate her",
-    );
+    expect(execution.response.answer).toContain("difficult career transition");
+    expect(execution.response.answer).toContain("original guide");
+    expect(execution.response.answer).not.toMatch(/dolly|blm land|jarvis/iu);
     expect(execution.response.citations).toHaveLength(1);
     expect(execution.response.citations[0]).toMatchObject({
       title: "Why Carl built Jolene",

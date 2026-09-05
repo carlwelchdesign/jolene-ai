@@ -47,7 +47,7 @@ export const PUBLIC_CONVERSATION_PROMPTS: readonly PublicConversationPrompt[] = 
   { text: "Which Carl project would you show a hiring manager first?", topics: ["projects", "role_fit"] },
   { text: "What should an interviewer ask Carl to uncover his best work?", topics: ["role_fit", "proof"] },
   { text: "What should a skeptical hiring manager verify directly with Carl?", topics: ["role_fit", "risk"] },
-  { text: "Where might Carl be a weaker fit?", topics: ["role_fit", "risk"] },
+  { text: "Which role requirement would be useful for Carl to address directly?", topics: ["role_fit", "risk"] },
   { text: "What kind of team gets the most value from Carl?", topics: ["role_fit", "leadership"] },
   { text: "How would you compare Carl’s experience with a specific job description?", topics: ["role_fit", "career"] },
   { text: "How would Carl approach a messy zero-to-one product?", topics: ["projects", "leadership"] },
