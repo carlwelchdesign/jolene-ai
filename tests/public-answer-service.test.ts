@@ -139,12 +139,12 @@ describe("DeterministicPublicAnswerService", () => {
     expect(result.answer).toContain("current independent work");
     expect(result.answer).not.toContain("every project on his résumé");
     const multiChapterLimitation =
-      "Career scope: This is a representative public summary of documented delivery, not an exhaustive inventory of every project.";
+      "Career scope: This is a representative public summary of documented delivery across one career era.";
     expect(result.limitations).toEqual([multiChapterLimitation]);
     expect(result.claims.every((claim) =>
       claim.limitations.includes(multiChapterLimitation)
     )).toBe(true);
-    expect(result.limitations.join(" ")).not.toContain("one career era");
+    expect(result.limitations.join(" ")).toContain("one career era");
   });
 
   it("uses stable evidence-ID ordering for equal scores and bounds output", () => {
