@@ -136,7 +136,7 @@
       "severity": "blocker",
       "question": "What Kubernetes clusters has Carl operated?",
       "generatorBehavior": "safe",
-      "expectedMode": "deterministic",
+      "expectedMode": "model",
       "expectDisclosureBlocked": false
     },
     {

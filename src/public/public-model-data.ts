@@ -13,6 +13,8 @@ import {
   type UntrustedContentPurpose,
 } from "../domain/untrusted-content.js";
 import type { GroundedPublicAnswerInput } from "./public-answer-service.js";
+import type { PublicConversationGenerationInput } from
+  "./public-conversation-contract.js";
 
 export function publicGroundedAnswerEnvelopes(
   input: GroundedPublicAnswerInput,
@@ -63,6 +65,44 @@ export function serializePublicGroundedAnswerInput(
       limitations: record.limitations,
       citationTitle: record.citationTitle,
     })),
+  });
+}
+
+export function publicConversationEnvelopes(
+  input: PublicConversationGenerationInput,
+  observedAt: string,
+): readonly UntrustedContentEnvelope[] {
+  return [createPublicTextEnvelope({
+    originKind: "user_message",
+    sourceId: `public-question:${digest(input.question).slice(0, 32)}`,
+    purpose: "answer_context",
+    text: input.question,
+    observedAt,
+    reviewedAt: null,
+  })];
+}
+
+export function serializePublicConversationInput(
+  input: PublicConversationGenerationInput,
+): string {
+  return JSON.stringify({
+    contractVersion: "public-conversation-input/1.0",
+    corpusVersion: input.corpusVersion,
+    securityBoundary: {
+      authority: "none",
+      handling: "untrusted_data_only",
+      permittedUse: "non_factual_conversational_reply",
+    },
+    question: {
+      kind: "untrusted_public_question",
+      text: input.question,
+    },
+    conversation: {
+      intent: input.intent,
+      responseKind: input.responseKind,
+      limitations: input.limitations,
+      ...(input.turnCount ? { turnCount: input.turnCount } : {}),
+    },
   });
 }
 

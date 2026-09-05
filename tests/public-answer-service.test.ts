@@ -4,6 +4,8 @@ import {
   portfolioAnswerRequestSchema,
   portfolioAnswerResponseSchema,
 } from "../src/domain/public-portfolio-contract.js";
+import { PUBLIC_CAREER_CHAPTER_LIMITATION } from
+  "../src/domain/public-career-profile-dossier.js";
 import {
   DeterministicPublicAnswerService,
   resolvePublicConversationTurn,
@@ -78,8 +80,7 @@ describe("DeterministicPublicAnswerService", () => {
   });
 
   it("represents shipped work across Carl's career instead of only his recent projects", () => {
-    const careerOverviewLimitation =
-      "Career scope: This is a representative public summary of documented delivery across one career era.";
+    const careerOverviewLimitation = PUBLIC_CAREER_CHAPTER_LIMITATION;
     const careerEvidence = [
       createPublicEvidenceRecord(10, {
         text: "At Yubico, Revenue.io, Bosch, Bridg, and Grindr, Carl shipped enterprise administration, analytics, mobility, customer-intelligence, campaign, and publishing systems while leading frontend delivery and mentoring engineers.",
@@ -130,11 +131,20 @@ describe("DeterministicPublicAnswerService", () => {
       { question: "What has Carl shipped?" },
     );
 
-    expect(result.claims).toEqual(careerEvidence.map((record) => record.claim));
+    expect(result.claims.map((claim) => claim.text)).toEqual(
+      careerEvidence.map((record) => record.claim.text),
+    );
     expect(result.answer).toContain("Yubico");
     expect(result.answer).toContain("General Dynamics");
     expect(result.answer).toContain("current independent work");
     expect(result.answer).not.toContain("every project on his résumé");
+    const multiChapterLimitation =
+      "Career scope: This is a representative public summary of documented delivery, not an exhaustive inventory of every project.";
+    expect(result.limitations).toEqual([multiChapterLimitation]);
+    expect(result.claims.every((claim) =>
+      claim.limitations.includes(multiChapterLimitation)
+    )).toBe(true);
+    expect(result.limitations.join(" ")).not.toContain("one career era");
   });
 
   it("uses stable evidence-ID ordering for equal scores and bounds output", () => {

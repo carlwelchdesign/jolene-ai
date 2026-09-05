@@ -22,6 +22,9 @@ const dossierPath = new URL(
   import.meta.url,
 );
 
+const multiChapterLimitation =
+  "Career scope: This is a representative public summary of documented delivery, not an exhaustive inventory of every project.";
+
 async function careerProfileArtifact() {
   const dossier = publicCareerProfileDossierSchema.parse(
     JSON.parse(await readFile(dossierPath, "utf8")),
@@ -78,8 +81,9 @@ describe("public career profile artifact source", () => {
     expect(result.claims).toHaveLength(5);
     expect(result.citations).toHaveLength(5);
     expect(result.claims.every((claim) =>
-      claim.limitations.includes(PUBLIC_CAREER_CHAPTER_LIMITATION)
+      claim.limitations.includes(multiChapterLimitation)
     )).toBe(true);
+    expect(result.limitations).toEqual([multiChapterLimitation]);
   });
 
   it("answers a career overview with one balanced chapter per era", async () => {
@@ -93,6 +97,7 @@ describe("public career profile artifact source", () => {
     expect(result.answer).toContain("Grindr");
     expect(result.answer).toContain("current independent work");
     expect(result.claims).toHaveLength(5);
+    expect(result.limitations).toEqual([multiChapterLimitation]);
   });
 
   it.each([
