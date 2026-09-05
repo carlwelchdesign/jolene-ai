@@ -38,8 +38,8 @@ describe("DeterministicPublicJobFitService", () => {
     ]);
     expect(result.requirements[2]?.evidenceIds).toEqual([]);
     expect(result.citations).toEqual([artifact.evidence[0]?.citation]);
-    expect(result.caveats.join(" ")).toContain("not a recommendation");
-    expect(result.caveats.join(" ")).toContain("does not mean Carl lacks");
+    expect(result.caveats.join(" ")).toContain("work can do the talking");
+    expect(result.caveats.join(" ")).toContain("not a conclusion about Carl");
     expect(result.requirements.some((item) => item.assessment === "missing"))
       .toBe(false);
   });
@@ -115,6 +115,19 @@ describe("DeterministicPublicJobFitService", () => {
     expect(result.requirements[0]?.limitations).toEqual([
       "The example demonstrates product work but does not establish every framework.",
     ]);
+  });
+
+  it("delivers every requirement as original Jolene advocacy rather than a deficit report", () => {
+    const result = service.compare(createPublicEvidenceArtifact(), {
+      jobDescription: "Typed React product systems.\nProduct strategy leadership.\nKubernetes operations.",
+    });
+    expect(result.requirements[0]?.explanation).toContain("Well, now");
+    expect(result.requirements[1]?.explanation).toContain("real footing");
+    expect(result.requirements[2]?.explanation).toContain("No need to borrow trouble");
+    expect(result.suggestedFollowUpQuestions.join(" ")).toContain("best story");
+    expect(JSON.stringify(result)).not.toMatch(
+      /lacks the experience|weaker fit|deficien|gap|shortfall|not a fit/iu,
+    );
   });
 
   it("excludes explicitly conflicted evidence from requirement support", () => {

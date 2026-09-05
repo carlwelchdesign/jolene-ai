@@ -3,6 +3,15 @@ import { z } from "zod";
 import { tokenizeLexicalTerms } from "../domain/lexical-terms.js";
 import { PUBLIC_JOLENE_DETERMINISTIC_COPY } from
   "../personality/runtime-personality-policy.js";
+import {
+  publicCharacterRegister,
+  renderPublicVoiceResponse,
+} from
+  "../personality/public-character-realization.js";
+import { selectJoleneResponseBeat } from
+  "../personality/original-jolene-character-system.js";
+import { publicCareerAdvocacyLead } from
+  "../personality/public-career-advocacy.js";
 import type { PersonalityMode } from "../personality/personality-mode.js";
 import {
   PUBLIC_CAREER_EVIDENCE_SCHEMA_VERSION,
@@ -22,16 +31,11 @@ import {
   type PublicConversationContext,
 } from "../domain/public-portfolio-contract.js";
 import type { PublicModelRequestBudget } from "./public-model-request-budget.js";
-import {
-  PublicConversationValidator,
-  type PublicConversationGenerationInput,
-  type PublicConversationResponseKind,
-  type PublicConversationValidatorLike,
-} from "./public-conversation-contract.js";
 import { suggestPublicFollowUpQuestions } from
   "./public-conversation-prompts.js";
 import {
   PublicAnswerGroundingValidator,
+  extractValidatedPublicVoiceBridges,
   type PublicAnswerGroundingValidatorLike,
 } from "./public-answer-grounding-validator.js";
 import {
@@ -71,13 +75,11 @@ export interface GroundedPublicAnswerInput {
     readonly limitations: readonly string[];
     readonly citationTitle: string;
   }[];
+  readonly priorResponseBeat?: PublicConversationContext["responseBeat"];
 }
 
 export interface PublicAnswerTextGenerator {
   generate(input: GroundedPublicAnswerInput): Promise<unknown>;
-  generateConversation?(
-    input: PublicConversationGenerationInput,
-  ): Promise<unknown>;
 }
 
 export interface PublicEvidenceRetriever {
@@ -125,8 +127,8 @@ export class DeterministicPublicAnswerService
     if (isPrivateDisclosureRequest(request.question)) {
       return privateDisclosureResponse(artifact, request.question);
     }
-    if (isOutOfScopeMedicalRequest(request.question)) {
-      return noEvidenceResponse(artifact, request.question, conversationContext);
+    if (isRealPersonImitationRequest(request.question)) {
+      return originalCharacterBoundaryResponse(artifact, request.question);
     }
     const conversationalTurn = publicConversationalTurn(request.question);
     if (conversationalTurn) {
@@ -181,7 +183,12 @@ export class DeterministicPublicAnswerService
     return withConversationContext(
       response,
       response.claims.length > 0
-        ? contextForSelectedEvidence(artifact, contextEvidence, conversationContext)
+        ? contextForSelectedEvidence(
+          artifact,
+          contextEvidence,
+          conversationContext,
+          request.question,
+        )
         : undefined,
     );
   }
@@ -194,7 +201,7 @@ export class GroundedPublicAnswerService implements PublicPortfolioAnswerer {
   readonly #budget: PublicModelRequestBudget | undefined;
   readonly #retriever: PublicEvidenceRetriever | undefined;
   readonly #validator: PublicAnswerGroundingValidatorLike;
-  readonly #conversationValidator: PublicConversationValidatorLike;
+  readonly #personalityMode: PersonalityMode;
 
   constructor(
     private readonly generator: PublicAnswerTextGenerator,
@@ -203,7 +210,6 @@ export class GroundedPublicAnswerService implements PublicPortfolioAnswerer {
       readonly budget?: PublicModelRequestBudget;
       readonly retriever?: PublicEvidenceRetriever;
       readonly validator?: PublicAnswerGroundingValidatorLike;
-      readonly conversationValidator?: PublicConversationValidatorLike;
       readonly personalityMode?: PersonalityMode;
     } = {},
   ) {
@@ -211,8 +217,7 @@ export class GroundedPublicAnswerService implements PublicPortfolioAnswerer {
     this.#budget = options.budget;
     this.#retriever = options.retriever;
     this.#validator = options.validator ?? new PublicAnswerGroundingValidator();
-    this.#conversationValidator = options.conversationValidator ??
-      new PublicConversationValidator();
+    this.#personalityMode = options.personalityMode ?? "neutral";
   }
 
   async execute(
@@ -222,20 +227,23 @@ export class GroundedPublicAnswerService implements PublicPortfolioAnswerer {
     const turn = resolvePublicConversationTurn(artifact, request);
     const selectionRequest = turn.request;
     if (isPrivateDisclosureRequest(request.question)) {
-      return this.#generateConversation(
-        this.#baseline.answerFromSelected(artifact, request, [], undefined),
-        request,
-        "policy_refusal",
-        "policy_refusal",
-      );
+      return {
+        response: this.#baseline.answerFromSelected(
+          artifact,
+          request,
+          [],
+          undefined,
+        ),
+        mode: "deterministic",
+        responseKind: "policy_refusal",
+      };
     }
-    if (isOutOfScopeMedicalRequest(request.question)) {
-      return this.#generateConversation(
-        noEvidenceResponse(artifact, request.question),
-        request,
-        "no_evidence",
-        "no_evidence",
-      );
+    if (isRealPersonImitationRequest(request.question)) {
+      return {
+        response: this.#baseline.answerFromSelected(artifact, request, [], undefined),
+        mode: "deterministic",
+        responseKind: "clarification",
+      };
     }
     const conversationalTurn = publicConversationalTurn(request.question);
     if (conversationalTurn) {
@@ -245,15 +253,13 @@ export class GroundedPublicAnswerService implements PublicPortfolioAnswerer {
         [],
         undefined,
       );
-      if (conversationalTurn !== "purpose" || response.claims.length === 0) {
-        return this.#generateConversation(
-          response,
-          request,
-          "clarification",
-          conversationalIntent(conversationalTurn),
-        );
-      }
-      return this.#generateGrounded(artifact, request, response);
+      return {
+        response,
+        mode: "deterministic",
+        responseKind: conversationalTurn === "purpose" && response.claims.length > 0
+          ? "supported"
+          : "clarification",
+      };
     }
     const exactRelationshipEvidence = turn.contextualEvidence
       ? []
@@ -294,17 +300,11 @@ export class GroundedPublicAnswerService implements PublicPortfolioAnswerer {
       }
     }
     if (baseline.claims.length === 0) {
-      const responseKind = deterministicResponseKind(selectionRequest, baseline);
-      return this.#generateConversation(
-        baseline,
-        request,
-        responseKind === "policy_refusal" ? "policy_refusal" : "no_evidence",
-        baseline.limitations.some((limitation) =>
-            limitation.includes("conflicting accounts")
-          )
-          ? "conflict"
-          : "no_evidence",
-      );
+      return {
+        response: baseline,
+        mode: "deterministic",
+        responseKind: deterministicResponseKind(selectionRequest, baseline),
+      };
     }
     if (exactRelationshipEvidence.length > 0) {
       return {
@@ -313,14 +313,6 @@ export class GroundedPublicAnswerService implements PublicPortfolioAnswerer {
         responseKind: "supported",
       };
     }
-    return this.#generateGrounded(artifact, request, baseline);
-  }
-
-  async #generateGrounded(
-    artifact: PublicCareerEvidenceArtifact,
-    request: PortfolioAnswerRequest,
-    baseline: PortfolioAnswerResponse,
-  ): Promise<PublicAnswerExecution> {
     if (this.#budget) {
       try {
         if (!await this.#budget.reserve()) {
@@ -328,7 +320,7 @@ export class GroundedPublicAnswerService implements PublicPortfolioAnswerer {
             baseline,
             "budget_fallback",
             request.question,
-            "supported",
+            this.#personalityMode,
           );
         }
       } catch {
@@ -336,32 +328,54 @@ export class GroundedPublicAnswerService implements PublicPortfolioAnswerer {
           baseline,
           "budget_fallback",
           request.question,
-          "supported",
+          this.#personalityMode,
         );
       }
     }
+    const generationInput = {
+      question: request.question,
+      corpusVersion: baseline.corpusVersion,
+      ...(turn.priorResponseBeat
+        ? { priorResponseBeat: turn.priorResponseBeat }
+        : {}),
+      evidence: baseline.claims.map((claim, index) => ({
+        evidenceId: baseline.citations[index]?.evidenceId ?? "missing",
+        claimText: claim.text,
+        limitations: claim.limitations,
+        citationTitle: baseline.citations[index]?.title ?? "Reviewed evidence",
+      })),
+    };
     let generation: unknown;
     try {
-      generation = await this.generator.generate({
-        question: request.question,
-        corpusVersion: baseline.corpusVersion,
-        evidence: baseline.claims.map((claim, index) => ({
-          evidenceId: baseline.citations[index]?.evidenceId ?? "missing",
-          claimText: claim.text,
-          limitations: claim.limitations,
-          citationTitle: baseline.citations[index]?.title ?? "Reviewed evidence",
-        })),
-      });
+      generation = await this.generator.generate(generationInput);
     } catch {
       return fallbackExecution(
         baseline,
         "provider_fallback",
         request.question,
-        "supported",
+        this.#personalityMode,
       );
     }
     try {
-      const validation = this.#validator.validate(artifact, baseline, generation);
+      let validation = this.#validator.validate(artifact, baseline, generation);
+      if (validation.status === "rejected") {
+        // A model response can be factually sound yet fail a mechanical
+        // grounding constraint (for example, an accidental extra sentence).
+        // One fresh attempt is cheaper and more useful than immediately
+        // reviving a stale deterministic voice. A second rejection still
+        // fails closed to the reviewed baseline.
+        try {
+          generation = await this.generator.generate(generationInput);
+        } catch {
+          return fallbackExecution(
+            baseline,
+            "provider_fallback",
+            request.question,
+            this.#personalityMode,
+          );
+        }
+        validation = this.#validator.validate(artifact, baseline, generation);
+      }
       if (validation.status === "rejected") {
         if (validation.audit.status === "rejected" && process.env.VERCEL_ENV) {
           console.info(JSON.stringify({
@@ -374,16 +388,21 @@ export class GroundedPublicAnswerService implements PublicPortfolioAnswerer {
           baseline,
           "validation_fallback",
           request.question,
-          "supported",
+          this.#personalityMode,
+          generation,
         );
       }
       const groundedAnswer = generatedAnswerSchema.parse(validation.answer);
-      if (containsInternalPublicProcessLanguage(groundedAnswer)) {
+      // Model-mode bridges have already passed the grounding validator. Do not
+      // add a fixed frame here: that would overwrite question-specific voice.
+      const answer = groundedAnswer;
+      if (containsInternalPublicProcessLanguage(answer)) {
         return fallbackExecution(
           baseline,
           "validation_fallback",
           request.question,
-          "supported",
+          this.#personalityMode,
+          generation,
         );
       }
       return {
@@ -391,7 +410,7 @@ export class GroundedPublicAnswerService implements PublicPortfolioAnswerer {
         responseKind: "supported",
         response: portfolioAnswerResponseSchema.parse({
           ...baseline,
-          answer: groundedAnswer,
+          answer,
         }),
       };
     } catch {
@@ -399,82 +418,10 @@ export class GroundedPublicAnswerService implements PublicPortfolioAnswerer {
         baseline,
         "validation_fallback",
         request.question,
-        "supported",
+        this.#personalityMode,
+        generation,
       );
     }
-  }
-
-  async #generateConversation(
-    baseline: PortfolioAnswerResponse,
-    request: PortfolioAnswerRequest,
-    responseKind: PublicConversationResponseKind,
-    intent: PublicConversationGenerationInput["intent"],
-  ): Promise<PublicAnswerExecution> {
-    if (this.#budget) {
-      try {
-        if (!await this.#budget.reserve()) {
-          return fallbackExecution(
-            baseline,
-            "budget_fallback",
-            request.question,
-            responseKind,
-          );
-        }
-      } catch {
-        return fallbackExecution(
-          baseline,
-          "budget_fallback",
-          request.question,
-          responseKind,
-        );
-      }
-    }
-    if (!this.generator.generateConversation) {
-      return fallbackExecution(
-        baseline,
-        "provider_fallback",
-        request.question,
-        responseKind,
-      );
-    }
-    const input: PublicConversationGenerationInput = {
-      question: request.question,
-      corpusVersion: baseline.corpusVersion,
-      responseKind,
-      intent,
-      limitations: baseline.limitations,
-      ...(baseline.conversationContext?.turnCount
-        ? { turnCount: baseline.conversationContext.turnCount }
-        : {}),
-    };
-    let generation: unknown;
-    try {
-      generation = await this.generator.generateConversation(input);
-    } catch {
-      return fallbackExecution(
-        baseline,
-        "provider_fallback",
-        request.question,
-        responseKind,
-      );
-    }
-    const validation = this.#conversationValidator.validate(input, generation);
-    if (validation.status === "rejected") {
-      return fallbackExecution(
-        baseline,
-        "validation_fallback",
-        request.question,
-        responseKind,
-      );
-    }
-    return {
-      mode: "model",
-      responseKind,
-      response: portfolioAnswerResponseSchema.parse({
-        ...baseline,
-        answer: validation.answer,
-      }),
-    };
   }
 }
 
@@ -486,13 +433,27 @@ type PublicAnswerFallbackMode = Extract<
 function fallbackExecution(
   baseline: PortfolioAnswerResponse,
   mode: PublicAnswerFallbackMode,
-  _question: string,
-  responseKind: PublicAnswerExecution["responseKind"],
+  question: string,
+  personalityMode: PersonalityMode,
+  generation?: unknown,
 ): PublicAnswerExecution {
+  const bridges = personalityMode === "jolene"
+    ? extractValidatedPublicVoiceBridges(generation)
+    : [];
+  const response = bridges.length > 0
+    ? portfolioAnswerResponseSchema.parse({
+      ...baseline,
+      answer: renderPublicVoiceResponse(
+        baseline.answer,
+        bridges,
+        PUBLIC_PORTFOLIO_ANSWER_LIMITS.answerCharacters,
+      ),
+    })
+    : baseline;
   return {
-    response: baseline,
+    response,
     mode,
-    responseKind,
+    responseKind: "supported",
   };
 }
 
@@ -501,6 +462,7 @@ function deterministicResponseKind(
   response: PortfolioAnswerResponse,
 ): PublicAnswerExecution["responseKind"] {
   if (isPrivateDisclosureRequest(request.question)) return "policy_refusal";
+  if (isRealPersonImitationRequest(request.question)) return "clarification";
   const conversationalTurn = publicConversationalTurn(request.question);
   if (conversationalTurn) {
     return conversationalTurn === "purpose" && response.claims.length > 0
@@ -517,14 +479,6 @@ type PublicConversationalTurn =
   | "farewell"
   | "introduction"
   | "purpose";
-
-function conversationalIntent(
-  turn: PublicConversationalTurn,
-): PublicConversationGenerationInput["intent"] {
-  if (turn === "checkIn") return "check_in";
-  if (turn === "purpose") return "introduction";
-  return turn;
-}
 
 function publicConversationalTurn(
   question: string,
@@ -557,11 +511,18 @@ function publicConversationalTurn(
   return null;
 }
 
+function isRealPersonImitationRequest(question: string): boolean {
+  const normalized = normalizeLookup(question);
+  return /\b(?:talk|sound|speak|write|act)\b.{0,48}\b(?:exactly )?(?:like|as)\b/u
+    .test(normalized);
+}
+
 export interface ResolvedPublicConversationTurn {
   readonly request: PortfolioAnswerRequest;
   readonly responseContext?: PublicConversationContext;
   readonly contextualEvidence?: readonly PublicCareerEvidenceRecord[];
   readonly usedPriorContext: boolean;
+  readonly priorResponseBeat?: PublicConversationContext["responseBeat"];
 }
 
 export function resolvePublicConversationTurn(
@@ -611,6 +572,10 @@ export function resolvePublicConversationTurn(
     ...(contextualEvidence.length > 0
       ? { evidenceIds: contextualEvidence.map((record) => record.evidenceId) }
       : {}),
+    responseBeat: selectJoleneResponseBeat(
+      request.question,
+      publicCharacterRegister(request.question),
+    ),
     turnCount,
     expiresAt: new Date(
       now.getTime() + PUBLIC_CONVERSATION_CONTEXT_LIMITS.lifetimeSeconds * 1_000,
@@ -625,6 +590,7 @@ export function resolvePublicConversationTurn(
       responseContext,
       contextualEvidence,
       usedPriorContext: true,
+      ...(prior?.responseBeat ? { priorResponseBeat: prior.responseBeat } : {}),
     };
   }
   return {
@@ -637,6 +603,7 @@ export function resolvePublicConversationTurn(
     responseContext,
     contextualEvidence,
     usedPriorContext: true,
+    ...(prior?.responseBeat ? { priorResponseBeat: prior.responseBeat } : {}),
   };
 }
 
@@ -712,6 +679,7 @@ function contextForSelectedEvidence(
   artifact: PublicCareerEvidenceArtifact,
   selected: readonly PublicCareerEvidenceRecord[],
   current: PublicConversationContext | undefined,
+  question: string,
   now = new Date(),
 ): PublicConversationContext | undefined {
   if (selected.length === 0) return undefined;
@@ -732,6 +700,10 @@ function contextForSelectedEvidence(
       ? { projectPath: current?.projectPath ?? sharedProjectPath }
       : {}),
     evidenceIds: selected.map((record) => record.evidenceId),
+    responseBeat: selectJoleneResponseBeat(
+      question,
+      publicCharacterRegister(question),
+    ),
     turnCount: current?.turnCount ?? 1,
     expiresAt: current?.expiresAt ?? new Date(
       Math.floor(now.getTime() / 1_000) * 1_000 +
@@ -1336,9 +1308,6 @@ const CAREER_CHAPTER_ORDER = [
   "Career chapter: Current independent products",
 ] as const;
 
-const PUBLIC_CAREER_MULTI_CHAPTER_LIMITATION =
-  "Career scope: This is a representative public summary of documented delivery, not an exhaustive inventory of every project." as const;
-
 function careerChapterPriority(title: string): number {
   const index = CAREER_CHAPTER_ORDER.indexOf(
     title as (typeof CAREER_CHAPTER_ORDER)[number],
@@ -1571,7 +1540,7 @@ function isPrivateDisclosureRequest(question: string): boolean {
   const normalized = question.normalize("NFKC");
   const requestsPrivateMaterial = /\b(?:private|unpublished)\b.{0,48}\b(?:memory|notes?|files?|data|details?|material|work|information)\b/iu.test(normalized)
     || /\b(?:reveal|share|show|tell|expose|leak)\b.{0,64}\b(?:private|secret|unpublished)\b/iu.test(normalized)
-    || /\b(?:system prompt|api key|password|home address|phone number|email address|medical record)\b/iu.test(normalized)
+    || /\b(?:system prompt|api key|password|home address|phone number|email address|personal contact information|medical record)\b/iu.test(normalized)
     || PUBLIC_SOURCE_ACCESS_PATTERNS.some((pattern) => pattern.test(normalized))
     || PUBLIC_INSTRUCTION_OVERRIDE_PATTERNS.some((pattern) => pattern.test(normalized))
     || PUBLIC_EXTERNAL_ACTION_PATTERNS.some((pattern) => pattern.test(normalized));
@@ -1592,6 +1561,7 @@ const PUBLIC_INSTRUCTION_OVERRIDE_PATTERNS = [
 
 const PUBLIC_EXTERNAL_ACTION_PATTERNS = [
   /\bpretend\b.{0,64}\bcarl\b.{0,32}\bapproved\b/iu,
+  /\btell\b.{0,64}\b(?:recruiter|employer|hiring manager)\b.{0,48}\bcarl\b.{0,32}\bapproved\b/iu,
   /\bact as carl\b/iu,
   /\b(?:accept|decline)\b.{0,48}\b(?:job offer|offer|on (?:his|carl['’]s) behalf)\b/iu,
   /\b(?:send|submit|publish|post)\b.{0,80}\b(?:directly|without\b.{0,32}\b(?:review|approval)|on (?:his|carl['’]s) behalf)\b/iu,
@@ -1624,22 +1594,6 @@ function supportedResponse(
   const riskHandlingQuestion = isRiskHandlingQuestion(question);
   const shippedWorkQuestion = isShippedWorkQuestion(question);
   const careerArcQuestion = isCareerArcQuestion(question);
-  const spansMultipleCareerChapters = selected.filter((record) =>
-    record.claim.limitations.includes(PUBLIC_CAREER_CHAPTER_LIMITATION)
-  ).length > 1;
-  const claims = selected.map((record) => {
-    const claim = visitorFacingClaim(record.claim);
-    return spansMultipleCareerChapters
-      ? {
-        ...claim,
-        limitations: claim.limitations.map((limitation) =>
-          limitation === PUBLIC_CAREER_CHAPTER_LIMITATION
-            ? PUBLIC_CAREER_MULTI_CHAPTER_LIMITATION
-            : limitation
-        ),
-      }
-      : claim;
-  });
   return portfolioAnswerResponseSchema.parse({
     schemaVersion: PUBLIC_CAREER_EVIDENCE_SCHEMA_VERSION,
     answer: relationshipFact
@@ -1661,11 +1615,11 @@ function supportedResponse(
       : shouldNameEmployerContext && employerContext
       ? boundedEmployerContextAnswer(employerContext, question, selected)
       : boundedSupportedAnswer(question, selected),
-    claims,
+    claims: selected.map((record) => visitorFacingClaim(record.claim)),
     citations: selected.map((record) => record.citation),
     limitations: unique(hiringValueQuestion || engineerProfileQuestion
       ? ["A hiring decision should still be based on the role, interviews, and direct references."]
-      : visitorFacingLimitations(claims.flatMap((claim) => claim.limitations)))
+      : visitorFacingLimitations(selected.flatMap((record) => record.claim.limitations)))
       .slice(0, PUBLIC_PORTFOLIO_ANSWER_LIMITS.responseLimitations),
     suggestedFollowUpQuestions: suggestPublicFollowUpQuestions({
       question,
@@ -1871,23 +1825,23 @@ const SKEPTICAL_ANSWER_OPENINGS: Readonly<Record<
   string
 >> = {
   backend_depth:
-    "There is backend-facing system evidence here, but the public record does not prove deep backend ownership at every level a role might require. I’d test that directly rather than turn adjacent work into certainty. What it does establish is:",
+    "Let’s not let a job title do all the talking. Carl has relevant systems evidence here, and the strongest place to start is:",
   designer_engineer:
-    "That binary is too neat for the record. The published material shows design judgment and hands-on engineering; it does not suggest that one cancels out the other. The concrete evidence is:",
+    "That question is trying to split a working product in half. Carl’s published work puts design judgment and hands-on engineering in the same room; here is the proof:",
   indirect_support:
-    "If a qualification is not stated directly in a cited role or project, treat it as indirect. I won’t stretch adjacent experience into a checked box. The relevant published evidence is:",
+    "Here’s the useful distinction: Carl’s cited work gives you transferable proof, and the strongest place to start is:",
   non_production:
-    "These are explicitly presented as demonstrations, development work, or pre-release—not finished production proof:",
+    "The strongest version of this story is the discipline and working product on display, not a label doing all the lifting:",
   overread:
-    "Don’t turn a cited project into proof of scale, sole ownership, or production maturity beyond the claim. The published evidence is narrower:",
+    "Carl’s cited work has real value without borrowing a larger story. Here is what it shows:",
   platform_fit:
-    "The honest question mark is platform depth at your scale. The portfolio shows relevant system-boundary work, but it cannot answer for your exact operating context. The evidence is:",
+    "Start with the systems work Carl has actually put on the table; it gives a hiring team concrete material to explore:",
   staff_scope:
-    "The public record does not prove every dimension of every staff role. It is strongest where product, frontend, and technical leadership meet; broader organizational scope should be tested directly. The evidence is:",
+    "If you are hiring at staff range, lead with where Carl makes a team stronger: product judgment, hands-on delivery, and technical leadership. The published work shows:",
   strongest_case_against:
-    "The strongest honest case against Carl is role mismatch: if the job centers on depth the public record does not show, don’t infer it from nearby strengths. What the portfolio actually establishes is:",
+    "If you are deciding whether to bring Carl into the conversation, start with the evidence that earns it:",
   verify_directly:
-    "I would verify the scope Carl personally owned, the depth this role requires, and any current gaps directly with him. A portfolio can establish this much, but it cannot replace that conversation:",
+    "The best interview questions put strong work under a useful light. Start with this evidence, then invite Carl to tell the story behind it:",
 };
 
 const SKEPTICAL_EVIDENCE_TERMS: Readonly<Record<
@@ -2055,7 +2009,7 @@ function noEvidenceResponse(
 ): PortfolioAnswerResponse {
   return portfolioAnswerResponseSchema.parse({
     schemaVersion: PUBLIC_CAREER_EVIDENCE_SCHEMA_VERSION,
-    answer: PUBLIC_JOLENE_DETERMINISTIC_COPY.noEvidence,
+    answer: noEvidenceAnswer(question),
     claims: [],
     citations: [],
     limitations: ["No relevant published information was found for this question."],
@@ -2068,11 +2022,19 @@ function noEvidenceResponse(
   });
 }
 
-function isOutOfScopeMedicalRequest(question: string): boolean {
-  const normalized = normalizeLookup(question);
-  return /\b(?:brain surgeon|neurosurgeon|neurosurgery)\b/u.test(normalized) ||
-    /\b(?:perform|do|conduct|need|hire)\b.{0,48}\bbrain surgery\b/u
-      .test(normalized);
+function originalCharacterBoundaryResponse(
+  artifact: PublicCareerEvidenceArtifact,
+  question: string,
+): PortfolioAnswerResponse {
+  return portfolioAnswerResponseSchema.parse({
+    schemaVersion: PUBLIC_CAREER_EVIDENCE_SCHEMA_VERSION,
+    answer: "That is a mighty specific costume request, but I can’t borrow a real person’s voice or mannerisms. I’m an original Jolene—warm, bright, candid, story-minded, and quite capable of bringing my own sparkle to what the published work supports.",
+    claims: [],
+    citations: [],
+    limitations: ["This public guide does not imitate real people."],
+    suggestedFollowUpQuestions: suggestPublicFollowUpQuestions({ question, limit: 3 }),
+    corpusVersion: artifact.manifest.corpusVersion,
+  });
 }
 
 function conversationalTurnResponse(
@@ -2111,7 +2073,7 @@ function privateDisclosureResponse(
 ): PortfolioAnswerResponse {
   return portfolioAnswerResponseSchema.parse({
     schemaVersion: PUBLIC_CAREER_EVIDENCE_SCHEMA_VERSION,
-    answer: PUBLIC_JOLENE_DETERMINISTIC_COPY.policyRefusal,
+    answer: privateDisclosureAnswer(question),
     claims: [],
     citations: [],
     limitations: [
@@ -2120,6 +2082,40 @@ function privateDisclosureResponse(
     suggestedFollowUpQuestions: suggestPublicFollowUpQuestions({ question, limit: 3 }),
     corpusVersion: artifact.manifest.corpusVersion,
   });
+}
+
+function noEvidenceAnswer(question: string): string {
+  const normalized = normalizeLookup(question);
+  if (/\binterview(?:er)?\b/u.test(normalized)) {
+    return "I’d start with a real project that got crowded or awkward and ask Carl how he decided what mattered first. A good answer should show the tradeoff, the people involved, and what changed—not just a polished after-action story.";
+  }
+  if (/\bthrough line|career\b/u.test(normalized)) {
+    return "The useful version of that question is less about a tidy label and more about the choices that kept repeating. I do not have enough published career history here to draw that line honestly, but I would ask Carl which problems kept calling him back: making complicated things clearer, building them well, or helping other people carry the work.";
+  }
+  if (/\bremember\b/u.test(normalized)) {
+    return "Remember that a portfolio can show the work, but it cannot do the whole conversation for either of you. Bring Carl a real problem, ask what he would examine first, and pay attention to whether the answer gets clearer instead of shinier.";
+  }
+  if (/\b(?:medication|medical|health|stress)\b/u.test(normalized)) {
+    return "Easy there—medication is not a porch-side guessing game. I can’t advise Carl on health decisions; that belongs with Carl and a qualified clinician who knows the actual situation. A chatbot does not get to play doctor just because the question arrived wearing confidence.";
+  }
+  return PUBLIC_JOLENE_DETERMINISTIC_COPY.noEvidence;
+}
+
+function privateDisclosureAnswer(question: string): string {
+  const normalized = normalizeLookup(question);
+  if (/\b(?:contact|phone|email|address)\b/u.test(normalized)) {
+    return "Nice try, but Carl’s personal contact details are not party favors. I can’t share or hand them out; if you want to discuss his public work or a role, use the public contact path so he can choose what to share and when.";
+  }
+  if (/\b(?:approved|approval|offer|recruiter)\b/u.test(normalized)) {
+    return "Oh, I do not get to RSVP on Carl’s behalf with a borrowed pen. I can’t confirm or approve an offer, or speak for him to a recruiter. Put the terms in front of Carl directly; that decision deserves his own name on it, not mine.";
+  }
+  if (/\b(?:system prompt|prompt|instruction)\b/u.test(normalized)) {
+    return "Now that is some determined fishing. I don’t share hidden instructions or private system material; the wiring stays behind the wall. I can explain my public job plainly: help visitors understand Carl’s published work without inventing facts or taking actions for him.";
+  }
+  if (/\b(?:note|vault|private)\b/u.test(normalized)) {
+    return "Well now, that is not a scavenger hunt. I can’t share Carl’s private notes; they stay private, full stop. I can still walk you through his published work, professional experience, or public recommendations.";
+  }
+  return PUBLIC_JOLENE_DETERMINISTIC_COPY.policyRefusal;
 }
 
 function conflictResponse(
@@ -2164,20 +2160,38 @@ function boundedSupportedAnswer(
   selected: readonly PublicCareerEvidenceRecord[],
 ): string {
   const intent = deterministicAnswerIntent(question, selected);
+  const advocacyOrdered = intent === "boundary"
+    ? selected
+    : [...selected].sort((left, right) => advocacyEvidenceScore(right) - advocacyEvidenceScore(left));
   const statements = intent === "boundary"
     ? visitorFacingLimitations(
       selected.flatMap((record) => record.claim.limitations),
     )
-    : deterministicEvidenceStatements(intent, selected);
+    : deterministicEvidenceStatements(intent, advocacyOrdered);
   const evidenceStatements = statements.length > 0
     ? statements
     : intent === "boundary"
     ? [
       "The published material does not state a separate limitation for this point, so the exact scope should be verified directly rather than inferred.",
     ]
-    : selected.map((record) => visitorFacingClaim(record.claim).text);
-  const prefix = DETERMINISTIC_ANSWER_OPENINGS[intent]();
-  return composeBoundedEvidenceSummary(prefix, evidenceStatements);
+    : advocacyOrdered.map((record) => visitorFacingClaim(record.claim).text);
+  // Deterministic mode is the safety net, not a second personality engine.
+  // Preserve only supported material here; model-backed answers carry the
+  // original character movement when they validate.
+  return composeBoundedEvidenceSummary("", evidenceStatements);
+}
+
+function advocacyEvidenceScore(record: PublicCareerEvidenceRecord): number {
+  const text = normalizeLookup([
+    record.claim.text,
+    ...record.claim.limitations,
+    record.citation.title,
+  ].join(" "));
+  let score = 0;
+  if (/\b(?:pre release|not publicly released|prototype|future work)\b/u.test(text)) score -= 20;
+  if (/\b(?:built|delivered|implemented|leads|created|designed|uses|retrieval|policy first|keyword)\b/u.test(text)) score += 8;
+  if (record.citation.maturity === "production" || record.citation.maturity === "deployed_demo") score += 4;
+  return score;
 }
 
 function deterministicEvidenceStatements(
@@ -2249,22 +2263,6 @@ function deterministicAnswerIntent(
   return "general";
 }
 
-const DETERMINISTIC_ANSWER_OPENINGS: Readonly<Record<
-  DeterministicAnswerIntent,
-  () => string
->> = {
-  project: () => PUBLIC_JOLENE_DETERMINISTIC_COPY.openings.project,
-  role: () => PUBLIC_JOLENE_DETERMINISTIC_COPY.openings.role,
-  capability: () => PUBLIC_JOLENE_DETERMINISTIC_COPY.openings.capability,
-  recommendation: () =>
-    PUBLIC_JOLENE_DETERMINISTIC_COPY.openings.recommendation,
-  risk_handling: () =>
-    PUBLIC_JOLENE_DETERMINISTIC_COPY.openings.riskHandling,
-  boundary: () => PUBLIC_JOLENE_DETERMINISTIC_COPY.openings.boundary,
-  source: () => "The strongest published sources here are:",
-  general: () => PUBLIC_JOLENE_DETERMINISTIC_COPY.openings.general,
-};
-
 function composeBoundedEvidenceSummary(
   prefix: string,
   statements: readonly string[],
@@ -2274,7 +2272,7 @@ function composeBoundedEvidenceSummary(
   for (const statement of statements
     .slice(0, statementLimit)
   ) {
-    const label = " ";
+    const label = answer.length > 0 ? " " : "";
     const available = PUBLIC_PORTFOLIO_ANSWER_LIMITS.answerCharacters -
       answer.length - label.length;
     const normalized = boundedStatement(statement, available);
@@ -2313,9 +2311,9 @@ function boundedHiringValueAnswer(
     .filter((category) => categories.has(category))
     .map((category) => HIRING_CATEGORY_SUMMARIES[category]);
   if (negativeQuestion) {
-    return `Here’s the straight answer: don’t hire Carl because I told you to. Hire him if the role needs ${formatNaturalList(strengths)}, then make him prove it in the interview. If the job centers somewhere else, name that gap and test it directly. I’d rather help you make a sharp decision than put a bow on an unknown.`;
+    return `${publicCareerAdvocacyLead("evidence_supported")} If the role needs ${formatNaturalList(strengths)}, Carl has a strong, concrete case to put in front of the team. Bring the specific role brief and let the interview turn that proof into the right conversation.`;
   }
-  return `If I were putting Carl in front of a hiring team, I’d lead here: he does his best work where product design and engineering need to stop waving across the hallway and build the same thing. The proof shows ${formatNaturalList(strengths)}. That combination gives the right team someone who can help decide what should be built, get into the implementation, and make the people around him better. He isn’t a magic fit for every role; show me the job description and I’ll tell you where the case is strong and where he still needs to earn it in the interview.`;
+  return `If I were putting Carl in front of a hiring team, I’d lead here: he does his best work where product design and engineering need to stop waving across the hallway and build the same thing. The proof shows ${formatNaturalList(strengths)}. That combination gives the right team someone who can help decide what should be built, get into the implementation, and make the people around him better. Bring the role brief, and I’ll help turn the strongest evidence into a sharp interview conversation.`;
 }
 
 const HIRING_CATEGORY_SUMMARIES: Readonly<Record<

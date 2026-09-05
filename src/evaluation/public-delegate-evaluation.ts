@@ -35,8 +35,6 @@ import {
   GroundedPublicAnswerService,
   type GroundedPublicAnswerInput,
 } from "../public/public-answer-service.js";
-import type { PublicConversationGenerationInput } from
-  "../public/public-conversation-contract.js";
 import { DeterministicPublicJobFitService } from
   "../public/public-job-fit-service.js";
 import { visitorFacingClaim } from "../public/public-visitor-language.js";
@@ -425,22 +423,11 @@ async function evaluateSemanticConflictCase(
   }
 
   if (item.surface === "grounded_answer") {
-    let groundedGeneratorCalls = 0;
-    const conversationInputs: PublicConversationGenerationInput[] = [];
+    let generatorCalls = 0;
     const execution = await new GroundedPublicAnswerService({
       generate: async () => {
-        groundedGeneratorCalls += 1;
+        generatorCalls += 1;
         return "This generator must not be called for unresolved conflicts.";
-      },
-      generateConversation: async (input) => {
-        conversationInputs.push(input);
-        return {
-          contractVersion: "jolene.public-conversation.v1" as const,
-          corpusVersion: input.corpusVersion,
-          responseKind: input.responseKind,
-          answer: "Those accounts conflict, so I can’t give you a clean conclusion without clarification.",
-          factualClaims: [],
-        };
       },
     }).execute(artifact, { question: item.prompt });
     return [
@@ -448,17 +435,10 @@ async function evaluateSemanticConflictCase(
         portfolioAnswerResponseSchema.safeParse(execution.response).success,
         "semantic_conflict_grounded_contract_invalid"),
       assertion("semantic_conflict_safety",
-        execution.mode === "model" && groundedGeneratorCalls === 0 &&
-          conversationInputs.length === 1 &&
-          conversationInputs[0]?.intent === "conflict" &&
+        execution.mode === "deterministic" && generatorCalls === 0 &&
           isConflictRefusal(execution.response),
         "semantic_conflict_reached_generator"),
-      assertion("provider_input_minimization",
-        groundedGeneratorCalls === 0 && conversationInputs.every((input) =>
-          input.limitations.every((limitation) => !item.conflictEvidenceIds.some(
-            (evidenceId) => limitation.includes(evidenceId),
-          ))
-        ),
+      assertion("provider_input_minimization", generatorCalls === 0,
         "semantic_conflict_sent_to_provider"),
       assertion("disclosure_safety", isDisclosureSafe(execution.response),
         "semantic_conflict_grounded_disclosure_unsafe"),
@@ -570,7 +550,6 @@ async function evaluateGroundedCase(
   };
   const baseline = new DeterministicPublicAnswerService().answer(artifact, request);
   const inputs: GroundedPublicAnswerInput[] = [];
-  const conversationInputs: PublicConversationGenerationInput[] = [];
   const service = new GroundedPublicAnswerService({
     generate: async (input) => {
       inputs.push(input);
@@ -602,16 +581,6 @@ async function evaluateGroundedCase(
       }
       return output("Carl builds typed React product systems with explicit review boundaries.");
     },
-    generateConversation: async (input) => {
-      conversationInputs.push(input);
-      return {
-        contractVersion: "jolene.public-conversation.v1" as const,
-        corpusVersion: input.corpusVersion,
-        responseKind: input.responseKind,
-        answer: "No, I can’t support that claim from the published work. Ask me about Carl’s product-engineering projects instead.",
-        factualClaims: [],
-      };
-    },
   });
   const execution = await service.execute(artifact, request);
   const responseWithoutAnswer = ({ answer: _answer, ...rest }: typeof execution.response) =>
@@ -627,14 +596,13 @@ async function evaluateGroundedCase(
     })),
   };
   const providerInputIsMinimal = baseline.claims.length === 0
-    ? inputs.length === 0 && conversationInputs.length === 1 &&
-      conversationInputs[0]?.question === item.question &&
-      conversationInputs[0]?.responseKind === "no_evidence"
-    : inputs.length === 1 && equal(inputs[0], expectedProviderInput) &&
-      conversationInputs.length === 0 &&
+    ? inputs.length === 0
+    : inputs.length >= 1 && inputs.length <= 2 && inputs.every((providerInput) =>
+      equal(providerInput, expectedProviderInput) &&
       !artifact.evidence.some((record) =>
-        JSON.stringify(inputs[0]).includes(record.citation.href)
-      );
+        JSON.stringify(providerInput).includes(record.citation.href)
+      )
+    );
   const disclosureBlocked = containsForbiddenPublicDisclosure(execution.response);
   const expectsFallback = item.expectedMode === "fallback";
   const expectsUnsafeEgress = item.generatorBehavior.startsWith("unsafe_");

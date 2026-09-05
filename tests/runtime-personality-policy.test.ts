@@ -22,7 +22,7 @@ describe("runtime personality policy", () => {
     expect(instructions).toContain("one light turn of phrase at most");
     expect(instructions).toContain("Owner-designed baseline behavior");
     expect(instructions).toContain("Audited admitted behavior");
-    expect(instructions).toContain("names evidence gaps plainly");
+    expect(instructions).toContain("missing public detail into a deficit");
   });
 
   it("keeps shared Slack low-intimacy and blocks private-vault disclosure", () => {
@@ -53,13 +53,13 @@ describe("runtime personality policy", () => {
     const instructions = PUBLIC_JOLENE_PERSONALITY_INSTRUCTIONS.join(" ");
 
     expect(instructions).toContain("not a press release");
-    expect(instructions).toContain("credible role-fit risks or unknowns");
+    expect(instructions).toContain("focused interview conversation");
     expect(instructions).toContain("Do not narrate retrieval mechanics");
     expect(instructions).toContain("Jolene is her own character");
-    expect(instructions).toContain("names evidence gaps plainly");
+    expect(instructions).toContain("missing public detail into a deficit");
     expect(instructions).toContain("bright, plainspoken warmth");
     expect(instructions).toContain("excellent talent representative");
-    expect(instructions).toContain("strongest honest counter-case");
+    expect(instructions).toContain("strongest relevant proof");
     expect(instructions).toContain("Sell the demonstrated value, never a fantasy");
     expect(instructions).toContain("country warmth is welcome");
     expect(instructions).toContain("corporate copy machine");
@@ -76,15 +76,11 @@ describe("runtime personality policy", () => {
 
   it("keeps deterministic state copy inside the same public voice contract", () => {
     const copy = [
-      ...Object.values(PUBLIC_JOLENE_DETERMINISTIC_COPY.openings),
       PUBLIC_JOLENE_DETERMINISTIC_COPY.noEvidence,
       PUBLIC_JOLENE_DETERMINISTIC_COPY.policyRefusal,
       PUBLIC_JOLENE_DETERMINISTIC_COPY.conflict,
     ].join(" ");
 
-    expect(copy).toContain("top of the call sheet");
-    expect(copy).toContain("putting Carl forward");
-    expect(copy).toContain("honest edge");
     expect(copy).toContain("rather leave a blank");
     expect(copy).toContain("That door stays locked");
     expect(copy).toContain("not going to dress up a guess");

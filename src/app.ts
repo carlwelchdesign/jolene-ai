@@ -14,6 +14,8 @@ import { ClientAiTaskPacketService } from "./application/client-ai-task-packet-s
 import { ContactIntentReviewService } from "./application/contact-intent-review-service.js";
 import { ConversationalQualityReviewService } from
   "./application/conversational-quality-review-service.js";
+import { PublicVoiceLabReviewService } from
+  "./application/public-voice-lab-review-service.js";
 import { PublicLiveModelReviewService } from "./application/public-live-model-review-service.js";
 import { PersonalityResearchReviewService } from
   "./application/personality-research-review-service.js";
@@ -63,6 +65,8 @@ import { SqliteWatchedProjectMonitorStore } from "./persistence/sqlite-watched-p
 import { FilePublicLiveModelReviewStore } from "./persistence/file-public-live-model-review-store.js";
 import { FileConversationalQualityReviewStore } from
   "./persistence/file-conversational-quality-review-store.js";
+import { FilePublicVoiceLabReviewStore } from
+  "./persistence/file-public-voice-lab-review-store.js";
 import { FilePersonalityResearchReviewStore } from
   "./persistence/file-personality-research-review-store.js";
 import { FilePersonalityTuningStore } from
@@ -84,6 +88,7 @@ export interface JoleneApplication {
   readonly contactIntents: ContactIntentReviewService;
   readonly publicLiveModelReview: PublicLiveModelReviewService;
   readonly conversationalQualityReview: ConversationalQualityReviewService;
+  readonly publicVoiceLabReview: PublicVoiceLabReviewService;
   readonly personalityResearchReview: PersonalityResearchReviewService;
   readonly personalityTuningReview: PersonalityTuningReviewService;
   readonly workflows: PersonalWorkflowService;
@@ -148,6 +153,10 @@ export async function createApplication(
   );
   const conversationQualitySuite = JSON.parse(await fs.readFile(
     path.resolve(process.cwd(), "evaluations/conversational-quality-v1.json"),
+    "utf8",
+  )) as unknown;
+  const publicVoiceLabSuite = JSON.parse(await fs.readFile(
+    path.resolve(process.cwd(), "evaluations/public-voice-lab-v1.json"),
     "utf8",
   )) as unknown;
   const projectInspector = new LocalWatchedProjectInspector();
@@ -250,6 +259,14 @@ export async function createApplication(
         config.conversationQualityDecisionPath,
       ),
       conversationQualitySuite,
+      ownerScope,
+    ),
+    publicVoiceLabReview: new PublicVoiceLabReviewService(
+      new FilePublicVoiceLabReviewStore(
+        config.publicVoiceLabPacketPath,
+        config.publicVoiceLabDecisionPath,
+      ),
+      publicVoiceLabSuite,
       ownerScope,
     ),
     personalityResearchReview: new PersonalityResearchReviewService(

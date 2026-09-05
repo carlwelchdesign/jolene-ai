@@ -30,6 +30,7 @@ COPY --from=build --chown=node:node /app/dist ./dist
 COPY --chown=node:node package.json package-lock.json ./
 COPY --chown=node:node docs/prompt.md ./docs/prompt.md
 COPY --chown=node:node evaluations/conversational-quality-v1.json ./evaluations/conversational-quality-v1.json
+COPY --chown=node:node evaluations/public-voice-lab-v1.json ./evaluations/public-voice-lab-v1.json
 COPY --chown=node:node public ./public
 COPY --chown=node:node research ./research
 

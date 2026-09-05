@@ -17,7 +17,7 @@ export const PUBLIC_ANSWER_GROUNDING_LIMITS = {
   segments: 8,
   normalizedSegments: 12,
   segmentCharacters: 600,
-  presentationCharacters: 220,
+  presentationCharacters: 280,
   supportIdsPerSegment: PUBLIC_PORTFOLIO_ANSWER_LIMITS.responseItems,
   validationMilliseconds: 250,
 } as const;
@@ -54,16 +54,21 @@ export const publicAnswerGroundedSegmentSchema = z.object({
   ).refine(unique, { message: "Segment support IDs must be unique." }),
 }).strict();
 
+export const publicAnswerVoiceBridgeSchema = z.object({
+  position: z.enum(["before", "after"]),
+  text: z.string().trim().min(1).max(
+    PUBLIC_ANSWER_GROUNDING_LIMITS.presentationCharacters,
+  ),
+}).strict();
+
 export const publicAnswerGroundedGenerationSchema = z.object({
   contractVersion: z.literal(PUBLIC_ANSWER_GROUNDING_CONTRACT_VERSION),
   corpusVersion: z.string().regex(/^career:[a-f0-9]{64}$/u),
   presentation: z.string().trim().min(1).max(
     PUBLIC_ANSWER_GROUNDING_LIMITS.presentationCharacters,
   ).nullable().optional(),
-  closing: z.string().trim().min(1).max(
-    PUBLIC_ANSWER_GROUNDING_LIMITS.presentationCharacters,
-  ).nullable().optional(),
-  segments: z.array(publicAnswerGroundedSegmentSchema).min(1).max(
+  voiceBridges: z.array(publicAnswerVoiceBridgeSchema).max(2).optional(),
+  segments: z.array(publicAnswerGroundedSegmentSchema).min(0).max(
     PUBLIC_ANSWER_GROUNDING_LIMITS.segments,
   ),
 }).strict();
@@ -71,10 +76,10 @@ export const publicAnswerGroundedGenerationSchema = z.object({
 const publicAnswerGroundingAcceptedSchema = z.object({
   status: z.literal("accepted"),
   contractVersion: z.literal(PUBLIC_ANSWER_GROUNDING_CONTRACT_VERSION),
-  segmentCount: z.number().int().positive().max(
+  segmentCount: z.number().int().nonnegative().max(
     PUBLIC_ANSWER_GROUNDING_LIMITS.normalizedSegments,
   ),
-  supportCount: z.number().int().positive().max(
+  supportCount: z.number().int().nonnegative().max(
     PUBLIC_ANSWER_GROUNDING_LIMITS.normalizedSegments *
       PUBLIC_ANSWER_GROUNDING_LIMITS.supportIdsPerSegment,
   ),

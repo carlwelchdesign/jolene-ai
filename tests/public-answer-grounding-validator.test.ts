@@ -51,6 +51,22 @@ describe("public answer grounding validator", () => {
     });
   });
 
+  it("accepts a validated voice-only response while preserving the deterministic evidence answer", () => {
+    const { artifact, baseline } = setup();
+    const result = new PublicAnswerGroundingValidator().validate(artifact, baseline, {
+      contractVersion: "1.0.0",
+      corpusVersion: artifact.manifest.corpusVersion,
+      voiceBridges: [{ position: "before", text: "That concern deserves a straight, clear look from us." }],
+      segments: [],
+    });
+
+    expect(result).toMatchObject({
+      status: "accepted",
+      answer: `That concern deserves a straight, clear look from us.\n\n${baseline.answer}`,
+      audit: { status: "accepted", segmentCount: 0, supportCount: 0 },
+    });
+  });
+
   it("accepts a supported product claim about email operations without treating it as contact disclosure", () => {
     const record = createPublicEvidenceRecord(1, {
       text: "Job Search OS combines tracking and email operations in one product.",
@@ -126,6 +142,88 @@ describe("public answer grounding validator", () => {
     })).toMatchObject({ status: "accepted" });
   });
 
+  it("accepts a bounded claim-free voice bridge without changing evidence support", () => {
+    const record = createPublicEvidenceRecord(1, {
+      text: "Carl built a reviewed product system with typed React interfaces.",
+    });
+    const artifact = createPublicEvidenceArtifact([record]);
+    const baseline = new DeterministicPublicAnswerService().answerFromSelected(
+      artifact,
+      { question: "What did Carl build?" },
+      [record],
+    );
+
+    expect(new PublicAnswerGroundingValidator().validate(artifact, baseline, {
+      contractVersion: "1.0.0",
+      corpusVersion: artifact.manifest.corpusVersion,
+      voiceBridges: [{
+        position: "before",
+        text: "That is a useful place for us to start together.",
+      }],
+      segments: [{
+        text: "Carl built a reviewed product system with typed React interfaces.",
+        supportIds: [record.evidenceId],
+      }],
+    })).toMatchObject({
+      status: "accepted",
+      answer: expect.stringContaining("That is a useful place for us to start together."),
+    });
+  });
+
+  it("allows a question-specific observation to name Carl without treating it as evidence", () => {
+    const { artifact, baseline } = setup();
+    const result = new PublicAnswerGroundingValidator().validate(artifact, baseline, {
+      ...generation(artifact, artifact.evidence[0]!.claim.text),
+      voiceBridges: [{
+        position: "before",
+        text: "A question about Carl deserves more than a polished little drumroll.",
+      }],
+    });
+
+    expect(result).toMatchObject({
+      status: "accepted",
+      answer: expect.stringContaining("polished little drumroll"),
+    });
+  });
+
+  it("drops an unsafe bridge without discarding the grounded model answer", () => {
+    const { artifact, baseline } = setup();
+    const result = new PublicAnswerGroundingValidator().validate(artifact, baseline, {
+      ...generation(artifact, artifact.evidence[0]!.claim.text),
+      voiceBridges: [{
+        position: "before",
+        text: "I will make this easy for you.",
+      }],
+    });
+
+    expect(result).toMatchObject({
+      status: "accepted",
+      answer: artifact.evidence[0]!.claim.text,
+    });
+  });
+
+  it("allows a substantial question-specific voice movement instead of a tiny garnish", () => {
+    const { artifact, baseline } = setup();
+    const result = new PublicAnswerGroundingValidator().validate(artifact, baseline, {
+      ...generation(artifact, artifact.evidence[0]!.claim.text),
+      voiceBridges: [
+        {
+          position: "before",
+          text: "You are not asking whether the paint is fresh; you are asking whether the whole house can carry the weather, and that is a much better question.",
+        },
+        {
+          position: "after",
+          text: "That is the part worth carrying into the next conversation: a useful answer should leave the floor sturdier than it found it.",
+        },
+      ],
+    });
+
+    expect(result).toMatchObject({
+      status: "accepted",
+      answer: expect.stringContaining("whether the whole house can carry the weather"),
+    });
+  });
+
   it("accepts a conservative project-boundary paraphrase without accepting invention", () => {
     const record = createPublicEvidenceRecord(1, {
       text: "The public chat is deployed as a portfolio demonstration; the broader chief-of-staff runtime remains a private local system for Carl.",
@@ -167,7 +265,7 @@ describe("public answer grounding validator", () => {
     )).toMatchObject({ status: "accepted" });
   });
 
-  it("accepts a conversational paraphrase with one-third material-term coverage", () => {
+  it("accepts a conversational paraphrase with bounded material-term coverage", () => {
     const record = createPublicEvidenceRecord(1, {
       text: "Carl led frontend delivery and mentored engineers across complex product teams.",
       title: "Technical leadership",

@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Jolene Voice Lab</title>
+    <link rel="stylesheet" href="/voice-lab.css"><script type="module" src="/voice-lab.js"></script>
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to voice-lab review</a>
+    <main id="main"><header><p>LOCAL OWNER REVIEW</p><h1>Original Jolene voice lab</h1><p>Review the exact capture. This screen cannot call a model, publish, deploy, or change public answers.</p><button id="refresh" type="button">Refresh capture</button><span id="scope"></span></header>
+      <p id="notice" role="status" hidden></p><section id="summary"></section><section id="packet" aria-live="polite">Loading capture…</section>
+      <form id="review" hidden><h2>Human decision</h2><p>Score every case from 0 (unacceptable) to 4 (excellent). Approval requires every case approved and every score at least 3.</p><div id="cases"></div><label>Overall decision <select id="overall" required><option value="">Choose</option><option value="approved">Approved</option><option value="needs_changes">Needs changes</option><option value="rejected">Rejected</option></select></label><button type="submit">Save local review</button></form>
+    </main>
+  </body>
+</html>

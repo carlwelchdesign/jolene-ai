@@ -31,6 +31,9 @@ export interface MemoryReviewAssets {
   readonly conversationEvaluationHtml: MemoryReviewAsset;
   readonly conversationEvaluationCss: MemoryReviewAsset;
   readonly conversationEvaluationJavascript: MemoryReviewAsset;
+  readonly voiceLabHtml: MemoryReviewAsset;
+  readonly voiceLabCss: MemoryReviewAsset;
+  readonly voiceLabJavascript: MemoryReviewAsset;
   readonly clientAiHtml: MemoryReviewAsset;
   readonly clientAiCss: MemoryReviewAsset;
   readonly clientAiJavascript: MemoryReviewAsset;
@@ -174,6 +177,9 @@ export function loadMemoryReviewAssets(
       "conversation-evaluation-review.js",
       "text/javascript; charset=utf-8",
     ),
+    voiceLabHtml: loadAsset(publicDirectory, "voice-lab.html", "text/html; charset=utf-8"),
+    voiceLabCss: loadAsset(publicDirectory, "voice-lab.css", "text/css; charset=utf-8"),
+    voiceLabJavascript: loadAsset(publicDirectory, "voice-lab.js", "text/javascript; charset=utf-8"),
     clientAiHtml: loadAsset(
       publicDirectory,
       "client-ai-review.html",

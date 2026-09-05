@@ -13,6 +13,10 @@ import {
   type PublicAnswerGroundingReasonCode,
   type PublicAnswerGroundingResult,
 } from "./public-answer-grounding-contract.js";
+import { renderPublicVoiceResponse } from
+  "../personality/public-character-realization.js";
+import type { PublicVoiceBridge } from
+  "../personality/public-character-realization.js";
 
 export type PublicAnswerGroundingValidation =
   | { readonly status: "accepted"; readonly answer: string; readonly audit: PublicAnswerGroundingResult }
@@ -24,6 +28,24 @@ export interface PublicAnswerGroundingValidatorLike {
     baseline: PortfolioAnswerResponse,
     generation: unknown,
   ): PublicAnswerGroundingValidation;
+}
+
+/**
+ * Returns only voice-only material that can safely accompany a deterministic
+ * answer. This is deliberately independent from factual-segment acceptance:
+ * rejected model claims must never be shown, but a valid non-factual bridge
+ * does not become unsafe merely because another segment failed grounding.
+ */
+export function extractValidatedPublicVoiceBridges(
+  generation: unknown,
+): readonly PublicVoiceBridge[] {
+  const parsed = publicAnswerGroundedGenerationSchema.safeParse(generation);
+  if (!parsed.success) return [];
+  const bridges = parsed.data.voiceBridges ?? [];
+  if (new Set(bridges.map((bridge) => bridge.position)).size !== bridges.length) {
+    return [];
+  }
+  return bridges.filter((bridge) => !validateVoiceBridge(bridge.text));
 }
 
 export class PublicAnswerGroundingValidator
@@ -49,10 +71,7 @@ export class PublicAnswerGroundingValidator
     const segments = parsed.data.segments.flatMap((segment) =>
       materialSentences(segment.text).map((text) => ({ ...segment, text }))
     );
-    if (
-      segments.length === 0 ||
-      segments.length > PUBLIC_ANSWER_GROUNDING_LIMITS.normalizedSegments
-    ) {
+    if (segments.length > PUBLIC_ANSWER_GROUNDING_LIMITS.normalizedSegments) {
       return rejected("output_schema_invalid", null, startedAt);
     }
 
@@ -70,18 +89,26 @@ export class PublicAnswerGroundingValidator
         return rejected(presentationFailure, null, startedAt);
       }
     }
-    let acceptedClosing = parsed.data.closing;
-    if (acceptedClosing) {
-      const closingFailure = validatePresentation(acceptedClosing);
-      if (closingFailure === "unsupported_segment") {
-        acceptedClosing = null;
-      } else if (closingFailure) {
-        return rejected(closingFailure, null, startedAt);
-      }
+    const bridges = parsed.data.voiceBridges ?? [];
+    if (new Set(bridges.map((bridge) => bridge.position)).size !== bridges.length) {
+      return rejected("output_schema_invalid", null, startedAt);
+    }
+    // Voice bridges are optional expressive material, never evidence. A bad
+    // bridge must not throw away an otherwise grounded answer and revive a
+    // canned deterministic fallback. Drop it; the evidence segments still go
+    // through the full safety and entailment checks below.
+    const acceptedBridges = bridges.filter((bridge) => !validateVoiceBridge(bridge.text));
+    // In Jolene mode, the response contract requires a real opening and a
+    // real closing. Accepting one surviving bridge lets the model quietly
+    // collapse back into a résumé renderer while telemetry still says model.
+    if (bridges.length === 2 && acceptedBridges.length !== 2) {
+      return rejected("unsupported_segment", null, startedAt);
+    }
+    const voiceOnly = segments.length === 0;
+    if (voiceOnly && acceptedBridges.length === 0) {
+      return rejected("output_schema_invalid", null, startedAt);
     }
 
-    const acceptedSegments: typeof segments = [];
-    let firstUnsupportedIndex: number | null = null;
     for (const [index, segment] of segments.entries()) {
       if (elapsed(startedAt) > PUBLIC_ANSWER_GROUNDING_LIMITS.validationMilliseconds) {
         return rejected("validation_timeout", index, startedAt);
@@ -91,8 +118,7 @@ export class PublicAnswerGroundingValidator
         logGroundingDiagnostic("sentence_count", index, {
           sentenceCount,
         });
-        firstUnsupportedIndex ??= index;
-        continue;
+        return rejected("unsupported_segment", index, startedAt);
       }
       for (const supportId of segment.supportIds) {
         if (!selectedIds.has(supportId)) {
@@ -112,30 +138,16 @@ export class PublicAnswerGroundingValidator
       const prohibited = prohibitedReason(segment.text, records);
       if (prohibited) return rejected(prohibited, index, startedAt);
       const entailmentFailure = validateEntailment(segment.text, records, index);
-      if (entailmentFailure === "unsupported_segment") {
-        firstUnsupportedIndex ??= index;
-        continue;
-      }
       if (entailmentFailure) return rejected(entailmentFailure, index, startedAt);
-      acceptedSegments.push(segment);
-    }
-    if (acceptedSegments.length === 0) {
-      return rejected("unsupported_segment", firstUnsupportedIndex, startedAt);
     }
 
-    const coveredEvidenceIds = new Set(
-      acceptedSegments.flatMap((segment) => segment.supportIds),
-    );
-    const sourceCompletions = baseline.citations
-      .filter((citation) => !coveredEvidenceIds.has(citation.evidenceId))
-      .map((citation) => active.get(citation.evidenceId)!.claim.text);
-
-    const answer = [
-      acceptedPresentation,
-      ...groupContiguousGroundedSegments(acceptedSegments),
-      ...sourceCompletions,
-      acceptedClosing,
-    ].filter((value): value is string => Boolean(value)).join("\n\n");
+    const factualPassage = segments.map((segment) => segment.text).join(" ");
+    const groundedAnswer = voiceOnly
+      ? baseline.answer
+      : [acceptedPresentation, factualPassage]
+        .filter((value): value is string => Boolean(value))
+        .join("\n\n");
+    const answer = renderPublicVoiceResponse(groundedAnswer, acceptedBridges);
     const candidate = { ...baseline, answer };
     const baselineSnapshot = createPublicAnswerFallbackSnapshot(artifact, baseline);
     const candidateSnapshot = createPublicAnswerFallbackSnapshot(artifact, {
@@ -155,8 +167,8 @@ export class PublicAnswerGroundingValidator
       audit: {
         status: "accepted",
         contractVersion: PUBLIC_ANSWER_GROUNDING_CONTRACT_VERSION,
-        segmentCount: acceptedSegments.length,
-        supportCount: acceptedSegments.reduce(
+        segmentCount: segments.length,
+        supportCount: segments.reduce(
           (total, segment) => total + segment.supportIds.length,
           0,
         ),
@@ -166,31 +178,12 @@ export class PublicAnswerGroundingValidator
   }
 }
 
-function groupContiguousGroundedSegments(
-  segments: readonly {
-    readonly text: string;
-    readonly supportIds: readonly string[];
-  }[],
-): string[] {
-  const paragraphs: { text: string; supportKey: string }[] = [];
-  for (const segment of segments) {
-    const supportKey = segment.supportIds.join("\u0000");
-    const previous = paragraphs.at(-1);
-    if (previous?.supportKey === supportKey) {
-      previous.text = `${previous.text} ${segment.text}`;
-    } else {
-      paragraphs.push({ text: segment.text, supportKey });
-    }
-  }
-  return paragraphs.map((paragraph) => paragraph.text);
-}
-
 function validatePresentation(
   text: string,
 ): PublicAnswerGroundingReasonCode | null {
   if (materialSentenceCount(text) !== 1) return "unsupported_segment";
   const words = text.match(/[\p{L}\p{N}’'-]+/gu) ?? [];
-  if (words.length < 2 || words.length > 32) return "unsupported_segment";
+  if (words.length < 2 || words.length > 16) return "unsupported_segment";
   const prohibited = prohibitedReason(text, []);
   if (prohibited) return prohibited;
   const normalized = normalize(text);
@@ -199,6 +192,24 @@ function validatePresentation(
     PRESENTATION_FACT_PATTERN.test(normalized) ||
     PRESENTATION_NAMED_TERM_PATTERN.test(normalized)
   ) return "unsupported_segment";
+  return null;
+}
+
+function validateVoiceBridge(
+  text: string,
+): PublicAnswerGroundingReasonCode | null {
+  if (materialSentenceCount(text) !== 1) return "unsupported_segment";
+  const words = text.match(/[\p{L}\p{N}’'-]+/gu) ?? [];
+  if (words.length < 8 || words.length > 48) return "unsupported_segment";
+  const prohibited = prohibitedReason(text, []);
+  if (prohibited) return prohibited;
+  if (
+    /[\d]/u.test(text) ||
+    VOICE_BRIDGE_RESTRICTED_TERM_PATTERN.test(normalize(text)) ||
+    VOICE_BRIDGE_FACT_PATTERN.test(normalize(text))
+  ) {
+    return "unsupported_segment";
+  }
   return null;
 }
 
@@ -238,7 +249,10 @@ function validateEntailment(
         BOUNDARY_SEPARATION_PATTERN.test(normalizedText) &&
         BOUNDARY_SEPARATION_PATTERN.test(sourceNormalized)
       );
-    if (overlap >= 2 && coverage >= 0.3 && numbersMatch && negationMatches) {
+    // A natural, evidence-bound sentence often has more connective and
+    // interpretive language than a source claim. Two grounded material terms
+    // plus 20% coverage retains traceability without forcing copied prose.
+    if (overlap >= 2 && coverage >= 0.2 && numbersMatch && negationMatches) {
       supported = true;
     }
   }
@@ -393,10 +407,19 @@ const GROUNDING_STOP_WORDS = new Set([
 ]);
 
 const PRESENTATION_FACT_PATTERN =
-  /\b(?:built|created|designed|directed|worked|led|managed|uses|used|knows|qualified|experienced|available|hire|employ|client|award|won|guarantee)\b/u;
+  /\b(?:i|you|he|she|it|we|they|this|that|these|those|him|her|them|his|hers|their|built|created|designed|directed|worked|led|managed|uses|used|knows|qualified|experienced|available|hire|employ|client|award|won|can|will|should|must|guarantee|is|was|has|did)\b/u;
 
 const PRESENTATION_NAMED_TERM_PATTERN =
   /\b(?:carl|jolene|openai|chatgpt|slack|obsidian|sqlite|vercel|react|typescript|javascript|docker|mcp|rag)\b/u;
+
+const VOICE_BRIDGE_FACT_PATTERN =
+  /\b(?:built|created|designed|directed|worked|led|managed|uses|used|knows|qualified|experienced|available|client|award|won|guarantee)\b/u;
+
+// A question-specific observation can refer to Carl by name without making a
+// factual claim. The fact and action patterns above still reject any claim
+// about him; systems and provider names remain out of non-evidentiary prose.
+const VOICE_BRIDGE_RESTRICTED_TERM_PATTERN =
+  /\b(?:jolene|openai|chatgpt|slack|obsidian|sqlite|vercel|react|typescript|javascript|docker|mcp|rag)\b/u;
 
 const CONTRIBUTION_BOUNDARY_TERMS = [
   "sole", "solely", "independently", "led", "owned",
